@@ -1,3 +1,23 @@
-<component>
+<component xmlns="urn:rhena:component" xmlns:dependency="urn:rhena:dependency">
+
+	<import component="component2" />
 	
+	<version>0.0.1</version>
+
+	<properties>
+		<some.prop>some value</some.prop>
+	</properties>
+
+	<project name="project1">
+		<properties>
+			<some.prop>some value</some.prop>
+		</properties>
+		<dependency:default id="component1:project2:model" />
+	</project>
+	
+	<project name="project2" />
+
+	<dependency:test id="junit:junit:4.12" resolver="maven" />
+
 </component>
+

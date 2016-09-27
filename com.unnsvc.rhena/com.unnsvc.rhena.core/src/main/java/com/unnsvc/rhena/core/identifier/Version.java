@@ -28,6 +28,16 @@ public class Version {
 		this.snapshot = snapshot;
 	}
 
+	/**
+	 * Test whether the version is 0.0.0
+	 * 
+	 * @return
+	 */
+	public boolean isEmpty() {
+
+		return major == 0 && minor == 0 && micro == 0;
+	}
+
 	@Override
 	public String toString() {
 
@@ -55,6 +65,48 @@ public class Version {
 		} else {
 
 			throw new RhenaParserException("Invalid version pattern: " + versionString);
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + major;
+		result = prime * result + micro;
+		result = prime * result + minor;
+		result = prime * result + (snapshot ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Version other = (Version) obj;
+		if (major != other.major)
+			return false;
+		if (micro != other.micro)
+			return false;
+		if (minor != other.minor)
+			return false;
+		if (snapshot != other.snapshot)
+			return false;
+		return true;
+	}
+
+	public boolean matches(Version other) {
+
+		if (isEmpty()) {
+			return true;
+		} else if (this.equals(other)) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 }

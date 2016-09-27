@@ -4,8 +4,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.unnsvc.rhena.core.exceptions.RhenaException;
-import com.unnsvc.rhena.core.exceptions.RhenaParserException;
+import com.unnsvc.rhena.core.identifier.ComponentIdentifier;
 import com.unnsvc.rhena.core.identifier.Identifier;
+import com.unnsvc.rhena.core.identifier.ProjectIdentifier;
 import com.unnsvc.rhena.core.identifier.QualifiedIdentifier;
 import com.unnsvc.rhena.core.identifier.Version;
 
@@ -37,18 +38,15 @@ public class TestIdentifiers {
 	@Test
 	public void testQualifiedIdentifier() throws RhenaException {
 
-		QualifiedIdentifier one = QualifiedIdentifier.valueOf("test.one:project:0.0.1");
+		QualifiedIdentifier one = QualifiedIdentifier.valueOfProject("test.one:project:0.0.1");
 		Assert.assertEquals("test.one:project:0.0.1", one.toString());
 
-		QualifiedIdentifier two = QualifiedIdentifier.valueOf("project:0.0.1");
+		QualifiedIdentifier two = QualifiedIdentifier.valueOfProject("project:0.0.1");
 		Assert.assertEquals("project:0.0.1", two.toString());
-		Assert.assertNull(two.getComponent());
-	}
+		Assert.assertTrue(two instanceof ProjectIdentifier);
 
-	@Test(expected = RhenaParserException.class)
-	public void testInvalidQualifiedIdentifier() throws RhenaParserException {
-		
-		QualifiedIdentifier one = QualifiedIdentifier.valueOf("project");
-		Assert.assertEquals("project", one.toString());
+		QualifiedIdentifier three = QualifiedIdentifier.valueOfComponent("someComponentName");
+		Assert.assertEquals("someComponentName", three.toString());
+		Assert.assertTrue(three instanceof ComponentIdentifier);
 	}
 }

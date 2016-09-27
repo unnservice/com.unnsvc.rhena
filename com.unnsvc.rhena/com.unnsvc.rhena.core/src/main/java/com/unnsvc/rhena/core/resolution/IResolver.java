@@ -1,10 +1,16 @@
 package com.unnsvc.rhena.core.resolution;
 
-import com.unnsvc.rhena.core.exceptions.ResolverException;
-import com.unnsvc.rhena.core.model.RhenaProject;
+import java.net.URI;
+
+import com.unnsvc.rhena.core.exceptions.RhenaException;
+import com.unnsvc.rhena.core.identifier.ComponentIdentifier;
+import com.unnsvc.rhena.core.identifier.ProjectIdentifier;
 
 public interface IResolver {
+	
+	public ResolutionResult resolveComponent(ResolutionContext context, ComponentIdentifier componentIdentifier) throws RhenaException;
 
-	public RhenaProject resolveProject(String componentName, String projectName) throws ResolverException;
+	public ResolutionResult resolveProject(ResolutionContext context, ProjectIdentifier projectIdentifier) throws RhenaException;
 
+	public URI getLocation();
 }
