@@ -7,6 +7,11 @@ public class RhenaException extends Exception {
 		super(message);
 	}
 
+	public RhenaException(Throwable t) {
+		
+		super(t);
+	}
+
 	private static final long serialVersionUID = 1L;
 
 	
