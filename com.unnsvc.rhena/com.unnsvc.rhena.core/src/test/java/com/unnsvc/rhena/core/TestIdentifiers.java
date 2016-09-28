@@ -49,15 +49,10 @@ public class TestIdentifiers {
 	@Test
 	public void testQualifiedIdentifier() throws RhenaException {
 
-		QualifiedIdentifier one = QualifiedIdentifier.valueOfProject("test.one:project:0.0.1");
+		QualifiedIdentifier one = new ProjectIdentifier("test.one:project:0.0.1");
 		Assert.assertEquals("test.one:project:0.0.1", one.toString());
 
-		QualifiedIdentifier two = QualifiedIdentifier.valueOfProject("project:0.0.1");
-		Assert.assertEquals("project:0.0.1", two.toString());
-		Assert.assertTrue(two instanceof ProjectIdentifier);
-
-		QualifiedIdentifier three = QualifiedIdentifier.valueOfComponent("someComponentName");
-		Assert.assertEquals("someComponentName", three.toString());
-		Assert.assertTrue(three instanceof ComponentIdentifier);
+		QualifiedIdentifier three = new ComponentIdentifier("component:0.0.1");
+		Assert.assertEquals("component:0.0.1", three.toString());
 	}
 }

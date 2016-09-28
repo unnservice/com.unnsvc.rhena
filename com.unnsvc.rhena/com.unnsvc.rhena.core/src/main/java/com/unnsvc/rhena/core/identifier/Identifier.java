@@ -12,6 +12,11 @@ public class Identifier {
 
 	private String identifier;
 
+	public static boolean matches(String str) {
+		
+		return IDENTIFIER_PATTERN.matcher(str).matches();
+	}
+	
 	private Identifier(String identifier) {
 
 		this.identifier = identifier;

@@ -2,6 +2,7 @@ package com.unnsvc.rhena.core;
 
 import org.junit.Test;
 
+import com.unnsvc.rhena.core.identifier.ProjectIdentifier;
 import com.unnsvc.rhena.core.model.RhenaProject;
 import com.unnsvc.rhena.core.resolution.MavenResolver;
 import com.unnsvc.rhena.core.resolution.RepositoryManager;
@@ -20,6 +21,6 @@ public class TestModelGeneration {
 		RepositoryManager manager = new RepositoryManager(workspaceResolver, remoteResolver, mavenResolver);
 		ResolutionEngine engine = new ResolutionEngine(manager);
 
-		RhenaProject project = engine.generateModel("component1", "project1", "0.0.0");
+		RhenaProject project = engine.generateModel(new ProjectIdentifier("component1:project1:0.0.0"));
 	}
 }

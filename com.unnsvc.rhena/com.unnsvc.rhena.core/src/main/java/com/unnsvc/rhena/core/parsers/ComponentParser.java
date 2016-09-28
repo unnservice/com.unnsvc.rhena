@@ -12,7 +12,6 @@ import org.w3c.dom.NodeList;
 import com.unnsvc.rhena.core.Constants;
 import com.unnsvc.rhena.core.exceptions.RhenaException;
 import com.unnsvc.rhena.core.exceptions.RhenaParserException;
-import com.unnsvc.rhena.core.identifier.ProjectIdentifier;
 import com.unnsvc.rhena.core.identifier.QualifiedIdentifier;
 import com.unnsvc.rhena.core.identifier.Version;
 import com.unnsvc.rhena.core.model.ComponentImportEdge;
@@ -27,8 +26,7 @@ public class ComponentParser {
 	private ResolutionEngine engine;
 	private RhenaComponentDescriptor componentDescriptor;
 
-	public ComponentParser(ResolutionEngine engine, Document componentDescriptorDocument, String componentName)
-			throws RhenaException {
+	public ComponentParser(ResolutionEngine engine, Document componentDescriptorDocument, String componentName) throws RhenaException {
 
 		this.engine = engine;
 		this.componentDescriptor = new RhenaComponentDescriptor(componentName);

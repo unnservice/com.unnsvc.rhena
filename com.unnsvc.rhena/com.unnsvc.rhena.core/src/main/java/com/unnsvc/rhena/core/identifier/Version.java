@@ -21,6 +21,11 @@ public class Version implements Comparable<Version> {
 	public static final String VERSION = "^(?<major>\\d+)(\\.(?<minor>\\d+)(\\.(?<micro>\\d+)(-(?<snapshot>SNAPSHOT))?)?)?$";
 	public static final Pattern VERSION_PATTERN = Pattern.compile(VERSION);
 
+	public static boolean matches(String str) {
+		
+		return VERSION_PATTERN.matcher(str).matches();
+	}
+	
 	private Version(int major, int minor, int micro, boolean snapshot) {
 
 		this.major = major;
