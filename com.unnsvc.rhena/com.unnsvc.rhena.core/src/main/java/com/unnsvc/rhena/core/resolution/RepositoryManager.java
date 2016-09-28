@@ -1,3 +1,4 @@
+
 package com.unnsvc.rhena.core.resolution;
 
 import java.util.ArrayList;
@@ -18,10 +19,10 @@ import com.unnsvc.rhena.core.model.RhenaNodeEdge;
 public class RepositoryManager {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private IResolver[] resolvers;
+	private RhenaResolver[] resolvers;
 	private Map<RhenaNodeEdge, ResolutionResult> cachedEdges = new HashMap<RhenaNodeEdge, ResolutionResult>();
 
-	public RepositoryManager(IResolver... resolvers) {
+	public RepositoryManager(RhenaResolver... resolvers) {
 
 		this.resolvers = resolvers;
 	}
@@ -30,7 +31,7 @@ public class RepositoryManager {
 
 		log.info("Resolving: " + rhenNodeEdge);
 
-		for (IResolver resolver : filterResolvers(rhenNodeEdge.getResolverName())) {
+		for (RhenaResolver resolver : filterResolvers(rhenNodeEdge.getResolverName())) {
 
 			ResolutionResult result = null;
 			if (rhenNodeEdge instanceof ComponentImportEdge) {
@@ -60,14 +61,13 @@ public class RepositoryManager {
 			}
 
 			switch (result.getStatus()) {
-			case SUCCESS:
+				case SUCCESS:
 
-				return result;
-			case FAILURE:
+					return result;
+				case FAILURE:
 
-				log.debug(
-						"Failed to resolve: " + rhenNodeEdge.toString() + " in repository: " + resolver.getLocation());
-				break;
+					log.debug("Failed to resolve: " + rhenNodeEdge.toString() + " in repository: " + resolver.getLocation());
+					break;
 			}
 		}
 
@@ -80,10 +80,10 @@ public class RepositoryManager {
 	 * @return
 	 * @throws ResolverException
 	 */
-	private List<IResolver> filterResolvers(String resolverName) throws ResolverException {
+	private List<RhenaResolver> filterResolvers(String resolverName) throws ResolverException {
 
-		List<IResolver> filteredResolvers = new ArrayList<IResolver>();
-		for (IResolver resolver : this.resolvers) {
+		List<RhenaResolver> filteredResolvers = new ArrayList<RhenaResolver>();
+		for (RhenaResolver resolver : this.resolvers) {
 
 			if (resolverName.equals(Constants.DEFAULT_RESOLVER)) {
 

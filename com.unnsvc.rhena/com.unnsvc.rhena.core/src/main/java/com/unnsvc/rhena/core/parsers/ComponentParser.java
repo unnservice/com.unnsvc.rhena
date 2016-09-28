@@ -43,8 +43,7 @@ public class ComponentParser {
 
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 
-				log.debug("Parsing node: " + node + " localName: " + node.getPrefix() + ":" + node.getLocalName() + " "
-						+ node.getNamespaceURI());
+				log.debug("Parsing node: " + node + " localName: " + node.getPrefix() + ":" + node.getLocalName() + " " + node.getNamespaceURI());
 
 				String nodeName = node.getLocalName();
 
@@ -56,8 +55,7 @@ public class ComponentParser {
 					} else if (nodeName.equals("projects")) {
 
 						NodeList projectNodes = node.getChildNodes();
-						for (int projectNodeIndex = 0; projectNodeIndex < projectNodes
-								.getLength(); projectNodeIndex++) {
+						for (int projectNodeIndex = 0; projectNodeIndex < projectNodes.getLength(); projectNodeIndex++) {
 
 							Node projectNode = projectNodes.item(projectNodeIndex);
 							if (projectNode.getNodeType() == Node.ELEMENT_NODE) {

@@ -29,11 +29,11 @@ public class ResolutionEngine {
 		this.nodeEdges.add(nodeEdge);
 	}
 
-	public RhenaProject resolveModel(String componentName, String projectName, String version) throws RhenaException {
+	public RhenaProject generateModel(String componentName, String projectName, String version) throws RhenaException {
 
 		try {
 			
-			ResolutionResult result = manager.resolveModel(this, new ProjectDependencyEdge(componentName, Constants.SCOPE_ITEST, projectName, version));
+			ResolutionResult result = manager.resolveModel(this, new ProjectDependencyEdge(componentName, Constants.SCOPE_DEFAULT, projectName, version));
 			
 			while(!nodeEdges.isEmpty()) {
 				

@@ -7,7 +7,7 @@ import com.unnsvc.rhena.core.exceptions.RhenaException;
 import com.unnsvc.rhena.core.model.ComponentImportEdge;
 import com.unnsvc.rhena.core.model.ProjectDependencyEdge;
 
-public class MavenResolver implements IResolver {
+public class MavenResolver implements RhenaResolver {
 
 	@Override
 	public ResolutionResult resolveComponent(ResolutionEngine engine, ComponentImportEdge componentImportEdge) throws RhenaException {

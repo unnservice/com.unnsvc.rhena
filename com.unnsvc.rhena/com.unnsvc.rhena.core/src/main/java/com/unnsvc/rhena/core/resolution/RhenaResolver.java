@@ -6,7 +6,7 @@ import com.unnsvc.rhena.core.exceptions.RhenaException;
 import com.unnsvc.rhena.core.model.ComponentImportEdge;
 import com.unnsvc.rhena.core.model.ProjectDependencyEdge;
 
-public interface IResolver {
+public interface RhenaResolver {
 	
 	public ResolutionResult resolveComponent(ResolutionEngine engine, ComponentImportEdge componentImportEdge) throws RhenaException;
 

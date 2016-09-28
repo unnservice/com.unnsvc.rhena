@@ -21,17 +21,17 @@ import com.unnsvc.rhena.core.model.RhenaComponentDescriptor;
 import com.unnsvc.rhena.core.model.RhenaProject;
 import com.unnsvc.rhena.core.parsers.ComponentParser;
 
-public class WorkspaceRepositoryResolver implements IResolver {
+public class WorkspaceResolver implements RhenaResolver {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private File location;
 
-	public WorkspaceRepositoryResolver(File location) {
+	public WorkspaceResolver(File location) {
 
 		this.location = location.getAbsoluteFile();
 	}
 
-	public WorkspaceRepositoryResolver(String location) {
+	public WorkspaceResolver(String location) {
 
 		this(new File(location));
 	}
@@ -70,14 +70,12 @@ public class WorkspaceRepositoryResolver implements IResolver {
 	 * @param context
 	 * @param componentIdentifier
 	 * @return Null if component does not exist in repository
-	 * @throws ResolverException
-	 *             on any error
+	 * @throws ResolverException on any error
 	 * @throws IOException
 	 * @throws SAXException
 	 * @throws ParserConfigurationException
 	 */
-	private RhenaComponentDescriptor resolveComponentDescriptor(ResolutionEngine engine, File componentDescriptorLocation, String componentName)
-			throws ResolverException {
+	private RhenaComponentDescriptor resolveComponentDescriptor(ResolutionEngine engine, File componentDescriptorLocation, String componentName) throws ResolverException {
 
 		try {
 
