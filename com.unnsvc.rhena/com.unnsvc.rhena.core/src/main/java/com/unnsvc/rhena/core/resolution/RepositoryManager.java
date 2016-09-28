@@ -19,8 +19,7 @@ public class RepositoryManager {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private IResolver[] resolvers;
-	private Map<ComponentImportEdge, ResolutionResult> componentImportEdgeCache = new HashMap<ComponentImportEdge, ResolutionResult>();
-	private Map<ProjectDependencyEdge, ResolutionResult> projectDependencyEdgeCache = new HashMap<ProjectDependencyEdge, ResolutionResult>();
+	private Map<RhenaNodeEdge, ResolutionResult> cachedEdges = new HashMap<RhenaNodeEdge, ResolutionResult>();
 
 	public RepositoryManager(IResolver... resolvers) {
 
@@ -37,26 +36,26 @@ public class RepositoryManager {
 			if (rhenNodeEdge instanceof ComponentImportEdge) {
 
 				ComponentImportEdge importEdge = (ComponentImportEdge) rhenNodeEdge;
-				if (componentImportEdgeCache.containsKey(importEdge)) {
+				if (cachedEdges.containsKey(importEdge)) {
 
-					log.debug("Using cached result: " + importEdge);
-					result = componentImportEdgeCache.get(importEdge);
+					log.debug("Using cached component: " + importEdge);
+					result = cachedEdges.get(importEdge);
 				} else {
 
 					result = resolver.resolveComponent(engine, importEdge);
-					componentImportEdgeCache.put(importEdge, result);
+					cachedEdges.put(importEdge, result);
 				}
 			} else if (rhenNodeEdge instanceof ProjectDependencyEdge) {
 
 				ProjectDependencyEdge projectDepEdge = (ProjectDependencyEdge) rhenNodeEdge;
-				if (projectDependencyEdgeCache.containsKey(projectDepEdge)) {
+				if (cachedEdges.containsKey(projectDepEdge)) {
 
-					log.debug("Using cached result: " + projectDepEdge);
-					result = projectDependencyEdgeCache.get(projectDepEdge);
+					log.debug("Using cached dependency: " + projectDepEdge);
+					result = cachedEdges.get(projectDepEdge);
 				} else {
 
 					result = resolver.resolveProject(engine, projectDepEdge);
-					projectDependencyEdgeCache.put(projectDepEdge, result);
+					cachedEdges.put(projectDepEdge, result);
 				}
 			}
 
