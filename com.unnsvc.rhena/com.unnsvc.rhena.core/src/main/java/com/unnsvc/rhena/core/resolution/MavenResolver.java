@@ -1,3 +1,4 @@
+
 package com.unnsvc.rhena.core.resolution;
 
 import java.net.URI;
@@ -9,15 +10,13 @@ import com.unnsvc.rhena.core.model.ProjectDependencyEdge;
 public class MavenResolver implements IResolver {
 
 	@Override
-	public ResolutionResult resolveComponent(ResolutionEngine engine, ComponentImportEdge componentImportEdge)
-			throws RhenaException {
+	public ResolutionResult resolveComponent(ResolutionEngine engine, ComponentImportEdge componentImportEdge) throws RhenaException {
 
 		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	@Override
-	public ResolutionResult resolveProject(ResolutionEngine engine, ProjectDependencyEdge projectDependencyEdge)
-			throws RhenaException {
+	public ResolutionResult resolveProject(ResolutionEngine engine, ProjectDependencyEdge projectDependencyEdge) throws RhenaException {
 
 		throw new UnsupportedOperationException("Not implemented");
 	}
@@ -36,6 +35,7 @@ public class MavenResolver implements IResolver {
 
 	@Override
 	public String toString() {
+
 		return "MavenResolver [getName()=" + getName() + ", getLocation()=" + getLocation() + "]";
 	}
 

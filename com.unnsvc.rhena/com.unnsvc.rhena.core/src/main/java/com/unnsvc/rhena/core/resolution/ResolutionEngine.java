@@ -16,11 +16,12 @@ public class ResolutionEngine {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private RepositoryManager manager;
-	private Stack<RhenaNodeEdge> nodeEdges = new Stack<RhenaNodeEdge>();
+	private Stack<RhenaNodeEdge> nodeEdges;
 
 	public ResolutionEngine(RepositoryManager manager) {
 
 		this.manager = manager;
+		this.nodeEdges = new Stack<RhenaNodeEdge>();
 	}
 
 	public void addResolutionRequest(RhenaNodeEdge nodeEdge) {

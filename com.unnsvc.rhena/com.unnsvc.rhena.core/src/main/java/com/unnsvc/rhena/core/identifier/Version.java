@@ -1,3 +1,4 @@
+
 package com.unnsvc.rhena.core.identifier;
 
 import java.util.regex.Matcher;
@@ -8,14 +9,14 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.core.exceptions.RhenaParserException;
 
-public class Version {
+public class Version implements Comparable<Version> {
 
 	private static Logger log = LoggerFactory.getLogger(Version.class);
 
 	private int major;
 	private int minor;
 	private int micro;
-	private boolean snapshot;
+	private boolean snapshot = false;
 
 	public static final String VERSION = "^(?<major>\\d+)(\\.(?<minor>\\d+)(\\.(?<micro>\\d+)(-(?<snapshot>SNAPSHOT))?)?)?$";
 	public static final Pattern VERSION_PATTERN = Pattern.compile(VERSION);
@@ -26,6 +27,16 @@ public class Version {
 		this.minor = minor;
 		this.micro = micro;
 		this.snapshot = snapshot;
+		if(major == 0 && minor <= 0 && micro <= 0 && snapshot) {
+			throw new IllegalArgumentException("Zero version with snapshot not allowed");
+		}
+	}
+	
+	public Version() {
+		
+		this.major = 0;
+		this.minor = 0;
+		this.micro = 0;
 	}
 
 	/**
@@ -35,7 +46,7 @@ public class Version {
 	 */
 	public boolean isEmpty() {
 
-		return major == 0 && minor <= 0 && micro <= 0;
+		return major == 0 && minor <= 0 && micro <= 0 && !snapshot;
 	}
 
 	@Override
@@ -70,6 +81,7 @@ public class Version {
 
 	@Override
 	public int hashCode() {
+
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + major;
@@ -81,6 +93,7 @@ public class Version {
 
 	@Override
 	public boolean equals(Object obj) {
+
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -99,14 +112,40 @@ public class Version {
 		return true;
 	}
 
-	public boolean matches(Version other) {
+	@Override
+	public int compareTo(Version other) {
 
-		if (isEmpty()) {
-			return true;
-		} else if (this.equals(other)) {
-			return true;
+		if(this.isEmpty() || other.isEmpty()) {
+			return 0;
+		}
+		
+		if (this.major > other.major) {
+			return 1;
+		} else if (this.major < other.major) {
+			return -1;
 		} else {
-			return false;
+
+			if (this.minor > other.minor) {
+				return 1;
+			} else if (this.minor < other.minor) {
+				return -1;
+			} else {
+
+				if (this.micro > other.micro) {
+					return 1;
+				} else if (this.micro < other.micro) {
+					return -1;
+				} else {
+
+					if (this.snapshot && !other.snapshot) {
+						return 1;
+					} else if (!this.snapshot && other.snapshot) {
+						return -1;
+					} else {
+						return 0;
+					}
+				}
+			}
 		}
 	}
 }

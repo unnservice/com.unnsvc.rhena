@@ -71,8 +71,7 @@ public class RepositoryManager {
 			}
 		}
 
-		throw new ResolverException("Failed to resolve: " + rhenNodeEdge.toString() + " in resolvers: "
-				+ filterResolvers(rhenNodeEdge.getResolverName()));
+		throw new ResolverException("Failed to resolve: " + rhenNodeEdge.toString() + " in resolvers: " + filterResolvers(rhenNodeEdge.getResolverName()));
 	}
 
 	/**
