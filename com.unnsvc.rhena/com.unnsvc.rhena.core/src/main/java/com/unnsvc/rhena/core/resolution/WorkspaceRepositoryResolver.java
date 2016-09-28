@@ -14,8 +14,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import com.unnsvc.rhena.core.exceptions.ResolverException;
-import com.unnsvc.rhena.core.identifier.ComponentIdentifier;
-import com.unnsvc.rhena.core.identifier.ProjectIdentifier;
+import com.unnsvc.rhena.core.model.ComponentImportEdge;
+import com.unnsvc.rhena.core.model.ProjectDependencyEdge;
 import com.unnsvc.rhena.core.model.RhenaComponentDescriptor;
 import com.unnsvc.rhena.core.model.RhenaProject;
 import com.unnsvc.rhena.core.parsers.ComponentParser;
@@ -29,21 +29,23 @@ public class WorkspaceRepositoryResolver implements IResolver {
 
 		this.location = location.getAbsoluteFile();
 	}
-	
+
 	public WorkspaceRepositoryResolver(String location) {
-		
+
 		this(new File(location));
 	}
 
 	@Override
-	public ResolutionResult resolveProject(ResolutionContext context, ProjectIdentifier projectIdentifier) throws ResolverException {
+	public ResolutionResult resolveProject(ResolutionEngine engine, ProjectDependencyEdge projectDependencyEdge)
+			throws ResolverException {
 
-		File componentLocation = new File(location, projectIdentifier.getComponent().toString());
+		File componentLocation = new File(location, projectDependencyEdge.getComponentName());
 		File componentDescriptorLocation = new File(componentLocation, "component.xml");
 		if (componentDescriptorLocation.exists() && componentDescriptorLocation.isFile()) {
-			RhenaComponentDescriptor componentDescriptor = resolveComponentDescriptor(context, componentDescriptorLocation, projectIdentifier.getComponent().toString());
-			RhenaProject project = componentDescriptor.getProject(projectIdentifier.getProject().toString());
-			if (project == null || project.getVersion().matches(projectIdentifier.getVersion())) {
+			RhenaComponentDescriptor componentDescriptor = resolveComponentDescriptor(engine,
+					componentDescriptorLocation, projectDependencyEdge.getComponentName());
+			RhenaProject project = componentDescriptor.getProject(projectDependencyEdge.getProjectName());
+			if (project == null || project.getVersion().matches(projectDependencyEdge.getVersion())) {
 				return new ResolutionFailure("Component exists in repository but not project in component");
 			}
 			return new ProjectResolutionResult(project);
@@ -53,12 +55,14 @@ public class WorkspaceRepositoryResolver implements IResolver {
 	}
 
 	@Override
-	public ResolutionResult resolveComponent(ResolutionContext context, ComponentIdentifier componentIdentifier) throws ResolverException {
+	public ResolutionResult resolveComponent(ResolutionEngine engine, ComponentImportEdge componentImportEdge)
+			throws ResolverException {
 
-		File componentLocation = new File(location, componentIdentifier.toString());
+		File componentLocation = new File(location, componentImportEdge.getComponentName());
 		File componentDescriptorLocation = new File(componentLocation, "component.xml");
 		if (componentDescriptorLocation.exists() && componentDescriptorLocation.isFile()) {
-			RhenaComponentDescriptor componentDescriptor = resolveComponentDescriptor(context, componentDescriptorLocation, componentIdentifier.toString());
+			RhenaComponentDescriptor componentDescriptor = resolveComponentDescriptor(engine,
+					componentDescriptorLocation, componentImportEdge.getComponentName());
 			return new ComponentResolutionResult(componentDescriptor);
 		} else {
 			return new ResolutionFailure("Does not exist in repository");
@@ -75,7 +79,8 @@ public class WorkspaceRepositoryResolver implements IResolver {
 	 * @throws SAXException
 	 * @throws ParserConfigurationException
 	 */
-	private RhenaComponentDescriptor resolveComponentDescriptor(ResolutionContext context, File componentDescriptorLocation, String componentName) throws ResolverException {
+	private RhenaComponentDescriptor resolveComponentDescriptor(ResolutionEngine engine,
+			File componentDescriptorLocation, String componentName) throws ResolverException {
 
 		try {
 
@@ -83,10 +88,10 @@ public class WorkspaceRepositoryResolver implements IResolver {
 			fact.setNamespaceAware(true);
 			DocumentBuilder builder = fact.newDocumentBuilder();
 			Document document = builder.parse(componentDescriptorLocation);
-			
-			ComponentParser parser = new ComponentParser(context, document, componentName);
+
+			ComponentParser parser = new ComponentParser(engine, document, componentName);
 			RhenaComponentDescriptor componentDescriptor = parser.getComponentDescriptor();
-			
+
 			return componentDescriptor;
 		} catch (Exception ex) {
 			log.debug(ex.getMessage(), ex);
@@ -100,4 +105,14 @@ public class WorkspaceRepositoryResolver implements IResolver {
 		return location.toURI();
 	}
 
+	@Override
+	public String getName() {
+
+		return "workspace";
+	}
+
+	@Override
+	public String toString() {
+		return "WorkspaceRepositoryResolver [getName()=" + getName() + ", location=" + location + "]";
+	}
 }

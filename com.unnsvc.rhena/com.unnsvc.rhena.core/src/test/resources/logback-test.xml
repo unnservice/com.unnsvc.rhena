@@ -6,6 +6,7 @@
 		</encoder>
 	</appender>
 
+	<logger name="com.unnsvc.rhena.core.parsers" level="INFO" />
 	<logger name="com.unnsvc.rhena" level="DEBUG" />
 
 	<root level="DEBUG">

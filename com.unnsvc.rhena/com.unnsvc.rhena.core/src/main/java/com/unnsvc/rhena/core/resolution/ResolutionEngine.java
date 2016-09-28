@@ -5,10 +5,10 @@ import java.util.Stack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.unnsvc.rhena.core.Constants;
 import com.unnsvc.rhena.core.exceptions.ResolverException;
 import com.unnsvc.rhena.core.exceptions.RhenaException;
-import com.unnsvc.rhena.core.identifier.ProjectIdentifier;
-import com.unnsvc.rhena.core.identifier.QualifiedIdentifier;
+import com.unnsvc.rhena.core.model.ProjectDependencyEdge;
 import com.unnsvc.rhena.core.model.RhenaNodeEdge;
 import com.unnsvc.rhena.core.model.RhenaProject;
 
@@ -28,11 +28,17 @@ public class ResolutionEngine {
 		this.nodeEdges.add(nodeEdge);
 	}
 
-	public RhenaProject resolveModel(ResolutionContext context, ProjectIdentifier projectIdentifier) throws RhenaException {
+	public RhenaProject resolveModel(String componentName, String projectName, String version) throws RhenaException {
 
 		try {
 			
-			ResolutionResult result = manager.resolveModel(context, projectIdentifier);
+			ResolutionResult result = manager.resolveModel(this, new ProjectDependencyEdge(componentName, Constants.SCOPE_ITEST, projectName, version));
+			
+			while(!nodeEdges.isEmpty()) {
+				
+				manager.resolveModel(this, nodeEdges.pop());
+			}
+			
 			return ((ProjectResolutionResult) result).getProject();
 		} catch (ResolverException re) {
 			

@@ -33,6 +33,12 @@ public class TestIdentifiers {
 
 		Version two = Version.valueOf("0.0.1-SNAPSHOT");
 		Assert.assertEquals("0.0.1-SNAPSHOT", two.toString());
+		
+		Version three = Version.valueOf("0.1");
+		Assert.assertEquals("0.1", three.toString());
+		
+		Assert.assertTrue(Version.valueOf("0.0.0").matches(Version.valueOf("0.0.1")));
+		Assert.assertTrue(Version.valueOf("0.0.0").matches(Version.valueOf("0.0.1-SNAPSHOT")));
 	}
 
 	@Test

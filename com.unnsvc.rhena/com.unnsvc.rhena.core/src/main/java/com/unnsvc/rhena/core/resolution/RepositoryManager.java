@@ -1,37 +1,63 @@
 package com.unnsvc.rhena.core.resolution;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.unnsvc.rhena.core.Constants;
 import com.unnsvc.rhena.core.exceptions.ResolverException;
 import com.unnsvc.rhena.core.exceptions.RhenaException;
-import com.unnsvc.rhena.core.identifier.ComponentIdentifier;
-import com.unnsvc.rhena.core.identifier.ProjectIdentifier;
-import com.unnsvc.rhena.core.identifier.QualifiedIdentifier;
+import com.unnsvc.rhena.core.model.ComponentImportEdge;
+import com.unnsvc.rhena.core.model.ProjectDependencyEdge;
+import com.unnsvc.rhena.core.model.RhenaNodeEdge;
 
 public class RepositoryManager {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private IResolver[] resolvers;
+	private Map<ComponentImportEdge, ResolutionResult> componentImportEdgeCache = new HashMap<ComponentImportEdge, ResolutionResult>();
+	private Map<ProjectDependencyEdge, ResolutionResult> projectDependencyEdgeCache = new HashMap<ProjectDependencyEdge, ResolutionResult>();
 
 	public RepositoryManager(IResolver... resolvers) {
 
 		this.resolvers = resolvers;
 	}
 
-	public ResolutionResult resolveModel(ResolutionContext context, QualifiedIdentifier qualifiedIdentifier) throws RhenaException {
+	public ResolutionResult resolveModel(ResolutionEngine engine, RhenaNodeEdge rhenNodeEdge) throws RhenaException {
 
-		log.info("Resolving: " + qualifiedIdentifier);
+		log.info("Resolving: " + rhenNodeEdge);
 
-		for (IResolver resolver : resolvers) {
+		for (IResolver resolver : filterResolvers(rhenNodeEdge.getResolverName())) {
 
 			ResolutionResult result = null;
-			if (qualifiedIdentifier instanceof ComponentIdentifier) {
+			if (rhenNodeEdge instanceof ComponentImportEdge) {
 
-				result = resolver.resolveComponent(context, (ComponentIdentifier) qualifiedIdentifier);
-			} else if (qualifiedIdentifier instanceof ProjectIdentifier) {
+				ComponentImportEdge importEdge = (ComponentImportEdge) rhenNodeEdge;
+				if (componentImportEdgeCache.containsKey(importEdge)) {
 
-				result = resolver.resolveProject(context, (ProjectIdentifier) qualifiedIdentifier);
+					log.debug("Using cached result: " + importEdge);
+					result = componentImportEdgeCache.get(importEdge);
+				} else {
+
+					result = resolver.resolveComponent(engine, importEdge);
+					componentImportEdgeCache.put(importEdge, result);
+				}
+			} else if (rhenNodeEdge instanceof ProjectDependencyEdge) {
+
+				ProjectDependencyEdge projectDepEdge = (ProjectDependencyEdge) rhenNodeEdge;
+				if (projectDependencyEdgeCache.containsKey(projectDepEdge)) {
+
+					log.debug("Using cached result: " + projectDepEdge);
+					result = projectDependencyEdgeCache.get(projectDepEdge);
+				} else {
+
+					result = resolver.resolveProject(engine, projectDepEdge);
+					projectDependencyEdgeCache.put(projectDepEdge, result);
+				}
 			}
 
 			switch (result.getStatus()) {
@@ -40,11 +66,43 @@ public class RepositoryManager {
 				return result;
 			case FAILURE:
 
-				log.debug("Failed to resolve: " + qualifiedIdentifier.toString() + " in repository: " + resolver.getLocation());
+				log.debug(
+						"Failed to resolve: " + rhenNodeEdge.toString() + " in repository: " + resolver.getLocation());
 				break;
 			}
 		}
 
-		throw new ResolverException("Failed to resolve: " + qualifiedIdentifier.toString());
+		throw new ResolverException("Failed to resolve: " + rhenNodeEdge.toString() + " in resolvers: "
+				+ filterResolvers(rhenNodeEdge.getResolverName()));
+	}
+
+	/**
+	 * @TODO Does not honor resolver precedence for now
+	 * @param resolverName
+	 * @return
+	 * @throws ResolverException
+	 */
+	private List<IResolver> filterResolvers(String resolverName) throws ResolverException {
+
+		List<IResolver> filteredResolvers = new ArrayList<IResolver>();
+		for (IResolver resolver : this.resolvers) {
+
+			if (resolverName.equals(Constants.DEFAULT_RESOLVER)) {
+
+				if (resolver.getName().equals("workspace") || resolver.getName().equals("repository")) {
+					filteredResolvers.add(resolver);
+				}
+			} else if (resolver.getName().equals(resolverName)) {
+
+				filteredResolvers.add(resolver);
+			}
+		}
+
+		if (filteredResolvers.isEmpty()) {
+
+			throw new ResolverException("Unknown resolver: " + resolverName);
+		}
+
+		return filteredResolvers;
 	}
 }

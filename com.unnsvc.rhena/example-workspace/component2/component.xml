@@ -1,3 +1,9 @@
-<component>
-	
+<component xmlns="urn:rhena:component" xmlns:dependency="urn:rhena:dependency">
+
+	<version>0.0.1</version>
+
+	<projects>
+		<library name="project1" />
+	</projects>
+
 </component>

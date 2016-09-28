@@ -35,13 +35,13 @@ public class Version {
 	 */
 	public boolean isEmpty() {
 
-		return major == 0 && minor == 0 && micro == 0;
+		return major == 0 && minor <= 0 && micro <= 0;
 	}
 
 	@Override
 	public String toString() {
 
-		return major + "." + minor + "." + micro + (snapshot == true ? "-SNAPSHOT" : "");
+		return major + (minor == -1 ? "" : "." + minor) + (micro == -1 ? "" : "." + micro) + (snapshot == true ? "-SNAPSHOT" : "");
 	}
 
 	public static Version valueOf(String versionString) throws RhenaParserException {
@@ -53,8 +53,8 @@ public class Version {
 			try {
 
 				int major = Integer.valueOf(m.group("major"));
-				int minor = Integer.valueOf(m.group("minor"));
-				int micro = Integer.valueOf(m.group("micro"));
+				int minor = m.group("minor") == null ? -1 : Integer.valueOf(m.group("minor"));
+				int micro = m.group("micro") == null ? -1 : Integer.valueOf(m.group("micro"));
 				boolean snapshot = m.group("snapshot") == null ? false : true;
 
 				return new Version(major, minor, micro, snapshot);
