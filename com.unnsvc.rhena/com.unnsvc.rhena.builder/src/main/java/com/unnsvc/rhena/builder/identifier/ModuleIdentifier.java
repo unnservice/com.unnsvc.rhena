@@ -46,7 +46,7 @@ public class ModuleIdentifier {
 		return componentName.toString() + ":" + moduleName.toString() + ":" + version.toString();
 	}
 
-	public String toFilename() {
+	public String toModuleDirectoryName() {
 
 		return componentName.toString() + "." + moduleName.toString();
 	}

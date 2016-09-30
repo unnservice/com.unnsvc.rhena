@@ -25,7 +25,7 @@ public class ResolutionEngine {
 
 			try {
 
-				RhenaModule module = repository.resolveModule(context, moduleIdentifier);
+				RhenaModule module = repository.resolveModule(moduleIdentifier);
 				return module;
 			} catch (RhenaException repositoryException) {
 				log.debug(repositoryException.getMessage(), repositoryException);

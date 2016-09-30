@@ -22,7 +22,7 @@ public class RemoteRepository implements IRepository {
 	}
 
 	@Override
-	public RhenaModule resolveModule(RhenaContext context, ModuleIdentifier moduleIdentifier) throws RhenaException {
+	public RhenaModule resolveModule(ModuleIdentifier moduleIdentifier) throws RhenaException {
 
 		throw new UnsupportedOperationException("Not implemented");
 	}

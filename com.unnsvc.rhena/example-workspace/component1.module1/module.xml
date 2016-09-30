@@ -8,6 +8,5 @@
 	<prop:anotherprop>anothervalue</prop:anotherprop>
 
 	<dependency:test module="component2:module1:0.0.1" />
-	<dependency:framework />
 
 </module>

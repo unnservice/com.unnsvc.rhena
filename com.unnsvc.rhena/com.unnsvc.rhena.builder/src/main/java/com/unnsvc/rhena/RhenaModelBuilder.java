@@ -19,8 +19,13 @@ public class RhenaModelBuilder {
 
 	public RhenaModule buildModel(RhenaContext context, ModuleIdentifier moduleIdentifier) throws RhenaException {
 
+		logger.info("Building model for: " + moduleIdentifier.toString());
+		
 		RhenaModule module = context.getResolution().resolveModule(context, moduleIdentifier);
-		context.getResolvedIdentifiers().put(moduleIdentifier, module);
+		if(module.getParentModule() != null) {
+			context.getUnresolvedIdentifiers().push(module.getParentModule());
+		}
+		context.getUnresolvedIdentifiers().push(moduleIdentifier);
 
 		while (!context.getUnresolvedIdentifiers().isEmpty()) {
 

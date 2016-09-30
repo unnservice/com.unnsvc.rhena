@@ -3,8 +3,6 @@
 	xsi:schemaLocation="urn:rhena:module ../../../schema/module.xsd">
 
 	<meta component="component2" version="0.0.1" />
-
-	<dependency:framework />
-
+	
 </module>
 

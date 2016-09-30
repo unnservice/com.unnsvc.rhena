@@ -23,9 +23,14 @@ public class RhenaModule {
 		return moduleIdentifier;
 	}
 
-	public void setExtends(ModuleIdentifier parentModule) {
+	public void setParentModule(ModuleIdentifier parentModule) {
 
 		this.parentModule = parentModule;
+	}
+
+	public ModuleIdentifier getParentModule() {
+
+		return parentModule;
 	}
 
 	public void setComponent(ComponentIdentifier componentIdentifier) {

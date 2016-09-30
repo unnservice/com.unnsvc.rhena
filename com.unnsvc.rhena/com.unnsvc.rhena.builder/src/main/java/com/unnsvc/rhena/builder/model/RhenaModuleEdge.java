@@ -5,11 +5,13 @@ import com.unnsvc.rhena.builder.identifier.ModuleIdentifier;
 
 public class RhenaModuleEdge {
 
-	private ModuleIdentifier targetEnd;;
+	private Scope scope;
+	private ModuleIdentifier target;
 
-	public RhenaModuleEdge(ModuleIdentifier targetEnd) {
+	public RhenaModuleEdge(Scope scope, ModuleIdentifier target) {
 
-		this.targetEnd = targetEnd;
+		this.scope = scope;
+		this.target = target;
 	}
 
 }

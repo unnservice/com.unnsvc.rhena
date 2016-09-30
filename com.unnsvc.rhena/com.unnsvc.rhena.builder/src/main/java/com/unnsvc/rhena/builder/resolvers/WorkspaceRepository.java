@@ -24,17 +24,19 @@ public class WorkspaceRepository implements IRepository {
 	}
 
 	@Override
-	public RhenaModule resolveModule(RhenaContext context, ModuleIdentifier moduleIdentifier) throws RhenaException {
+	public RhenaModule resolveModule(ModuleIdentifier moduleIdentifier) throws RhenaException {
 
-		File moduleDirectory = new File(workspacePath, moduleIdentifier.toFilename());
+		File moduleDirectory = new File(workspacePath, moduleIdentifier.toModuleDirectoryName());
 		File moduleDescriptor = new File(moduleDirectory, Constants.MODULE_DESCRIPTOR_FILENAME).getAbsoluteFile();
-		
-		
-
 		
 		RhenaModuleParser moduleParser = new RhenaModuleParser(moduleIdentifier);
 		try {
-			return moduleParser.parse(context, moduleIdentifier.getModuleName().toString(), moduleDescriptor.toURI());
+			RhenaModule module = moduleParser.parse(moduleIdentifier.getModuleName().toString(), moduleDescriptor.toURI());
+			if(module.getModuleIdentifier().getVersion().equals(moduleIdentifier.getVersion())) {
+				return module;
+			} else {
+				throw new RhenaException("Unable to find module descfriptor for: " + moduleIdentifier);
+			}
 		} catch (Exception ex) {
 			throw new RhenaException("Unable to resolve descriptor for: " + moduleIdentifier.toString(), ex);
 		}			
