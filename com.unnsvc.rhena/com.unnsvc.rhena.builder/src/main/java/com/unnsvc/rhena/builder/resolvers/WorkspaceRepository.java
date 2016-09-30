@@ -11,7 +11,7 @@ import com.unnsvc.rhena.RhenaContext;
 import com.unnsvc.rhena.builder.exceptions.RhenaException;
 import com.unnsvc.rhena.builder.identifier.ModuleIdentifier;
 import com.unnsvc.rhena.builder.model.RhenaModule;
-import com.unnsvc.rhena.builder.parsers.RhenaModuleParser;
+import com.unnsvc.rhena.builder.model.RhenaModuleParser;
 
 public class WorkspaceRepository implements IRepository {
 
@@ -26,12 +26,10 @@ public class WorkspaceRepository implements IRepository {
 	@Override
 	public RhenaModule resolveModule(RhenaContext context, ModuleIdentifier moduleIdentifier) throws RhenaException {
 
-		
 		File moduleDirectory = new File(workspacePath, moduleIdentifier.toFilename());
 		File moduleDescriptor = new File(moduleDirectory, Constants.MODULE_DESCRIPTOR_FILENAME).getAbsoluteFile();
 		
 		
-		log.info("Trying to resolve: " + moduleIdentifier.toString() + " " + moduleDescriptor.getAbsolutePath());
 
 		
 		RhenaModuleParser moduleParser = new RhenaModuleParser();

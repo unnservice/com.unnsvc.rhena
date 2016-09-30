@@ -20,11 +20,12 @@ public class ResolutionEngine {
 	}
 
 	public RhenaModule resolveModule(RhenaContext context, ModuleIdentifier moduleIdentifier) throws RhenaException {
-
+		
 		for (IRepository repository : repositories) {
 
 			try {
 				RhenaModule module = repository.resolveModule(context, moduleIdentifier);
+				log.info("Resolved: " + moduleIdentifier.toString() + ":" + moduleIdentifier.toFilename());
 				return module;
 			} catch (RhenaException repositoryException) {
 				log.debug(repositoryException.getMessage(), repositoryException);
