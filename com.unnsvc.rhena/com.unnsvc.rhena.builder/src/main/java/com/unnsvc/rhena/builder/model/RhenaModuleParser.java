@@ -26,9 +26,9 @@ public class RhenaModuleParser {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	private RhenaModule module;
 	
-	public RhenaModuleParser() {
+	public RhenaModuleParser(ModuleIdentifier moduleIdentifier) {
 		
-		module = new RhenaModule();
+		module = new RhenaModule(moduleIdentifier);
 	}
 
 	public RhenaModule parse(RhenaContext context, String moduleName, URI uri) throws Exception {

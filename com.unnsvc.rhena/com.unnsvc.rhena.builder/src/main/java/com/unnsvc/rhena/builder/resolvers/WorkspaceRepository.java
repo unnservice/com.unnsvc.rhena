@@ -32,7 +32,7 @@ public class WorkspaceRepository implements IRepository {
 		
 
 		
-		RhenaModuleParser moduleParser = new RhenaModuleParser();
+		RhenaModuleParser moduleParser = new RhenaModuleParser(moduleIdentifier);
 		try {
 			return moduleParser.parse(context, moduleIdentifier.getModuleName().toString(), moduleDescriptor.toURI());
 		} catch (Exception ex) {

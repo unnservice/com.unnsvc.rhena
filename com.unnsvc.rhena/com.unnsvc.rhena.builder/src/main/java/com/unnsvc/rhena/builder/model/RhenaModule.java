@@ -1,3 +1,4 @@
+
 package com.unnsvc.rhena.builder.model;
 
 import com.unnsvc.rhena.builder.identifier.ComponentIdentifier;
@@ -5,15 +6,26 @@ import com.unnsvc.rhena.builder.identifier.ModuleIdentifier;
 import com.unnsvc.rhena.builder.identifier.Version;
 
 public class RhenaModule {
-	
-	private ModuleIdentifier rhenaModuleEdge;
+
+	private ModuleIdentifier moduleIdentifier;
+	private ModuleIdentifier parentModule;
 	private ComponentIdentifier componentIdentifier;
 	private Version version;
 	private ModuleIdentifier lifecycleDeclaration;
 
-	public void setExtends(ModuleIdentifier rhenaModuleEdge) {
+	public RhenaModule(ModuleIdentifier moduleIdentifier) {
 
-		this.rhenaModuleEdge = rhenaModuleEdge;
+		this.moduleIdentifier = moduleIdentifier;
+	}
+
+	public ModuleIdentifier getModuleIdentifier() {
+
+		return moduleIdentifier;
+	}
+
+	public void setExtends(ModuleIdentifier parentModule) {
+
+		this.parentModule = parentModule;
 	}
 
 	public void setComponent(ComponentIdentifier componentIdentifier) {
