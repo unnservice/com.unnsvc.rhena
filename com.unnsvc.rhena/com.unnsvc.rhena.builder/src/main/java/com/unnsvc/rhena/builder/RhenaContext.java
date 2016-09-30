@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena;
+package com.unnsvc.rhena.builder;
 
 import java.util.HashMap;
 import java.util.Map;

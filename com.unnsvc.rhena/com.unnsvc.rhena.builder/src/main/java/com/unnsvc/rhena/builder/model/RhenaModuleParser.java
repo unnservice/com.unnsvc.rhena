@@ -13,8 +13,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.unnsvc.rhena.Constants;
-import com.unnsvc.rhena.RhenaContext;
+import com.unnsvc.rhena.builder.Constants;
+import com.unnsvc.rhena.builder.RhenaContext;
 import com.unnsvc.rhena.builder.exceptions.RhenaException;
 import com.unnsvc.rhena.builder.identifier.ComponentIdentifier;
 import com.unnsvc.rhena.builder.identifier.Identifier;
@@ -24,11 +24,13 @@ import com.unnsvc.rhena.builder.identifier.Version;
 public class RhenaModuleParser {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
+	private RhenaContext context;
 	private RhenaModule module;
 
-	public RhenaModuleParser(ModuleIdentifier moduleIdentifier) {
+	public RhenaModuleParser(RhenaContext context, ModuleIdentifier moduleIdentifier) {
 
-		module = new RhenaModule(moduleIdentifier);
+		this.context = context;
+		this.module = new RhenaModule(moduleIdentifier);
 	}
 
 	public RhenaModule parse(String moduleName, URI uri) throws Exception {
@@ -42,9 +44,12 @@ public class RhenaModuleParser {
 		Node moduleNode = children.item(0);
 
 		if (moduleNode.getAttributes().getNamedItem("extends") != null) {
-			String extendsAttribute = moduleNode.getAttributes().getNamedItem("extends").getNodeValue();
-			ModuleIdentifier extendsIdentifier = ModuleIdentifier.valueOf(extendsAttribute);
-			module.setParentModule(extendsIdentifier);
+			Node extendsAttribute = moduleNode.getAttributes().getNamedItem("extends");
+			if(extendsAttribute != null) {
+					ModuleIdentifier extendsIdentifier = ModuleIdentifier.valueOf(extendsAttribute.getNodeValue());
+					module.setParentModule(extendsIdentifier);
+					context.addUnresolvedModuleIdentifier(extendsIdentifier);
+			}
 		}
 
 		NodeList moduleChildren = moduleNode.getChildNodes();
@@ -52,7 +57,7 @@ public class RhenaModuleParser {
 			Node moduleChild = moduleChildren.item(i);
 			if (moduleChild.getNodeType() == Node.ELEMENT_NODE) {
 				if (moduleChild.getNamespaceURI().equals(Constants.NS_RHENA_MODULE)) {
-					processMetaNode(moduleChild);
+					processMetaNode(context, moduleChild);
 				} else if (moduleChild.getNamespaceURI().equals(Constants.NS_RHENA_DEPENDENCY)) {
 					processDepenencyNode(moduleChild);
 				}
@@ -62,15 +67,15 @@ public class RhenaModuleParser {
 		return module;
 	}
 
-	private void processMetaNode(Node moduleChild) throws DOMException, RhenaException {
+	private void processMetaNode(RhenaContext context, Node moduleChild) throws DOMException, RhenaException {
 
-		ComponentIdentifier componentIdentifier = new ComponentIdentifier(
-				Identifier.valueOf(moduleChild.getAttributes().getNamedItem("component").getNodeValue()));
+		ComponentIdentifier componentIdentifier = new ComponentIdentifier(Identifier.valueOf(moduleChild.getAttributes().getNamedItem("component").getNodeValue()));
 		Version version = Version.valueOf(moduleChild.getAttributes().getNamedItem("version").getNodeValue());
 		ModuleIdentifier lifecycleDeclaration = null;
 		if (moduleChild.getAttributes().getNamedItem("lifecycle") != null) {
 			logger.debug("Lifecycle declaration: " + moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue());
 			lifecycleDeclaration = ModuleIdentifier.valueOf(moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue());
+			context.getUnresolvedIdentifiers().push(lifecycleDeclaration);
 		}
 		module.setComponent(componentIdentifier);
 		if (version.equals(module.getModuleIdentifier().getVersion())) {
@@ -79,6 +84,7 @@ public class RhenaModuleParser {
 			throw new RhenaException("Requested version: " + version.toString() + " but got: " + module.getModuleIdentifier().getVersion().toString());
 		}
 		module.setLifecycleDeclaration(lifecycleDeclaration);
+		
 	}
 
 	private void processDepenencyNode(Node moduleChild) throws DOMException, RhenaException {
