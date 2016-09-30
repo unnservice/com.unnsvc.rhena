@@ -1,3 +1,4 @@
+
 package com.unnsvc.rhena.core;
 
 import org.junit.Assert;
@@ -33,17 +34,17 @@ public class TestIdentifiers {
 
 		Version two = Version.valueOf("0.0.1-SNAPSHOT");
 		Assert.assertEquals("0.0.1-SNAPSHOT", two.toString());
-		
+
 		Version three = Version.valueOf("0.1");
 		Assert.assertEquals("0.1", three.toString());
-		
-		Assert.assertEquals(-1,Version.valueOf("0.0.1").compareTo(Version.valueOf("1.0.0")));
-		Assert.assertEquals(1,Version.valueOf("0.1.0").compareTo(Version.valueOf("0.0.1")));
-		
-		Assert.assertEquals(0,Version.valueOf("0.0.0").compareTo(Version.valueOf("0.0.1")));
-		Assert.assertEquals(0,Version.valueOf("0.0.1").compareTo(Version.valueOf("0.0.0")));
-		
-		Assert.assertEquals(-1,Version.valueOf("0.0.1").compareTo(Version.valueOf("0.0.1-SNAPSHOT")));
+
+		Assert.assertEquals(-1, Version.valueOf("0.0.1").compareTo(Version.valueOf("1.0.0")));
+		Assert.assertEquals(1, Version.valueOf("0.1.0").compareTo(Version.valueOf("0.0.1")));
+
+		Assert.assertEquals(0, Version.valueOf("0.0.0").compareTo(Version.valueOf("0.0.1")));
+		Assert.assertEquals(0, Version.valueOf("0.0.1").compareTo(Version.valueOf("0.0.0")));
+
+		Assert.assertEquals(-1, Version.valueOf("0.0.1").compareTo(Version.valueOf("0.0.1-SNAPSHOT")));
 	}
 
 	@Test

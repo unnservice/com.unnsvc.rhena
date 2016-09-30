@@ -3,14 +3,16 @@ package com.unnsvc.rhena.core.resolution;
 import java.net.URI;
 
 import com.unnsvc.rhena.core.exceptions.RhenaException;
-import com.unnsvc.rhena.core.model.ComponentImportEdge;
-import com.unnsvc.rhena.core.model.ProjectDependencyEdge;
+import com.unnsvc.rhena.core.identifier.ComponentIdentifier;
+import com.unnsvc.rhena.core.identifier.ProjectIdentifier;
+import com.unnsvc.rhena.core.model.RhenaComponent;
+import com.unnsvc.rhena.core.model.RhenaProjectNode;
 
 public interface RhenaResolver {
 	
-	public ResolutionResult resolveComponent(ResolutionEngine engine, ComponentImportEdge componentImportEdge) throws RhenaException;
+	public RhenaComponent resolveComponent(ComponentIdentifier identifier) throws RhenaException;
 
-	public ResolutionResult resolveProject(ResolutionEngine engine, ProjectDependencyEdge projectDependencyEdge) throws RhenaException;
+	public RhenaProjectNode resolveProject(ProjectIdentifier identifier) throws RhenaException;
 
 	public URI getLocation();
 	

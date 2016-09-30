@@ -14,11 +14,16 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import com.unnsvc.rhena.core.Constants;
 import com.unnsvc.rhena.core.exceptions.ResolverException;
-import com.unnsvc.rhena.core.model.ComponentImportEdge;
-import com.unnsvc.rhena.core.model.ProjectDependencyEdge;
-import com.unnsvc.rhena.core.model.RhenaComponentDescriptor;
+import com.unnsvc.rhena.core.exceptions.RhenaException;
+import com.unnsvc.rhena.core.identifier.ComponentIdentifier;
+import com.unnsvc.rhena.core.identifier.ProjectIdentifier;
+import com.unnsvc.rhena.core.model.RhenaComponent;
+import com.unnsvc.rhena.core.model.RhenaComponentEdge;
+import com.unnsvc.rhena.core.model.RhenaDependencyEdge;
 import com.unnsvc.rhena.core.model.RhenaProject;
+import com.unnsvc.rhena.core.model.RhenaProjectNode;
 import com.unnsvc.rhena.core.parsers.ComponentParser;
 
 public class WorkspaceResolver implements RhenaResolver {
@@ -35,14 +40,54 @@ public class WorkspaceResolver implements RhenaResolver {
 
 		this(new File(location));
 	}
+	
+	@Override
+	public RhenaComponent resolveComponent(ComponentIdentifier identifier) throws RhenaException {
+
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Override
-	public ResolutionResult resolveProject(ResolutionEngine engine, ProjectDependencyEdge projectDependencyEdge) throws ResolverException {
+	public RhenaProjectNode resolveProject(ProjectIdentifier identifier) throws RhenaException {
+
+		File componentLocation = new File(location, identifier.getComponent().toString());
+		File componentDescriptorLocation = new File(componentLocation, Constants.COMPONENT_FILE_NAME);
+		
+		if (componentDescriptorLocation.exists() && componentDescriptorLocation.isFile()) {
+			
+			RhenaComponent componentDescriptor = resolveComponentDescriptor(engine, componentDescriptorLocation, projectDependencyEdge.getComponentName());
+			RhenaProject project = componentDescriptor.getProject(projectDependencyEdge.getProjectName());
+			if (project == null || projectDependencyEdge.getVersion().compareTo(project.getVersion()) == -1) {
+				return new ResolutionFailure("Component exists in repository but not project in component");
+			}
+			return project;
+		} else {
+			return new ResolutionFailure("Does not exist in repository");
+		}
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@Override
+	public ResolutionResult resolveProject(ResolutionEngine engine, RhenaDependencyEdge projectDependencyEdge) throws ResolverException {
 
 		File componentLocation = new File(location, projectDependencyEdge.getComponentName());
 		File componentDescriptorLocation = new File(componentLocation, "component.xml");
 		if (componentDescriptorLocation.exists() && componentDescriptorLocation.isFile()) {
-			RhenaComponentDescriptor componentDescriptor = resolveComponentDescriptor(engine, componentDescriptorLocation, projectDependencyEdge.getComponentName());
+			RhenaComponent componentDescriptor = resolveComponentDescriptor(engine, componentDescriptorLocation, projectDependencyEdge.getComponentName());
 			RhenaProject project = componentDescriptor.getProject(projectDependencyEdge.getProjectName());
 			if (project == null || projectDependencyEdge.getVersion().compareTo(project.getVersion()) == -1) {
 				return new ResolutionFailure("Component exists in repository but not project in component");
@@ -54,12 +99,12 @@ public class WorkspaceResolver implements RhenaResolver {
 	}
 
 	@Override
-	public ResolutionResult resolveComponent(ResolutionEngine engine, ComponentImportEdge componentImportEdge) throws ResolverException {
+	public ResolutionResult resolveComponent(ResolutionEngine engine, RhenaComponentEdge componentImportEdge) throws ResolverException {
 
 		File componentLocation = new File(location, componentImportEdge.getComponentName());
 		File componentDescriptorLocation = new File(componentLocation, "component.xml");
 		if (componentDescriptorLocation.exists() && componentDescriptorLocation.isFile()) {
-			RhenaComponentDescriptor componentDescriptor = resolveComponentDescriptor(engine, componentDescriptorLocation, componentImportEdge.getComponentName());
+			RhenaComponent componentDescriptor = resolveComponentDescriptor(engine, componentDescriptorLocation, componentImportEdge.getComponentName());
 			return new ComponentResolutionResult(componentDescriptor);
 		} else {
 			return new ResolutionFailure("Does not exist in repository");
@@ -75,7 +120,7 @@ public class WorkspaceResolver implements RhenaResolver {
 	 * @throws SAXException
 	 * @throws ParserConfigurationException
 	 */
-	private RhenaComponentDescriptor resolveComponentDescriptor(ResolutionEngine engine, File componentDescriptorLocation, String componentName) throws ResolverException {
+	private RhenaComponent resolveComponentDescriptor(ResolutionEngine engine, File componentDescriptorLocation, String componentName) throws ResolverException {
 
 		try {
 
@@ -85,7 +130,7 @@ public class WorkspaceResolver implements RhenaResolver {
 			Document document = builder.parse(componentDescriptorLocation);
 
 			ComponentParser parser = new ComponentParser(engine, document, componentName);
-			RhenaComponentDescriptor componentDescriptor = parser.getComponentDescriptor();
+			RhenaComponent componentDescriptor = parser.getComponentDescriptor();
 
 			return componentDescriptor;
 		} catch (Exception ex) {
@@ -106,9 +151,5 @@ public class WorkspaceResolver implements RhenaResolver {
 		return "workspace";
 	}
 
-	@Override
-	public String toString() {
 
-		return "WorkspaceRepositoryResolver [getName()=" + getName() + ", location=" + location + "]";
-	}
 }

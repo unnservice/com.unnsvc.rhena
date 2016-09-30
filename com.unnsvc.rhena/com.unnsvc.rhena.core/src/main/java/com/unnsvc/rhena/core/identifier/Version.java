@@ -37,7 +37,7 @@ public class Version implements Comparable<Version> {
 		}
 	}
 	
-	public Version() {
+	private Version() {
 		
 		this.major = 0;
 		this.minor = 0;
@@ -152,5 +152,10 @@ public class Version implements Comparable<Version> {
 				}
 			}
 		}
+	}
+
+	public static Version anyVersion() {
+
+		return new Version();
 	}
 }

@@ -14,9 +14,9 @@ import com.unnsvc.rhena.core.exceptions.RhenaException;
 import com.unnsvc.rhena.core.exceptions.RhenaParserException;
 import com.unnsvc.rhena.core.identifier.QualifiedIdentifier;
 import com.unnsvc.rhena.core.identifier.Version;
-import com.unnsvc.rhena.core.model.ComponentImportEdge;
-import com.unnsvc.rhena.core.model.ProjectDependencyEdge;
-import com.unnsvc.rhena.core.model.RhenaComponentDescriptor;
+import com.unnsvc.rhena.core.model.RhenaComponentEdge;
+import com.unnsvc.rhena.core.model.RhenaDependencyEdge;
+import com.unnsvc.rhena.core.model.RhenaComponent;
 import com.unnsvc.rhena.core.model.RhenaProject;
 import com.unnsvc.rhena.core.resolution.ResolutionEngine;
 
@@ -24,12 +24,12 @@ public class ComponentParser {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ResolutionEngine engine;
-	private RhenaComponentDescriptor componentDescriptor;
+	private RhenaComponent componentDescriptor;
 
 	public ComponentParser(ResolutionEngine engine, Document componentDescriptorDocument, String componentName) throws RhenaException {
 
 		this.engine = engine;
-		this.componentDescriptor = new RhenaComponentDescriptor(componentName);
+		this.componentDescriptor = new RhenaComponent(componentName);
 		parse(componentDescriptorDocument);
 	}
 
@@ -69,7 +69,7 @@ public class ComponentParser {
 
 					if (node.getPrefix().equals("dependency")) {
 
-						ProjectDependencyEdge dependency = handleDependency(node);
+						RhenaDependencyEdge dependency = handleDependency(node);
 						componentDescriptor.addDependency(dependency);
 					}
 				}
@@ -77,7 +77,7 @@ public class ComponentParser {
 		}
 	}
 
-	private ProjectDependencyEdge handleDependency(Node node) throws RhenaParserException {
+	private RhenaDependencyEdge handleDependency(Node node) throws RhenaParserException {
 
 		String scope = node.getLocalName();
 		String id = node.getAttributes().getNamedItem("id").getNodeValue();
@@ -101,7 +101,7 @@ public class ComponentParser {
 			resolver = resolverAttr;
 		}
 
-		ProjectDependencyEdge dependency = new ProjectDependencyEdge(componentName, scope, pi.getProject().toString(), pi.getVersion().toString(), resolver);
+		RhenaDependencyEdge dependency = new RhenaDependencyEdge(componentName, scope, pi.getProject().toString(), pi.getVersion().toString(), resolver);
 		engine.addResolutionRequest(dependency);
 
 		return dependency;
@@ -116,7 +116,7 @@ public class ComponentParser {
 	private void handleImport(Node node) {
 
 		String componentId = node.getAttributes().getNamedItem("component").getNodeValue();
-		ComponentImportEdge componentImportEdge = new ComponentImportEdge(componentId);
+		RhenaComponentEdge componentImportEdge = new RhenaComponentEdge(componentId);
 		engine.addResolutionRequest(componentImportEdge);
 		componentDescriptor.addImport(componentImportEdge);
 	}
@@ -134,7 +134,7 @@ public class ComponentParser {
 			if (child.getNodeType() == Node.ELEMENT_NODE) {
 				if (child.getNamespaceURI().equals(Constants.NS_DEPENDENCY)) {
 
-					ProjectDependencyEdge dependency = handleDependency(child);
+					RhenaDependencyEdge dependency = handleDependency(child);
 					project.addDependency(dependency);
 
 				} else if (child.getNamespaceURI().equals(Constants.NS_COMPONENT)) {
@@ -166,7 +166,7 @@ public class ComponentParser {
 		return props;
 	}
 
-	public RhenaComponentDescriptor getComponentDescriptor() {
+	public RhenaComponent getComponentDescriptor() {
 
 		return componentDescriptor;
 	}

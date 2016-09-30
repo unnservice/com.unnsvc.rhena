@@ -1,18 +1,18 @@
 package com.unnsvc.rhena.core.resolution;
 
-import com.unnsvc.rhena.core.model.RhenaComponentDescriptor;
+import com.unnsvc.rhena.core.model.RhenaComponent;
 
 public class ComponentResolutionResult extends ResolutionResult {
 
-	private RhenaComponentDescriptor componentDesc;
+	private RhenaComponent componentDesc;
 
-	public ComponentResolutionResult(RhenaComponentDescriptor componentDesc) {
+	public ComponentResolutionResult(RhenaComponent componentDesc) {
 
-		super(Status.SUCCESS);
+		super("success?");
 		this.componentDesc = componentDesc;
 	}
 
-	public RhenaComponentDescriptor getComponent() {
+	public RhenaComponent getComponent() {
 
 		return componentDesc;
 	}

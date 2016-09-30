@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:rhena:dependency" xmlns:tns="urn:rhena:dependency" xmlns:common="urn:rhena:common"
+	elementFormDefault="qualified">
+
+	<xs:import namespace="urn:rhena:common" schemaLocation="common.xsd" />
+
+	<xs:complexType name="dependencyType">
+		<xs:sequence>
+		</xs:sequence>
+		<xs:attribute name="module" type="common:qualifiedIdentifier" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="frameworkType">
+		<xs:sequence>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:element name="compile" type="tns:dependencyType" />
+	<xs:element name="test" type="tns:dependencyType" />
+	<xs:element name="itest" type="tns:dependencyType" />
+	<xs:element name="framework" type="tns:frameworkType">
+		<xs:annotation>
+			This dependency applies framework dependencies requires for extension development, from the current runtime
+		</xs:annotation>
+	</xs:element>
+
+</xs:schema>

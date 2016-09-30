@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:rhena:common" xmlns:tns="urn:rhena:common" elementFormDefault="qualified">
+
+	<xs:simpleType name="identifierType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="versionType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9]+(\.[0-9]+(\.[0-9]+)?)?(-SNAPSHOT)?" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="qualifiedIdentifier">
+		<xs:restriction base="xs:string">
+			<!-- identifierType:identifierType:versionType(-SNAPSHOT)? -->
+			<xs:pattern value="[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?:[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?:[0-9]+(\.[0-9]+(\.[0-9]+)?)?(-SNAPSHOT)?" />
+		</xs:restriction>
+	</xs:simpleType>
+
+</xs:schema>

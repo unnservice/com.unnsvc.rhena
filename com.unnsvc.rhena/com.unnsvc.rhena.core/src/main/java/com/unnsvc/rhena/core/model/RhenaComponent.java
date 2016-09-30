@@ -1,3 +1,4 @@
+
 package com.unnsvc.rhena.core.model;
 
 import java.util.ArrayList;
@@ -5,22 +6,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.unnsvc.rhena.core.exceptions.RhenaParserException;
+import com.unnsvc.rhena.core.identifier.ComponentIdentifier;
 import com.unnsvc.rhena.core.identifier.Version;
 
-public class RhenaComponentDescriptor implements RhenaNode {
+public class RhenaComponent implements RhenaNode {
 
-	private String componentName;
-	private List<ComponentImportEdge> imports;
+	private ComponentIdentifier componentIdentifier;
+	private List<RhenaComponentEdge> imports;
 	private Set<RhenaProject> projects;
-	private List<ProjectDependencyEdge> dependencies;
+	private List<RhenaDependencyEdge> dependencies;
 	private Version version;
 
-	public RhenaComponentDescriptor(String componentName) {
+	public RhenaComponent(String componentName) throws RhenaParserException {
 
-		this.componentName = componentName;
-		this.imports = new ArrayList<ComponentImportEdge>();
+		this.componentIdentifier = new ComponentIdentifier(componentName);
+		this.imports = new ArrayList<RhenaComponentEdge>();
 		this.projects = new HashSet<RhenaProject>();
-		this.dependencies = new ArrayList<ProjectDependencyEdge>();
+		this.dependencies = new ArrayList<RhenaDependencyEdge>();
 	}
 
 	public RhenaProject getProject(String projectName) {
@@ -33,7 +36,7 @@ public class RhenaComponentDescriptor implements RhenaNode {
 		return null;
 	}
 
-	public void addImport(ComponentImportEdge componentImportEdge) {
+	public void addImport(RhenaComponentEdge componentImportEdge) {
 
 		this.imports.add(componentImportEdge);
 	}
@@ -43,8 +46,9 @@ public class RhenaComponentDescriptor implements RhenaNode {
 		this.projects.add(project);
 	}
 
-	public String getComponentName() {
-		return componentName;
+	public ComponentIdentifier getComponentIdentifier() {
+
+		return componentIdentifier;
 	}
 
 	public Version getVersion() {
@@ -57,7 +61,7 @@ public class RhenaComponentDescriptor implements RhenaNode {
 		this.version = version;
 	}
 
-	public void addDependency(ProjectDependencyEdge dependency) {
+	public void addDependency(RhenaDependencyEdge dependency) {
 
 		this.dependencies.add(dependency);
 	}

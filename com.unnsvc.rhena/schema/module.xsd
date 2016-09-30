@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:rhena:module" xmlns:tns="urn:rhena:module" xmlns:common="urn:rhena:common"
+	xmlns:properties="urn:rhena:properties" xmlns:dependencies="urn:rhena:dependencies" elementFormDefault="qualified">
+
+	<xs:import namespace="urn:rhena:common" schemaLocation="common.xsd" />
+	<xs:import namespace="urn:rhena:dependency" schemaLocation="dependency.xsd" />
+
+	<xs:complexType name="metaType">
+		<xs:sequence>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="component" type="common:identifierType" />
+		<xs:attribute name="version" type="common:versionType" />
+		<xs:attribute name="lifecycle" type="common:qualifiedIdentifier" />
+	</xs:complexType>
+
+	<xs:element name="module">
+		<xs:complexType>
+			<xs:sequence>
+				<!-- <xs:element name="extends" /> -->
+				<xs:element name="meta" type="tns:metaType" minOccurs="1" maxOccurs="1" />
+				<xs:any namespace="urn:rhena:properties" minOccurs="0" maxOccurs="unbounded" processContents="skip" />
+				<xs:any namespace="urn:rhena:dependency" minOccurs="0" maxOccurs="unbounded" processContents="strict" />
+			</xs:sequence>
+			<xs:attribute name="extends" type="common:qualifiedIdentifier" use="required" />
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

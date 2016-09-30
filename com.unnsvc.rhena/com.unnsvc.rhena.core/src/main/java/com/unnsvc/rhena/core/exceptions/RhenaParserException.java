@@ -14,4 +14,8 @@ public class RhenaParserException extends RhenaException {
 		super(t);
 	}
 
+	public RhenaParserException(Throwable t, String messagee) {
+		
+		super(t, message);
+	}
 }
