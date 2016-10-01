@@ -10,34 +10,31 @@ import com.unnsvc.rhena.builder.model.RhenaModule;
 
 public class RhenaModelBuilder {
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
+	private Logger log = LoggerFactory.getLogger(getClass());
 
 	public RhenaModule buildModel(RhenaContext context, String moduleIdentifierStr) throws RhenaException {
 
-		return buildModel(context, ModuleIdentifier.valueOf(moduleIdentifierStr));
+		String[] parts = moduleIdentifierStr.split(":");
+		return buildModel(context, parts[0], parts[1], parts[2]);
 	}
 
-	public RhenaModule buildModel(RhenaContext context, ModuleIdentifier moduleIdentifier) throws RhenaException {
+	public RhenaModule buildModel(RhenaContext context, String componentIdentifierStr, String moduleNameStr, String version) throws RhenaException {
 
-		logger.info("Building model for: " + moduleIdentifier.toString());
-		
-		RhenaModule module = context.getResolution().resolveModule(context, moduleIdentifier);
-		if(module.getParentModule() != null) {
-			context.getUnresolvedIdentifiers().push(module.getParentModule());
-		}
-		context.getUnresolvedIdentifiers().push(moduleIdentifier);
+		ModuleIdentifier entryPointModuleIdentifier = context.newModuleIdentifier(componentIdentifierStr, moduleNameStr, version);
+		log.info("Building model for: " + entryPointModuleIdentifier.toString());
 
 		while (!context.getUnresolvedIdentifiers().isEmpty()) {
 
-			if (!context.getResolvedIdentifiers().containsKey(context.getUnresolvedIdentifiers().peek())) {
-				RhenaModule inTree = context.getResolution().resolveModule(context, context.getUnresolvedIdentifiers().pop());
+			ModuleIdentifier moduleIdentifier = context.getUnresolvedIdentifiers().pop();
+			if (!context.getModules().containsKey(moduleIdentifier)) {
+				log.info("Resolving: " + moduleIdentifier.toString());
 
-				context.getResolvedIdentifiers().put(moduleIdentifier, inTree);
-				logger.info("Resolved: " + inTree.getModuleIdentifier().toString());
+				RhenaModule module = context.getResolution().resolveModule(context, moduleIdentifier);
+				context.getModules().put(moduleIdentifier, module);
 			}
 		}
 
-		return module;
+		return context.getModules().get(entryPointModuleIdentifier);
 	}
 
 }

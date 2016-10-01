@@ -58,5 +58,4 @@ public class Identifier {
 			return false;
 		return true;
 	}
-
 }

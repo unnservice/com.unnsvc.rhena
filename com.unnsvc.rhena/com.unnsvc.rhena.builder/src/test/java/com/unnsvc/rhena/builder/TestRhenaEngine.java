@@ -1,3 +1,4 @@
+
 package com.unnsvc.rhena.builder;
 
 import java.io.File;
@@ -15,19 +16,18 @@ import com.unnsvc.rhena.builder.resolvers.WorkspaceRepository;
 public class TestRhenaEngine {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	
+
 	@Test
 	public void testEngine() throws Exception {
-		
-		
+
 		WorkspaceRepository workspaceRepo = new WorkspaceRepository(new File("../example-workspace").getAbsoluteFile());
 
-//		RemoteRepository remoteRepo = new RemoteRepository("file:///home/noname/.rhena/repository");
-		
+		// RemoteRepository remoteRepo = new
+		// RemoteRepository("file:///home/noname/.rhena/repository");
+
 		ResolutionEngine resolution = new ResolutionEngine(workspaceRepo);
 		RhenaContext context = new RhenaContext(resolution);
-		
-		RhenaModule module = new RhenaModelBuilder().buildModel(context, "component1:module1:0.0.1");
+
+		RhenaModule module = new RhenaModelBuilder().buildModel(context, "component1", "module1", "0.0.1");
 	}
 }
-

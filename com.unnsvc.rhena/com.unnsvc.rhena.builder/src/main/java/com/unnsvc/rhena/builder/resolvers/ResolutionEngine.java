@@ -27,7 +27,6 @@ public class ResolutionEngine {
 	public RhenaModule resolveModule(RhenaContext context, ModuleIdentifier moduleIdentifier) throws RhenaException {
 
 		if(resolutionCache.containsKey(moduleIdentifier)) {
-			log.info("Using cached: " + moduleIdentifier);
 			return resolutionCache.get(moduleIdentifier);
 		}
 		
@@ -35,7 +34,6 @@ public class ResolutionEngine {
 
 			try {
 
-				log.info("Resolving: " + moduleIdentifier.toString());
 				RhenaModule module = repository.resolveModule(context, moduleIdentifier);
 				resolutionCache.put(moduleIdentifier, module);
 				return module;

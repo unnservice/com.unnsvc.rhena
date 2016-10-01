@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.unnsvc.rhena.builder.identifier.ModuleIdentifier;
 import com.unnsvc.rhena.builder.identifier.Version;
 
 public class TestIdentifiers {
@@ -25,5 +26,11 @@ public class TestIdentifiers {
 		Pattern p = Pattern.compile(Version.VERSION_PATTERN);
 		Matcher m = p.matcher(str);
 		Assert.assertTrue(m.matches());
+	}
+	
+	@Test
+	public void testModuleIdentifierEquivalende() throws Exception {
+		
+		Assert.assertEquals(new ModuleIdentifier("component1", "module1", "0.0.1"), new ModuleIdentifier("component1", "module1", "0.0.1"));
 	}
 }

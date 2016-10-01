@@ -16,21 +16,18 @@ import org.w3c.dom.NodeList;
 import com.unnsvc.rhena.builder.Constants;
 import com.unnsvc.rhena.builder.RhenaContext;
 import com.unnsvc.rhena.builder.exceptions.RhenaException;
-import com.unnsvc.rhena.builder.identifier.ComponentIdentifier;
-import com.unnsvc.rhena.builder.identifier.Identifier;
 import com.unnsvc.rhena.builder.identifier.ModuleIdentifier;
-import com.unnsvc.rhena.builder.identifier.Version;
 
 public class RhenaModuleParser {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
-	private RhenaContext context;
 	private RhenaModule module;
+	private RhenaContext context;
 
-	public RhenaModuleParser(RhenaContext context, ModuleIdentifier moduleIdentifier) {
+	public RhenaModuleParser(RhenaContext context) {
 
 		this.context = context;
-		this.module = new RhenaModule(moduleIdentifier);
+		this.module = new RhenaModule();
 	}
 
 	public RhenaModule parse(String moduleName, URI uri) throws Exception {
@@ -45,10 +42,10 @@ public class RhenaModuleParser {
 
 		if (moduleNode.getAttributes().getNamedItem("extends") != null) {
 			Node extendsAttribute = moduleNode.getAttributes().getNamedItem("extends");
-			if(extendsAttribute != null) {
-					ModuleIdentifier extendsIdentifier = ModuleIdentifier.valueOf(extendsAttribute.getNodeValue());
-					module.setParentModule(extendsIdentifier);
-					context.addUnresolvedModuleIdentifier(extendsIdentifier);
+			if (extendsAttribute != null) {
+				String extendsModuleIdentifierStr = extendsAttribute.getNodeValue();
+				ModuleIdentifier extendsModuleIdentifier = context.newModuleIdentifier(extendsModuleIdentifierStr);
+				module.setParentModule(extendsModuleIdentifier);
 			}
 		}
 
@@ -57,7 +54,7 @@ public class RhenaModuleParser {
 			Node moduleChild = moduleChildren.item(i);
 			if (moduleChild.getNodeType() == Node.ELEMENT_NODE) {
 				if (moduleChild.getNamespaceURI().equals(Constants.NS_RHENA_MODULE)) {
-					processMetaNode(context, moduleChild);
+					processMetaNode(moduleChild, moduleName);
 				} else if (moduleChild.getNamespaceURI().equals(Constants.NS_RHENA_DEPENDENCY)) {
 					processDepenencyNode(moduleChild);
 				}
@@ -67,32 +64,29 @@ public class RhenaModuleParser {
 		return module;
 	}
 
-	private void processMetaNode(RhenaContext context, Node moduleChild) throws DOMException, RhenaException {
+	private void processMetaNode(Node moduleChild, String moduleNameStr) throws DOMException, RhenaException {
 
-		ComponentIdentifier componentIdentifier = new ComponentIdentifier(Identifier.valueOf(moduleChild.getAttributes().getNamedItem("component").getNodeValue()));
-		Version version = Version.valueOf(moduleChild.getAttributes().getNamedItem("version").getNodeValue());
-		ModuleIdentifier lifecycleDeclaration = null;
+		String componentNameStr = moduleChild.getAttributes().getNamedItem("component").getNodeValue();
+		String versionStr = moduleChild.getAttributes().getNamedItem("version").getNodeValue();
+
 		if (moduleChild.getAttributes().getNamedItem("lifecycle") != null) {
 			logger.debug("Lifecycle declaration: " + moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue());
-			lifecycleDeclaration = ModuleIdentifier.valueOf(moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue());
-			context.getUnresolvedIdentifiers().push(lifecycleDeclaration);
+			ModuleIdentifier lifecycleDeclaration = context.newModuleIdentifier(moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue());
+			module.setLifecycleDeclaration(lifecycleDeclaration);
 		}
-		module.setComponent(componentIdentifier);
-		if (version.equals(module.getModuleIdentifier().getVersion())) {
-			module.setVersion(version);
-		} else {
-			throw new RhenaException("Requested version: " + version.toString() + " but got: " + module.getModuleIdentifier().getVersion().toString());
-		}
-		module.setLifecycleDeclaration(lifecycleDeclaration);
-		
+
+		ModuleIdentifier moduleIdentifier = context.newModuleIdentifier(componentNameStr, moduleNameStr, versionStr);
+		module.setModuleIdentifier(moduleIdentifier);
 	}
 
 	private void processDepenencyNode(Node moduleChild) throws DOMException, RhenaException {
 
 		String scopeString = moduleChild.getLocalName();
 		Scope scope = Scope.valueOf(scopeString.toUpperCase());
-		ModuleIdentifier module = ModuleIdentifier.valueOf(moduleChild.getAttributes().getNamedItem("module").getNodeValue());
+		String dependencyTargetModuleIdentifier = moduleChild.getAttributes().getNamedItem("module").getNodeValue();
+		ModuleIdentifier moduleIdentifier = context.newModuleIdentifier(dependencyTargetModuleIdentifier);
 
-		RhenaModuleEdge edge = new RhenaModuleEdge(scope, module);
+		RhenaModuleEdge edge = new RhenaModuleEdge(scope, moduleIdentifier);
+		module.addDependencyEdge(edge);
 	}
 }

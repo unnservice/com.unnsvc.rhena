@@ -29,7 +29,7 @@ public class WorkspaceRepository implements IRepository {
 		File moduleDirectory = new File(workspacePath, moduleIdentifier.toModuleDirectoryName());
 		File moduleDescriptor = new File(moduleDirectory, Constants.MODULE_DESCRIPTOR_FILENAME).getAbsoluteFile();
 
-		RhenaModuleParser moduleParser = new RhenaModuleParser(context, moduleIdentifier);
+		RhenaModuleParser moduleParser = new RhenaModuleParser(context);
 		try {
 			RhenaModule module = moduleParser.parse(moduleIdentifier.getModuleName().toString(), moduleDescriptor.toURI());
 			if (module.getModuleIdentifier().getVersion().equals(moduleIdentifier.getVersion())) {

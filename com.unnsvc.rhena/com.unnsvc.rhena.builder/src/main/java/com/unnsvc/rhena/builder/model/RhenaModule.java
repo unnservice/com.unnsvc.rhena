@@ -1,21 +1,21 @@
 
 package com.unnsvc.rhena.builder.model;
 
-import com.unnsvc.rhena.builder.identifier.ComponentIdentifier;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.unnsvc.rhena.builder.identifier.ModuleIdentifier;
-import com.unnsvc.rhena.builder.identifier.Version;
 
 public class RhenaModule {
 
 	private ModuleIdentifier moduleIdentifier;
 	private ModuleIdentifier parentModule;
-	private ComponentIdentifier componentIdentifier;
-	private Version version;
 	private ModuleIdentifier lifecycleDeclaration;
+	private List<RhenaModuleEdge> dependencyEdges;
 
-	public RhenaModule(ModuleIdentifier moduleIdentifier) {
+	public RhenaModule() {
 
-		this.moduleIdentifier = moduleIdentifier;
+		this.dependencyEdges = new ArrayList<RhenaModuleEdge>();
 	}
 
 	public ModuleIdentifier getModuleIdentifier() {
@@ -33,19 +33,21 @@ public class RhenaModule {
 		return parentModule;
 	}
 
-	public void setComponent(ComponentIdentifier componentIdentifier) {
-
-		this.componentIdentifier = componentIdentifier;
-	}
-
-	public void setVersion(Version version) {
-
-		this.version = version;
+	public void setModuleIdentifier(ModuleIdentifier moduleIdentifier) {
+		
+		this.moduleIdentifier = moduleIdentifier;
 	}
 
 	public void setLifecycleDeclaration(ModuleIdentifier lifecycleDeclaration) {
 
 		this.lifecycleDeclaration = lifecycleDeclaration;
+	}
+
+	public void addDependencyEdge(RhenaModuleEdge edge) {
+
+		if (!dependencyEdges.contains(edge)) {
+			this.dependencyEdges.add(edge);
+		}
 	}
 
 }

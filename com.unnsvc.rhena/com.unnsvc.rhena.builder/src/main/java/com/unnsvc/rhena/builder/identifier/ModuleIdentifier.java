@@ -15,6 +15,11 @@ public class ModuleIdentifier {
 		this.moduleName = moduleName;
 		this.version = version;
 	}
+	
+	public ModuleIdentifier(String componentIdentifierStr, String moduleIdentifierStr, String versionStr) throws RhenaException {
+		
+		this(Identifier.valueOf(componentIdentifierStr), Identifier.valueOf(moduleIdentifierStr), Version.valueOf(versionStr));
+	}
 
 	public Identifier getComponentName() {
 
@@ -29,15 +34,6 @@ public class ModuleIdentifier {
 	public Version getVersion() {
 
 		return version;
-	}
-
-	public static ModuleIdentifier valueOf(String moduleIdentifier) throws RhenaException {
-
-		String[] parts = moduleIdentifier.split(":");
-		if (parts.length != 3) {
-			throw new RhenaException("Invalid module identifier: " + moduleIdentifier);
-		}
-		return new ModuleIdentifier(Identifier.valueOf(parts[0]), Identifier.valueOf(parts[1]), Version.valueOf(parts[2]));
 	}
 
 	@Override
