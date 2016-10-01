@@ -14,4 +14,14 @@ public class RhenaModuleEdge {
 		this.target = target;
 	}
 
+	public Scope getScope() {
+
+		return scope;
+	}
+
+	public ModuleIdentifier getTarget() {
+
+		return target;
+	}
+
 }

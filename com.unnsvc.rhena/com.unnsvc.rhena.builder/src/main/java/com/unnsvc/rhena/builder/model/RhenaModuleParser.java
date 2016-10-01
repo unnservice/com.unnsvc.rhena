@@ -45,7 +45,7 @@ public class RhenaModuleParser {
 			if (extendsAttribute != null) {
 				String extendsModuleIdentifierStr = extendsAttribute.getNodeValue();
 				ModuleIdentifier extendsModuleIdentifier = context.newModuleIdentifier(extendsModuleIdentifierStr);
-				module.setParentModule(extendsModuleIdentifier);
+				module.setParentModule(new RhenaModuleEdge(Scope.MODEL, extendsModuleIdentifier));
 			}
 		}
 
@@ -72,7 +72,7 @@ public class RhenaModuleParser {
 		if (moduleChild.getAttributes().getNamedItem("lifecycle") != null) {
 			logger.debug("Lifecycle declaration: " + moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue());
 			ModuleIdentifier lifecycleDeclaration = context.newModuleIdentifier(moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue());
-			module.setLifecycleDeclaration(lifecycleDeclaration);
+			module.setLifecycleModule(new RhenaModuleEdge(Scope.LIFECYCLE, lifecycleDeclaration));
 		}
 
 		ModuleIdentifier moduleIdentifier = context.newModuleIdentifier(componentNameStr, moduleNameStr, versionStr);

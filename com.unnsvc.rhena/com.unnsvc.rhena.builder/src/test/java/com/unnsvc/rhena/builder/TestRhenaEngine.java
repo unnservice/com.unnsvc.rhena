@@ -7,11 +7,11 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.builder.RhenaContext;
-import com.unnsvc.rhena.builder.RhenaModelBuilder;
 import com.unnsvc.rhena.builder.model.RhenaModule;
+import com.unnsvc.rhena.builder.model.Scope;
 import com.unnsvc.rhena.builder.resolvers.ResolutionEngine;
 import com.unnsvc.rhena.builder.resolvers.WorkspaceRepository;
+import com.unnsvc.rhena.builder.visitors.RhenaBuildingVisitor;
 
 public class TestRhenaEngine {
 
@@ -29,5 +29,8 @@ public class TestRhenaEngine {
 		RhenaContext context = new RhenaContext(resolution);
 
 		RhenaModule module = new RhenaModelBuilder().buildModel(context, "component1", "module1", "0.0.1");
+		
+		module.visit(new RhenaBuildingVisitor(context, Scope.ITEST));
+		
 	}
 }

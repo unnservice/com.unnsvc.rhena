@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.unnsvc.rhena.builder.identifier.ModuleIdentifier;
+import com.unnsvc.rhena.builder.visitors.IVisitable;
+import com.unnsvc.rhena.builder.visitors.IVisitor;
 
-public class RhenaModule {
+public class RhenaModule implements IVisitable {
 
 	private ModuleIdentifier moduleIdentifier;
-	private ModuleIdentifier parentModule;
-	private ModuleIdentifier lifecycleDeclaration;
+	private RhenaModuleEdge parentModule;
+	private RhenaModuleEdge lifecycleModule;
 	private List<RhenaModuleEdge> dependencyEdges;
 
 	public RhenaModule() {
@@ -23,24 +25,29 @@ public class RhenaModule {
 		return moduleIdentifier;
 	}
 
-	public void setParentModule(ModuleIdentifier parentModule) {
+	public void setParentModule(RhenaModuleEdge parentModule) {
 
 		this.parentModule = parentModule;
 	}
 
-	public ModuleIdentifier getParentModule() {
+	public RhenaModuleEdge getParentModule() {
 
 		return parentModule;
 	}
 
 	public void setModuleIdentifier(ModuleIdentifier moduleIdentifier) {
-		
+
 		this.moduleIdentifier = moduleIdentifier;
 	}
 
-	public void setLifecycleDeclaration(ModuleIdentifier lifecycleDeclaration) {
+	public void setLifecycleModule(RhenaModuleEdge lifecycleModule) {
 
-		this.lifecycleDeclaration = lifecycleDeclaration;
+		this.lifecycleModule = lifecycleModule;
+	}
+
+	public RhenaModuleEdge getLifecycleModule() {
+
+		return lifecycleModule;
 	}
 
 	public void addDependencyEdge(RhenaModuleEdge edge) {
@@ -48,6 +55,12 @@ public class RhenaModule {
 		if (!dependencyEdges.contains(edge)) {
 			this.dependencyEdges.add(edge);
 		}
+	}
+	
+	@Override
+	public void visit(IVisitor visitor) {
+		
+		visitor.visiting(this);
 	}
 
 }

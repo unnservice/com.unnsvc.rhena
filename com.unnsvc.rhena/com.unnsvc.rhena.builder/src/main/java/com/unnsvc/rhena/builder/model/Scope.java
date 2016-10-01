@@ -3,5 +3,5 @@ package com.unnsvc.rhena.builder.model;
 
 public enum Scope {
 
-	TEST
+	MODEL, MAIN, TEST, ITEST, LIFECYCLE
 }
