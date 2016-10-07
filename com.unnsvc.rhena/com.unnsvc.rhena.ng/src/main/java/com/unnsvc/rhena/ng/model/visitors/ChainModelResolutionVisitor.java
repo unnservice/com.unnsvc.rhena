@@ -18,16 +18,16 @@ public class ChainModelResolutionVisitor implements IVisitor {
 	public void startModule(RhenaModule module) throws RhenaException {
 
 		if(module.getParentModule() != null) {
-			materialiser.materialiseModel(module.getParentModule());
+			materialiser.materialiseModel(module.getParentModule()).visit(this);;
 		}
 		
 		if(module.getLifecycleDeclaration() != null) {
-			materialiser.materialiseModel(module.getLifecycleDeclaration());
+			materialiser.materialiseModel(module.getLifecycleDeclaration()).visit(this);;
 		}
 		
 		for(RhenaModuleEdge edge : module.getDependencyEdges()) {
 			
-			materialiser.materialiseModel(edge.getTarget());
+			materialiser.materialiseModel(edge.getTarget()).visit(this);;
 		}
 	}
 
