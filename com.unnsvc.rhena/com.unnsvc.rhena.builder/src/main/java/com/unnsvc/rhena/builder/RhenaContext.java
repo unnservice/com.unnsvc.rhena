@@ -3,29 +3,28 @@ package com.unnsvc.rhena.builder;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
 
 import com.unnsvc.rhena.builder.exceptions.RhenaException;
 import com.unnsvc.rhena.builder.identifier.Identifier;
 import com.unnsvc.rhena.builder.identifier.ModuleIdentifier;
 import com.unnsvc.rhena.builder.identifier.Version;
-import com.unnsvc.rhena.builder.model.RhenaModule;
-import com.unnsvc.rhena.builder.resolvers.ResolutionEngine;
+import com.unnsvc.rhena.builder.model.RhenaModuleDescriptor;
+import com.unnsvc.rhena.builder.resolvers.ResolutionContext;
 
 public class RhenaContext {
 
-	private ResolutionEngine resolution;
-	private Stack<ModuleIdentifier> unresolvedIdentifiers;
-	private Map<ModuleIdentifier, RhenaModule> modules;
+	private ResolutionContext resolution;
+	private Map<CompositeScope, Map<ModuleIdentifier, RhenaModuleDescriptor>> resolvedStates = new HashMap<CompositeScope, Map<ModuleIdentifier, RhenaModuleDescriptor>>();
 
-	public RhenaContext(ResolutionEngine resolution) {
+	public RhenaContext(ResolutionContext resolution) {
 
 		this.resolution = resolution;
-		this.modules = new HashMap<ModuleIdentifier, RhenaModule>();
-		this.unresolvedIdentifiers = new Stack<ModuleIdentifier>();
+		for (CompositeScope existing : CompositeScope.values()) {
+			this.resolvedStates.put(existing, new HashMap<ModuleIdentifier, RhenaModuleDescriptor>());
+		}
 	}
 
-	public ResolutionEngine getResolution() {
+	public ResolutionContext getResolution() {
 
 		return resolution;
 	}
@@ -36,11 +35,7 @@ public class RhenaContext {
 		Identifier moduleIdentifier = Identifier.valueOf(moduleIdentifierStr);
 		Version version = Version.valueOf(versionStr);
 
-		ModuleIdentifier newModuleIdentifier = new ModuleIdentifier(componentIdentifier, moduleIdentifier, version);
-		if (!modules.containsKey(newModuleIdentifier)) {
-			unresolvedIdentifiers.push(newModuleIdentifier);
-		}
-		return newModuleIdentifier;
+		return new ModuleIdentifier(componentIdentifier, moduleIdentifier, version);
 	}
 
 	public ModuleIdentifier newModuleIdentifier(String moduleIdentifierString) throws RhenaException {
@@ -49,14 +44,9 @@ public class RhenaContext {
 		return newModuleIdentifier(parts[0], parts[1], parts[2]);
 	}
 
-	public Stack<ModuleIdentifier> getUnresolvedIdentifiers() {
+	public Map<CompositeScope, Map<ModuleIdentifier, RhenaModuleDescriptor>> getResolvedStates() {
 
-		return unresolvedIdentifiers;
-	}
-
-	public Map<ModuleIdentifier, RhenaModule> getModules() {
-
-		return modules;
+		return resolvedStates;
 	}
 
 }

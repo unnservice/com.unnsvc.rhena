@@ -8,6 +8,7 @@
 	<modules>
 		<module>com.unnsvc.rhena.core</module>
 		<module>com.unnsvc.rhena.builder</module>
+		<module>com.unnsvc.rhena.ng</module>
 	</modules>
 
 	<build>

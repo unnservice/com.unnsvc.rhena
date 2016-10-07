@@ -8,7 +8,12 @@ public class ModuleIdentifier {
 	private Identifier componentName;
 	private Identifier moduleName;
 	private Version version;
-
+	
+	public ModuleIdentifier(String[] moduleIdentifier) throws RhenaException {
+		
+		this(moduleIdentifier[0], moduleIdentifier[1], moduleIdentifier[2]);
+	}
+	
 	public ModuleIdentifier(Identifier componentName, Identifier moduleName, Version version) {
 
 		this.componentName = componentName;
@@ -84,5 +89,11 @@ public class ModuleIdentifier {
 		} else if (!version.equals(other.version))
 			return false;
 		return true;
+	}
+
+	public static ModuleIdentifier valueOf(String moduleIdentifierStr) throws RhenaException {
+
+		String[] parts = moduleIdentifierStr.split(":");
+		return new ModuleIdentifier(parts);
 	}
 }

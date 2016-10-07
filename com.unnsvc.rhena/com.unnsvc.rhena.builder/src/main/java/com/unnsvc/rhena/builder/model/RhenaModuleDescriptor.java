@@ -4,19 +4,23 @@ package com.unnsvc.rhena.builder.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.unnsvc.rhena.builder.exceptions.RhenaException;
 import com.unnsvc.rhena.builder.identifier.ModuleIdentifier;
+import com.unnsvc.rhena.builder.resolvers.RhenaMaterialiser;
 import com.unnsvc.rhena.builder.visitors.IVisitable;
 import com.unnsvc.rhena.builder.visitors.IVisitor;
 
-public class RhenaModule implements IVisitable {
+public class RhenaModuleDescriptor implements IVisitable {
 
+	private RhenaMaterialiser repository;
 	private ModuleIdentifier moduleIdentifier;
-	private RhenaModuleEdge parentModule;
-	private RhenaModuleEdge lifecycleModule;
+	private ModuleIdentifier parentModule;
+	private ModuleIdentifier lifecycleModule;
 	private List<RhenaModuleEdge> dependencyEdges;
 
-	public RhenaModule() {
+	public RhenaModuleDescriptor(RhenaMaterialiser repository) {
 
+		this.repository = repository;
 		this.dependencyEdges = new ArrayList<RhenaModuleEdge>();
 	}
 
@@ -25,12 +29,12 @@ public class RhenaModule implements IVisitable {
 		return moduleIdentifier;
 	}
 
-	public void setParentModule(RhenaModuleEdge parentModule) {
+	public void setParentModule(ModuleIdentifier parentModule) {
 
 		this.parentModule = parentModule;
 	}
 
-	public RhenaModuleEdge getParentModule() {
+	public ModuleIdentifier getParentModule() {
 
 		return parentModule;
 	}
@@ -40,12 +44,12 @@ public class RhenaModule implements IVisitable {
 		this.moduleIdentifier = moduleIdentifier;
 	}
 
-	public void setLifecycleModule(RhenaModuleEdge lifecycleModule) {
+	public void setLifecycleModule(ModuleIdentifier lifecycleModule) {
 
 		this.lifecycleModule = lifecycleModule;
 	}
 
-	public RhenaModuleEdge getLifecycleModule() {
+	public ModuleIdentifier getLifecycleModule() {
 
 		return lifecycleModule;
 	}
@@ -56,11 +60,22 @@ public class RhenaModule implements IVisitable {
 			this.dependencyEdges.add(edge);
 		}
 	}
-	
-	@Override
-	public void visit(IVisitor visitor) {
-		
-		visitor.visiting(this);
+
+	public List<RhenaModuleEdge> getDependencyEdges() {
+
+		return dependencyEdges;
 	}
 
+	@Override
+	public void visit(IVisitor visitor) throws RhenaException {
+
+		visitor.startVisit(this);
+
+		visitor.endVisit(this);
+	}
+
+	public RhenaMaterialiser getRepository() {
+
+		return repository;
+	}
 }

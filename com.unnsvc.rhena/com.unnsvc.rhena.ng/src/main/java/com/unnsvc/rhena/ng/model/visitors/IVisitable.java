@@ -1,4 +1,5 @@
-package com.unnsvc.rhena.builder.visitors;
+
+package com.unnsvc.rhena.ng.model.visitors;
 
 import com.unnsvc.rhena.builder.exceptions.RhenaException;
 
