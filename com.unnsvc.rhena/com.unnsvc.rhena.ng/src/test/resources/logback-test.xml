@@ -6,7 +6,8 @@
 		</encoder>
 	</appender>
 
-<!-- 	<logger name="com.unnsvc.rhena.ng.resolution" level="INFO" /> -->
+	<logger name="com.unnsvc.rhena.ng.resolution.parsers" level="INFO" />
+	<!-- <logger name="com.unnsvc.rhena.ng.resolution" level="INFO" /> -->
 	<logger name="com.unnsvc.rhena" level="DEBUG" />
 
 	<root level="DEBUG">

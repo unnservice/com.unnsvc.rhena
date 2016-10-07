@@ -3,6 +3,7 @@ package com.unnsvc.rhena.ng.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import com.unnsvc.rhena.builder.exceptions.RhenaException;
 import com.unnsvc.rhena.builder.identifier.ModuleIdentifier;
@@ -16,11 +17,13 @@ public class RhenaModule implements IVisitable {
 	private ModuleIdentifier lifecycleDeclaration;
 	private ModuleIdentifier parentModule;
 	private List<RhenaModuleEdge> dependencyEdges;
+	private Properties properties;
 
 	public RhenaModule(ModuleIdentifier moduleIdentifier) {
 
 		this.moduleIdentifier = moduleIdentifier;
 		this.dependencyEdges = new ArrayList<RhenaModuleEdge>();
+		this.properties = new Properties();
 	}
 
 	public ModuleIdentifier getModuleIdentifier() {
@@ -69,5 +72,15 @@ public class RhenaModule implements IVisitable {
 	public List<RhenaModuleEdge> getDependencyEdges() {
 
 		return dependencyEdges;
+	}
+
+	public void setProperty(String key, String value) {
+
+		this.properties.setProperty(key, value);
+	}
+
+	public Properties getProperties() {
+
+		return properties;
 	}
 }

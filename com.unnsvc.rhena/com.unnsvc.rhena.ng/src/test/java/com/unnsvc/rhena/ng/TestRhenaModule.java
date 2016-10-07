@@ -11,7 +11,8 @@ import com.unnsvc.rhena.builder.CompositeScope;
 import com.unnsvc.rhena.builder.identifier.ModuleIdentifier;
 import com.unnsvc.rhena.ng.model.RhenaLifecycleExecution;
 import com.unnsvc.rhena.ng.model.RhenaModule;
-import com.unnsvc.rhena.ng.model.visitors.ChainModelResolutionVisitor;
+import com.unnsvc.rhena.ng.model.visitors.ModelInitialisationVisitor;
+import com.unnsvc.rhena.ng.model.visitors.ModelMergeVisitor;
 import com.unnsvc.rhena.ng.model.visitors.LoggingVisitor;
 import com.unnsvc.rhena.ng.resolution.ResolutionManager;
 import com.unnsvc.rhena.ng.resolution.RhenaModelMaterialiser;
@@ -31,7 +32,8 @@ public class TestRhenaModule {
 		RhenaModelMaterialiser modelMaterialiser = new RhenaModelMaterialiser(context);
 		RhenaModule model = modelMaterialiser.materialiseModel(ModuleIdentifier.valueOf("component1:module1:0.0.1"));
 
-		model.visit(new ChainModelResolutionVisitor(modelMaterialiser));
+		model.visit(new ModelInitialisationVisitor(modelMaterialiser));
+		model.visit(new ModelMergeVisitor(modelMaterialiser));
 		
 		model.visit(new LoggingVisitor(modelMaterialiser));
 

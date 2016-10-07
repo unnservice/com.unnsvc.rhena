@@ -65,11 +65,21 @@ public class RhenaModuleParser {
 			if (moduleChild.getNodeType() == Node.ELEMENT_NODE) {
 				if (moduleChild.getNamespaceURI().equals(Constants.NS_RHENA_MODULE)) {
 					processMetaNode(moduleChild);
+				} else if (moduleChild.getNamespaceURI().equals(Constants.NS_RHENA_PROPERTY)) {
+					processPropertyNode(moduleChild);
 				} else if (moduleChild.getNamespaceURI().equals(Constants.NS_RHENA_DEPENDENCY)) {
 					processDepenencyNode(moduleChild);
 				}
 			}
 		}
+	}
+
+	private void processPropertyNode(Node propertyNode) {
+
+		String nodeName = propertyNode.getLocalName();
+		String nodeValue = propertyNode.getTextContent();
+		logger.debug("Set property: " + nodeName + "=" + nodeValue + " on " + module.getModuleIdentifier());
+		module.setProperty(nodeName, nodeValue);
 	}
 
 	private void processMetaNode(Node moduleChild) throws DOMException, RhenaException {

@@ -5,11 +5,11 @@ import com.unnsvc.rhena.builder.model.RhenaModuleEdge;
 import com.unnsvc.rhena.ng.model.RhenaModule;
 import com.unnsvc.rhena.ng.resolution.RhenaModelMaterialiser;
 
-public class ChainModelResolutionVisitor implements IVisitor {
+public class ModelInitialisationVisitor implements IVisitor {
 	
 	private RhenaModelMaterialiser materialiser;
 
-	public ChainModelResolutionVisitor(RhenaModelMaterialiser materialiser) {
+	public ModelInitialisationVisitor(RhenaModelMaterialiser materialiser) {
 		
 		this.materialiser = materialiser;
 	}
@@ -34,7 +34,7 @@ public class ChainModelResolutionVisitor implements IVisitor {
 	@Override
 	public void endModule(RhenaModule module) throws RhenaException {
 
-		// TODO Auto-generated method stub
+
 		
 	}
 
