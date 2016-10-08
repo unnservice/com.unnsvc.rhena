@@ -3,17 +3,22 @@
 	xsi:schemaLocation="urn:rhena:module http://schema.unnsvc.com/rhena/module.xsd" extends="component2:module1:0.0.1">
 
 	<meta component="component1" version="0.0.1" lifecycle="component2:module1:0.0.1">
+	
 		<properties>
 			<someprop>somevalue</someprop>
 			<anotherprop>anothervalue</anotherprop>
 		</properties>
+		
+		<lifecycles>
+			<test>
+				<sourcePaths>
+					<sourcePath>src/test/java</sourcePath>
+				</sourcePaths>
+				<targetPath>some/target/path</targetPath>
+			</test>
+		</lifecycles>
+		
 	</meta>
-
-<!-- 	<lifecycles> -->
-<!-- 		<test> -->
-
-<!-- 		</test> -->
-<!-- 	</lifecycles> -->
 
 	<dependency:test module="component2:module1:0.0.1" />
 

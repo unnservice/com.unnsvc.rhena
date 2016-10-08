@@ -110,9 +110,22 @@ public class RhenaModuleParser {
 							processPropertyNode(properties.item(p));
 						}
 					}
+				} else if (metaChild.getLocalName().equals("lifecycles")) {
+					NodeList lifecycleNodeList = metaChild.getChildNodes();
+					for (int p = 0; p < lifecycleNodeList.getLength(); p++) {
+						Node lifecycleNode = lifecycleNodeList.item(p);
+						if (lifecycleNode.getNodeType() == Node.ELEMENT_NODE) {
+							processLifecycleNode(lifecycleNode);
+						}
+					}
 				}
 			}
 		}
+	}
+
+	private void processLifecycleNode(Node lifecycleNode) {
+
+		
 	}
 
 	private void processDepenencyNode(Node moduleChild) throws DOMException, RhenaException {
