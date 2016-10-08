@@ -37,10 +37,12 @@ public class TestRhenaModule {
 		model.visit(new LoggingVisitor(modelMaterialiser));
 		
 		
-		model.visit(new LifecycleMaterialisingVisitor(modelMaterialiser, CompositeScope.MODEL));
+		model.visit(new LifecycleMaterialisingVisitor(modelMaterialiser, CompositeScope.COMPILE));
 		
 
 //		RhenaLifecycleExecution modelExecution = modelMaterialiser.materialiseScope(CompositeScope.ITEST, model);
+		
+
 
 	}
 }

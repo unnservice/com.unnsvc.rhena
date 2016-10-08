@@ -45,6 +45,14 @@ public class LifecycleMaterialisingVisitor implements IVisitor {
 	@Override
 	public void endModule(RhenaModule module) throws RhenaException {
 
+		materialiseScope(module, requestedScope);
+	}
+
+	private void materialiseScope(RhenaModule module, CompositeScope requestedScope) throws RhenaException {
+
+		if(requestedScope.getDependency() != null) {
+			
+		}
 		RhenaLifecycleExecution execution = module.getRepository().materialiseScope(module, requestedScope);
 		log.trace("[" + module.getModuleIdentifier() + "]:" + requestedScope + " Produced: " + execution);
 	}

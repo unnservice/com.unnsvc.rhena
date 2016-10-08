@@ -41,7 +41,9 @@ public class WorkspaceRepository implements IRepository {
 		}
 
 		URI moduleUri = moduleDescriptor.toURI();
-		return new RhenaModuleParser(moduleIdentifier, moduleUri, this).getModule();
+		RhenaModule module =  new RhenaModuleParser(moduleIdentifier, moduleUri, this).getModule();
+		log.info("[" + module.getModuleIdentifier() + "]:" + CompositeScope.MODEL + " resolved");
+		return module;
 	}
 
 	@Override
@@ -77,9 +79,6 @@ public class WorkspaceRepository implements IRepository {
 					// CompiledClasspathElement[] compiledElement =
 					// lifecycle.materialiseSources(model.getSourceClasspaths());
 					// lifecycle.compileSources(model.get);
-					if (scope.equals(CompositeScope.NORMAL)) {
-						break;
-					}
 				case PACKAGE:
 
 					// PackagedClasspathElement packagedElement =
@@ -87,20 +86,17 @@ public class WorkspaceRepository implements IRepository {
 					// execution.addLifecycleExecutionClasspath(packagedElement);
 				case TEST:
 					// lifecycle.materialiseTest();
-					if (scope.equals(CompositeScope.TEST)) {
-						break;
-					}
 				case ITEST:
 					// lifecycle.materialiseItest();
-					if (scope.equals(CompositeScope.ITEST)) {
-						break;
-					}
 				default:
 					break;
 			}
 		}
 
 		log.info("[" + model.getModuleIdentifier() + "]:" + scope.toString() + " produced " + execution.toString());
+		if(scope.equals(CompositeScope.MODEL)) {
+			new Exception("diag").printStackTrace(System.out);
+		}
 		// // This is produced somehow here, and it comes from the classpath....
 		// execution.addLifecycleExecutionClasspath(lifecycle.compileResources(model.getProperties()));
 		// execution.addLifecycleExecutionClasspath(lifecycle.compileSources());

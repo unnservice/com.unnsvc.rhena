@@ -4,10 +4,10 @@ package com.unnsvc.rhena.common.model;
 public class CompositeScope {
 
 	public static final CompositeScope MODEL = new CompositeScope("model", null, Subscope.MODEL);
-	public static final CompositeScope NORMAL = new CompositeScope("normal", CompositeScope.MODEL, Subscope.RESOURCES, Subscope.COMPILE, Subscope.PACKAGE);
+	public static final CompositeScope COMPILE = new CompositeScope("compile", CompositeScope.MODEL, Subscope.RESOURCES, Subscope.COMPILE, Subscope.PACKAGE);
 	public static final CompositeScope LIFECYCLE = new CompositeScope("lifecycle", CompositeScope.MODEL, Subscope.RESOURCES, Subscope.COMPILE, Subscope.PACKAGE);
-	public static final CompositeScope TEST = new CompositeScope("test", CompositeScope.NORMAL, Subscope.RESOURCES, Subscope.COMPILE, Subscope.PACKAGE, Subscope.TEST);
-	public static final CompositeScope ITEST = new CompositeScope("itest", CompositeScope.TEST, Subscope.RESOURCES, Subscope.COMPILE, Subscope.PACKAGE, Subscope.TEST, Subscope.ITEST);
+	public static final CompositeScope TEST = new CompositeScope("test", CompositeScope.COMPILE, Subscope.TEST);
+	public static final CompositeScope ITEST = new CompositeScope("itest", CompositeScope.TEST, Subscope.ITEST);
 
 	private String scopeName;
 	private CompositeScope scopeDependency;
@@ -49,7 +49,7 @@ public class CompositeScope {
 			case "lifecycle":
 				return CompositeScope.LIFECYCLE;
 			case "normal":
-				return CompositeScope.NORMAL;
+				return CompositeScope.COMPILE;
 			case "test":
 				return CompositeScope.TEST;
 			case "itest":
