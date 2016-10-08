@@ -13,7 +13,7 @@ import com.unnsvc.rhena.common.model.CompositeScope;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaLifecycleExecution;
 import com.unnsvc.rhena.common.model.RhenaModule;
-import com.unnsvc.rhena.core.resolution.parsers.RhenaModuleParser;
+import com.unnsvc.rhena.core.RhenaModuleParser;
 import com.unnsvc.rhena.lifecycle.DefaultLifecycle;
 import com.unnsvc.rhena.lifecycle.ILifecycle;
 

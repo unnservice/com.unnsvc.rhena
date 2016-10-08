@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.core.model.visitors;
+package com.unnsvc.rhena.core.visitors;
 
 import java.util.HashSet;
 import java.util.Set;

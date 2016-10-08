@@ -9,13 +9,13 @@ import com.unnsvc.rhena.common.model.CompositeScope;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaModule;
 import com.unnsvc.rhena.core.RhenaContext;
-import com.unnsvc.rhena.core.model.visitors.LifecycleMaterialisingVisitor;
-import com.unnsvc.rhena.core.model.visitors.LoggingVisitor;
-import com.unnsvc.rhena.core.model.visitors.ModelInitialisationVisitor;
-import com.unnsvc.rhena.core.model.visitors.ModelMergeVisitor;
 import com.unnsvc.rhena.core.resolution.ResolutionManager;
 import com.unnsvc.rhena.core.resolution.RhenaModelMaterialiser;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
+import com.unnsvc.rhena.core.visitors.LifecycleMaterialisingVisitor;
+import com.unnsvc.rhena.core.visitors.LoggingVisitor;
+import com.unnsvc.rhena.core.visitors.ModelInitialisationVisitor;
+import com.unnsvc.rhena.core.visitors.ModelMergeVisitor;
 
 public class TestRhenaModule {
 
