@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:rhena:module" xmlns:prop="urn:rhena:properties" xmlns:dependency="urn:rhena:dependency"
-	xsi:schemaLocation="urn:rhena:module ../../../schema/module.xsd" extends="component2:module1:0.0.1">
+<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:rhena:module" xmlns:dependency="urn:rhena:dependency"
+	xsi:schemaLocation="urn:rhena:module http://schema.unnsvc.com/rhena/module.xsd" extends="component2:module1:0.0.1">
 
-	<meta component="component1" version="0.0.1" lifecycle="component2:module1:0.0.1" />
+	<meta component="component1" version="0.0.1" lifecycle="component2:module1:0.0.1">
+		<properties>
+			<someprop>somevalue</someprop>
+			<anotherprop>anothervalue</anotherprop>
+		</properties>
+	</meta>
 
-	<prop:someprop>somevalue</prop:someprop>
-	<prop:anotherprop>anothervalue</prop:anotherprop>
+<!-- 	<lifecycles> -->
+<!-- 		<test> -->
+
+<!-- 		</test> -->
+<!-- 	</lifecycles> -->
 
 	<dependency:test module="component2:module1:0.0.1" />
 

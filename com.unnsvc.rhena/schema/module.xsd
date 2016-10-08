@@ -4,10 +4,16 @@
 
 	<xs:import namespace="urn:rhena:common" schemaLocation="common.xsd" />
 	<xs:import namespace="urn:rhena:dependency" schemaLocation="dependency.xsd" />
+	
+	<xs:complexType name="propertiesType">
+		<xs:sequence>
+			<xs:any minOccurs="1" maxOccurs="unbounded" namespace="##any" processContents="skip" />
+		</xs:sequence>
+	</xs:complexType>
 
 	<xs:complexType name="metaType">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="properties" minOccurs="0" maxOccurs="1" type="tns:propertiesType" />
 		</xs:sequence>
 		<xs:attribute name="component" type="common:identifierType" />
 		<xs:attribute name="version" type="common:versionType" />
@@ -22,7 +28,7 @@
 				<xs:any namespace="urn:rhena:properties" minOccurs="0" maxOccurs="unbounded" processContents="skip" />
 				<xs:any namespace="urn:rhena:dependency" minOccurs="0" maxOccurs="unbounded" processContents="strict" />
 			</xs:sequence>
-			<xs:attribute name="extends" type="common:qualifiedIdentifier" use="required" />
+			<xs:attribute name="extends" type="common:qualifiedIdentifier" use="optional" />
 		</xs:complexType>
 	</xs:element>
 
