@@ -46,7 +46,7 @@ public class LifecycleMaterialisingVisitor implements IVisitor {
 	public void endModule(RhenaModule module) throws RhenaException {
 
 		RhenaLifecycleExecution execution = module.getRepository().materialiseScope(module, requestedScope);
-		log.info("Materialised " + execution.getLifecycleExecutionClasspath() + " from: " + module.getModuleIdentifier());
+		log.trace("[" + module.getModuleIdentifier() + "]:" + requestedScope + " Produced: " + execution);
 	}
 
 }

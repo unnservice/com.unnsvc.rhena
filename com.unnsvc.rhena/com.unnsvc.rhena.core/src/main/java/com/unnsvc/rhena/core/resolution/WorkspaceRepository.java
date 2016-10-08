@@ -61,34 +61,46 @@ public class WorkspaceRepository implements IRepository {
 		RhenaLifecycleExecution execution = new RhenaLifecycleExecution(model);
 		//
 
-//		log.info("Producing lifecycle execution using lifecycle: " + lifecycle.getClass());
+		// log.info("Producing lifecycle execution using lifecycle: " +
+		// lifecycle.getClass());
 
 		for (Subscope subscope : scope.getSubscopes()) {
 
 			switch (subscope) {
 				case RESOURCES:
-//					lifecycle.compileResources(lifecycleConfiguration.getResourcePaths(), lifecycleConfiguration.getTargetPath());
-					IResourcesLifecycle resourcesLifecycle = getLifecycle(IResourcesLifecycle.class);
-					resourcesLifecycle.compileResources(model);
+					// lifecycle.compileResources(lifecycleConfiguration.getResourcePaths(),
+					// lifecycleConfiguration.getTargetPath());
+					IResourcesLifecycle resourcesLifecycle = getLifecycle(IResourcesLifecycle.class, model, scope);
+					resourcesLifecycle.compileResources();
 				case COMPILE:
 					// Has some sort of classpath dependencies
 					// CompiledClasspathElement[] compiledElement =
 					// lifecycle.materialiseSources(model.getSourceClasspaths());
-//					lifecycle.compileSources(model.get);
+					// lifecycle.compileSources(model.get);
+					if (scope.equals(CompositeScope.NORMAL)) {
+						break;
+					}
 				case PACKAGE:
 
-//					PackagedClasspathElement packagedElement = lifecycle.materialisePackage(compiledElement);
-//					execution.addLifecycleExecutionClasspath(packagedElement);
+					// PackagedClasspathElement packagedElement =
+					// lifecycle.materialisePackage(compiledElement);
+					// execution.addLifecycleExecutionClasspath(packagedElement);
 				case TEST:
-//					lifecycle.materialiseTest();
+					// lifecycle.materialiseTest();
+					if (scope.equals(CompositeScope.TEST)) {
+						break;
+					}
 				case ITEST:
-//					lifecycle.materialiseItest();
+					// lifecycle.materialiseItest();
+					if (scope.equals(CompositeScope.ITEST)) {
+						break;
+					}
 				default:
-					log.info("[" + model.getModuleIdentifier() + "]:"+ scope.toString()+" produced RhenaLifecycleExecution...");
 					break;
 			}
 		}
 
+		log.info("[" + model.getModuleIdentifier() + "]:" + scope.toString() + " produced " + execution.toString());
 		// // This is produced somehow here, and it comes from the classpath....
 		// execution.addLifecycleExecutionClasspath(lifecycle.compileResources(model.getProperties()));
 		// execution.addLifecycleExecutionClasspath(lifecycle.compileSources());
@@ -98,14 +110,14 @@ public class WorkspaceRepository implements IRepository {
 		return execution;
 	}
 
-	private IResourcesLifecycle getLifecycle(Class<? extends ILifecycle> lifecycleInterfaceType) {
+	private IResourcesLifecycle getLifecycle(Class<? extends ILifecycle> lifecycleInterfaceType, RhenaModule model, CompositeScope scope) {
 
 		IResourcesLifecycle ret = null;
-		if(lifecycleInterfaceType.equals(IResourcesLifecycle.class)) {
-			
-			ret = new DefaultResourcesLifecycle();
+		if (lifecycleInterfaceType.equals(IResourcesLifecycle.class)) {
+
+			ret = new DefaultResourcesLifecycle().newDefaultResourcesLifecycle(model, scope);
 		}
-		log.warn("Not implemented, always returning default " + lifecycleInterfaceType.toString());
+		log.warn("[" + model.getModuleIdentifier() + "] has a custom lifecycle, but custom handling is not implemented, alwyas returning " + lifecycleInterfaceType.toString());
 		return ret;
 	}
 }
