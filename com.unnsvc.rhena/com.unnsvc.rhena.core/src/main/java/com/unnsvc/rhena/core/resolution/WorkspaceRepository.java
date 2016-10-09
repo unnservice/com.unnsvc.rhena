@@ -7,6 +7,7 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.unnsvc.rhena.common.Constants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ModuleState;
@@ -111,7 +112,7 @@ public class WorkspaceRepository extends AbstractRepository {
 	public RhenaModel materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
 
 		File workspaceProject = new File(workspaceDirectory, moduleIdentifier.getComponentName() + "." + moduleIdentifier.getModuleName());
-		File moduleDescriptor = new File(workspaceProject, "module.xml");
+		File moduleDescriptor = new File(workspaceProject, Constants.MODULE_DESCRIPTOR_FILENAME);
 		URI moduleDescriptorUri = moduleDescriptor.toURI();
 
 		if (!moduleDescriptor.exists()) {
@@ -127,6 +128,9 @@ public class WorkspaceRepository extends AbstractRepository {
 	public RhenaExecution materialiseExecution(RhenaModel model, RhenaExecutionType type) {
 
 		RhenaExecution execution = new RhenaExecution(model.getModuleIdentifier(), type, new File("some/produced/artifact-" + type.toLabel()));
+
+		
+
 		return execution;
 	}
 }
