@@ -8,9 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.Constants;
+import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.ModuleState;
 import com.unnsvc.rhena.common.model.RhenaExecution;
 import com.unnsvc.rhena.common.model.RhenaExecutionType;
 import com.unnsvc.rhena.common.model.RhenaLifecycleExecution;
@@ -20,15 +20,12 @@ public class WorkspaceRepository extends AbstractRepository {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private File workspaceDirectory;
+	private IResolutionContext context;
 
-	public WorkspaceRepository(File workspaceDirectory) {
+	public WorkspaceRepository(IResolutionContext context, File workspaceDirectory) {
 
+		this.context = context;
 		this.workspaceDirectory = workspaceDirectory;
-	}
-
-	private void compileModel(RhenaModel model) {
-
-		log.info("[" + model.getModuleIdentifier() + "]:" + ModuleState.MODEL.toLabel() + " compiled");
 	}
 
 	public RhenaLifecycleExecution materialisePackaged(RhenaModel model) throws RhenaException {
@@ -125,12 +122,22 @@ public class WorkspaceRepository extends AbstractRepository {
 	}
 
 	@Override
-	public RhenaExecution materialiseExecution(RhenaModel model, RhenaExecutionType type) {
+	public RhenaExecution materialiseExecution(RhenaModel model, RhenaExecutionType type) throws RhenaException {
 
+		// traverse model to get lifecycle and all of its compile dependencies?
+		
 		RhenaExecution execution = new RhenaExecution(model.getModuleIdentifier(), type, new File("some/produced/artifact-" + type.toLabel()));
+		// perform the actual build
+			
 
 		
-
+		if(model.getLifecycleModule() != null) {
+			
+			RhenaModel lifecycleModel = context.materialiseModel(model.getModuleIdentifier());
+			
+		}
+		
+//		throw new UnsupportedOperationException("Not implemented");
 		return execution;
 	}
 }

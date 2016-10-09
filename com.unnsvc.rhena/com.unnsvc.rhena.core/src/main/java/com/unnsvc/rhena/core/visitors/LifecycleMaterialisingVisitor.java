@@ -9,15 +9,15 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleState;
 import com.unnsvc.rhena.common.model.RhenaEdge;
 import com.unnsvc.rhena.common.model.RhenaModel;
-import com.unnsvc.rhena.core.resolution.RhenaResolver;
+import com.unnsvc.rhena.core.resolution.RhenaResolutionContext;
 
 public class LifecycleMaterialisingVisitor implements IModelVisitor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private RhenaResolver resolution;
+	private RhenaResolutionContext resolution;
 	private ModuleState moduleState;
 
-	public LifecycleMaterialisingVisitor(RhenaResolver resolution, ModuleState moduleState) {
+	public LifecycleMaterialisingVisitor(RhenaResolutionContext resolution, ModuleState moduleState) {
 
 		this.resolution = resolution;
 		this.moduleState = moduleState;

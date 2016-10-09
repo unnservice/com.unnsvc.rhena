@@ -1,30 +1,32 @@
 
 package com.unnsvc.rhena.core.resolution;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IRepository;
-import com.unnsvc.rhena.common.IResolver;
+import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaExecution;
 import com.unnsvc.rhena.common.model.RhenaExecutionType;
 import com.unnsvc.rhena.common.model.RhenaModel;
 
-public class RhenaResolver implements IResolver {
+public class RhenaResolutionContext implements IResolutionContext {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private IRepository[] repositories;
+	private List<IRepository> repositories;
 	private Map<ModuleIdentifier, RhenaModel> models;
 	private Map<ModuleIdentifier, Map<RhenaExecutionType, RhenaExecution>> executions;
 
-	public RhenaResolver(IRepository... repositories) {
+	public RhenaResolutionContext() {
 
-		this.repositories = repositories;
+		this.repositories = new ArrayList<IRepository>();
 		this.models = new HashMap<ModuleIdentifier, RhenaModel>();
 		this.executions = new HashMap<ModuleIdentifier, Map<RhenaExecutionType, RhenaExecution>>();
 	}
@@ -72,12 +74,24 @@ public class RhenaResolver implements IResolver {
 		}
 
 		// else materialise it
+
+		/**
+		 * Doing this one-off thing of passing down this context into the
+		 * repository, so the repository can use the context if it needs
+		 */
 		RhenaExecution execution = model.getRepository().materialiseExecution(model, type);
 
-		Map<RhenaExecutionType, RhenaExecution> typeExecutions = new HashMap<RhenaExecutionType, RhenaExecution>();
-		typeExecutions.put(type, execution);
-		executions.put(identifier, typeExecutions);
+		if (executions.containsKey(identifier)) {
+			
+			executions.get(identifier).put(type, execution);
+		} else {
+			Map<RhenaExecutionType, RhenaExecution> typeExecutions = new HashMap<RhenaExecutionType, RhenaExecution>();
+			typeExecutions.put(type, execution);
+			executions.put(identifier, typeExecutions);
+		}
+		
 		log.info("[" + identifier + "]:" + type.toLabel() + " materialised");
+
 
 		// RhenaModule module = modules.get(new Object[] {
 		// model.getModuleIdentifier(), type });
@@ -86,5 +100,11 @@ public class RhenaResolver implements IResolver {
 		// modules.put(model.getModuleIdentifier(), module);
 		// }
 		return execution;
+	}
+
+	@Override
+	public List<IRepository> getRepositories() {
+
+		return repositories;
 	}
 }

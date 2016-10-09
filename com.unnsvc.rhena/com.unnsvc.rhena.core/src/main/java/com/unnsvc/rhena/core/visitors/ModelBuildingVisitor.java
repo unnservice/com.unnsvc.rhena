@@ -2,16 +2,16 @@
 package com.unnsvc.rhena.core.visitors;
 
 import com.unnsvc.rhena.common.IModelVisitor;
-import com.unnsvc.rhena.common.IResolver;
+import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.RhenaEdge;
 import com.unnsvc.rhena.common.model.RhenaModel;
 
 public class ModelBuildingVisitor implements IModelVisitor {
 
-	private IResolver resolver;
+	private IResolutionContext resolver;
 
-	public ModelBuildingVisitor(IResolver resolver) {
+	public ModelBuildingVisitor(IResolutionContext resolver) {
 
 		this.resolver = resolver;
 	}

@@ -10,7 +10,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.common.IResolver;
+import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaEdge;
@@ -21,7 +21,7 @@ public class ModelInitialisationVisitor extends ModelResolvingVisitor {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private Set<ModuleIdentifier> merged;
 
-	public ModelInitialisationVisitor(IResolver resolver) {
+	public ModelInitialisationVisitor(IResolutionContext resolver) {
 
 		super(resolver);
 		this.merged = new HashSet<ModuleIdentifier>();
