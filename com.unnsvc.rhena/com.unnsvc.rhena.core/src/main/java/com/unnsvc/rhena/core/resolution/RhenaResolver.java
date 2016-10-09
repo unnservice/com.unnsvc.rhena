@@ -11,7 +11,7 @@ import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IResolver;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.RhenaEdgeType;
+import com.unnsvc.rhena.common.model.RhenaExecutionType;
 import com.unnsvc.rhena.common.model.RhenaExecution;
 import com.unnsvc.rhena.common.model.RhenaModel;
 
@@ -20,13 +20,13 @@ public class RhenaResolver implements IResolver {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private IRepository[] repositories;
 	private Map<ModuleIdentifier, RhenaModel> models;
-	private Map<ModuleIdentifier, Map<RhenaEdgeType, RhenaExecution>> executions;
+	private Map<ModuleIdentifier, Map<RhenaExecutionType, RhenaExecution>> executions;
 
 	public RhenaResolver(IRepository... repositories) {
 
 		this.repositories = repositories;
 		this.models = new HashMap<ModuleIdentifier, RhenaModel>();
-		this.executions = new HashMap<ModuleIdentifier, Map<RhenaEdgeType, RhenaExecution>>();
+		this.executions = new HashMap<ModuleIdentifier, Map<RhenaExecutionType, RhenaExecution>>();
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class RhenaResolver implements IResolver {
 	}
 
 	@Override
-	public RhenaExecution materialiseModuleType(RhenaModel model, RhenaEdgeType type) {
+	public RhenaExecution materialiseModuleType(RhenaModel model, RhenaExecutionType type) {
 
 		ModuleIdentifier identifier = model.getModuleIdentifier();
 		
@@ -61,7 +61,7 @@ public class RhenaResolver implements IResolver {
 		}
 		
 		// else materialise it
-		RhenaExecution execution = model.getRepository().materialiseModule(model, type);
+		RhenaExecution execution = model.getRepository().materialiseExecution(model, type);
 		
 
 		// RhenaModule module = modules.get(new Object[] {

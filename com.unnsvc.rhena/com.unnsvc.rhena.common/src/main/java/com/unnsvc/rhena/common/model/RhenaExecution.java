@@ -6,10 +6,10 @@ import java.io.File;
 public class RhenaExecution {
 
 	private ModuleIdentifier moduleIdentifier;
-	private RhenaEdgeType edgeType;
+	private RhenaExecutionType edgeType;
 	private File artifact;
 
-	public RhenaExecution(ModuleIdentifier moduleIdentifier, RhenaEdgeType edgeType, File artifact) {
+	public RhenaExecution(ModuleIdentifier moduleIdentifier, RhenaExecutionType edgeType, File artifact) {
 
 		this.moduleIdentifier = moduleIdentifier;
 		this.edgeType = edgeType;
@@ -21,7 +21,7 @@ public class RhenaExecution {
 		return moduleIdentifier;
 	}
 
-	public RhenaEdgeType getEdgeType() {
+	public RhenaExecutionType getEdgeType() {
 
 		return edgeType;
 	}

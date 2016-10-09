@@ -18,7 +18,7 @@ import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaEdge;
-import com.unnsvc.rhena.common.model.RhenaEdgeType;
+import com.unnsvc.rhena.common.model.RhenaExecutionType;
 import com.unnsvc.rhena.common.model.RhenaModel;
 
 public class RhenaModuleParser {
@@ -51,7 +51,7 @@ public class RhenaModuleParser {
 			if (extendsAttribute != null) {
 				String extendsModuleIdentifierStr = extendsAttribute.getNodeValue();
 				ModuleIdentifier extendsModuleIdentifier = new ModuleIdentifier(extendsModuleIdentifierStr.split(":"));
-				module.setParentModule(new RhenaEdge(RhenaEdgeType.PARENT, extendsModuleIdentifier));
+				module.setParentModule(new RhenaEdge(RhenaExecutionType.PARENT, extendsModuleIdentifier));
 			}
 		}
 
@@ -85,7 +85,7 @@ public class RhenaModuleParser {
 			// logger.debug("Lifecycle declaration: " +
 			// moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue());
 			ModuleIdentifier lifecycleDeclaration = new ModuleIdentifier(moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue().split(":"));
-			module.setLifecycleModule(new RhenaEdge(RhenaEdgeType.LIFECYCLE, lifecycleDeclaration));
+			module.setLifecycleModule(new RhenaEdge(RhenaExecutionType.LIFECYCLE, lifecycleDeclaration));
 		}
 
 		if (!module.getModuleIdentifier().getComponentName().toString().equals(componentNameStr)
@@ -125,7 +125,7 @@ public class RhenaModuleParser {
 	private void processDepenencyNode(Node moduleChild) throws DOMException, RhenaException {
 
 		String scopeString = moduleChild.getLocalName();
-		RhenaEdgeType dependencyType = RhenaEdgeType.valueOf(scopeString.toUpperCase());
+		RhenaExecutionType dependencyType = RhenaExecutionType.valueOf(scopeString.toUpperCase());
 		String dependencyTargetModuleIdentifier = moduleChild.getAttributes().getNamedItem("module").getNodeValue();
 
 		ModuleIdentifier moduleIdentifier = new ModuleIdentifier(dependencyTargetModuleIdentifier.split(":"));

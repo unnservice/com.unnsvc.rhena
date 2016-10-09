@@ -1,22 +1,30 @@
 
 package com.unnsvc.rhena.core.visitors;
 
+import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.IResolver;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.RhenaEdgeType;
 import com.unnsvc.rhena.common.model.RhenaModel;
-import com.unnsvc.rhena.common.model.RhenaExecution;
 
-public class ModelBuildingVisitor extends ModelResolvingVisitor {
+public class ModelBuildingVisitor implements IModelVisitor {
+
+	private IResolver resolver;
 
 	public ModelBuildingVisitor(IResolver resolver) {
 
-		super(resolver);
+		this.resolver = resolver;
+	}
+
+	@Override
+	public void startModel(RhenaModel model) throws RhenaException {
+
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void endModel(RhenaModel model) throws RhenaException {
 
-		RhenaExecution execution = getResolver().materialiseModuleType(model, RhenaEdgeType.ITEST);
+//		RhenaExecution execution = getResolver().materialiseModuleType(model, RhenaEdgeType.ITEST);
 	}
 }

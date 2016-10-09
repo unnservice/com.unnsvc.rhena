@@ -1,7 +1,7 @@
 
 package com.unnsvc.rhena.common.model;
 
-public enum RhenaEdgeType {
+public enum RhenaExecutionType {
 
 	PARENT, LIFECYCLE, COMPILE, TEST, ITEST;
 }

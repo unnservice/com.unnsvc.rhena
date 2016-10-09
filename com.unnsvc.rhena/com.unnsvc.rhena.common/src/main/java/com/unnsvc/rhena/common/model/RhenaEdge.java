@@ -3,16 +3,16 @@ package com.unnsvc.rhena.common.model;
 
 public class RhenaEdge {
 
-	private RhenaEdgeType dependencyType;
+	private RhenaExecutionType dependencyType;
 	private ModuleIdentifier target;
 
-	public RhenaEdge(RhenaEdgeType dependencyType, ModuleIdentifier target) {
+	public RhenaEdge(RhenaExecutionType dependencyType, ModuleIdentifier target) {
 
 		this.dependencyType = dependencyType;
 		this.target = target;
 	}
 
-	public RhenaEdgeType getDependencyType() {
+	public RhenaExecutionType getDependencyType() {
 
 		return dependencyType;
 	}
