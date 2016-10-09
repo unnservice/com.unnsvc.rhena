@@ -9,53 +9,53 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleState;
 import com.unnsvc.rhena.common.model.RhenaModule;
 import com.unnsvc.rhena.common.model.RhenaModuleEdge;
-import com.unnsvc.rhena.core.RhenaContext;
+import com.unnsvc.rhena.core.resolution.ResolutionManager;
 
 public class LoggingVisitor implements IVisitor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private RhenaContext context;
+	private ResolutionManager resolution;
 	private int indents;
 	private String label;
 
-	public LoggingVisitor(RhenaContext context, int indents, String label) {
+	public LoggingVisitor(ResolutionManager resolution, int indents, String label) {
 
-		this.context = context;
+		this.resolution = resolution;
 		this.indents = indents;
 		this.label = label;
-//		if(label != null) {
-//			log.info(indent() + label);
-//		}
+		// if(label != null) {
+		// log.info(indent() + label);
+		// }
 	}
 
-	public LoggingVisitor(RhenaContext context) {
+	public LoggingVisitor(ResolutionManager resolution) {
 
-		this(context, 0, null);
+		this(resolution, 0, null);
 	}
 
 	@Override
 	public void startModule(RhenaModule module) throws RhenaException {
 
-		log.info(indent() +  (label == null ? "" : "↳" + label + "⇀") + "[" + module.getModuleIdentifier() + "]");
-		
+		log.info(indent() + (label == null ? "" : "↳" + label + "⇀") + "[" + module.getModuleIdentifier() + "]");
+
 		if (module.getParentModule() != null) {
 
-			RhenaModule parent = context.getResolutionManager().materialiseState(module.getParentModule(), ModuleState.MODEL);
-			parent.visit(new LoggingVisitor(context, indents + 1, "parent"));
+			RhenaModule parent = resolution.materialiseState(module.getParentModule(), ModuleState.MODEL);
+			parent.visit(new LoggingVisitor(resolution, indents + 1, "parent"));
 		}
 
 		if (module.getLifecycleDeclaration() != null) {
 
-			RhenaModule lifecycle = context.getResolutionManager().materialiseState(module.getLifecycleDeclaration(), ModuleState.MODEL);
-			lifecycle.visit(new LoggingVisitor(context, indents + 1, "lifecycle"));
+			RhenaModule lifecycle = resolution.materialiseState(module.getLifecycleDeclaration(), ModuleState.MODEL);
+			lifecycle.visit(new LoggingVisitor(resolution, indents + 1, "lifecycle"));
 		}
-		
-		if(!module.getDependencyEdges().isEmpty()) {
-			
-			for(RhenaModuleEdge edge : module.getDependencyEdges()) {
-				
-				RhenaModule dependency = context.getResolutionManager().materialiseState(edge.getTarget(), ModuleState.MODEL);
-				dependency.visit(new LoggingVisitor(context, indents + 1, "dependency"));
+
+		if (!module.getDependencyEdges().isEmpty()) {
+
+			for (RhenaModuleEdge edge : module.getDependencyEdges()) {
+
+				RhenaModule dependency = resolution.materialiseState(edge.getTarget(), ModuleState.MODEL);
+				dependency.visit(new LoggingVisitor(resolution, indents + 1, "dependency"));
 			}
 		}
 	}

@@ -3,6 +3,8 @@ package com.unnsvc.rhena.core.resolution;
 
 import java.io.File;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,20 +25,26 @@ public class WorkspaceRepository implements IRepository {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private File workspaceDirectory;
-	// private Map<ModuleIdentifier, ILifecycle> lifecycles;
+	private Map<ModuleIdentifier, RhenaModule> resolvedModules;
 
 	public WorkspaceRepository(File workspaceDirectory) {
 
 		this.workspaceDirectory = workspaceDirectory;
+		this.resolvedModules = new HashMap<ModuleIdentifier, RhenaModule>();
 	}
 
 	@Override
 	public RhenaModule materialiseState(ModuleIdentifier moduleIdentifier, ModuleState moduleState) throws RhenaException {
 
-		RhenaModule module = null;
+		RhenaModule module = resolvedModules.get(moduleIdentifier);
+		
 		switch (moduleState) {
 			case MODEL:
-				module = resolveModel(moduleIdentifier);
+				if(!resolvedModules.containsKey(moduleIdentifier)) {
+					module = resolveModel(moduleIdentifier);
+					resolvedModules.put(moduleIdentifier, module);
+				}
+				module.setModuleState(ModuleState.MODEL);
 				if (moduleState.equals(ModuleState.MODEL))
 					break;
 			case COMPILED:
@@ -53,8 +61,7 @@ public class WorkspaceRepository implements IRepository {
 					break;
 		}
 
-		log.debug("E: " + module.getModuleIdentifier());
-		log.info("[" + module.getModuleIdentifier() + "]:" + moduleState.toLabel() + " materialised");
+		log.info("[" + module + "]:" + moduleState.toLabel() + " resolved");
 
 		return module;
 	}
@@ -72,7 +79,6 @@ public class WorkspaceRepository implements IRepository {
 
 		RhenaModule module = new RhenaModuleParser(moduleIdentifier, moduleUri).getModule();
 		module.setRepository(this);
-		module.setModuleState(ModuleState.MODEL);
 		return module;
 	}
 

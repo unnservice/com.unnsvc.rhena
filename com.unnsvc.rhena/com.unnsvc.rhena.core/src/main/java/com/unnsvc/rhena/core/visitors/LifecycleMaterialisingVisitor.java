@@ -6,22 +6,20 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IVisitor;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.DependencyType;
 import com.unnsvc.rhena.common.model.ModuleState;
-import com.unnsvc.rhena.common.model.RhenaLifecycleExecution;
 import com.unnsvc.rhena.common.model.RhenaModule;
 import com.unnsvc.rhena.common.model.RhenaModuleEdge;
-import com.unnsvc.rhena.core.RhenaContext;
+import com.unnsvc.rhena.core.resolution.ResolutionManager;
 
 public class LifecycleMaterialisingVisitor implements IVisitor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private RhenaContext context;
+	private ResolutionManager resolution;
 	private ModuleState moduleState;
 
-	public LifecycleMaterialisingVisitor(RhenaContext context, ModuleState moduleState) {
+	public LifecycleMaterialisingVisitor(ResolutionManager resolution, ModuleState moduleState) {
 
-		this.context = context;
+		this.resolution = resolution;
 		this.moduleState = moduleState;
 	}
 
@@ -29,14 +27,14 @@ public class LifecycleMaterialisingVisitor implements IVisitor {
 	public void startModule(RhenaModule module) throws RhenaException {
 
 		if (module.getLifecycleDeclaration() != null) {
-			RhenaModule lifecycleModel = context.getResolutionManager().materialiseState(module.getLifecycleDeclaration(), ModuleState.MODEL);
-			lifecycleModel.visit(new LifecycleMaterialisingVisitor(context, ModuleState.COMPILED));
+			RhenaModule lifecycleModel = resolution.materialiseState(module.getLifecycleDeclaration(), ModuleState.MODEL);
+			lifecycleModel.visit(new LifecycleMaterialisingVisitor(resolution, ModuleState.COMPILED));
 		}
 
 		for (RhenaModuleEdge edge : module.getDependencyEdges()) {
 
-			RhenaModule dependency = context.getResolutionManager().materialiseState(edge.getTarget(), ModuleState.MODEL);
-			dependency.visit(new LifecycleMaterialisingVisitor(context, ModuleState.PACKAGED));
+			RhenaModule dependency = resolution.materialiseState(edge.getTarget(), ModuleState.MODEL);
+			dependency.visit(new LifecycleMaterialisingVisitor(resolution, ModuleState.PACKAGED));
 		}
 	}
 
