@@ -35,7 +35,7 @@ public class LoggingVisitor implements IModelVisitor {
 	@Override
 	public void startModel(RhenaModel module) throws RhenaException {
 
-		log.info(indent() + (label == null ? "" : "↳" + label + "⇀") + "[" + module.getModuleIdentifier() + "]");
+		log.info(indent() + (label == null ? "root" : label) + ":" + module.getModuleIdentifier());
 
 		if (module.getParentModule() != null) {
 
@@ -68,7 +68,7 @@ public class LoggingVisitor implements IModelVisitor {
 
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < indents; i++) {
-			sb.append("   ");
+			sb.append("    ");
 		}
 		return sb.toString();
 	}

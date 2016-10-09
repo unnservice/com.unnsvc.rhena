@@ -3,18 +3,18 @@ package com.unnsvc.rhena.common.model;
 
 public class RhenaEdge {
 
-	private RhenaExecutionType dependencyType;
+	private RhenaExecutionType executionType;
 	private ModuleIdentifier target;
 
-	public RhenaEdge(RhenaExecutionType dependencyType, ModuleIdentifier target) {
+	public RhenaEdge(RhenaExecutionType executionType, ModuleIdentifier target) {
 
-		this.dependencyType = dependencyType;
+		this.executionType = executionType;
 		this.target = target;
 	}
 
-	public RhenaExecutionType getDependencyType() {
+	public RhenaExecutionType getExecutionType() {
 
-		return dependencyType;
+		return executionType;
 	}
 
 	public ModuleIdentifier getTarget() {
@@ -27,7 +27,7 @@ public class RhenaEdge {
 
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((dependencyType == null) ? 0 : dependencyType.hashCode());
+		result = prime * result + ((executionType == null) ? 0 : executionType.hashCode());
 		result = prime * result + ((target == null) ? 0 : target.hashCode());
 		return result;
 	}
@@ -42,7 +42,7 @@ public class RhenaEdge {
 		if (getClass() != obj.getClass())
 			return false;
 		RhenaEdge other = (RhenaEdge) obj;
-		if (dependencyType != other.dependencyType)
+		if (executionType != other.executionType)
 			return false;
 		if (target == null) {
 			if (other.target != null)

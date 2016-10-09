@@ -11,6 +11,7 @@
 
 	</meta>
 
+	<dependency:compile module="component2:module1:0.0.1" />
 	<dependency:test module="component2:module1:0.0.1" />
 
 </module>

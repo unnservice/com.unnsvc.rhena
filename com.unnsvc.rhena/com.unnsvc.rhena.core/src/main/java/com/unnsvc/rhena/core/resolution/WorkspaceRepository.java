@@ -15,6 +15,7 @@ import com.unnsvc.rhena.common.model.RhenaExecution;
 import com.unnsvc.rhena.common.model.RhenaExecutionType;
 import com.unnsvc.rhena.common.model.RhenaLifecycleExecution;
 import com.unnsvc.rhena.common.model.RhenaModel;
+import com.unnsvc.rhena.core.visitors.DependencyCollectionVisitor;
 
 public class WorkspaceRepository extends AbstractRepository {
 
@@ -134,7 +135,13 @@ public class WorkspaceRepository extends AbstractRepository {
 		if(model.getLifecycleModule() != null) {
 			
 			RhenaModel lifecycleModel = context.materialiseModel(model.getModuleIdentifier());
+			DependencyCollectionVisitor collector = new DependencyCollectionVisitor(context, RhenaExecutionType.COMPILE);
+			lifecycleModel.visit(collector);
 			
+			log.debug("Compile dependencies of lifecycle module: " + collector.getDependencyChain().size());
+			for(ModuleIdentifier identifier : collector.getDependencyChain()) {
+				log.debug(": " + identifier);
+			}
 		}
 		
 //		throw new UnsupportedOperationException("Not implemented");

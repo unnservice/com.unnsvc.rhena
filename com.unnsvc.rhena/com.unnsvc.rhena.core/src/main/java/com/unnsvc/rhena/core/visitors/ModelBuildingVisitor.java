@@ -23,21 +23,21 @@ public class ModelBuildingVisitor implements IModelVisitor {
 			
 			RhenaModel parent = resolver.materialiseModel(model.getParentModule().getTarget());
 			parent.visit(this);
-			resolver.materialiseModuleType(model, model.getParentModule().getDependencyType());
+			resolver.materialiseModuleType(model, model.getParentModule().getExecutionType());
 		}
 		
 		if(model.getLifecycleModule() != null) {
 			
 			RhenaModel lifecycle = resolver.materialiseModel(model.getLifecycleModule().getTarget());
 			lifecycle.visit(this);
-			resolver.materialiseModuleType(lifecycle, model.getLifecycleModule().getDependencyType());
+			resolver.materialiseModuleType(lifecycle, model.getLifecycleModule().getExecutionType());
 		}
 		
 		for(RhenaEdge edge : model.getDependencyEdges()) {
 			
 			RhenaModel dependency = resolver.materialiseModel(edge.getTarget());
 			dependency.visit(this);
-			resolver.materialiseModuleType(dependency, edge.getDependencyType());
+			resolver.materialiseModuleType(dependency, edge.getExecutionType());
 		}
 	}
 
