@@ -42,7 +42,7 @@ public class ModelInitialisationVisitor extends ModelResolvingVisitor {
 	}
 
 	/**
-	 * @TODO Assert dependency precedence and 
+	 * @TODO Assert dependency precedence and
 	 * @param parent
 	 * @param model
 	 */
@@ -57,9 +57,13 @@ public class ModelInitialisationVisitor extends ModelResolvingVisitor {
 		// Merge dependencies
 		List<RhenaEdge> dependencyEdges = new ArrayList<RhenaEdge>();
 		dependencyEdges.addAll(parent.getDependencyEdges());
-		dependencyEdges.addAll(model.getDependencyEdges());
+		for (RhenaEdge edge : model.getDependencyEdges()) {
+			if (!dependencyEdges.contains(edge)) {
+				dependencyEdges.addAll(model.getDependencyEdges());
+			}
+		}
 		model.setDependencyEdges(dependencyEdges);
-		
+
 		// Merge...
 
 	}

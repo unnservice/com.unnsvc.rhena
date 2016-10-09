@@ -130,7 +130,9 @@ public class RhenaModuleParser {
 
 		ModuleIdentifier moduleIdentifier = new ModuleIdentifier(dependencyTargetModuleIdentifier.split(":"));
 		RhenaEdge edge = new RhenaEdge(dependencyType, moduleIdentifier);
-		module.addDependencyEdge(edge);
+		if (!module.getDependencyEdges().contains(edge)) {
+			module.getDependencyEdges().add(edge);
+		}
 	}
 
 	public RhenaModel getModel() {
