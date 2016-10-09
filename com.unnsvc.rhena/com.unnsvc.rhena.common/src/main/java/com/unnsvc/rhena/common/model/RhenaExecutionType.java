@@ -3,7 +3,7 @@ package com.unnsvc.rhena.common.model;
 
 public enum RhenaExecutionType {
 
-	PARENT, LIFECYCLE, COMPILE, TEST(RhenaExecutionType.COMPILE), ITEST(RhenaExecutionType.TEST);
+	COMPILE, TEST(RhenaExecutionType.COMPILE), ITEST(RhenaExecutionType.TEST);
 
 	private RhenaExecutionType dependency;
 

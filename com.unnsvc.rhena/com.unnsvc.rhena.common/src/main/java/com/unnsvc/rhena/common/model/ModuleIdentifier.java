@@ -8,21 +8,21 @@ public class ModuleIdentifier {
 	private Identifier componentName;
 	private Identifier moduleName;
 	private Version version;
-	
+
 	public ModuleIdentifier(String[] moduleIdentifier) throws RhenaException {
-		
+
 		this(moduleIdentifier[0], moduleIdentifier[1], moduleIdentifier[2]);
 	}
-	
+
 	public ModuleIdentifier(Identifier componentName, Identifier moduleName, Version version) {
 
 		this.componentName = componentName;
 		this.moduleName = moduleName;
 		this.version = version;
 	}
-	
+
 	public ModuleIdentifier(String componentIdentifierStr, String moduleIdentifierStr, String versionStr) throws RhenaException {
-		
+
 		this(Identifier.valueOf(componentIdentifierStr), Identifier.valueOf(moduleIdentifierStr), Version.valueOf(versionStr));
 	}
 
@@ -48,13 +48,8 @@ public class ModuleIdentifier {
 	}
 
 	public String toTag() {
-		
-		return "[" + toString() + "]";
-	}
-	
-	public String toModuleDirectoryName() {
 
-		return componentName.toString() + "." + moduleName.toString();
+		return "[" + toString() + "]";
 	}
 
 	@Override
@@ -101,6 +96,5 @@ public class ModuleIdentifier {
 		String[] parts = moduleIdentifierStr.split(":");
 		return new ModuleIdentifier(parts);
 	}
-	
-	
+
 }

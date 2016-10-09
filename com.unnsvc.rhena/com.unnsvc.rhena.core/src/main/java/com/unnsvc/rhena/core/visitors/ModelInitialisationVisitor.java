@@ -33,7 +33,7 @@ public class ModelInitialisationVisitor extends ModelResolvingVisitor {
 		if (model.getParentModule() != null) {
 
 			if (!merged.contains(model.getModuleIdentifier())) {
-				RhenaModel parent = getResolver().materialiseModel(model.getParentModule().getTarget());
+				RhenaModel parent = getResolver().materialiseModel(model.getParentModule());
 				mergeParent(parent, model);
 				merged.add(model.getModuleIdentifier());
 				log.debug("[" + model.getModuleIdentifier() + "]:model merged parent " + parent.getModuleIdentifier());

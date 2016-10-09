@@ -51,7 +51,7 @@ public class RhenaModuleParser {
 			if (extendsAttribute != null) {
 				String extendsModuleIdentifierStr = extendsAttribute.getNodeValue();
 				ModuleIdentifier extendsModuleIdentifier = new ModuleIdentifier(extendsModuleIdentifierStr.split(":"));
-				module.setParentModule(new RhenaEdge(RhenaExecutionType.PARENT, extendsModuleIdentifier));
+				module.setParentModule(extendsModuleIdentifier);
 			}
 		}
 
@@ -85,11 +85,10 @@ public class RhenaModuleParser {
 			// logger.debug("Lifecycle declaration: " +
 			// moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue());
 			ModuleIdentifier lifecycleDeclaration = new ModuleIdentifier(moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue().split(":"));
-			module.setLifecycleModule(new RhenaEdge(RhenaExecutionType.LIFECYCLE, lifecycleDeclaration));
+			module.setLifecycleModule(lifecycleDeclaration);
 		}
 
-		if (!module.getModuleIdentifier().getComponentName().toString().equals(componentNameStr)
-				|| !module.getModuleIdentifier().getVersion().toString().equals(versionStr)) {
+		if (!module.getModuleIdentifier().getComponentName().toString().equals(componentNameStr) || !module.getModuleIdentifier().getVersion().toString().equals(versionStr)) {
 			throw new RhenaException("Not correct version in workspace for: " + module.getModuleIdentifier());
 		}
 

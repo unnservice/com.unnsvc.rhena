@@ -39,13 +39,13 @@ public class LoggingVisitor implements IModelVisitor {
 
 		if (module.getParentModule() != null) {
 
-			RhenaModel parent = context.materialiseModel(module.getParentModule().getTarget());
+			RhenaModel parent = context.materialiseModel(module.getParentModule());
 			parent.visit(new LoggingVisitor(context, indents + 1, "parent"));
 		}
 
 		if (module.getLifecycleModule() != null) {
 
-			RhenaModel lifecycle = context.materialiseModel(module.getLifecycleModule().getTarget());
+			RhenaModel lifecycle = context.materialiseModel(module.getLifecycleModule());
 			lifecycle.visit(new LoggingVisitor(context, indents + 1, "lifecycle"));
 		}
 

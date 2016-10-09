@@ -60,7 +60,7 @@ public class DependencyCollectionVisitor implements IModelVisitor {
 
 		List<URL> execs = new ArrayList<URL>();
 		for (ModuleIdentifier identifier : identifiers) {
-			RhenaExecution exec = context.materialiseModuleType(context.materialiseModel(identifier), requested);
+			RhenaExecution exec = context.materialiseExecution(context.materialiseModel(identifier), requested);
 			execs.add(exec.getArtifactURL());
 		}
 		return execs;

@@ -9,6 +9,7 @@
 	<logger name="com.unnsvc.rhena.core.visitors.ModelInitialisationVisitor" level="INFO" />
 	<logger name="com.unnsvc.rhena.core.resolution.RhenaModuleParser" level="INFO" />
 	<logger name="com.unnsvc.rhena.core.resolution.WorkspaceResolution" level="TRACE" />
+	<logger name="com.unnsvc.rhena.core" level="TRACE" />
 
 	<root level="DEBUG">
 		<appender-ref ref="STDOUT" />

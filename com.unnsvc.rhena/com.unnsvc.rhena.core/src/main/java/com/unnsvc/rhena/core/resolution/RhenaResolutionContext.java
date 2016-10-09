@@ -57,14 +57,14 @@ public class RhenaResolutionContext implements IResolutionContext {
 	}
 
 	@Override
-	public RhenaExecution materialiseModuleType(RhenaModel model, RhenaExecutionType type) throws RhenaException {
+	public RhenaExecution materialiseExecution(RhenaModel model, RhenaExecutionType type) throws RhenaException {
 
 		/**
 		 * Execution type might have a dependency on another execution type
 		 * first which needs to be executed
 		 */
 		if (type.getDependency() != null) {
-			materialiseModuleType(model, type.getDependency());
+			materialiseExecution(model, type.getDependency());
 		}
 
 		ModuleIdentifier identifier = model.getModuleIdentifier();

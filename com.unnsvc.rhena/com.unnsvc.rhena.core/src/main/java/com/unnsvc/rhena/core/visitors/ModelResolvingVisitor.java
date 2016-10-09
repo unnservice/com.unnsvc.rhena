@@ -20,11 +20,11 @@ public abstract class ModelResolvingVisitor implements IModelVisitor {
 	public void startModel(RhenaModel model) throws RhenaException {
 
 		if (model.getParentModule() != null) {
-			getResolver().materialiseModel(model.getParentModule().getTarget()).visit(this);
+			getResolver().materialiseModel(model.getParentModule()).visit(this);
 		}
 
 		if (model.getLifecycleModule() != null) {
-			getResolver().materialiseModel(model.getLifecycleModule().getTarget()).visit(this);
+			getResolver().materialiseModel(model.getLifecycleModule()).visit(this);
 		}
 
 		for (RhenaEdge edge : model.getDependencyEdges()) {

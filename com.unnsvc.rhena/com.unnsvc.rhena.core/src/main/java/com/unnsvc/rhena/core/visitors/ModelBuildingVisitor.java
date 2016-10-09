@@ -8,6 +8,7 @@ import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.RhenaEdge;
+import com.unnsvc.rhena.common.model.RhenaExecutionType;
 import com.unnsvc.rhena.common.model.RhenaModel;
 
 public class ModelBuildingVisitor implements IModelVisitor {
@@ -25,23 +26,21 @@ public class ModelBuildingVisitor implements IModelVisitor {
 
 		if (model.getParentModule() != null) {
 			
-			RhenaModel parent = resolver.materialiseModel(model.getParentModule().getTarget());
-			parent.visit(this);
-			resolver.materialiseModuleType(model, model.getParentModule().getExecutionType());
+			resolver.materialiseModel(model.getParentModule()).visit(this);;
 		}
 		
 		if(model.getLifecycleModule() != null) {
 			
-			RhenaModel lifecycle = resolver.materialiseModel(model.getLifecycleModule().getTarget());
+			RhenaModel lifecycle = resolver.materialiseModel(model.getLifecycleModule());
 			lifecycle.visit(this);
-			resolver.materialiseModuleType(lifecycle, model.getLifecycleModule().getExecutionType());
+			resolver.materialiseExecution(lifecycle, RhenaExecutionType.COMPILE);
 		}
 		
 		for(RhenaEdge edge : model.getDependencyEdges()) {
 			
 			RhenaModel dependency = resolver.materialiseModel(edge.getTarget());
 			dependency.visit(this);
-			resolver.materialiseModuleType(dependency, edge.getExecutionType());
+			resolver.materialiseExecution(dependency, edge.getExecutionType());
 		}
 	}
 

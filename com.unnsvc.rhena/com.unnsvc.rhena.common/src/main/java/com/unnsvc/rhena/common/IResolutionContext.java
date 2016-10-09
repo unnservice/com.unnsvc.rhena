@@ -20,7 +20,7 @@ public interface IResolutionContext {
 
 	public RhenaModel materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException;
 
-	public RhenaExecution materialiseModuleType(RhenaModel model, RhenaExecutionType type) throws RhenaException;
+	public RhenaExecution materialiseExecution(RhenaModel model, RhenaExecutionType type) throws RhenaException;
 
 	public List<IRepository> getRepositories();
 }
