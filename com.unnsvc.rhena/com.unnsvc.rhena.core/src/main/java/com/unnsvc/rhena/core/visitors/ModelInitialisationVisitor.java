@@ -2,33 +2,34 @@ package com.unnsvc.rhena.core.visitors;
 
 import com.unnsvc.rhena.common.IVisitor;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.model.ModuleState;
 import com.unnsvc.rhena.common.model.RhenaModule;
 import com.unnsvc.rhena.common.model.RhenaModuleEdge;
-import com.unnsvc.rhena.core.resolution.RhenaModelMaterialiser;
+import com.unnsvc.rhena.core.RhenaContext;
 
 public class ModelInitialisationVisitor implements IVisitor {
 	
-	private RhenaModelMaterialiser materialiser;
+	private RhenaContext context;
 
-	public ModelInitialisationVisitor(RhenaModelMaterialiser materialiser) {
+	public ModelInitialisationVisitor(RhenaContext context) {
 		
-		this.materialiser = materialiser;
+		this.context = context;
 	}
 
 	@Override
 	public void startModule(RhenaModule module) throws RhenaException {
 
 		if(module.getParentModule() != null) {
-			materialiser.materialiseModel(module.getParentModule()).visit(this);;
+			context.getResolutionManager().materialiseState(module.getParentModule(), ModuleState.MODEL).visit(this);
 		}
 		
 		if(module.getLifecycleDeclaration() != null) {
-			materialiser.materialiseModel(module.getLifecycleDeclaration()).visit(this);;
+			context.getResolutionManager().materialiseState(module.getLifecycleDeclaration(), ModuleState.MODEL).visit(this);
 		}
 		
 		for(RhenaModuleEdge edge : module.getDependencyEdges()) {
 			
-			materialiser.materialiseModel(edge.getTarget()).visit(this);;
+			context.getResolutionManager().materialiseState(edge.getTarget(), ModuleState.MODEL).visit(this);;
 		}
 	}
 

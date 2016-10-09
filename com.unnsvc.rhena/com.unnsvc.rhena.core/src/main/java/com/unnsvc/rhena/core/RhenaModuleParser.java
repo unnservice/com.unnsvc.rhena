@@ -14,7 +14,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.unnsvc.rhena.common.Constants;
-import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.DependencyType;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
@@ -26,19 +25,14 @@ public class RhenaModuleParser {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	private RhenaModule module;
 
-	public RhenaModuleParser(ModuleIdentifier moduleIdentifier, URI location, IRepository repository) throws RhenaException {
+	public RhenaModuleParser(ModuleIdentifier moduleIdentifier, URI location) throws RhenaException {
 
-		this.module = new RhenaModule(repository, moduleIdentifier);
+		this.module = new RhenaModule(moduleIdentifier);
 		try {
 			parse(location);
 		} catch (Exception ex) {
 			throw new RhenaException(ex);
 		}
-	}
-
-	public RhenaModule getModule() {
-
-		return module;
 	}
 
 	public void parse(URI uri) throws Exception {
@@ -137,5 +131,10 @@ public class RhenaModuleParser {
 		ModuleIdentifier moduleIdentifier = new ModuleIdentifier(dependencyTargetModuleIdentifier.split(":"));
 		RhenaModuleEdge edge = new RhenaModuleEdge(dependencyType, moduleIdentifier);
 		module.addDependencyEdge(edge);
+	}
+
+	public RhenaModule getModule() {
+
+		return module;
 	}
 }

@@ -7,35 +7,36 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.IVisitor;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.DependencyType;
+import com.unnsvc.rhena.common.model.ModuleState;
 import com.unnsvc.rhena.common.model.RhenaLifecycleExecution;
 import com.unnsvc.rhena.common.model.RhenaModule;
 import com.unnsvc.rhena.common.model.RhenaModuleEdge;
-import com.unnsvc.rhena.core.resolution.RhenaModelMaterialiser;
+import com.unnsvc.rhena.core.RhenaContext;
 
 public class LifecycleMaterialisingVisitor implements IVisitor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private RhenaModelMaterialiser materialiser;
-	private DependencyType dependencyType;
+	private RhenaContext context;
+	private ModuleState moduleState;
 
-	public LifecycleMaterialisingVisitor(RhenaModelMaterialiser materialiser, DependencyType dependencyType) {
+	public LifecycleMaterialisingVisitor(RhenaContext context, ModuleState moduleState) {
 
-		this.materialiser = materialiser;
-		this.dependencyType = dependencyType;
+		this.context = context;
+		this.moduleState = moduleState;
 	}
 
 	@Override
 	public void startModule(RhenaModule module) throws RhenaException {
 
 		if (module.getLifecycleDeclaration() != null) {
-			RhenaModule lifecycleModel = materialiser.materialiseModel(module.getLifecycleDeclaration());
-			lifecycleModel.visit(new LifecycleMaterialisingVisitor(materialiser, DependencyType.COMPILE));
+			RhenaModule lifecycleModel = context.getResolutionManager().materialiseState(module.getLifecycleDeclaration(), ModuleState.MODEL);
+			lifecycleModel.visit(new LifecycleMaterialisingVisitor(context, ModuleState.COMPILED));
 		}
 
 		for (RhenaModuleEdge edge : module.getDependencyEdges()) {
 
-			RhenaModule dependency = materialiser.materialiseModel(edge.getTarget());
-			dependency.visit(new LifecycleMaterialisingVisitor(materialiser, edge.getDependencyType()));
+			RhenaModule dependency = context.getResolutionManager().materialiseState(edge.getTarget(), ModuleState.MODEL);
+			dependency.visit(new LifecycleMaterialisingVisitor(context, ModuleState.PACKAGED));
 		}
 	}
 
@@ -45,13 +46,8 @@ public class LifecycleMaterialisingVisitor implements IVisitor {
 	@Override
 	public void endModule(RhenaModule module) throws RhenaException {
 
-		materialiseScope(module);
-	}
-
-	private void materialiseScope(RhenaModule module) throws RhenaException {
-
-		RhenaLifecycleExecution execution = module.getRepository().materialisePackaged(module);
-		log.trace("[" + module.getModuleIdentifier() + "]:" + dependencyType + " Produced: " + execution);
+//		RhenaLifecycleExecution execution = context.getResolutionManager().materialiseState(module.getModuleIdentifier(), ModuleState.DEPLOYED);
+//		log.trace("[" + module.getModuleIdentifier() + "]:" + moduleState + " Produced: " + execution);
 	}
 
 }

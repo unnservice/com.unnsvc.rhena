@@ -31,7 +31,35 @@ public class WorkspaceRepository implements IRepository {
 	}
 
 	@Override
-	public RhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
+	public RhenaModule materialiseState(ModuleIdentifier moduleIdentifier, ModuleState moduleState) throws RhenaException {
+
+		RhenaModule module = null;
+		switch (moduleState) {
+			case MODEL:
+				module = resolveModel(moduleIdentifier);
+				if (moduleState.equals(ModuleState.MODEL))
+					break;
+			case COMPILED:
+				if (moduleState.equals(ModuleState.COMPILED))
+					break;
+			case PACKAGED:
+				if (moduleState.equals(ModuleState.PACKAGED))
+					break;
+			case TESTED:
+				if (moduleState.equals(ModuleState.TESTED))
+					break;
+			case DEPLOYED:
+				if (moduleState.equals(ModuleState.DEPLOYED))
+					break;
+		}
+
+		log.debug("E: " + module.getModuleIdentifier());
+		log.info("[" + module.getModuleIdentifier() + "]:" + moduleState.toLabel() + " materialised");
+
+		return module;
+	}
+
+	public RhenaModule resolveModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
 
 		File workspaceProject = new File(workspaceDirectory, moduleIdentifier.getComponentName() + "." + moduleIdentifier.getModuleName());
 		File moduleDescriptor = new File(workspaceProject, "module.xml");
@@ -41,12 +69,13 @@ public class WorkspaceRepository implements IRepository {
 		}
 
 		URI moduleUri = moduleDescriptor.toURI();
-		RhenaModule module = new RhenaModuleParser(moduleIdentifier, moduleUri, this).getModule();
-		log.info("[" + module.getModuleIdentifier() + "]:" + ModuleState.MODEL + " resolved");
+
+		RhenaModule module = new RhenaModuleParser(moduleIdentifier, moduleUri).getModule();
+		module.setRepository(this);
+		module.setModuleState(ModuleState.MODEL);
 		return module;
 	}
 
-	@Override
 	public RhenaLifecycleExecution materialisePackaged(RhenaModule model) throws RhenaException {
 
 		// log.info("Executed: " + model.getModuleIdentifier() + ":" + scope);
@@ -116,7 +145,8 @@ public class WorkspaceRepository implements IRepository {
 
 			ret = new DefaultResourcesLifecycle().newDefaultResourcesLifecycle(model, dependencyType);
 		}
-		log.warn("[" + model.getModuleIdentifier() + "] has a custom lifecycle, but custom handling is not implemented, alwyas returning " + lifecycleInterfaceType.toString());
+		log.warn("[" + model.getModuleIdentifier() + "] has a custom lifecycle, but custom handling is not implemented, alwyas returning "
+				+ lifecycleInterfaceType.toString());
 		return ret;
 	}
 }
