@@ -4,9 +4,9 @@ package com.unnsvc.rhena.common.model;
 public class RhenaEdge {
 
 	private RhenaEdgeType dependencyType;
-	private RhenaReference target;
+	private ModuleIdentifier target;
 
-	public RhenaEdge(RhenaEdgeType dependencyType, RhenaReference target) {
+	public RhenaEdge(RhenaEdgeType dependencyType, ModuleIdentifier target) {
 
 		this.dependencyType = dependencyType;
 		this.target = target;
@@ -17,13 +17,8 @@ public class RhenaEdge {
 		return dependencyType;
 	}
 
-	public RhenaReference getTarget() {
+	public ModuleIdentifier getTarget() {
 
 		return target;
-	}
-
-	public void setTarget(RhenaReference target) {
-
-		this.target = target;
 	}
 }

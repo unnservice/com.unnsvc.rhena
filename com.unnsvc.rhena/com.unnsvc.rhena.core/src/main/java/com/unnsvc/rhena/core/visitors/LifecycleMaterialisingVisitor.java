@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.IVisitor;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleState;
-import com.unnsvc.rhena.common.model.RhenaModel;
 import com.unnsvc.rhena.common.model.RhenaEdge;
+import com.unnsvc.rhena.common.model.RhenaModel;
 import com.unnsvc.rhena.core.resolution.ResolutionManager;
 
 public class LifecycleMaterialisingVisitor implements IVisitor {
@@ -27,13 +27,13 @@ public class LifecycleMaterialisingVisitor implements IVisitor {
 	public void startModule(RhenaModel module) throws RhenaException {
 
 		if (module.getLifecycleModule() != null) {
-			RhenaModel lifecycleModel = resolution.materialiseModel(module.getLifecycleModule().getModuleIdentifier());
+			RhenaModel lifecycleModel = resolution.materialiseModel(module.getLifecycleModule());
 			lifecycleModel.visit(new LifecycleMaterialisingVisitor(resolution, ModuleState.RESOLVED));
 		}
 
 		for (RhenaEdge edge : module.getDependencyEdges()) {
 
-			RhenaModel dependency = resolution.materialiseModel(edge.getTarget().getModuleIdentifier());
+			RhenaModel dependency = resolution.materialiseModel(edge.getTarget());
 			dependency.visit(new LifecycleMaterialisingVisitor(resolution, ModuleState.RESOLVED));
 		}
 	}

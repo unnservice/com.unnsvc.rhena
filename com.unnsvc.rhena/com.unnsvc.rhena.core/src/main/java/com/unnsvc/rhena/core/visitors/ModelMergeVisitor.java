@@ -36,18 +36,18 @@ public class ModelMergeVisitor implements IVisitor {
 
 		if (module.getParentModule() != null) {
 
-			RhenaModel parent = resolution.materialiseModel(module.getParentModule().getModuleIdentifier());
+			RhenaModel parent = resolution.materialiseModel(module.getParentModule());
 			parent.visit(new ModelMergeVisitor(resolution, merged));
 		}
 
 		if (module.getLifecycleModule() != null) {
 
-			RhenaModel lifecycle = resolution.materialiseModel(module.getLifecycleModule().getModuleIdentifier());
+			RhenaModel lifecycle = resolution.materialiseModel(module.getLifecycleModule());
 			lifecycle.visit(new ModelMergeVisitor(resolution, merged));
 		}
 
 		for (RhenaEdge edge : module.getDependencyEdges()) {
-			RhenaModel dependency = resolution.materialiseModel(edge.getTarget().getModuleIdentifier());
+			RhenaModel dependency = resolution.materialiseModel(edge.getTarget());
 			dependency.visit(new ModelMergeVisitor(resolution, merged));
 		}
 	}

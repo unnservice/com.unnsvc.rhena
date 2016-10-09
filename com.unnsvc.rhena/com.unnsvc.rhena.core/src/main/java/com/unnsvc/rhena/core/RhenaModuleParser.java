@@ -52,7 +52,7 @@ public class RhenaModuleParser {
 			if (extendsAttribute != null) {
 				String extendsModuleIdentifierStr = extendsAttribute.getNodeValue();
 				ModuleIdentifier extendsModuleIdentifier = new ModuleIdentifier(extendsModuleIdentifierStr.split(":"));
-				module.setParentModule(new RhenaReference(extendsModuleIdentifier));
+				module.setParentModule(extendsModuleIdentifier);
 			}
 		}
 
@@ -86,7 +86,7 @@ public class RhenaModuleParser {
 			// logger.debug("Lifecycle declaration: " +
 			// moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue());
 			ModuleIdentifier lifecycleDeclaration = new ModuleIdentifier(moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue().split(":"));
-			module.setLifecycleModule(new RhenaReference(lifecycleDeclaration));
+			module.setLifecycleModule(lifecycleDeclaration);
 		}
 
 		if (!module.getModuleIdentifier().getComponentName().toString().equals(componentNameStr)
@@ -130,7 +130,7 @@ public class RhenaModuleParser {
 		String dependencyTargetModuleIdentifier = moduleChild.getAttributes().getNamedItem("module").getNodeValue();
 
 		ModuleIdentifier moduleIdentifier = new ModuleIdentifier(dependencyTargetModuleIdentifier.split(":"));
-		RhenaEdge edge = new RhenaEdge(dependencyType, new RhenaReference(moduleIdentifier));
+		RhenaEdge edge = new RhenaEdge(dependencyType, moduleIdentifier);
 		module.addDependencyEdge(edge);
 	}
 

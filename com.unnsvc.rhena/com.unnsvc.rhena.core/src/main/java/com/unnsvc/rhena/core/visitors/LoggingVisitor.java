@@ -39,13 +39,13 @@ public class LoggingVisitor implements IVisitor {
 
 		if (module.getParentModule() != null) {
 
-			RhenaModel parent = resolution.materialiseModel(module.getParentModule().getModuleIdentifier());
+			RhenaModel parent = resolution.materialiseModel(module.getParentModule());
 			parent.visit(new LoggingVisitor(resolution, indents + 1, "parent"));
 		}
 
 		if (module.getLifecycleModule() != null) {
 
-			RhenaModel lifecycle = resolution.materialiseModel(module.getLifecycleModule().getModuleIdentifier());
+			RhenaModel lifecycle = resolution.materialiseModel(module.getLifecycleModule());
 			lifecycle.visit(new LoggingVisitor(resolution, indents + 1, "lifecycle"));
 		}
 
@@ -53,7 +53,7 @@ public class LoggingVisitor implements IVisitor {
 
 			for (RhenaEdge edge : module.getDependencyEdges()) {
 
-				RhenaModel dependency = resolution.materialiseModel(edge.getTarget().getModuleIdentifier());
+				RhenaModel dependency = resolution.materialiseModel(edge.getTarget());
 				dependency.visit(new LoggingVisitor(resolution, indents + 1, "dependency"));
 			}
 		}

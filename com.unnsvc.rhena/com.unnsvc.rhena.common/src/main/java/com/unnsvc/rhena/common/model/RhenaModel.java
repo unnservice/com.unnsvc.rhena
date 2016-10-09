@@ -13,8 +13,8 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 public class RhenaModel extends RhenaReference implements IVisitable {
 
 	private IRepository repository;
-	private RhenaReference lifecycleModule;
-	private RhenaReference parentModule;
+	private ModuleIdentifier lifecycleModule;
+	private ModuleIdentifier parentModule;
 	private List<RhenaEdge> dependencyEdges;
 	private Properties properties;
 
@@ -26,22 +26,22 @@ public class RhenaModel extends RhenaReference implements IVisitable {
 		this.properties = new Properties();
 	}
 
-	public void setParentModule(RhenaReference parentModule) {
+	public void setParentModule(ModuleIdentifier parentModule) {
 
 		this.parentModule = parentModule;
 	}
 
-	public RhenaReference getParentModule() {
+	public ModuleIdentifier getParentModule() {
 
 		return parentModule;
 	}
 
-	public void setLifecycleModule(RhenaReference lifecycleModule) {
+	public void setLifecycleModule(ModuleIdentifier lifecycleModule) {
 
 		this.lifecycleModule = lifecycleModule;
 	}
 
-	public RhenaReference getLifecycleModule() {
+	public ModuleIdentifier getLifecycleModule() {
 
 		return lifecycleModule;
 	}

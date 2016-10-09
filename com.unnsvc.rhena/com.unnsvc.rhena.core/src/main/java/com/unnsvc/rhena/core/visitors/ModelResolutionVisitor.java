@@ -5,7 +5,6 @@ import com.unnsvc.rhena.common.IVisitor;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.RhenaEdge;
 import com.unnsvc.rhena.common.model.RhenaModel;
-import com.unnsvc.rhena.common.model.RhenaReference;
 import com.unnsvc.rhena.core.resolution.ResolutionManager;
 
 public class ModelResolutionVisitor implements IVisitor {
@@ -21,24 +20,18 @@ public class ModelResolutionVisitor implements IVisitor {
 	public void startModule(RhenaModel module) throws RhenaException {
 
 		if (module.getParentModule() != null) {
-			RhenaReference reference = module.getParentModule();
-			RhenaModel model = resolution.materialiseModel(reference.getModuleIdentifier());
-			module.setParentModule(model);
+			RhenaModel model = resolution.materialiseModel(module.getParentModule());
 			model.visit(this);
 		}
 
 		if (module.getLifecycleModule() != null) {
-			RhenaReference reference = module.getLifecycleModule();
-			RhenaModel model = resolution.materialiseModel(reference.getModuleIdentifier());
-			module.setLifecycleModule(model);
+			RhenaModel model = resolution.materialiseModel(module.getLifecycleModule());
 			model.visit(this);
 		}
 
 		for (RhenaEdge edge : module.getDependencyEdges()) {
 
-			RhenaReference edgeReference = edge.getTarget();
-			RhenaModel model = resolution.materialiseModel(edgeReference.getModuleIdentifier());
-			edge.setTarget(model);
+			RhenaModel model = resolution.materialiseModel(edge.getTarget());
 			model.visit(this);
 		}
 	}
