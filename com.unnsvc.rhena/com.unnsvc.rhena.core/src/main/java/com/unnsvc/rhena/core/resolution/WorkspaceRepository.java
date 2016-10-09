@@ -153,11 +153,16 @@ public class WorkspaceRepository extends AbstractRepository {
 
 			URLClassLoader lifecycleDependencies = new URLClassLoader(collector.getDependencyChainURL().toArray(new URL[0]), Thread.currentThread().getContextClassLoader());
 			URLClassLoader lifecycleClassloader = new URLClassLoader(new URL[] { lifecycleArtifact.getArtifactURL() }, lifecycleDependencies);
+			for(URL depUrl : lifecycleClassloader.getURLs()) {
+				log.debug(model.getModuleIdentifier().toTag() + ":lifecycle classloader: " + depUrl);
+			}
 			ServiceLoader<ILifecycleFactory> lifecycleFactory = ServiceLoader.load(ILifecycleFactory.class, lifecycleClassloader);
 			if (!lifecycleFactory.iterator().hasNext()) {
-				log.warn("Could not find an implementation for " + ILifecycleFactory.class.getName() + " in " + model.getModuleIdentifier() + ", falling through to use default factory");
+				log.warn(model.getModuleIdentifier().toTag() + ":lifecycle Could not find an implementation for " + ILifecycleFactory.class.getName() + " in " + model.getLifecycleModule().getTarget() + ", falling through to use default factory");
 			} else {
-				return lifecycleFactory.iterator().next();
+				ILifecycleFactory fact = lifecycleFactory.iterator().next();
+				log.debug(model.getModuleIdentifier().toTag() + ":lifecycle type: " + fact.getClass());
+				return fact;
 			}
 		}
 

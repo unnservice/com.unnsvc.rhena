@@ -1,6 +1,9 @@
 
 package com.unnsvc.rhena.core.visitors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -9,6 +12,7 @@ import com.unnsvc.rhena.common.model.RhenaModel;
 
 public class ModelBuildingVisitor implements IModelVisitor {
 
+	private Logger log = LoggerFactory.getLogger(getClass());
 	private IResolutionContext resolver;
 
 	public ModelBuildingVisitor(IResolutionContext resolver) {

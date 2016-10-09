@@ -47,6 +47,11 @@ public class ModuleIdentifier {
 		return componentName.toString() + ":" + moduleName.toString() + ":" + version.toString();
 	}
 
+	public String toTag() {
+		
+		return "[" + toString() + "]";
+	}
+	
 	public String toModuleDirectoryName() {
 
 		return componentName.toString() + "." + moduleName.toString();
@@ -96,4 +101,6 @@ public class ModuleIdentifier {
 		String[] parts = moduleIdentifierStr.split(":");
 		return new ModuleIdentifier(parts);
 	}
+	
+	
 }
