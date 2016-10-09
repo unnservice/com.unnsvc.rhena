@@ -5,10 +5,9 @@ import java.io.File;
 
 import org.junit.Test;
 
-import com.unnsvc.rhena.common.model.CompositeScope;
+import com.unnsvc.rhena.common.model.DependencyType;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaModule;
-import com.unnsvc.rhena.core.RhenaContext;
 import com.unnsvc.rhena.core.resolution.ResolutionManager;
 import com.unnsvc.rhena.core.resolution.RhenaModelMaterialiser;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
@@ -37,7 +36,7 @@ public class TestRhenaModule {
 		model.visit(new LoggingVisitor(modelMaterialiser));
 		
 		
-		model.visit(new LifecycleMaterialisingVisitor(modelMaterialiser, CompositeScope.COMPILE));
+		model.visit(new LifecycleMaterialisingVisitor(modelMaterialiser, DependencyType.COMPILE));
 		
 
 //		RhenaLifecycleExecution modelExecution = modelMaterialiser.materialiseScope(CompositeScope.ITEST, model);

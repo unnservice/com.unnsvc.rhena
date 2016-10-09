@@ -3,18 +3,18 @@ package com.unnsvc.rhena.common.model;
 
 public class RhenaModuleEdge {
 
-	private CompositeScope scope;
+	private DependencyType dependencyType;
 	private ModuleIdentifier target;
 
-	public RhenaModuleEdge(CompositeScope scope, ModuleIdentifier target) {
+	public RhenaModuleEdge(DependencyType dependencyType, ModuleIdentifier target) {
 
-		this.scope = scope;
+		this.dependencyType = dependencyType;
 		this.target = target;
 	}
 
-	public CompositeScope getScope() {
+	public DependencyType getDependencyType() {
 
-		return scope;
+		return dependencyType;
 	}
 
 	public ModuleIdentifier getTarget() {

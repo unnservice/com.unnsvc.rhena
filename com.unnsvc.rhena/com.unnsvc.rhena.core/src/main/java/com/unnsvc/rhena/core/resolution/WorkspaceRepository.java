@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.CompositeScope;
-import com.unnsvc.rhena.common.model.CompositeScope.Subscope;
+import com.unnsvc.rhena.common.model.DependencyType;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.ModuleState;
 import com.unnsvc.rhena.common.model.RhenaLifecycleExecution;
 import com.unnsvc.rhena.common.model.RhenaModule;
 import com.unnsvc.rhena.core.RhenaModuleParser;
@@ -41,13 +41,13 @@ public class WorkspaceRepository implements IRepository {
 		}
 
 		URI moduleUri = moduleDescriptor.toURI();
-		RhenaModule module =  new RhenaModuleParser(moduleIdentifier, moduleUri, this).getModule();
-		log.info("[" + module.getModuleIdentifier() + "]:" + CompositeScope.MODEL + " resolved");
+		RhenaModule module = new RhenaModuleParser(moduleIdentifier, moduleUri, this).getModule();
+		log.info("[" + module.getModuleIdentifier() + "]:" + ModuleState.MODEL + " resolved");
 		return module;
 	}
 
 	@Override
-	public RhenaLifecycleExecution materialiseScope(RhenaModule model, CompositeScope scope) throws RhenaException {
+	public RhenaLifecycleExecution materialisePackaged(RhenaModule model) throws RhenaException {
 
 		// log.info("Executed: " + model.getModuleIdentifier() + ":" + scope);
 
@@ -66,37 +66,40 @@ public class WorkspaceRepository implements IRepository {
 		// log.info("Producing lifecycle execution using lifecycle: " +
 		// lifecycle.getClass());
 
-		for (Subscope subscope : scope.getSubscopes()) {
-
-			switch (subscope) {
-				case RESOURCES:
-					// lifecycle.compileResources(lifecycleConfiguration.getResourcePaths(),
-					// lifecycleConfiguration.getTargetPath());
-					IResourcesLifecycle resourcesLifecycle = getLifecycle(IResourcesLifecycle.class, model, scope);
-					resourcesLifecycle.compileResources();
-				case COMPILE:
-					// Has some sort of classpath dependencies
-					// CompiledClasspathElement[] compiledElement =
-					// lifecycle.materialiseSources(model.getSourceClasspaths());
-					// lifecycle.compileSources(model.get);
-				case PACKAGE:
-
-					// PackagedClasspathElement packagedElement =
-					// lifecycle.materialisePackage(compiledElement);
-					// execution.addLifecycleExecutionClasspath(packagedElement);
-				case TEST:
-					// lifecycle.materialiseTest();
-				case ITEST:
-					// lifecycle.materialiseItest();
-				default:
-					break;
-			}
-		}
-
-		log.info("[" + model.getModuleIdentifier() + "]:" + scope.toString() + " produced " + execution.toString());
-		if(scope.equals(CompositeScope.MODEL)) {
-			new Exception("diag").printStackTrace(System.out);
-		}
+		// for (Subscope subscope : scope.getSubscopes()) {
+		//
+		// switch (subscope) {
+		// case RESOURCES:
+		// //
+		// lifecycle.compileResources(lifecycleConfiguration.getResourcePaths(),
+		// // lifecycleConfiguration.getTargetPath());
+		// IResourcesLifecycle resourcesLifecycle =
+		// getLifecycle(IResourcesLifecycle.class, model, scope);
+		// resourcesLifecycle.compileResources();
+		// case COMPILE:
+		// // Has some sort of classpath dependencies
+		// // CompiledClasspathElement[] compiledElement =
+		// // lifecycle.materialiseSources(model.getSourceClasspaths());
+		// // lifecycle.compileSources(model.get);
+		// case PACKAGE:
+		//
+		// // PackagedClasspathElement packagedElement =
+		// // lifecycle.materialisePackage(compiledElement);
+		// // execution.addLifecycleExecutionClasspath(packagedElement);
+		// case TEST:
+		// // lifecycle.materialiseTest();
+		// case ITEST:
+		// // lifecycle.materialiseItest();
+		// default:
+		// break;
+		// }
+		// }
+		//
+		// log.info("[" + model.getModuleIdentifier() + "]:" + scope.toString()
+		// + " produced " + execution.toString());
+		// if(scope.equals(CompositeScope.MODEL)) {
+		// new Exception("diag").printStackTrace(System.out);
+		// }
 		// // This is produced somehow here, and it comes from the classpath....
 		// execution.addLifecycleExecutionClasspath(lifecycle.compileResources(model.getProperties()));
 		// execution.addLifecycleExecutionClasspath(lifecycle.compileSources());
@@ -106,12 +109,12 @@ public class WorkspaceRepository implements IRepository {
 		return execution;
 	}
 
-	private IResourcesLifecycle getLifecycle(Class<? extends ILifecycle> lifecycleInterfaceType, RhenaModule model, CompositeScope scope) {
+	private IResourcesLifecycle getLifecycle(Class<? extends ILifecycle> lifecycleInterfaceType, RhenaModule model, DependencyType dependencyType) {
 
 		IResourcesLifecycle ret = null;
 		if (lifecycleInterfaceType.equals(IResourcesLifecycle.class)) {
 
-			ret = new DefaultResourcesLifecycle().newDefaultResourcesLifecycle(model, scope);
+			ret = new DefaultResourcesLifecycle().newDefaultResourcesLifecycle(model, dependencyType);
 		}
 		log.warn("[" + model.getModuleIdentifier() + "] has a custom lifecycle, but custom handling is not implemented, alwyas returning " + lifecycleInterfaceType.toString());
 		return ret;

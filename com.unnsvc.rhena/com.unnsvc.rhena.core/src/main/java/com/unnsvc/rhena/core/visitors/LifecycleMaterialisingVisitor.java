@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IVisitor;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.CompositeScope;
+import com.unnsvc.rhena.common.model.DependencyType;
 import com.unnsvc.rhena.common.model.RhenaLifecycleExecution;
 import com.unnsvc.rhena.common.model.RhenaModule;
 import com.unnsvc.rhena.common.model.RhenaModuleEdge;
@@ -16,12 +16,12 @@ public class LifecycleMaterialisingVisitor implements IVisitor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private RhenaModelMaterialiser materialiser;
-	private CompositeScope requestedScope;
+	private DependencyType dependencyType;
 
-	public LifecycleMaterialisingVisitor(RhenaModelMaterialiser materialiser, CompositeScope requestedScope) {
+	public LifecycleMaterialisingVisitor(RhenaModelMaterialiser materialiser, DependencyType dependencyType) {
 
 		this.materialiser = materialiser;
-		this.requestedScope = requestedScope;
+		this.dependencyType = dependencyType;
 	}
 
 	@Override
@@ -29,13 +29,13 @@ public class LifecycleMaterialisingVisitor implements IVisitor {
 
 		if (module.getLifecycleDeclaration() != null) {
 			RhenaModule lifecycleModel = materialiser.materialiseModel(module.getLifecycleDeclaration());
-			lifecycleModel.visit(new LifecycleMaterialisingVisitor(materialiser, CompositeScope.LIFECYCLE));
+			lifecycleModel.visit(new LifecycleMaterialisingVisitor(materialiser, DependencyType.COMPILE));
 		}
 
 		for (RhenaModuleEdge edge : module.getDependencyEdges()) {
 
 			RhenaModule dependency = materialiser.materialiseModel(edge.getTarget());
-			dependency.visit(new LifecycleMaterialisingVisitor(materialiser, edge.getScope()));
+			dependency.visit(new LifecycleMaterialisingVisitor(materialiser, edge.getDependencyType()));
 		}
 	}
 
@@ -45,16 +45,13 @@ public class LifecycleMaterialisingVisitor implements IVisitor {
 	@Override
 	public void endModule(RhenaModule module) throws RhenaException {
 
-		materialiseScope(module, requestedScope);
+		materialiseScope(module);
 	}
 
-	private void materialiseScope(RhenaModule module, CompositeScope requestedScope) throws RhenaException {
+	private void materialiseScope(RhenaModule module) throws RhenaException {
 
-		if(requestedScope.getDependency() != null) {
-			
-		}
-		RhenaLifecycleExecution execution = module.getRepository().materialiseScope(module, requestedScope);
-		log.trace("[" + module.getModuleIdentifier() + "]:" + requestedScope + " Produced: " + execution);
+		RhenaLifecycleExecution execution = module.getRepository().materialisePackaged(module);
+		log.trace("[" + module.getModuleIdentifier() + "]:" + dependencyType + " Produced: " + execution);
 	}
 
 }

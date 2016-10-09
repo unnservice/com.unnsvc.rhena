@@ -16,7 +16,7 @@ import org.w3c.dom.NodeList;
 import com.unnsvc.rhena.common.Constants;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.CompositeScope;
+import com.unnsvc.rhena.common.model.DependencyType;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaModule;
 import com.unnsvc.rhena.common.model.RhenaModuleEdge;
@@ -131,11 +131,11 @@ public class RhenaModuleParser {
 	private void processDepenencyNode(Node moduleChild) throws DOMException, RhenaException {
 
 		String scopeString = moduleChild.getLocalName();
-		CompositeScope scope = CompositeScope.valueOf(scopeString);
+		DependencyType dependencyType = DependencyType.valueOf(scopeString.toUpperCase());
 		String dependencyTargetModuleIdentifier = moduleChild.getAttributes().getNamedItem("module").getNodeValue();
 
 		ModuleIdentifier moduleIdentifier = new ModuleIdentifier(dependencyTargetModuleIdentifier.split(":"));
-		RhenaModuleEdge edge = new RhenaModuleEdge(scope, moduleIdentifier);
+		RhenaModuleEdge edge = new RhenaModuleEdge(dependencyType, moduleIdentifier);
 		module.addDependencyEdge(edge);
 	}
 }
