@@ -10,9 +10,8 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.IVisitor;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.ModuleState;
-import com.unnsvc.rhena.common.model.RhenaModule;
-import com.unnsvc.rhena.common.model.RhenaModuleEdge;
+import com.unnsvc.rhena.common.model.RhenaModel;
+import com.unnsvc.rhena.common.model.RhenaEdge;
 import com.unnsvc.rhena.core.resolution.ResolutionManager;
 
 public class ModelMergeVisitor implements IVisitor {
@@ -33,33 +32,33 @@ public class ModelMergeVisitor implements IVisitor {
 	}
 
 	@Override
-	public void startModule(RhenaModule module) throws RhenaException {
+	public void startModule(RhenaModel module) throws RhenaException {
 
 		if (module.getParentModule() != null) {
 
-			RhenaModule parent = resolution.materialiseState(module.getParentModule(), ModuleState.MODEL);
+			RhenaModel parent = resolution.materialiseModel(module.getParentModule().getModuleIdentifier());
 			parent.visit(new ModelMergeVisitor(resolution, merged));
 		}
 
-		if (module.getLifecycleDeclaration() != null) {
+		if (module.getLifecycleModule() != null) {
 
-			RhenaModule lifecycle = resolution.materialiseState(module.getLifecycleDeclaration(), ModuleState.MODEL);
+			RhenaModel lifecycle = resolution.materialiseModel(module.getLifecycleModule().getModuleIdentifier());
 			lifecycle.visit(new ModelMergeVisitor(resolution, merged));
 		}
 
-		for (RhenaModuleEdge edge : module.getDependencyEdges()) {
-			RhenaModule dependency = resolution.materialiseState(edge.getTarget(), ModuleState.MODEL);
+		for (RhenaEdge edge : module.getDependencyEdges()) {
+			RhenaModel dependency = resolution.materialiseModel(edge.getTarget().getModuleIdentifier());
 			dependency.visit(new ModelMergeVisitor(resolution, merged));
 		}
 	}
 
 	@Override
-	public void endModule(RhenaModule module) throws RhenaException {
+	public void endModule(RhenaModel module) throws RhenaException {
 
 		if (!merged.contains(module.getModuleIdentifier())) {
 			if (module.getParentModule() != null) {
 
-				RhenaModule parent = resolution.materialiseState(module.getParentModule(), ModuleState.MODEL);
+				RhenaModel parent = resolution.materialiseModel(module.getModuleIdentifier());
 
 				log.debug("Merge: " + parent.getModuleIdentifier() + " -> " + module.getModuleIdentifier());
 
@@ -69,7 +68,7 @@ public class ModelMergeVisitor implements IVisitor {
 				}
 
 				// merge dependencies
-				for (RhenaModuleEdge edge : parent.getDependencyEdges()) {
+				for (RhenaEdge edge : parent.getDependencyEdges()) {
 					module.addDependencyEdge(edge);
 				}
 

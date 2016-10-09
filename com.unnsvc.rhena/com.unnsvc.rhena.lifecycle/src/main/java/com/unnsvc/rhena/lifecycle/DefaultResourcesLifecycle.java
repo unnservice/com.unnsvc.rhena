@@ -4,20 +4,20 @@ package com.unnsvc.rhena.lifecycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.common.model.DependencyType;
-import com.unnsvc.rhena.common.model.RhenaModule;
+import com.unnsvc.rhena.common.model.RhenaEdgeType;
+import com.unnsvc.rhena.common.model.RhenaModel;
 
 public class DefaultResourcesLifecycle implements IResourcesLifecycle {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private RhenaModule model;
-	private DependencyType dependencyType;
+	private RhenaModel model;
+	private RhenaEdgeType dependencyType;
 	
 	public DefaultResourcesLifecycle() {
 		
 	}
 	
-	public DefaultResourcesLifecycle(RhenaModule model, DependencyType dependencyType) {
+	public DefaultResourcesLifecycle(RhenaModel model, RhenaEdgeType dependencyType) {
 		
 		this.model = model;
 		this.dependencyType = dependencyType;
@@ -30,7 +30,7 @@ public class DefaultResourcesLifecycle implements IResourcesLifecycle {
 	}
 
 	@Override
-	public IResourcesLifecycle newDefaultResourcesLifecycle(RhenaModule model, DependencyType scope) {
+	public IResourcesLifecycle newDefaultResourcesLifecycle(RhenaModel model, RhenaEdgeType scope) {
 
 		return new DefaultResourcesLifecycle(model, scope);
 	}

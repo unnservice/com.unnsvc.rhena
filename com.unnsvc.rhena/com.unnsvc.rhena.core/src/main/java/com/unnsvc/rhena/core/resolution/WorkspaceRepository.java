@@ -3,86 +3,33 @@ package com.unnsvc.rhena.core.resolution;
 
 import java.io.File;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.DependencyType;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ModuleState;
 import com.unnsvc.rhena.common.model.RhenaLifecycleExecution;
+import com.unnsvc.rhena.common.model.RhenaModel;
 import com.unnsvc.rhena.common.model.RhenaModule;
-import com.unnsvc.rhena.core.RhenaModuleParser;
-import com.unnsvc.rhena.lifecycle.DefaultResourcesLifecycle;
-import com.unnsvc.rhena.lifecycle.ILifecycle;
-import com.unnsvc.rhena.lifecycle.IResourcesLifecycle;
 
-public class WorkspaceRepository implements IRepository {
+public class WorkspaceRepository extends AbstractRepository {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private File workspaceDirectory;
-	private Map<ModuleIdentifier, RhenaModule> resolvedModules;
 
 	public WorkspaceRepository(File workspaceDirectory) {
 
 		this.workspaceDirectory = workspaceDirectory;
-		this.resolvedModules = new HashMap<ModuleIdentifier, RhenaModule>();
 	}
 
-	@Override
-	public RhenaModule materialiseState(ModuleIdentifier moduleIdentifier, ModuleState moduleState) throws RhenaException {
+	private void compileModel(RhenaModel model) {
 
-		RhenaModule module = resolvedModules.get(moduleIdentifier);
-		
-		switch (moduleState) {
-			case MODEL:
-				if(!resolvedModules.containsKey(moduleIdentifier)) {
-					module = resolveModel(moduleIdentifier);
-					resolvedModules.put(moduleIdentifier, module);
-				}
-				module.setModuleState(ModuleState.MODEL);
-				if (moduleState.equals(ModuleState.MODEL))
-					break;
-			case COMPILED:
-				if (moduleState.equals(ModuleState.COMPILED))
-					break;
-			case PACKAGED:
-				if (moduleState.equals(ModuleState.PACKAGED))
-					break;
-			case TESTED:
-				if (moduleState.equals(ModuleState.TESTED))
-					break;
-			case DEPLOYED:
-				if (moduleState.equals(ModuleState.DEPLOYED))
-					break;
-		}
-
-		log.info("[" + module + "]:" + moduleState.toLabel() + " resolved");
-
-		return module;
+		log.info("[" + model.getModuleIdentifier() + "]:" + ModuleState.MODEL.toLabel() + " compiled");
 	}
 
-	public RhenaModule resolveModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
-
-		File workspaceProject = new File(workspaceDirectory, moduleIdentifier.getComponentName() + "." + moduleIdentifier.getModuleName());
-		File moduleDescriptor = new File(workspaceProject, "module.xml");
-
-		if (!moduleDescriptor.exists()) {
-			throw new RhenaException("Not in repository");
-		}
-
-		URI moduleUri = moduleDescriptor.toURI();
-
-		RhenaModule module = new RhenaModuleParser(moduleIdentifier, moduleUri).getModule();
-		module.setRepository(this);
-		return module;
-	}
-
-	public RhenaLifecycleExecution materialisePackaged(RhenaModule model) throws RhenaException {
+	public RhenaLifecycleExecution materialisePackaged(RhenaModel model) throws RhenaException {
 
 		// log.info("Executed: " + model.getModuleIdentifier() + ":" + scope);
 
@@ -144,15 +91,42 @@ public class WorkspaceRepository implements IRepository {
 		return execution;
 	}
 
-	private IResourcesLifecycle getLifecycle(Class<? extends ILifecycle> lifecycleInterfaceType, RhenaModule model, DependencyType dependencyType) {
+	// private IResourcesLifecycle getLifecycle(Class<? extends ILifecycle>
+	// lifecycleInterfaceType, RhenaModel model, RhenaEdgeType dependencyType) {
+	//
+	// IResourcesLifecycle ret = null;
+	// if (lifecycleInterfaceType.equals(IResourcesLifecycle.class)) {
+	//
+	// ret = new DefaultResourcesLifecycle().newDefaultResourcesLifecycle(model,
+	// dependencyType);
+	// }
+	// log.warn("[" + model.getModuleIdentifier() + "] has a custom lifecycle,
+	// but custom handling is not implemented, alwyas returning "
+	// + lifecycleInterfaceType.toString());
+	// return ret;
+	// }
 
-		IResourcesLifecycle ret = null;
-		if (lifecycleInterfaceType.equals(IResourcesLifecycle.class)) {
+	@Override
+	public RhenaModel materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
 
-			ret = new DefaultResourcesLifecycle().newDefaultResourcesLifecycle(model, dependencyType);
+		File workspaceProject = new File(workspaceDirectory, moduleIdentifier.getComponentName() + "." + moduleIdentifier.getModuleName());
+		File moduleDescriptor = new File(workspaceProject, "module.xml");
+		URI moduleDescriptorUri = moduleDescriptor.toURI();
+
+		if (!moduleDescriptor.exists()) {
+			throw new RhenaException("Not in repository");
 		}
-		log.warn("[" + model.getModuleIdentifier() + "] has a custom lifecycle, but custom handling is not implemented, alwyas returning "
-				+ lifecycleInterfaceType.toString());
-		return ret;
+
+		RhenaModel model = resolveModel(moduleIdentifier, moduleDescriptorUri);
+
+		log.info("[" + moduleIdentifier + "]:" + ModuleState.MODEL.toLabel() + " resolved");
+
+		return model;
+	}
+
+	@Override
+	public RhenaModule materialiseModule(RhenaModel model) {
+
+		throw new UnsupportedOperationException("Not implemented");
 	}
 }

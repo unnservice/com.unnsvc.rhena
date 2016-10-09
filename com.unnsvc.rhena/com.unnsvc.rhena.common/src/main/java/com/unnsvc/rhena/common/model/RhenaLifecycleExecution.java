@@ -10,17 +10,17 @@ public class RhenaLifecycleExecution {
 
 	private List<File> lifecycleExecutionClasspath;
 
-	public RhenaLifecycleExecution(RhenaModule model) {
+	public RhenaLifecycleExecution(RhenaModel model) {
 
 		this(model, new ArrayList<File>());
 	}
 	
-	public RhenaLifecycleExecution(RhenaModule model, List<File> lifecycleExecutionClasspath) {
+	public RhenaLifecycleExecution(RhenaModel model, List<File> lifecycleExecutionClasspath) {
 		
 		this.lifecycleExecutionClasspath = lifecycleExecutionClasspath;
 	}
 	
-	public RhenaLifecycleExecution(RhenaModule model, File lifecycleExecutionClasspath) {
+	public RhenaLifecycleExecution(RhenaModel model, File lifecycleExecutionClasspath) {
 		
 		this(model, Collections.singletonList(lifecycleExecutionClasspath));
 	}

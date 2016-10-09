@@ -1,12 +1,12 @@
 
 package com.unnsvc.rhena.lifecycle;
 
-import com.unnsvc.rhena.common.model.DependencyType;
-import com.unnsvc.rhena.common.model.RhenaModule;
+import com.unnsvc.rhena.common.model.RhenaEdgeType;
+import com.unnsvc.rhena.common.model.RhenaModel;
 
 public interface IResourcesLifecycle extends ILifecycle {
 
-	public IResourcesLifecycle newDefaultResourcesLifecycle(RhenaModule model, DependencyType dependencyType);
+	public IResourcesLifecycle newDefaultResourcesLifecycle(RhenaModel model, RhenaEdgeType dependencyType);
 
 	public void compileResources();
 

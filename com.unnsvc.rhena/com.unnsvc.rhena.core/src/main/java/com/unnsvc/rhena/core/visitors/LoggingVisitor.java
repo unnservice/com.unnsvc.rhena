@@ -6,9 +6,8 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IVisitor;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.ModuleState;
-import com.unnsvc.rhena.common.model.RhenaModule;
-import com.unnsvc.rhena.common.model.RhenaModuleEdge;
+import com.unnsvc.rhena.common.model.RhenaModel;
+import com.unnsvc.rhena.common.model.RhenaEdge;
 import com.unnsvc.rhena.core.resolution.ResolutionManager;
 
 public class LoggingVisitor implements IVisitor {
@@ -34,34 +33,34 @@ public class LoggingVisitor implements IVisitor {
 	}
 
 	@Override
-	public void startModule(RhenaModule module) throws RhenaException {
+	public void startModule(RhenaModel module) throws RhenaException {
 
 		log.info(indent() + (label == null ? "" : "↳" + label + "⇀") + "[" + module.getModuleIdentifier() + "]");
 
 		if (module.getParentModule() != null) {
 
-			RhenaModule parent = resolution.materialiseState(module.getParentModule(), ModuleState.MODEL);
+			RhenaModel parent = resolution.materialiseModel(module.getParentModule().getModuleIdentifier());
 			parent.visit(new LoggingVisitor(resolution, indents + 1, "parent"));
 		}
 
-		if (module.getLifecycleDeclaration() != null) {
+		if (module.getLifecycleModule() != null) {
 
-			RhenaModule lifecycle = resolution.materialiseState(module.getLifecycleDeclaration(), ModuleState.MODEL);
+			RhenaModel lifecycle = resolution.materialiseModel(module.getLifecycleModule().getModuleIdentifier());
 			lifecycle.visit(new LoggingVisitor(resolution, indents + 1, "lifecycle"));
 		}
 
 		if (!module.getDependencyEdges().isEmpty()) {
 
-			for (RhenaModuleEdge edge : module.getDependencyEdges()) {
+			for (RhenaEdge edge : module.getDependencyEdges()) {
 
-				RhenaModule dependency = resolution.materialiseState(edge.getTarget(), ModuleState.MODEL);
+				RhenaModel dependency = resolution.materialiseModel(edge.getTarget().getModuleIdentifier());
 				dependency.visit(new LoggingVisitor(resolution, indents + 1, "dependency"));
 			}
 		}
 	}
 
 	@Override
-	public void endModule(RhenaModule module) throws RhenaException {
+	public void endModule(RhenaModel module) throws RhenaException {
 
 	}
 

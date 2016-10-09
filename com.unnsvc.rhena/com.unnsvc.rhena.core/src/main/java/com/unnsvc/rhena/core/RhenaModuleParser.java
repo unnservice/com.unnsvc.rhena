@@ -14,20 +14,22 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.unnsvc.rhena.common.Constants;
+import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.DependencyType;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.RhenaModule;
-import com.unnsvc.rhena.common.model.RhenaModuleEdge;
+import com.unnsvc.rhena.common.model.RhenaEdge;
+import com.unnsvc.rhena.common.model.RhenaEdgeType;
+import com.unnsvc.rhena.common.model.RhenaModel;
+import com.unnsvc.rhena.common.model.RhenaReference;
 
 public class RhenaModuleParser {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
-	private RhenaModule module;
+	private RhenaModel module;
 
-	public RhenaModuleParser(ModuleIdentifier moduleIdentifier, URI location) throws RhenaException {
+	public RhenaModuleParser(ModuleIdentifier moduleIdentifier, URI location, IRepository repository) throws RhenaException {
 
-		this.module = new RhenaModule(moduleIdentifier);
+		this.module = new RhenaModel(moduleIdentifier, repository);
 		try {
 			parse(location);
 		} catch (Exception ex) {
@@ -50,7 +52,7 @@ public class RhenaModuleParser {
 			if (extendsAttribute != null) {
 				String extendsModuleIdentifierStr = extendsAttribute.getNodeValue();
 				ModuleIdentifier extendsModuleIdentifier = new ModuleIdentifier(extendsModuleIdentifierStr.split(":"));
-				module.setParentModule(extendsModuleIdentifier);
+				module.setParentModule(new RhenaReference(extendsModuleIdentifier));
 			}
 		}
 
@@ -84,7 +86,7 @@ public class RhenaModuleParser {
 			// logger.debug("Lifecycle declaration: " +
 			// moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue());
 			ModuleIdentifier lifecycleDeclaration = new ModuleIdentifier(moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue().split(":"));
-			module.setLifecycleModule(lifecycleDeclaration);
+			module.setLifecycleModule(new RhenaReference(lifecycleDeclaration));
 		}
 
 		if (!module.getModuleIdentifier().getComponentName().toString().equals(componentNameStr)
@@ -119,21 +121,20 @@ public class RhenaModuleParser {
 
 	private void processLifecycleNode(Node lifecycleNode) {
 
-		
 	}
 
 	private void processDepenencyNode(Node moduleChild) throws DOMException, RhenaException {
 
 		String scopeString = moduleChild.getLocalName();
-		DependencyType dependencyType = DependencyType.valueOf(scopeString.toUpperCase());
+		RhenaEdgeType dependencyType = RhenaEdgeType.valueOf(scopeString.toUpperCase());
 		String dependencyTargetModuleIdentifier = moduleChild.getAttributes().getNamedItem("module").getNodeValue();
 
 		ModuleIdentifier moduleIdentifier = new ModuleIdentifier(dependencyTargetModuleIdentifier.split(":"));
-		RhenaModuleEdge edge = new RhenaModuleEdge(dependencyType, moduleIdentifier);
+		RhenaEdge edge = new RhenaEdge(dependencyType, new RhenaReference(moduleIdentifier));
 		module.addDependencyEdge(edge);
 	}
 
-	public RhenaModule getModule() {
+	public RhenaModel getModel() {
 
 		return module;
 	}

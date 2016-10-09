@@ -1,3 +1,4 @@
+
 package com.unnsvc.rhena.core.resolution;
 
 import java.util.HashMap;
@@ -7,40 +8,56 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IRepository;
+import com.unnsvc.rhena.common.IResolver;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.ModuleState;
+import com.unnsvc.rhena.common.model.RhenaModel;
 import com.unnsvc.rhena.common.model.RhenaModule;
 
-public class ResolutionManager {
+public class ResolutionManager implements IResolver {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private IRepository[] repositories;
-	private Map<ModuleIdentifier, RhenaModule> resolvedModules;
+	private Map<ModuleIdentifier, RhenaModel> models;
+	private Map<ModuleIdentifier, RhenaModule> modules;
 
 	public ResolutionManager(IRepository... repositories) {
 
 		this.repositories = repositories;
-		this.resolvedModules = new HashMap<ModuleIdentifier, RhenaModule>();
+		this.models = new HashMap<ModuleIdentifier, RhenaModel>();
+		this.modules = new HashMap<ModuleIdentifier, RhenaModule>();
 	}
 
-	public RhenaModule materialiseState(ModuleIdentifier moduleIdentifier, ModuleState moduleState) throws RhenaException {
+	@Override
+	public RhenaModel materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
 
-		if(resolvedModules.containsKey(moduleIdentifier) && resolvedModules.get(moduleIdentifier).getModuleState().compareTo(moduleState) >= 0) {
-			return resolvedModules.get(moduleIdentifier);
-		}
-		
-		for (IRepository repository : repositories) {
+		RhenaModel model = models.get(moduleIdentifier);
+		if (model == null) {
+			
+			for (IRepository repository : repositories) {
 
-			try {
-
-				return repository.materialiseState(moduleIdentifier, moduleState);
-			} catch (RhenaException repositoryException) {
-				log.debug(repositoryException.getMessage(), repositoryException);
+				try {
+					model = repository.materialiseModel(moduleIdentifier);
+					models.put(moduleIdentifier, model);
+					return model;
+				} catch (RhenaException repositoryException) {
+					log.debug(repositoryException.getMessage(), repositoryException);
+				}
 			}
+
+			throw new RhenaException("Failed to resolve model of: " + moduleIdentifier + ":model");
 		}
-		
-		throw new RhenaException("Failed to resolve: " + moduleIdentifier + ":model");
+		return model;
 	}
 
+	@Override
+	public RhenaModule materialiseModule(RhenaModel model) {
+
+		RhenaModule module = modules.get(model.getModuleIdentifier());
+		if (module == null) {
+			module = model.getRepository().materialiseModule(model);
+			modules.put(model.getModuleIdentifier(), module);
+		}
+		return module;
+	}
 }

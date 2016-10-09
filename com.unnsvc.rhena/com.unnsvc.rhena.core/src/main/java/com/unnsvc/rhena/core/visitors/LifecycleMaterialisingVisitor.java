@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.IVisitor;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleState;
-import com.unnsvc.rhena.common.model.RhenaModule;
-import com.unnsvc.rhena.common.model.RhenaModuleEdge;
+import com.unnsvc.rhena.common.model.RhenaModel;
+import com.unnsvc.rhena.common.model.RhenaEdge;
 import com.unnsvc.rhena.core.resolution.ResolutionManager;
 
 public class LifecycleMaterialisingVisitor implements IVisitor {
@@ -24,17 +24,17 @@ public class LifecycleMaterialisingVisitor implements IVisitor {
 	}
 
 	@Override
-	public void startModule(RhenaModule module) throws RhenaException {
+	public void startModule(RhenaModel module) throws RhenaException {
 
-		if (module.getLifecycleDeclaration() != null) {
-			RhenaModule lifecycleModel = resolution.materialiseState(module.getLifecycleDeclaration(), ModuleState.MODEL);
-			lifecycleModel.visit(new LifecycleMaterialisingVisitor(resolution, ModuleState.COMPILED));
+		if (module.getLifecycleModule() != null) {
+			RhenaModel lifecycleModel = resolution.materialiseModel(module.getLifecycleModule().getModuleIdentifier());
+			lifecycleModel.visit(new LifecycleMaterialisingVisitor(resolution, ModuleState.RESOLVED));
 		}
 
-		for (RhenaModuleEdge edge : module.getDependencyEdges()) {
+		for (RhenaEdge edge : module.getDependencyEdges()) {
 
-			RhenaModule dependency = resolution.materialiseState(edge.getTarget(), ModuleState.MODEL);
-			dependency.visit(new LifecycleMaterialisingVisitor(resolution, ModuleState.PACKAGED));
+			RhenaModel dependency = resolution.materialiseModel(edge.getTarget().getModuleIdentifier());
+			dependency.visit(new LifecycleMaterialisingVisitor(resolution, ModuleState.RESOLVED));
 		}
 	}
 
@@ -42,10 +42,24 @@ public class LifecycleMaterialisingVisitor implements IVisitor {
 	 * Here we perform the actual materialisation of the lifecycle
 	 */
 	@Override
-	public void endModule(RhenaModule module) throws RhenaException {
+	public void endModule(RhenaModel module) throws RhenaException {
 
-//		RhenaLifecycleExecution execution = context.getResolutionManager().materialiseState(module.getModuleIdentifier(), ModuleState.DEPLOYED);
-//		log.trace("[" + module.getModuleIdentifier() + "]:" + moduleState + " Produced: " + execution);
+		// RhenaLifecycleExecution execution =
+		// context.getResolutionManager().materialiseState(module.getModuleIdentifier(),
+		// ModuleState.DEPLOYED);
+		// log.trace("[" + module.getModuleIdentifier() + "]:" + moduleState + "
+		// Produced: " + execution);
+
+//		log.info("materialising [" + module.getModuleIdentifier() + "] " + moduleState.toLabel());
+//		resolution.materialiseState(module.getModuleIdentifier(), moduleState);
+		
+		switch(moduleState) {
+			case UNRESOLVED:
+			case MODEL:
+				resolution.materialiseModel(module.getModuleIdentifier());
+				break;
+			case RESOLVED:
+		}
 	}
 
 }
