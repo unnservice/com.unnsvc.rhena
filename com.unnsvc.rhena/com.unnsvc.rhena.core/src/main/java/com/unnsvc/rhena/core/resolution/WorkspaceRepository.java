@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ModuleState;
-import com.unnsvc.rhena.common.model.RhenaExecutionType;
 import com.unnsvc.rhena.common.model.RhenaExecution;
+import com.unnsvc.rhena.common.model.RhenaExecutionType;
 import com.unnsvc.rhena.common.model.RhenaLifecycleExecution;
 import com.unnsvc.rhena.common.model.RhenaModel;
 
@@ -120,14 +120,13 @@ public class WorkspaceRepository extends AbstractRepository {
 
 		RhenaModel model = resolveModel(moduleIdentifier, moduleDescriptorUri);
 
-		log.info("[" + moduleIdentifier + "]:" + ModuleState.MODEL.toLabel() + " resolved");
-
 		return model;
 	}
 
 	@Override
 	public RhenaExecution materialiseExecution(RhenaModel model, RhenaExecutionType type) {
 
-		throw new UnsupportedOperationException("Not implemented");
+		RhenaExecution execution = new RhenaExecution(model.getModuleIdentifier(), type, new File("some/produced/artifact-" + type.toLabel()));
+		return execution;
 	}
 }

@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.core;
+package com.unnsvc.rhena.core.resolution;
 
 import java.net.URI;
 

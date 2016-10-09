@@ -1,4 +1,4 @@
-package com.unnsvc.rhena.core;
+package com.unnsvc.rhena.common;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 

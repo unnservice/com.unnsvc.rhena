@@ -11,8 +11,8 @@ import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IResolver;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.RhenaExecutionType;
 import com.unnsvc.rhena.common.model.RhenaExecution;
+import com.unnsvc.rhena.common.model.RhenaExecutionType;
 import com.unnsvc.rhena.common.model.RhenaModel;
 
 public class RhenaResolver implements IResolver {
@@ -40,6 +40,9 @@ public class RhenaResolver implements IResolver {
 				try {
 					model = repository.materialiseModel(moduleIdentifier);
 					models.put(moduleIdentifier, model);
+
+					log.info("[" + moduleIdentifier + "]:model materialised");
+
 					return model;
 				} catch (RhenaException repositoryException) {
 					log.debug(repositoryException.getMessage(), repositoryException);
@@ -54,15 +57,27 @@ public class RhenaResolver implements IResolver {
 	@Override
 	public RhenaExecution materialiseModuleType(RhenaModel model, RhenaExecutionType type) {
 
+		/**
+		 * Execution type might have a dependency on another execution type
+		 * first which needs to be executed
+		 */
+		if (type.getDependency() != null) {
+			materialiseModuleType(model, type.getDependency());
+		}
+
 		ModuleIdentifier identifier = model.getModuleIdentifier();
-		
-		if(executions.get(identifier) != null && executions.get(identifier).get(type) != null) {
+
+		if (executions.get(identifier) != null && executions.get(identifier).get(type) != null) {
 			return executions.get(identifier).get(type);
 		}
-		
+
 		// else materialise it
 		RhenaExecution execution = model.getRepository().materialiseExecution(model, type);
-		
+
+		Map<RhenaExecutionType, RhenaExecution> typeExecutions = new HashMap<RhenaExecutionType, RhenaExecution>();
+		typeExecutions.put(type, execution);
+		executions.put(identifier, typeExecutions);
+		log.info("[" + identifier + "]:" + type.toLabel() + " materialised");
 
 		// RhenaModule module = modules.get(new Object[] {
 		// model.getModuleIdentifier(), type });

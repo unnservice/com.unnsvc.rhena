@@ -7,7 +7,6 @@ import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaModel;
-import com.unnsvc.rhena.core.RhenaModuleParser;
 
 public abstract class AbstractRepository implements IRepository {
 
