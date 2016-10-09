@@ -12,6 +12,7 @@ import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaModel;
 import com.unnsvc.rhena.core.resolution.RhenaResolver;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
+import com.unnsvc.rhena.core.visitors.ModelBuildingVisitor;
 import com.unnsvc.rhena.core.visitors.ModelInitialisationVisitor;
 
 public class TestRhenaModule {
@@ -27,36 +28,29 @@ public class TestRhenaModule {
 		IResolver resolver = new RhenaResolver(workspace);
 		RhenaModel model = resolver.materialiseModel(entryPointIdentifier);
 
-		// model.visit(new ModelMergeVisitor(resolution));
 		model.visit(new ModelInitialisationVisitor(resolver));
 
 		// model.visit(new LoggingVisitor(resolution));
+
+		model.visit(new ModelBuildingVisitor(resolver));
 		
-//		model.visit(new RhenaModelProcessingVisitor(resolver, new ModuleCallback() {
-//			
-//			@Override
-//			public void onModel(RhenaModel model) {
-//				
-////				log.debug("Model node: " + model);
-//			}
-//		}));
-//
-//		model.visit(new RhenaEdgeProcessingVisitor(resolver, new EdgeCallback() {
-//
-//			@Override
-//			public void onModelEdge(RhenaEdge edge) {
-////				log.debug("On edge: " + edge);
-//			}
-//		}));
-
-		// model.visit(new LifecycleMaterialisingVisitor(resolution,
-		// ModuleState.RESOLVED));
-
-		// resolution.materialiseState(entryPointIdentifier,
-		// ModuleState.TESTED);
-
-		// RhenaLifecycleExecution modelExecution =
-		// modelMaterialiser.materialiseScope(CompositeScope.ITEST, model);
-
 	}
 }
+
+// Could do something like...
+// model.visit(new RhenaModelProcessingVisitor(resolver, new ModuleCallback() {
+//
+// @Override
+// public void onModel(RhenaModel model) {
+//
+//// log.debug("Model node: " + model);
+// }
+// }));
+//
+// model.visit(new RhenaEdgeProcessingVisitor(resolver, new EdgeCallback() {
+//
+// @Override
+// public void onModelEdge(RhenaEdge edge) {
+//// log.debug("On edge: " + edge);
+// }
+// }));

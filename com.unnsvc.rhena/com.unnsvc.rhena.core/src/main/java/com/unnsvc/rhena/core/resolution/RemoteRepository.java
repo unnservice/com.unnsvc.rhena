@@ -4,8 +4,9 @@ package com.unnsvc.rhena.core.resolution;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.RhenaEdgeType;
 import com.unnsvc.rhena.common.model.RhenaModel;
-import com.unnsvc.rhena.common.model.RhenaModule;
+import com.unnsvc.rhena.common.model.RhenaExecution;
 
 public class RemoteRepository implements IRepository {
 
@@ -17,7 +18,7 @@ public class RemoteRepository implements IRepository {
 	}
 
 	@Override
-	public RhenaModule materialiseModule(RhenaModel model) {
+	public RhenaExecution materialiseModule(RhenaModel model, RhenaEdgeType type) {
 
 		throw new UnsupportedOperationException("Not implemented");
 

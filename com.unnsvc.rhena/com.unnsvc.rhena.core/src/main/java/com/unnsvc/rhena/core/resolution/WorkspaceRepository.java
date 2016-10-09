@@ -10,9 +10,10 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ModuleState;
+import com.unnsvc.rhena.common.model.RhenaEdgeType;
 import com.unnsvc.rhena.common.model.RhenaLifecycleExecution;
 import com.unnsvc.rhena.common.model.RhenaModel;
-import com.unnsvc.rhena.common.model.RhenaModule;
+import com.unnsvc.rhena.common.model.RhenaExecution;
 
 public class WorkspaceRepository extends AbstractRepository {
 
@@ -125,7 +126,7 @@ public class WorkspaceRepository extends AbstractRepository {
 	}
 
 	@Override
-	public RhenaModule materialiseModule(RhenaModel model) {
+	public RhenaExecution materialiseModule(RhenaModel model, RhenaEdgeType type) {
 
 		throw new UnsupportedOperationException("Not implemented");
 	}

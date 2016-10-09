@@ -11,21 +11,22 @@ import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IResolver;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.RhenaEdgeType;
+import com.unnsvc.rhena.common.model.RhenaExecution;
 import com.unnsvc.rhena.common.model.RhenaModel;
-import com.unnsvc.rhena.common.model.RhenaModule;
 
 public class RhenaResolver implements IResolver {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private IRepository[] repositories;
 	private Map<ModuleIdentifier, RhenaModel> models;
-	private Map<ModuleIdentifier, RhenaModule> modules;
+	private Map<ModuleIdentifier, Map<RhenaEdgeType, RhenaExecution>> executions;
 
 	public RhenaResolver(IRepository... repositories) {
 
 		this.repositories = repositories;
 		this.models = new HashMap<ModuleIdentifier, RhenaModel>();
-		this.modules = new HashMap<ModuleIdentifier, RhenaModule>();
+		this.executions = new HashMap<ModuleIdentifier, Map<RhenaEdgeType, RhenaExecution>>();
 	}
 
 	@Override
@@ -33,7 +34,7 @@ public class RhenaResolver implements IResolver {
 
 		RhenaModel model = models.get(moduleIdentifier);
 		if (model == null) {
-			
+
 			for (IRepository repository : repositories) {
 
 				try {
@@ -51,13 +52,24 @@ public class RhenaResolver implements IResolver {
 	}
 
 	@Override
-	public RhenaModule materialiseModule(RhenaModel model) {
+	public RhenaExecution materialiseModuleType(RhenaModel model, RhenaEdgeType type) {
 
-		RhenaModule module = modules.get(model.getModuleIdentifier());
-		if (module == null) {
-			module = model.getRepository().materialiseModule(model);
-			modules.put(model.getModuleIdentifier(), module);
+		ModuleIdentifier identifier = model.getModuleIdentifier();
+		
+		if(executions.get(identifier) != null && executions.get(identifier).get(type) != null) {
+			return executions.get(identifier).get(type);
 		}
-		return module;
+		
+		// else materialise it
+		RhenaExecution execution = model.getRepository().materialiseModule(model, type);
+		
+
+		// RhenaModule module = modules.get(new Object[] {
+		// model.getModuleIdentifier(), type });
+		// if (module == null) {
+		// module = model.getRepository().materialiseModule(model, type);
+		// modules.put(model.getModuleIdentifier(), module);
+		// }
+		return execution;
 	}
 }
