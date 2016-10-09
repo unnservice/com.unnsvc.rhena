@@ -1,6 +1,7 @@
 
 package com.unnsvc.rhena.core.visitors;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaEdge;
+import com.unnsvc.rhena.common.model.RhenaExecution;
 import com.unnsvc.rhena.common.model.RhenaExecutionType;
 import com.unnsvc.rhena.common.model.RhenaModel;
 
@@ -52,5 +54,15 @@ public class DependencyCollectionVisitor implements IModelVisitor {
 	public List<ModuleIdentifier> getDependencyChain() {
 
 		return identifiers;
+	}
+
+	public List<URL> getDependencyChainURL() throws RhenaException {
+
+		List<URL> execs = new ArrayList<URL>();
+		for (ModuleIdentifier identifier : identifiers) {
+			RhenaExecution exec = context.materialiseModuleType(context.materialiseModel(identifier), requested);
+			execs.add(exec.getArtifactURL());
+		}
+		return execs;
 	}
 }

@@ -3,6 +3,9 @@ package com.unnsvc.rhena.core.resolution;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ServiceLoader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +19,8 @@ import com.unnsvc.rhena.common.model.RhenaExecutionType;
 import com.unnsvc.rhena.common.model.RhenaLifecycleExecution;
 import com.unnsvc.rhena.common.model.RhenaModel;
 import com.unnsvc.rhena.core.visitors.DependencyCollectionVisitor;
+import com.unnsvc.rhena.lifecycle.DefaultLifecycleFactory;
+import com.unnsvc.rhena.lifecycle.ILifecycleFactory;
 
 public class WorkspaceRepository extends AbstractRepository {
 
@@ -126,25 +131,38 @@ public class WorkspaceRepository extends AbstractRepository {
 	public RhenaExecution materialiseExecution(RhenaModel model, RhenaExecutionType type) throws RhenaException {
 
 		// traverse model to get lifecycle and all of its compile dependencies?
-		
+
 		RhenaExecution execution = new RhenaExecution(model.getModuleIdentifier(), type, new File("some/produced/artifact-" + type.toLabel()));
 		// perform the actual build
-			
 
+		ILifecycleFactory lifecycleFactory = produceLifecycleFactory(model);
 		
-		if(model.getLifecycleModule() != null) {
-			
-			RhenaModel lifecycleModel = context.materialiseModel(model.getModuleIdentifier());
+		
+
+		// throw new UnsupportedOperationException("Not implemented");
+		return execution;
+	}
+
+	private ILifecycleFactory produceLifecycleFactory(RhenaModel model) throws RhenaException {
+
+		if (model.getLifecycleModule() != null) {
+
+			RhenaModel lifecycleModel = context.materialiseModel(model.getLifecycleModule().getTarget());
 			DependencyCollectionVisitor collector = new DependencyCollectionVisitor(context, RhenaExecutionType.COMPILE);
 			lifecycleModel.visit(collector);
-			
-			log.debug("Compile dependencies of lifecycle module: " + collector.getDependencyChain().size());
-			for(ModuleIdentifier identifier : collector.getDependencyChain()) {
-				log.debug(": " + identifier);
+
+			RhenaExecution lifecycleArtifact = context.materialiseModuleType(lifecycleModel, RhenaExecutionType.COMPILE);
+
+			URLClassLoader lifecycleDependencies = new URLClassLoader(collector.getDependencyChainURL().toArray(new URL[0]), Thread.currentThread().getContextClassLoader());
+			URLClassLoader lifecycleClassloader = new URLClassLoader(new URL[] { lifecycleArtifact.getArtifactURL() }, lifecycleDependencies);
+			ServiceLoader<ILifecycleFactory> lifecycleFactory = ServiceLoader.load(ILifecycleFactory.class, lifecycleClassloader);
+			if(!lifecycleFactory.iterator().hasNext()) {
+				log.warn("Could not find an implementation for " + ILifecycleFactory.class.getName() + " in " + model.getModuleIdentifier() + ", falling through to use default factory");
+			} else {
+				return lifecycleFactory.iterator().next();
 			}
 		}
-		
-//		throw new UnsupportedOperationException("Not implemented");
-		return execution;
+
+		return new DefaultLifecycleFactory();
 	}
 }
