@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IVisitableModel;
-import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 
 public class RhenaModel extends RhenaReference implements IVisitableModel {
@@ -46,9 +46,9 @@ public class RhenaModel extends RhenaReference implements IVisitableModel {
 		return lifecycleModule;
 	}
 
-	public void addDependencyEdge(RhenaEdge dependencyEdge) {
+	public void setDependencyEdges(List<RhenaEdge> dependencyEdges) {
 
-		this.dependencyEdges.add(dependencyEdge);
+		this.dependencyEdges = dependencyEdges;
 	}
 
 	public List<RhenaEdge> getDependencyEdges() {
@@ -61,6 +61,11 @@ public class RhenaModel extends RhenaReference implements IVisitableModel {
 		this.properties.setProperty(key, value);
 	}
 
+	public void setProperties(Properties properties) {
+
+		this.properties = properties;
+	}
+
 	public Properties getProperties() {
 
 		return properties;
@@ -70,7 +75,7 @@ public class RhenaModel extends RhenaReference implements IVisitableModel {
 
 		return repository;
 	}
-	
+
 	@Override
 	public void visit(IModelVisitor visitor) throws RhenaException {
 

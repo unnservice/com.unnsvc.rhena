@@ -1,7 +1,10 @@
 
 package com.unnsvc.rhena.core.visitors;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -10,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.IResolver;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.RhenaEdge;
 import com.unnsvc.rhena.common.model.RhenaModel;
 
 public class ModelInitialisationVisitor extends ModelResolvingVisitor {
@@ -37,11 +41,27 @@ public class ModelInitialisationVisitor extends ModelResolvingVisitor {
 		}
 	}
 
+	/**
+	 * @TODO Assert dependency precedence and 
+	 * @param parent
+	 * @param model
+	 */
 	private void mergeParent(RhenaModel parent, RhenaModel model) {
 
 		// Merge properties
+		Properties mergedProperties = new Properties();
+		mergedProperties.putAll(parent.getProperties());
+		mergedProperties.putAll(model.getProperties());
+		model.setProperties(mergedProperties);
+
 		// Merge dependencies
+		List<RhenaEdge> dependencyEdges = new ArrayList<RhenaEdge>();
+		dependencyEdges.addAll(parent.getDependencyEdges());
+		dependencyEdges.addAll(model.getDependencyEdges());
+		model.setDependencyEdges(dependencyEdges);
+		
 		// Merge...
+
 	}
 
 }
