@@ -4,14 +4,14 @@ package com.unnsvc.rhena.core.visitors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.common.IVisitor;
+import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleState;
 import com.unnsvc.rhena.common.model.RhenaEdge;
 import com.unnsvc.rhena.common.model.RhenaModel;
 import com.unnsvc.rhena.core.resolution.ResolutionManager;
 
-public class LifecycleMaterialisingVisitor implements IVisitor {
+public class LifecycleMaterialisingVisitor implements IModelVisitor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ResolutionManager resolution;
@@ -24,10 +24,10 @@ public class LifecycleMaterialisingVisitor implements IVisitor {
 	}
 
 	@Override
-	public void startModule(RhenaModel module) throws RhenaException {
+	public void startModel(RhenaModel module) throws RhenaException {
 
 		if (module.getLifecycleModule() != null) {
-			RhenaModel lifecycleModel = resolution.materialiseModel(module.getLifecycleModule());
+			RhenaModel lifecycleModel = resolution.materialiseModel(module.getLifecycleModule().getTarget());
 			lifecycleModel.visit(new LifecycleMaterialisingVisitor(resolution, ModuleState.RESOLVED));
 		}
 
@@ -42,7 +42,7 @@ public class LifecycleMaterialisingVisitor implements IVisitor {
 	 * Here we perform the actual materialisation of the lifecycle
 	 */
 	@Override
-	public void endModule(RhenaModel module) throws RhenaException {
+	public void endModel(RhenaModel module) throws RhenaException {
 
 		// RhenaLifecycleExecution execution =
 		// context.getResolutionManager().materialiseState(module.getModuleIdentifier(),

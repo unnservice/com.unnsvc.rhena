@@ -6,15 +6,15 @@ import java.util.List;
 import java.util.Properties;
 
 import com.unnsvc.rhena.common.IRepository;
-import com.unnsvc.rhena.common.IVisitable;
-import com.unnsvc.rhena.common.IVisitor;
+import com.unnsvc.rhena.common.IVisitableModel;
+import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 
-public class RhenaModel extends RhenaReference implements IVisitable {
+public class RhenaModel extends RhenaReference implements IVisitableModel {
 
 	private IRepository repository;
-	private ModuleIdentifier lifecycleModule;
-	private ModuleIdentifier parentModule;
+	private RhenaEdge lifecycleModule;
+	private RhenaEdge parentModule;
 	private List<RhenaEdge> dependencyEdges;
 	private Properties properties;
 
@@ -26,22 +26,22 @@ public class RhenaModel extends RhenaReference implements IVisitable {
 		this.properties = new Properties();
 	}
 
-	public void setParentModule(ModuleIdentifier parentModule) {
+	public void setParentModule(RhenaEdge parentModule) {
 
 		this.parentModule = parentModule;
 	}
 
-	public ModuleIdentifier getParentModule() {
+	public RhenaEdge getParentModule() {
 
 		return parentModule;
 	}
 
-	public void setLifecycleModule(ModuleIdentifier lifecycleModule) {
+	public void setLifecycleModule(RhenaEdge lifecycleModule) {
 
 		this.lifecycleModule = lifecycleModule;
 	}
 
-	public ModuleIdentifier getLifecycleModule() {
+	public RhenaEdge getLifecycleModule() {
 
 		return lifecycleModule;
 	}
@@ -72,10 +72,10 @@ public class RhenaModel extends RhenaReference implements IVisitable {
 	}
 	
 	@Override
-	public void visit(IVisitor visitor) throws RhenaException {
+	public void visit(IModelVisitor visitor) throws RhenaException {
 
-		visitor.startModule(this);
+		visitor.startModel(this);
 
-		visitor.endModule(this);
+		visitor.endModel(this);
 	}
 }

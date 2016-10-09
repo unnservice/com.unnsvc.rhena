@@ -1,13 +1,13 @@
 
 package com.unnsvc.rhena.core.visitors;
 
-import com.unnsvc.rhena.common.IVisitor;
+import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.RhenaEdge;
 import com.unnsvc.rhena.common.model.RhenaModel;
 import com.unnsvc.rhena.core.resolution.ResolutionManager;
 
-public class ModelResolutionVisitor implements IVisitor {
+public class ModelResolutionVisitor implements IModelVisitor {
 
 	private ResolutionManager resolution;
 
@@ -17,15 +17,15 @@ public class ModelResolutionVisitor implements IVisitor {
 	}
 
 	@Override
-	public void startModule(RhenaModel module) throws RhenaException {
+	public void startModel(RhenaModel module) throws RhenaException {
 
 		if (module.getParentModule() != null) {
-			RhenaModel model = resolution.materialiseModel(module.getParentModule());
+			RhenaModel model = resolution.materialiseModel(module.getParentModule().getTarget());
 			model.visit(this);
 		}
 
 		if (module.getLifecycleModule() != null) {
-			RhenaModel model = resolution.materialiseModel(module.getLifecycleModule());
+			RhenaModel model = resolution.materialiseModel(module.getLifecycleModule().getTarget());
 			model.visit(this);
 		}
 
@@ -37,7 +37,7 @@ public class ModelResolutionVisitor implements IVisitor {
 	}
 
 	@Override
-	public void endModule(RhenaModel module) throws RhenaException {
+	public void endModel(RhenaModel module) throws RhenaException {
 
 	}
 

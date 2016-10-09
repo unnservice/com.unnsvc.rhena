@@ -4,13 +4,13 @@ package com.unnsvc.rhena.core.visitors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.common.IVisitor;
+import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.RhenaModel;
 import com.unnsvc.rhena.common.model.RhenaEdge;
 import com.unnsvc.rhena.core.resolution.ResolutionManager;
 
-public class LoggingVisitor implements IVisitor {
+public class LoggingVisitor implements IModelVisitor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ResolutionManager resolution;
@@ -33,19 +33,19 @@ public class LoggingVisitor implements IVisitor {
 	}
 
 	@Override
-	public void startModule(RhenaModel module) throws RhenaException {
+	public void startModel(RhenaModel module) throws RhenaException {
 
 		log.info(indent() + (label == null ? "" : "↳" + label + "⇀") + "[" + module.getModuleIdentifier() + "]");
 
 		if (module.getParentModule() != null) {
 
-			RhenaModel parent = resolution.materialiseModel(module.getParentModule());
+			RhenaModel parent = resolution.materialiseModel(module.getParentModule().getTarget());
 			parent.visit(new LoggingVisitor(resolution, indents + 1, "parent"));
 		}
 
 		if (module.getLifecycleModule() != null) {
 
-			RhenaModel lifecycle = resolution.materialiseModel(module.getLifecycleModule());
+			RhenaModel lifecycle = resolution.materialiseModel(module.getLifecycleModule().getTarget());
 			lifecycle.visit(new LoggingVisitor(resolution, indents + 1, "lifecycle"));
 		}
 
@@ -60,7 +60,7 @@ public class LoggingVisitor implements IVisitor {
 	}
 
 	@Override
-	public void endModule(RhenaModel module) throws RhenaException {
+	public void endModel(RhenaModel module) throws RhenaException {
 
 	}
 

@@ -20,7 +20,6 @@ import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaEdge;
 import com.unnsvc.rhena.common.model.RhenaEdgeType;
 import com.unnsvc.rhena.common.model.RhenaModel;
-import com.unnsvc.rhena.common.model.RhenaReference;
 
 public class RhenaModuleParser {
 
@@ -52,7 +51,7 @@ public class RhenaModuleParser {
 			if (extendsAttribute != null) {
 				String extendsModuleIdentifierStr = extendsAttribute.getNodeValue();
 				ModuleIdentifier extendsModuleIdentifier = new ModuleIdentifier(extendsModuleIdentifierStr.split(":"));
-				module.setParentModule(extendsModuleIdentifier);
+				module.setParentModule(new RhenaEdge(RhenaEdgeType.PARENT, extendsModuleIdentifier));
 			}
 		}
 
@@ -86,7 +85,7 @@ public class RhenaModuleParser {
 			// logger.debug("Lifecycle declaration: " +
 			// moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue());
 			ModuleIdentifier lifecycleDeclaration = new ModuleIdentifier(moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue().split(":"));
-			module.setLifecycleModule(lifecycleDeclaration);
+			module.setLifecycleModule(new RhenaEdge(RhenaEdgeType.LIFECYCLE, lifecycleDeclaration));
 		}
 
 		if (!module.getModuleIdentifier().getComponentName().toString().equals(componentNameStr)
