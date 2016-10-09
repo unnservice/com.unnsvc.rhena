@@ -8,16 +8,16 @@ import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.RhenaModel;
 import com.unnsvc.rhena.common.model.RhenaEdge;
-import com.unnsvc.rhena.core.resolution.ResolutionManager;
+import com.unnsvc.rhena.core.resolution.RhenaResolver;
 
 public class LoggingVisitor implements IModelVisitor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private ResolutionManager resolution;
+	private RhenaResolver resolution;
 	private int indents;
 	private String label;
 
-	public LoggingVisitor(ResolutionManager resolution, int indents, String label) {
+	public LoggingVisitor(RhenaResolver resolution, int indents, String label) {
 
 		this.resolution = resolution;
 		this.indents = indents;
@@ -27,7 +27,7 @@ public class LoggingVisitor implements IModelVisitor {
 		// }
 	}
 
-	public LoggingVisitor(ResolutionManager resolution) {
+	public LoggingVisitor(RhenaResolver resolution) {
 
 		this(resolution, 0, null);
 	}

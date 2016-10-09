@@ -14,14 +14,14 @@ import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaModel;
 import com.unnsvc.rhena.common.model.RhenaModule;
 
-public class ResolutionManager implements IResolver {
+public class RhenaResolver implements IResolver {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private IRepository[] repositories;
 	private Map<ModuleIdentifier, RhenaModel> models;
 	private Map<ModuleIdentifier, RhenaModule> modules;
 
-	public ResolutionManager(IRepository... repositories) {
+	public RhenaResolver(IRepository... repositories) {
 
 		this.repositories = repositories;
 		this.models = new HashMap<ModuleIdentifier, RhenaModel>();
