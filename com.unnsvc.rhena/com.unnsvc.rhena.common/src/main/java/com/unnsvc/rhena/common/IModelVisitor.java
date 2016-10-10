@@ -9,5 +9,4 @@ public interface IModelVisitor {
 	public void startModel(RhenaModule model) throws RhenaException;
 
 	public void endModel(RhenaModule model) throws RhenaException;
-
 }

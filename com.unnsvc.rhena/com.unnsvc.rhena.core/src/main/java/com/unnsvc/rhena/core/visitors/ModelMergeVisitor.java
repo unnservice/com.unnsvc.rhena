@@ -65,7 +65,7 @@ public class ModelMergeVisitor implements IModelVisitor {
 
 			if (!merged.contains(model.getModuleIdentifier())) {
 				RhenaModule parent = model.getParentModule();
-				mergeParent((RhenaModule) parent, model);
+				mergeParent(parent, model);
 				merged.add(model.getModuleIdentifier());
 				log.debug("[" + model.getModuleIdentifier() + "]:model merged parent " + parent.getModuleIdentifier());
 			}
