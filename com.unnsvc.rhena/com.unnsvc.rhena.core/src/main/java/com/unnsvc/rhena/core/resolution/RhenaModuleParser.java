@@ -3,8 +3,13 @@ package com.unnsvc.rhena.core.resolution;
 
 import java.net.URI;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,10 +47,7 @@ public class RhenaModuleParser {
 
 	public void parse(URI uri) throws Exception {
 
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setNamespaceAware(true);
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document document = builder.parse(uri.toASCIIString());
+		Document document = parseAndValidateDocument(uri);
 
 		NodeList children = document.getChildNodes();
 		Node moduleNode = children.item(0);
@@ -70,6 +72,27 @@ public class RhenaModuleParser {
 				}
 			}
 		}
+	}
+
+	private Document parseAndValidateDocument(URI uri) throws Exception {
+
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		Document document = builder.parse(uri.toString());
+
+		// validate
+		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource("META-INF/schema/module.xsd"));
+
+		try {
+			Validator validator = schema.newValidator();
+			validator.validate(new DOMSource(document));
+		} catch (Exception ex) {
+			throw new RhenaException("Schema validation error for: " + uri.toString(), ex);
+		}
+
+		return document;
 	}
 
 	private void processPropertyNode(Node propertyNode) {
