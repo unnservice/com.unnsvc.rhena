@@ -35,7 +35,6 @@ public class TestRhenaModule {
 		model.visit(new ModelBuildingVisitor(context));
 		model.visit(new LoggingVisitor(context));
 		
-		
 		context.materialiseExecution(model, RhenaExecutionType.COMPILE);
 	}
 }

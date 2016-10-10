@@ -17,6 +17,7 @@ import com.unnsvc.rhena.common.model.RhenaModel;
 import com.unnsvc.rhena.core.visitors.DependencyCollectionVisitor;
 import com.unnsvc.rhena.lifecycle.DefaultLifecycleFactory;
 import com.unnsvc.rhena.lifecycle.ILifecycleFactory;
+import com.unnsvc.rhena.lifecycle.IResourcesProcessor;
 
 public class ExecutionTypeMaterialiser {
 
@@ -26,13 +27,20 @@ public class ExecutionTypeMaterialiser {
 
 	public ExecutionTypeMaterialiser(IResolutionContext context, RhenaExecutionType type) {
 
-		this.context = context;
+		this.context = context; 
 		this.type = type;
 	}
 
 	public RhenaExecution materialiseExecution(RhenaModel model) throws RhenaException {
 
 		ILifecycleFactory lifecycleFactory = produceLifecycleFactory(model);
+		
+		
+		IResourcesProcessor resourcesProcessor = lifecycleFactory.newResourceProcessor(model, type);
+		/**
+		 * It is supposed to get a little configuration here from the model to pass down into the lifecycle
+		 */
+		resourcesProcessor.processResources(model);
 
 		RhenaExecution execution = new RhenaExecution(model.getModuleIdentifier(), type, new File("some/produced/artifact-" + type.toLabel()));
 
@@ -49,16 +57,14 @@ public class ExecutionTypeMaterialiser {
 
 			RhenaExecution lifecycleArtifact = context.materialiseExecution(lifecycleModel, RhenaExecutionType.COMPILE);
 
-			URLClassLoader lifecycleDependencies = new URLClassLoader(collector.getDependencyChainURL().toArray(new URL[0]),
-					Thread.currentThread().getContextClassLoader());
+			URLClassLoader lifecycleDependencies = new URLClassLoader(collector.getDependencyChainURL().toArray(new URL[0]), Thread.currentThread().getContextClassLoader());
 			URLClassLoader lifecycleClassloader = new URLClassLoader(new URL[] { lifecycleArtifact.getArtifactURL() }, lifecycleDependencies);
 			for (URL depUrl : lifecycleClassloader.getURLs()) {
 				log.info(model.getModuleIdentifier().toTag() + ":lifecycle classloader: " + depUrl);
 			}
 			ServiceLoader<ILifecycleFactory> lifecycleFactory = ServiceLoader.load(ILifecycleFactory.class, lifecycleClassloader);
 			if (!lifecycleFactory.iterator().hasNext()) {
-				log.warn(lifecycleModel.getModuleIdentifier().toTag() + ":lifecycle custom lifecycle not found in  " + lifecycleModel.getModuleIdentifier()
-						+ ", always using default as this is not fully implemented, this will otherwise be a RhenaException error");
+				log.warn(model.getModuleIdentifier().toTag() + ":lifecycle custom lifecycle not found in  " + lifecycleModel.getModuleIdentifier() + ", always using default as this is not fully implemented, this will otherwise be a RhenaException error");
 				// throw new RhenaException("Failed to find a custom lifecycle
 				// in " + lifecycleModel.getModuleIdentifier().toTag() + " which
 				// is required by " + model.getModuleIdentifier().toTag());

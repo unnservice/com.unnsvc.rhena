@@ -11,12 +11,12 @@ public class RhenaException extends Exception {
 	}
 
 	public RhenaException(Throwable t) {
-		
+
 		super(t);
 	}
-	
+
 	public RhenaException(String message, Throwable t) {
-		
+
 		super(message, t);
 	}
 

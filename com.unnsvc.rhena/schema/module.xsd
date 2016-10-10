@@ -11,43 +11,41 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="lifecycleConfigurationType">
+	<xs:complexType name="processorType">
 		<xs:sequence>
-			<xs:element name="sourcePaths" minOccurs="0" maxOccurs="1">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="sourcePath" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="targetPath" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:any minOccurs="0" maxOccurs="unbounded" namespace="##any" processContents="lax" />
 		</xs:sequence>
+		<xs:attribute name="module" type="common:qualifiedIdentifier" use="required" />
+		<xs:attribute name="type" type="xs:string" use="required" />
 	</xs:complexType>
 
-	<xs:complexType name="lifecyclesType">
+	<xs:complexType name="generatorType">
+		<xs:attribute name="module" type="common:qualifiedIdentifier" use="required" />
+		<xs:attribute name="type" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="lifecycleType">
 		<xs:sequence>
-			<xs:element name="test" type="tns:lifecycleConfigurationType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="normal" type="tns:lifecycleConfigurationType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="lifecycle" type="tns:lifecycleConfigurationType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="processor" type="tns:processorType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="generator" type="tns:generatorType" minOccurs="1" maxOccurs="1" />
 		</xs:sequence>
+		<xs:attribute name="name" />
 	</xs:complexType>
 
 	<xs:complexType name="metaType">
 		<xs:sequence>
 			<xs:element name="properties" minOccurs="0" maxOccurs="1" type="tns:propertiesType" />
-			<xs:element name="lifecycles" minOccurs="0" maxOccurs="1" type="tns:lifecyclesType" />
+			<xs:element name="lifecycle" minOccurs="0" maxOccurs="unbounded" type="tns:lifecycleType" />
 		</xs:sequence>
 		<xs:attribute name="component" type="common:identifierType" />
 		<xs:attribute name="version" type="common:versionType" />
-		<xs:attribute name="lifecycle" type="common:qualifiedIdentifier" />
+		<xs:attribute name="lifecycle" type="xs:string" />
 	</xs:complexType>
 
 	<xs:element name="module">
 		<xs:complexType>
 			<xs:sequence>
-				<!-- <xs:element name="extends" /> -->
 				<xs:element name="meta" type="tns:metaType" minOccurs="1" maxOccurs="1" />
-				<xs:any namespace="urn:rhena:properties" minOccurs="0" maxOccurs="unbounded" processContents="skip" />
 				<xs:any namespace="urn:rhena:dependency" minOccurs="0" maxOccurs="unbounded" processContents="strict" />
 			</xs:sequence>
 			<xs:attribute name="extends" type="common:qualifiedIdentifier" use="optional" />
