@@ -2,21 +2,25 @@
 package com.unnsvc.rhena.common.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IVisitableModel;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.lifecycle.LifecycleDeclaration;
 
 public class RhenaModel extends RhenaReference implements IVisitableModel {
 
 	private IRepository repository;
-	private ModuleIdentifier lifecycleModule;
+	private String lifecycleName;
 	private ModuleIdentifier parentModule;
 	private List<RhenaEdge> dependencyEdges;
 	private Properties properties;
+	private Map<String, LifecycleDeclaration> lifecycleDeclarations;
 
 	public RhenaModel(ModuleIdentifier moduleIdentifier, IRepository repository) {
 
@@ -24,6 +28,7 @@ public class RhenaModel extends RhenaReference implements IVisitableModel {
 		this.repository = repository;
 		this.dependencyEdges = new ArrayList<RhenaEdge>();
 		this.properties = new Properties();
+		this.lifecycleDeclarations = new HashMap<String, LifecycleDeclaration>();
 	}
 
 	public void setParentModule(ModuleIdentifier parentModule) {
@@ -36,14 +41,14 @@ public class RhenaModel extends RhenaReference implements IVisitableModel {
 		return parentModule;
 	}
 
-	public void setLifecycleModule(ModuleIdentifier lifecycleModule) {
+	public void setLifecycleName(String lifecycleName) {
 
-		this.lifecycleModule = lifecycleModule;
+		this.lifecycleName = lifecycleName;
 	}
 
-	public ModuleIdentifier getLifecycleModule() {
+	public String getLifecycleName() {
 
-		return lifecycleModule;
+		return lifecycleName;
 	}
 
 	public void setDependencyEdges(List<RhenaEdge> dependencyEdges) {
@@ -82,5 +87,15 @@ public class RhenaModel extends RhenaReference implements IVisitableModel {
 		visitor.startModel(this);
 
 		visitor.endModel(this);
+	}
+
+	public void addLifecycleDeclaration(LifecycleDeclaration lifecycleDeclaration) {
+
+		this.lifecycleDeclarations.put(lifecycleDeclaration.getName(), lifecycleDeclaration);
+	}
+
+	public Map<String, LifecycleDeclaration> getLifecycleDeclarations() {
+
+		return lifecycleDeclarations;
 	}
 }

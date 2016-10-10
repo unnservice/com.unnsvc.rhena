@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.lifecycle.LifecycleDeclaration;
+import com.unnsvc.rhena.common.lifecycle.ProcessorReference;
 import com.unnsvc.rhena.common.model.RhenaEdge;
 import com.unnsvc.rhena.common.model.RhenaModel;
 
@@ -33,25 +35,34 @@ public class LoggingVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void startModel(RhenaModel module) throws RhenaException {
+	public void startModel(RhenaModel model) throws RhenaException {
 
-		log.info(indent() + (label == null ? "root" : label) + ":" + module.getModuleIdentifier());
+		log.info(indent() + (label == null ? "root" : label) + ":" + model.getModuleIdentifier());
 
-		if (module.getParentModule() != null) {
+		if (model.getParentModule() != null) {
 
-			RhenaModel parent = context.materialiseModel(module.getParentModule());
+			RhenaModel parent = context.materialiseModel(model.getParentModule());
 			parent.visit(new LoggingVisitor(context, indents + 1, "parent"));
 		}
 
-		if (module.getLifecycleModule() != null) {
+		
+		/**
+		 * To debug print the lifecycle, we need to get the declaration or something or output as structured xml
+		 */
+		
+//		for (LifecycleDeclaration lifecycleDeclaration : model.getLifecycleDeclarations().values()) {
+//
+//			for (ProcessorReference processor : lifecycleDeclaration.getProcessors()) {
+//
+//				context.materialiseModel(processor.getModuleIdentifier()).visit(new LoggingVisitor(context, indents + 1, "processor"));
+//			}
+//
+//			context.materialiseModel(lifecycleDeclaration.getGenerator().getModuleIdentifier()).visit(new LoggingVisitor(context, indents + 1, "lifecycle"));
+//		}
 
-			RhenaModel lifecycle = context.materialiseModel(module.getLifecycleModule());
-			lifecycle.visit(new LoggingVisitor(context, indents + 1, "lifecycle"));
-		}
+		if (!model.getDependencyEdges().isEmpty()) {
 
-		if (!module.getDependencyEdges().isEmpty()) {
-
-			for (RhenaEdge edge : module.getDependencyEdges()) {
+			for (RhenaEdge edge : model.getDependencyEdges()) {
 
 				RhenaModel dependency = context.materialiseModel(edge.getTarget());
 				dependency.visit(new LoggingVisitor(context, indents + 1, "dependency"));

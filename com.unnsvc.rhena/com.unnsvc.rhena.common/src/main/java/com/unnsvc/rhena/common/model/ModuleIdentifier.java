@@ -9,11 +9,6 @@ public class ModuleIdentifier {
 	private Identifier moduleName;
 	private Version version;
 
-	public ModuleIdentifier(String[] moduleIdentifier) throws RhenaException {
-
-		this(moduleIdentifier[0], moduleIdentifier[1], moduleIdentifier[2]);
-	}
-
 	public ModuleIdentifier(Identifier componentName, Identifier moduleName, Version version) {
 
 		this.componentName = componentName;
@@ -94,7 +89,10 @@ public class ModuleIdentifier {
 	public static ModuleIdentifier valueOf(String moduleIdentifierStr) throws RhenaException {
 
 		String[] parts = moduleIdentifierStr.split(":");
-		return new ModuleIdentifier(parts);
+		if (parts.length != 3) {
+			throw new RhenaException("Invalid identifier: " + moduleIdentifierStr);
+		}
+		return new ModuleIdentifier(parts[0], parts[1], parts[2]);
 	}
 
 }

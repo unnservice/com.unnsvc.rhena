@@ -16,6 +16,9 @@ import org.w3c.dom.NodeList;
 import com.unnsvc.rhena.common.Constants;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.lifecycle.GeneratorReference;
+import com.unnsvc.rhena.common.lifecycle.LifecycleDeclaration;
+import com.unnsvc.rhena.common.lifecycle.ProcessorReference;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaEdge;
 import com.unnsvc.rhena.common.model.RhenaExecutionType;
@@ -50,7 +53,7 @@ public class RhenaModuleParser {
 			Node extendsAttribute = moduleNode.getAttributes().getNamedItem("extends");
 			if (extendsAttribute != null) {
 				String extendsModuleIdentifierStr = extendsAttribute.getNodeValue();
-				ModuleIdentifier extendsModuleIdentifier = new ModuleIdentifier(extendsModuleIdentifierStr.split(":"));
+				ModuleIdentifier extendsModuleIdentifier = ModuleIdentifier.valueOf(extendsModuleIdentifierStr);
 				module.setParentModule(extendsModuleIdentifier);
 			}
 		}
@@ -84,11 +87,12 @@ public class RhenaModuleParser {
 		if (moduleChild.getAttributes().getNamedItem("lifecycle") != null) {
 			// logger.debug("Lifecycle declaration: " +
 			// moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue());
-			ModuleIdentifier lifecycleDeclaration = new ModuleIdentifier(moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue().split(":"));
-			module.setLifecycleModule(lifecycleDeclaration);
+			String lifecycleName = moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue();
+			module.setLifecycleName(lifecycleName);
 		}
 
-		if (!module.getModuleIdentifier().getComponentName().toString().equals(componentNameStr) || !module.getModuleIdentifier().getVersion().toString().equals(versionStr)) {
+		if (!module.getModuleIdentifier().getComponentName().toString().equals(componentNameStr)
+				|| !module.getModuleIdentifier().getVersion().toString().equals(versionStr)) {
 			throw new RhenaException("Not correct version in workspace for: " + module.getModuleIdentifier());
 		}
 
@@ -104,20 +108,39 @@ public class RhenaModuleParser {
 							processPropertyNode(properties.item(p));
 						}
 					}
-				} else if (metaChild.getLocalName().equals("lifecycles")) {
-					NodeList lifecycleNodeList = metaChild.getChildNodes();
-					for (int p = 0; p < lifecycleNodeList.getLength(); p++) {
-						Node lifecycleNode = lifecycleNodeList.item(p);
-						if (lifecycleNode.getNodeType() == Node.ELEMENT_NODE) {
-							processLifecycleNode(lifecycleNode);
-						}
-					}
+				} else if (metaChild.getLocalName().equals("lifecycle")) {
+					processLifecycleNode(metaChild);
 				}
 			}
 		}
 	}
 
-	private void processLifecycleNode(Node lifecycleNode) {
+	private void processLifecycleNode(Node lifecycleNode) throws RhenaException {
+
+		LifecycleDeclaration ld = new LifecycleDeclaration(lifecycleNode.getAttributes().getNamedItem("name").getNodeValue());
+
+		NodeList children = lifecycleNode.getChildNodes();
+		for (int i = 0; i < children.getLength(); i++) {
+
+			Node child = children.item(i);
+			if (child.getNodeType() == Node.ELEMENT_NODE) {
+
+				String module = child.getAttributes().getNamedItem("module").getNodeValue();
+				String clazz = child.getAttributes().getNamedItem("class").getNodeValue();
+
+				if (child.getNodeName().equals("processor")) {
+
+					ProcessorReference processor = new ProcessorReference(ModuleIdentifier.valueOf(module), clazz);
+					ld.addProcessor(processor);
+				} else if (child.getNodeName().equals("generator")) {
+
+					GeneratorReference generator = new GeneratorReference(ModuleIdentifier.valueOf(module), clazz);
+					ld.setGenerator(generator);
+				}
+			}
+		}
+
+		module.addLifecycleDeclaration(ld);
 
 	}
 
@@ -127,7 +150,7 @@ public class RhenaModuleParser {
 		RhenaExecutionType dependencyType = RhenaExecutionType.valueOf(scopeString.toUpperCase());
 		String dependencyTargetModuleIdentifier = moduleChild.getAttributes().getNamedItem("module").getNodeValue();
 
-		ModuleIdentifier moduleIdentifier = new ModuleIdentifier(dependencyTargetModuleIdentifier.split(":"));
+		ModuleIdentifier moduleIdentifier = ModuleIdentifier.valueOf(dependencyTargetModuleIdentifier);
 		RhenaEdge edge = new RhenaEdge(dependencyType, moduleIdentifier);
 		if (!module.getDependencyEdges().contains(edge)) {
 			module.getDependencyEdges().add(edge);

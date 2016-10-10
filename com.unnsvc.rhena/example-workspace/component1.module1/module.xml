@@ -12,12 +12,12 @@
 		<!-- Lifecycle is designed so that once all of its building blocks have been instantiated, they remain cached in the runtime -->
 		<lifecycle name="customLifecycle">
 			<!-- implementations of an IProcessor -->
-			<processor module="component2:module1:0.0.1" type="com.some.Processor">
+			<processor module="component2:module1:0.0.1" class="com.some.Processor">
 				<someElementConfiguration xmlns="component2:module1:0.0.1" />
 			</processor>
-			<processor module="component2:module1:0.0.1" type="com.another.Processor" />
+			<processor module="component2:module1:0.0.1" class="com.another.Processor" />
 			<!-- implementations of an IGenerator to generate the actual artifact -->
-			<generator module="component2:module1:0.0.1" type="com.some.Generator" />
+			<generator module="component2:module1:0.0.1" class="com.some.Generator" />
 		</lifecycle>
 	</meta>
 
