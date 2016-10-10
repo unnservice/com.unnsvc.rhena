@@ -27,14 +27,3 @@
 </module>
 
 
-
-
-<!-- <lifecycles> -->
-<!-- <test> -->
-<!-- <sourcePaths> -->
-<!-- <sourcePath>src/test/java</sourcePath> -->
-<!-- </sourcePaths> -->
-<!-- <targetPath>some/target/path</targetPath> -->
-<!-- </test> -->
-<!-- </lifecycles> -->
-		

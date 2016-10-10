@@ -11,10 +11,10 @@ import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaExecutionType;
 import com.unnsvc.rhena.common.model.RhenaModule;
+import com.unnsvc.rhena.core.execution.ModelBuildingVisitor;
 import com.unnsvc.rhena.core.resolution.RhenaResolutionContext;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
 import com.unnsvc.rhena.core.visitors.LoggingVisitor;
-import com.unnsvc.rhena.core.visitors.ModelBuildingVisitor;
 import com.unnsvc.rhena.core.visitors.ModelMergeVisitor;
 import com.unnsvc.rhena.core.visitors.ModelResolutionVisitor;
 
@@ -24,7 +24,7 @@ public class TestRhenaModule {
 
 	@Test
 	public void test() throws Exception {
-
+		
 		long start = System.currentTimeMillis();
 		execute();
 		long end = System.currentTimeMillis();
@@ -41,10 +41,9 @@ public class TestRhenaModule {
 
 		RhenaModule model = context.materialiseModel(entryPointIdentifier);
 		model.visit(new ModelResolutionVisitor(context));
-		model.visit(new ModelMergeVisitor(context));
-		
-		model.visit(new ModelBuildingVisitor(context));
 		model.visit(new LoggingVisitor(context));
+		model.visit(new ModelMergeVisitor(context));
+		model.visit(new ModelBuildingVisitor(context));
 
 		context.materialiseExecution(model, RhenaExecutionType.COMPILE);
 	}
