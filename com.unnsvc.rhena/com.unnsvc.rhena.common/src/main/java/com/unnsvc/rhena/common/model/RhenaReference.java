@@ -1,7 +1,13 @@
 
 package com.unnsvc.rhena.common.model;
 
-public class RhenaReference {
+/**
+ * Supertype to a rhena model node.
+ * 
+ * @author noname
+ *
+ */
+public abstract class RhenaReference {
 
 	private ModuleIdentifier moduleIdentifier;
 

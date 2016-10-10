@@ -24,6 +24,15 @@ public class TestRhenaModule {
 	@Test
 	public void test() throws Exception {
 
+		long start = System.currentTimeMillis();
+		execute();
+		long end = System.currentTimeMillis();
+
+		log.info("Executed in " + (end - start) + "ms");
+	}
+
+	private void execute() throws Exception {
+
 		ModuleIdentifier entryPointIdentifier = ModuleIdentifier.valueOf("component1:module1:0.0.1");
 
 		IResolutionContext context = new RhenaResolutionContext();
@@ -34,7 +43,7 @@ public class TestRhenaModule {
 		model.visit(new ModelInitialisationVisitor(context));
 		model.visit(new ModelBuildingVisitor(context));
 		model.visit(new LoggingVisitor(context));
-		
+
 		context.materialiseExecution(model, RhenaExecutionType.COMPILE);
 	}
 }
