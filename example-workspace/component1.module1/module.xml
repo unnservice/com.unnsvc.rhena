@@ -11,6 +11,9 @@
 		<!-- Lifecycle becomes composable by aggregating processors and blocks from different sources -->
 		<!-- Lifecycle is designed so that once all of its building blocks have been instantiated, they remain cached in the runtime -->
 		<lifecycle name="customLifecycle">
+			<!-- Each processor needs custom configuration so there can't be a generic configurator -->
+			<!-- <configurator module="component2:module2:0.0.1" class="some.config.Configurator" /> -->
+			<!-- each processor is called in 2 stages. Once for its IModuleConfigurator interface that IProcessor implements, and once for the execution... -->
 			<!-- implementations of an IProcessor -->
 			<processor module="component2:module1:0.0.1" class="com.some.Processor">
 				<someElementConfiguration xmlns="component2:module1:0.0.1" />
@@ -18,6 +21,7 @@
 			<processor module="component2:module1:0.0.1" class="com.another.Processor" />
 			<!-- implementations of an IGenerator to generate the actual artifact -->
 			<generator module="component2:module1:0.0.1" class="com.some.Generator" />
+			<!-- can't group them in any way to not repeat module= all the time, the grouping would prevent interpolation from other modules -->
 		</lifecycle>
 	</meta>
 
