@@ -2,8 +2,10 @@
 package com.unnsvc.rhena.core.visitors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -12,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.lifecycle.LifecycleDeclaration;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaEdge;
 import com.unnsvc.rhena.common.model.RhenaModel;
@@ -64,8 +67,11 @@ public class ModelInitialisationVisitor extends ModelResolvingVisitor {
 		}
 		model.setDependencyEdges(dependencyEdges);
 
-		// Merge...
-
+		// Merge lifecycles
+		Map<String, LifecycleDeclaration> lifecycles = new HashMap<String, LifecycleDeclaration>();
+		lifecycles.putAll(parent.getLifecycleDeclarations());
+		lifecycles.putAll(model.getLifecycleDeclarations());
+		model.setLifecycleDeclarations(lifecycles);
 	}
 
 }
