@@ -11,7 +11,7 @@ import com.unnsvc.rhena.common.lifecycle.LifecycleDeclaration;
 import com.unnsvc.rhena.common.lifecycle.ProcessorReference;
 import com.unnsvc.rhena.common.model.RhenaEdge;
 import com.unnsvc.rhena.common.model.RhenaExecutionType;
-import com.unnsvc.rhena.common.model.RhenaModel;
+import com.unnsvc.rhena.common.model.RhenaModule;
 
 public class ModelBuildingVisitor implements IModelVisitor {
 
@@ -24,37 +24,37 @@ public class ModelBuildingVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void startModel(RhenaModel model) throws RhenaException {
+	public void startModel(RhenaModule model) throws RhenaException {
 
 		if (model.getParentModule() != null) {
 			
-			resolver.materialiseModel(model.getParentModule()).visit(this);;
+			model.getParentModule().visit(this);
 		}
 		
 		for(LifecycleDeclaration lifecycleDeclaration : model.getLifecycleDeclarations().values()) {
 			
 			for(ProcessorReference processor : lifecycleDeclaration.getProcessors()) {
 				
-				RhenaModel processorModel = resolver.materialiseModel(processor.getModuleIdentifier());
-				processorModel.visit(this);
+				RhenaModule processorModel = processor.getModule();
+				
 				resolver.materialiseExecution(processorModel, RhenaExecutionType.COMPILE);
 			}
 			
-			RhenaModel generatorModel = resolver.materialiseModel(lifecycleDeclaration.getGenerator().getModuleIdentifier());
+			RhenaModule generatorModel = lifecycleDeclaration.getGenerator().getModule();
 			generatorModel.visit(this);
 			resolver.materialiseExecution(generatorModel, RhenaExecutionType.COMPILE);
 		}
 		
 		for(RhenaEdge edge : model.getDependencyEdges()) {
 			
-			RhenaModel dependency = resolver.materialiseModel(edge.getTarget());
+			RhenaModule dependency = edge.getTarget();
 			dependency.visit(this);
 			resolver.materialiseExecution(dependency, edge.getExecutionType());
 		}
 	}
 
 	@Override
-	public void endModel(RhenaModel model) throws RhenaException {
+	public void endModel(RhenaModule model) throws RhenaException {
 
 		// RhenaExecution execution = getResolver().materialiseModuleType(model,
 		// RhenaEdgeType.ITEST);

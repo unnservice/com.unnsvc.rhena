@@ -3,24 +3,29 @@ package com.unnsvc.rhena.common.lifecycle;
 
 import org.w3c.dom.Node;
 
-import com.unnsvc.rhena.common.model.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.RhenaModule;
 
 public class ProcessorReference {
 
-	private ModuleIdentifier moduleIdentifier;
+	private RhenaModule module;
 	private String clazz;
 	private Node configuration;
 
-	public ProcessorReference(ModuleIdentifier moduleIdentifier, String clazz, Node configuration) {
+	public ProcessorReference(RhenaModule module, String clazz, Node configuration) {
 
-		this.moduleIdentifier = moduleIdentifier;
+		this.module = module;
 		this.clazz = clazz;
 		this.configuration = configuration;
 	}
 
-	public ModuleIdentifier getModuleIdentifier() {
+	public RhenaModule getModule() {
 
-		return moduleIdentifier;
+		return module;
+	}
+
+	public void setModule(RhenaModule module) {
+
+		this.module = module;
 	}
 
 	public String getClazz() {

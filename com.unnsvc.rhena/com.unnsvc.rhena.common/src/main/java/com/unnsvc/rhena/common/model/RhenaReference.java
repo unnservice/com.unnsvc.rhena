@@ -1,23 +1,19 @@
 
 package com.unnsvc.rhena.common.model;
 
-/**
- * Supertype to a rhena model node.
- * 
- * @author noname
- *
- */
-public abstract class RhenaReference {
+import com.unnsvc.rhena.common.IModelVisitor;
+import com.unnsvc.rhena.common.exceptions.RhenaException;
 
-	private ModuleIdentifier moduleIdentifier;
+public class RhenaReference extends RhenaModule {
 
 	public RhenaReference(ModuleIdentifier moduleIdentifier) {
-
-		this.moduleIdentifier = moduleIdentifier;
+		
+		super(moduleIdentifier, null);
 	}
 
-	public ModuleIdentifier getModuleIdentifier() {
+	@Override
+	public void visit(IModelVisitor visitor) throws RhenaException {
 
-		return moduleIdentifier;
+		throw new UnsupportedOperationException("Cannot visit an unresolved reference");
 	}
 }

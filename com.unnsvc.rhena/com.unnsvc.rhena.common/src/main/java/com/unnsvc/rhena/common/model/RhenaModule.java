@@ -13,30 +13,36 @@ import com.unnsvc.rhena.common.IVisitableModel;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.lifecycle.LifecycleDeclaration;
 
-public class RhenaModel extends RhenaReference implements IVisitableModel {
+public class RhenaModule implements IVisitableModel {
 
+	private ModuleIdentifier moduleIdentifier;
 	private IRepository repository;
 	private String lifecycleName;
-	private ModuleIdentifier parentModule;
+	private RhenaModule parentModule;
 	private List<RhenaEdge> dependencyEdges;
 	private Properties properties;
-	private Map<String, LifecycleDeclaration> lifecycleDeclarations;
+	private Map<String, LifecycleDeclaration> lifecyclesDeclarations;
 
-	public RhenaModel(ModuleIdentifier moduleIdentifier, IRepository repository) {
+	public RhenaModule(ModuleIdentifier moduleIdentifier, IRepository repository) {
 
-		super(moduleIdentifier);
+		this.moduleIdentifier = moduleIdentifier;
 		this.repository = repository;
 		this.dependencyEdges = new ArrayList<RhenaEdge>();
 		this.properties = new Properties();
-		this.lifecycleDeclarations = new HashMap<String, LifecycleDeclaration>();
+		this.lifecyclesDeclarations = new HashMap<String, LifecycleDeclaration>();
 	}
 
-	public void setParentModule(ModuleIdentifier parentModule) {
+	public ModuleIdentifier getModuleIdentifier() {
+
+		return moduleIdentifier;
+	}
+
+	public void setParentModule(RhenaModule parentModule) {
 
 		this.parentModule = parentModule;
 	}
 
-	public ModuleIdentifier getParentModule() {
+	public RhenaModule getParentModule() {
 
 		return parentModule;
 	}
@@ -91,11 +97,11 @@ public class RhenaModel extends RhenaReference implements IVisitableModel {
 
 	public Map<String, LifecycleDeclaration> getLifecycleDeclarations() {
 
-		return lifecycleDeclarations;
+		return lifecyclesDeclarations;
 	}
 
 	public void setLifecycleDeclarations(Map<String, LifecycleDeclaration> lifecycleDeclarations) {
 
-		this.lifecycleDeclarations = lifecycleDeclarations;
+		this.lifecyclesDeclarations = lifecycleDeclarations;
 	}
 }

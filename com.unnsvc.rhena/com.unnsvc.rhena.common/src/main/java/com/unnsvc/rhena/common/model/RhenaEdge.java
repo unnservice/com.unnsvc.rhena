@@ -4,9 +4,9 @@ package com.unnsvc.rhena.common.model;
 public class RhenaEdge {
 
 	private RhenaExecutionType executionType;
-	private ModuleIdentifier target;
+	private RhenaModule target;
 
-	public RhenaEdge(RhenaExecutionType executionType, ModuleIdentifier target) {
+	public RhenaEdge(RhenaExecutionType executionType, RhenaModule target) {
 
 		this.executionType = executionType;
 		this.target = target;
@@ -17,39 +17,13 @@ public class RhenaEdge {
 		return executionType;
 	}
 
-	public ModuleIdentifier getTarget() {
+	public RhenaModule getTarget() {
 
 		return target;
 	}
 
-	@Override
-	public int hashCode() {
+	public void setTarget(RhenaModule target) {
 
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((executionType == null) ? 0 : executionType.hashCode());
-		result = prime * result + ((target == null) ? 0 : target.hashCode());
-		return result;
+		this.target = target;
 	}
-
-	@Override
-	public boolean equals(Object obj) {
-
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		RhenaEdge other = (RhenaEdge) obj;
-		if (executionType != other.executionType)
-			return false;
-		if (target == null) {
-			if (other.target != null)
-				return false;
-		} else if (!target.equals(other.target))
-			return false;
-		return true;
-	}
-
 }

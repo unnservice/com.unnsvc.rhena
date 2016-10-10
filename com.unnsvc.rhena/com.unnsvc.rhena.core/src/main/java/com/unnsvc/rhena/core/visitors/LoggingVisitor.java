@@ -10,7 +10,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.lifecycle.LifecycleDeclaration;
 import com.unnsvc.rhena.common.lifecycle.ProcessorReference;
 import com.unnsvc.rhena.common.model.RhenaEdge;
-import com.unnsvc.rhena.common.model.RhenaModel;
+import com.unnsvc.rhena.common.model.RhenaModule;
 
 public class LoggingVisitor implements IModelVisitor {
 
@@ -35,14 +35,13 @@ public class LoggingVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void startModel(RhenaModel model) throws RhenaException {
+	public void startModel(RhenaModule model) throws RhenaException {
 
 		log.info(indent() + (label == null ? "root" : label) + ":" + model.getModuleIdentifier());
 
 		if (model.getParentModule() != null) {
 
-			RhenaModel parent = context.materialiseModel(model.getParentModule());
-			parent.visit(new LoggingVisitor(context, indents + 1, "parent"));
+			model.getParentModule().visit(new LoggingVisitor(context, indents + 1, "parent"));
 		}
 
 		
@@ -64,14 +63,13 @@ public class LoggingVisitor implements IModelVisitor {
 
 			for (RhenaEdge edge : model.getDependencyEdges()) {
 
-				RhenaModel dependency = context.materialiseModel(edge.getTarget());
-				dependency.visit(new LoggingVisitor(context, indents + 1, "dependency"));
+				edge.getTarget().visit(new LoggingVisitor(context, indents + 1, "dependency"));
 			}
 		}
 	}
 
 	@Override
-	public void endModel(RhenaModel module) throws RhenaException {
+	public void endModel(RhenaModule module) throws RhenaException {
 
 	}
 

@@ -13,7 +13,7 @@ import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.RhenaExecution;
 import com.unnsvc.rhena.common.model.RhenaExecutionType;
-import com.unnsvc.rhena.common.model.RhenaModel;
+import com.unnsvc.rhena.common.model.RhenaModule;
 import com.unnsvc.rhena.core.visitors.DependencyCollectionVisitor;
 import com.unnsvc.rhena.lifecycle.DefaultLifecycleFactory;
 import com.unnsvc.rhena.lifecycle.ILifecycleFactory;
@@ -31,7 +31,7 @@ public class ExecutionTypeMaterialiser {
 		this.type = type;
 	}
 
-	public RhenaExecution materialiseExecution(RhenaModel model) throws RhenaException {
+	public RhenaExecution materialiseExecution(RhenaModule model) throws RhenaException {
 
 //		ILifecycleFactory lifecycleFactory = produceLifecycleFactory(model);
 //		

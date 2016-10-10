@@ -22,16 +22,17 @@ import com.unnsvc.rhena.common.lifecycle.ProcessorReference;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaEdge;
 import com.unnsvc.rhena.common.model.RhenaExecutionType;
-import com.unnsvc.rhena.common.model.RhenaModel;
+import com.unnsvc.rhena.common.model.RhenaModule;
+import com.unnsvc.rhena.common.model.RhenaReference;
 
 public class RhenaModuleParser {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
-	private RhenaModel module;
+	private RhenaModule module;
 
 	public RhenaModuleParser(ModuleIdentifier moduleIdentifier, URI location, IRepository repository) throws RhenaException {
 
-		this.module = new RhenaModel(moduleIdentifier, repository);
+		this.module = new RhenaModule(moduleIdentifier, repository);
 		try {
 			parse(location);
 		} catch (Exception ex) {
@@ -54,7 +55,7 @@ public class RhenaModuleParser {
 			if (extendsAttribute != null) {
 				String extendsModuleIdentifierStr = extendsAttribute.getNodeValue();
 				ModuleIdentifier extendsModuleIdentifier = ModuleIdentifier.valueOf(extendsModuleIdentifierStr);
-				module.setParentModule(extendsModuleIdentifier);
+				module.setParentModule(new RhenaReference(extendsModuleIdentifier));
 			}
 		}
 
@@ -130,11 +131,11 @@ public class RhenaModuleParser {
 
 				if (child.getLocalName().equals("processor")) {
 
-					ProcessorReference processor = new ProcessorReference(ModuleIdentifier.valueOf(module), clazz, child);
+					ProcessorReference processor = new ProcessorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, child);
 					ld.addProcessor(processor);
 				} else if (child.getLocalName().equals("generator")) {
 
-					GeneratorReference generator = new GeneratorReference(ModuleIdentifier.valueOf(module), clazz, child);
+					GeneratorReference generator = new GeneratorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, child);
 					ld.setGenerator(generator);
 				}
 			}
@@ -150,13 +151,13 @@ public class RhenaModuleParser {
 		String dependencyTargetModuleIdentifier = moduleChild.getAttributes().getNamedItem("module").getNodeValue();
 
 		ModuleIdentifier moduleIdentifier = ModuleIdentifier.valueOf(dependencyTargetModuleIdentifier);
-		RhenaEdge edge = new RhenaEdge(dependencyType, moduleIdentifier);
+		RhenaEdge edge = new RhenaEdge(dependencyType, new RhenaReference(moduleIdentifier));
 		if (!module.getDependencyEdges().contains(edge)) {
 			module.getDependencyEdges().add(edge);
 		}
 	}
 
-	public RhenaModel getModel() {
+	public RhenaModule getModel() {
 
 		return module;
 	}

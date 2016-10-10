@@ -1,10 +1,10 @@
 
 package com.unnsvc.rhena.lifecycle;
 
-import com.unnsvc.rhena.common.model.RhenaModel;
+import com.unnsvc.rhena.common.model.RhenaModule;
 
 public interface IResourcesProcessor {
 
-	public void processResources(RhenaModel model);
+	public void processResources(RhenaModule model);
 
 }

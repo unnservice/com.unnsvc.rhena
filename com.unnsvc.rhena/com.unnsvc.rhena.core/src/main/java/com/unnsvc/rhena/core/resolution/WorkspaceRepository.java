@@ -13,7 +13,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaExecution;
 import com.unnsvc.rhena.common.model.RhenaExecutionType;
-import com.unnsvc.rhena.common.model.RhenaModel;
+import com.unnsvc.rhena.common.model.RhenaModule;
 import com.unnsvc.rhena.core.execution.ExecutionTypeMaterialiser;
 
 public class WorkspaceRepository extends AbstractRepository {
@@ -29,7 +29,7 @@ public class WorkspaceRepository extends AbstractRepository {
 	}
 
 	@Override
-	public RhenaModel materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
+	public RhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
 
 		File workspaceProject = new File(workspaceDirectory, moduleIdentifier.getComponentName() + "." + moduleIdentifier.getModuleName());
 		File moduleDescriptor = new File(workspaceProject, Constants.MODULE_DESCRIPTOR_FILENAME);
@@ -39,13 +39,13 @@ public class WorkspaceRepository extends AbstractRepository {
 			throw new RhenaException("Not in repository");
 		}
 
-		RhenaModel model = resolveModel(moduleIdentifier, moduleDescriptorUri);
+		RhenaModule model = resolveModel(moduleIdentifier, moduleDescriptorUri);
 
 		return model;
 	}
 
 	@Override
-	public RhenaExecution materialiseExecution(RhenaModel model, RhenaExecutionType type) throws RhenaException {
+	public RhenaExecution materialiseExecution(RhenaModule model, RhenaExecutionType type) throws RhenaException {
 
 		ExecutionTypeMaterialiser etm = new ExecutionTypeMaterialiser(context, type);
 		return etm.materialiseExecution(model);

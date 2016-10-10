@@ -15,7 +15,7 @@ import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaEdge;
 import com.unnsvc.rhena.common.model.RhenaExecution;
 import com.unnsvc.rhena.common.model.RhenaExecutionType;
-import com.unnsvc.rhena.common.model.RhenaModel;
+import com.unnsvc.rhena.common.model.RhenaModule;
 
 public class DependencyCollectionVisitor implements IModelVisitor {
 
@@ -32,22 +32,22 @@ public class DependencyCollectionVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void startModel(RhenaModel model) throws RhenaException {
+	public void startModel(RhenaModule model) throws RhenaException {
 
 		for (RhenaEdge edge : model.getDependencyEdges()) {
 
 			// Not all scopes are transient, so we can't traverse all
 			if (requested.compareTo(edge.getExecutionType()) <= 0) {
-				context.materialiseModel(edge.getTarget()).visit(this);
+				edge.getTarget().visit(this);
 				if (!identifiers.contains(edge.getTarget())) {
-					identifiers.add(edge.getTarget());
+					identifiers.add(edge.getTarget().getModuleIdentifier());
 				}
 			}
 		}
 	}
 
 	@Override
-	public void endModel(RhenaModel model) throws RhenaException {
+	public void endModel(RhenaModule model) throws RhenaException {
 
 	}
 
