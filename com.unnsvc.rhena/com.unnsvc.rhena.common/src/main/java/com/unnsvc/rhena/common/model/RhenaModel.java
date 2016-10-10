@@ -89,11 +89,6 @@ public class RhenaModel extends RhenaReference implements IVisitableModel {
 		visitor.endModel(this);
 	}
 
-	public void addLifecycleDeclaration(LifecycleDeclaration lifecycleDeclaration) {
-
-		this.lifecycleDeclarations.put(lifecycleDeclaration.getName(), lifecycleDeclaration);
-	}
-
 	public Map<String, LifecycleDeclaration> getLifecycleDeclarations() {
 
 		return lifecycleDeclarations;

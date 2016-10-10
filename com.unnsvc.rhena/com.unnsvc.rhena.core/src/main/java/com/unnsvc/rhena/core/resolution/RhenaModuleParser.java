@@ -128,11 +128,11 @@ public class RhenaModuleParser {
 				String module = child.getAttributes().getNamedItem("module").getNodeValue();
 				String clazz = child.getAttributes().getNamedItem("class").getNodeValue();
 
-				if (child.getNodeName().equals("processor")) {
+				if (child.getLocalName().equals("processor")) {
 
 					ProcessorReference processor = new ProcessorReference(ModuleIdentifier.valueOf(module), clazz);
 					ld.addProcessor(processor);
-				} else if (child.getNodeName().equals("generator")) {
+				} else if (child.getLocalName().equals("generator")) {
 
 					GeneratorReference generator = new GeneratorReference(ModuleIdentifier.valueOf(module), clazz);
 					ld.setGenerator(generator);
@@ -140,8 +140,7 @@ public class RhenaModuleParser {
 			}
 		}
 
-		module.addLifecycleDeclaration(ld);
-
+		module.getLifecycleDeclarations().put(ld.getName(), ld);
 	}
 
 	private void processDepenencyNode(Node moduleChild) throws DOMException, RhenaException {
