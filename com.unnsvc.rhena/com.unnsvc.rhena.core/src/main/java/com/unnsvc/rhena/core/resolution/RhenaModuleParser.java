@@ -130,11 +130,11 @@ public class RhenaModuleParser {
 
 				if (child.getLocalName().equals("processor")) {
 
-					ProcessorReference processor = new ProcessorReference(ModuleIdentifier.valueOf(module), clazz);
+					ProcessorReference processor = new ProcessorReference(ModuleIdentifier.valueOf(module), clazz, child);
 					ld.addProcessor(processor);
 				} else if (child.getLocalName().equals("generator")) {
 
-					GeneratorReference generator = new GeneratorReference(ModuleIdentifier.valueOf(module), clazz);
+					GeneratorReference generator = new GeneratorReference(ModuleIdentifier.valueOf(module), clazz, child);
 					ld.setGenerator(generator);
 				}
 			}
