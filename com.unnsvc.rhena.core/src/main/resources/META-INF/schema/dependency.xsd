@@ -10,17 +10,12 @@
 		<xs:attribute name="module" type="common:qualifiedIdentifier" use="required" />
 	</xs:complexType>
 
-	<xs:element name="compile" type="tns:dependencyType" />
-	<xs:element name="test" type="tns:dependencyType" />
-	<xs:element name="itest" type="tns:dependencyType" />
-
-
-	<xs:simpleType name="size">
-		<xs:restriction base="xs:string">
-			<xs:enumeration value="small" />
-			<xs:enumeration value="medium" />
-			<xs:enumeration value="large" />
-		</xs:restriction>
-	</xs:simpleType>
+	<xs:group name="dependencyTypes">
+		<xs:sequence>
+			<xs:element name="compile" type="tns:dependencyType" />
+			<xs:element name="test" type="tns:dependencyType" />
+			<xs:element name="itest" type="tns:dependencyType" />
+		</xs:sequence>
+	</xs:group>
 
 </xs:schema>

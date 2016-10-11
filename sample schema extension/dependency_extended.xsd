@@ -3,8 +3,6 @@
 	xmlns:dependency="dependency">
 
 	<xs:include schemaLocation="dependency.xsd" />
-	<!-- <xs:import namespace="main" schemaLocation="main.xsd" /> -->
-	<!-- <xs:import namespace="dependency" schemaLocation="dependency.xsd" /> -->
 
 	<xs:redefine schemaLocation="dependency.xsd">
 		<xs:group name="dependencyTypes">
@@ -14,14 +12,5 @@
 			</xs:sequence>
 		</xs:group>
 	</xs:redefine>
-
-	<!-- <xs:redefine schemaLocation="dependency.xsd"> -->
-	<!-- <xs:group name="tns:dependencyType"> -->
-	<!-- <xs:sequence> -->
-	<!-- <xs:element name="compile" type="dependency:dependencyType" /> -->
-	<!-- <xs:element name="test" type="dependency:dependencyType" /> -->
-	<!-- </xs:sequence> -->
-	<!-- </xs:group> -->
-	<!-- </xs:redefine> -->
 
 </xs:schema>
