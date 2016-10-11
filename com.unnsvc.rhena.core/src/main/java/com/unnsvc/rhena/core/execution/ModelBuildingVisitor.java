@@ -37,12 +37,12 @@ public class ModelBuildingVisitor implements IModelVisitor {
 				
 				IRhenaModule processorModel = processor.getModule();
 				
-				resolver.materialiseExecution(processorModel, ExecutionType.DELIVERABLE);
+				resolver.materialiseExecution(processorModel, ExecutionType.FRAMEWORK);
 			}
 			
 			IRhenaModule generatorModel = lifecycleDeclaration.getGenerator().getModule();
 			generatorModel.visit(this);
-			resolver.materialiseExecution(generatorModel, ExecutionType.DELIVERABLE);
+			resolver.materialiseExecution(generatorModel, ExecutionType.FRAMEWORK);
 		}
 		
 		for(IRhenaEdge edge : model.getDependencyEdges()) {

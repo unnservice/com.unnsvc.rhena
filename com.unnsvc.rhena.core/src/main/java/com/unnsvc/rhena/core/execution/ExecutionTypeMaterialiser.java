@@ -2,6 +2,7 @@
 package com.unnsvc.rhena.core.execution;
 
 import java.io.File;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,12 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.RhenaExecution;
+import com.unnsvc.rhena.common.model.lifecycle.IConfigurator;
+import com.unnsvc.rhena.common.model.lifecycle.IConfiguratorReference;
+import com.unnsvc.rhena.common.model.lifecycle.IGeneratorReference;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleProcessor;
+import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 
 public class ExecutionTypeMaterialiser {
 
@@ -25,6 +32,17 @@ public class ExecutionTypeMaterialiser {
 	}
 
 	public RhenaExecution materialiseExecution(IRhenaModule model) throws RhenaException {
+		
+		
+		
+//		ILifecycleDeclaration lifecycleDeclaration = model.getLifecycleDeclarations(.get(model.getLifecycleName());
+//		
+//		IConfiguratorReference configuratorReference = lifecycleDeclaration.getConfigurator();
+//		List<IProcessorReference> processorReferences = lifecycleDeclaration.getProcessors();
+//		IGeneratorReference generatorReference = lifecycleDeclaration.getGenerator();
+//
+//		Class<? extends IConfigurator> configuratorType = resolveType(model, configuratorReference);
+		
 
 //		ILifecycleFactory lifecycleFactory = produceLifecycleFactory(model);
 //		
@@ -43,6 +61,12 @@ public class ExecutionTypeMaterialiser {
 		RhenaExecution execution = new RhenaExecution(model.getModuleIdentifier(), type, new File("some/produced/artifact-" + type.toLabel()));
 		return execution;
 	}
+
+//	private Class<? extends IConfigurator> resolveType(IRhenaModule model, ILifecycleProcessor processor) {
+//
+//		
+//		return null;
+//	}
 //
 //	private ILifecycleFactory produceLifecycleFactory(RhenaModel model) throws RhenaException {
 //

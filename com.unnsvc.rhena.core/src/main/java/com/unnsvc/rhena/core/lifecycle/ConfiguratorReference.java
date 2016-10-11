@@ -5,15 +5,14 @@ import org.w3c.dom.Node;
 
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.IConfiguratorReference;
-import com.unnsvc.rhena.core.model.RhenaReference;
 
 public class ConfiguratorReference implements IConfiguratorReference {
 
-	private RhenaReference module;
+	private IRhenaModule module;
 	private String clazz;
 	private Node configuration;
 
-	public ConfiguratorReference(RhenaReference module, String clazz, Node configuration) {
+	public ConfiguratorReference(IRhenaModule module, String clazz, Node configuration) {
 
 		this.module = module;
 		this.clazz = clazz;
@@ -24,6 +23,12 @@ public class ConfiguratorReference implements IConfiguratorReference {
 	public IRhenaModule getModule() {
 
 		return module;
+	}
+	
+	@Override
+	public void setModule(IRhenaModule module) {
+	
+		this.module = module;
 	}
 
 	@Override

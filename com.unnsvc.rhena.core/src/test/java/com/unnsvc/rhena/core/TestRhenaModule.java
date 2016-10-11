@@ -41,8 +41,8 @@ public class TestRhenaModule {
 
 		IRhenaModule model = context.materialiseModel(entryPointIdentifier);
 		model.visit(new ModelResolutionVisitor(context));
-		model.visit(new LoggingVisitor(context));
 		model.visit(new ModelMergeVisitor(context));
+		model.visit(new LoggingVisitor(context));
 		model.visit(new ModelBuildingVisitor(context));
 
 		context.materialiseExecution(model, ExecutionType.DELIVERABLE);
