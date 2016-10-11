@@ -37,7 +37,7 @@ public class DependencyCollectionVisitor implements IModelVisitor {
 		for (RhenaEdge edge : model.getDependencyEdges()) {
 
 			// Not all scopes are transient, so we can't traverse all
-			if (requested.compareTo(edge.getExecutionType()) <= 0) {
+			if (requested.isTransitiveOver(edge.getExecutionType())) {
 				edge.getTarget().visit(this);
 				if (!identifiers.contains(edge.getTarget())) {
 					identifiers.add(edge.getTarget().getModuleIdentifier());
