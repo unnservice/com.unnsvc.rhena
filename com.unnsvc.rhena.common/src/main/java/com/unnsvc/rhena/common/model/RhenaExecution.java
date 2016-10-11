@@ -10,10 +10,10 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 public class RhenaExecution {
 
 	private ModuleIdentifier moduleIdentifier;
-	private RhenaExecutionType edgeType;
+	private ExecutionType edgeType;
 	private File artifact;
 
-	public RhenaExecution(ModuleIdentifier moduleIdentifier, RhenaExecutionType edgeType, File artifact) {
+	public RhenaExecution(ModuleIdentifier moduleIdentifier, ExecutionType edgeType, File artifact) {
 
 		this.moduleIdentifier = moduleIdentifier;
 		this.edgeType = edgeType;
@@ -25,7 +25,7 @@ public class RhenaExecution {
 		return moduleIdentifier;
 	}
 
-	public RhenaExecutionType getEdgeType() {
+	public ExecutionType getEdgeType() {
 
 		return edgeType;
 	}

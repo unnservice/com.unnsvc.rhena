@@ -14,7 +14,7 @@ import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaExecution;
-import com.unnsvc.rhena.common.model.RhenaExecutionType;
+import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.RhenaModule;
 
 public class RhenaResolutionContext implements IResolutionContext {
@@ -22,13 +22,13 @@ public class RhenaResolutionContext implements IResolutionContext {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private List<IRepository> repositories;
 	private Map<ModuleIdentifier, RhenaModule> models;
-	private Map<ModuleIdentifier, Map<RhenaExecutionType, RhenaExecution>> executions;
+	private Map<ModuleIdentifier, Map<ExecutionType, RhenaExecution>> executions;
 
 	public RhenaResolutionContext() {
 
 		this.repositories = new ArrayList<IRepository>();
 		this.models = new HashMap<ModuleIdentifier, RhenaModule>();
-		this.executions = new HashMap<ModuleIdentifier, Map<RhenaExecutionType, RhenaExecution>>();
+		this.executions = new HashMap<ModuleIdentifier, Map<ExecutionType, RhenaExecution>>();
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class RhenaResolutionContext implements IResolutionContext {
 	}
 
 	@Override
-	public RhenaExecution materialiseExecution(RhenaModule model, RhenaExecutionType type) throws RhenaException {
+	public RhenaExecution materialiseExecution(RhenaModule model, ExecutionType type) throws RhenaException {
 
 		/**
 		 * Execution type might have a dependency on another execution type
@@ -85,7 +85,7 @@ public class RhenaResolutionContext implements IResolutionContext {
 
 			executions.get(identifier).put(type, execution);
 		} else {
-			Map<RhenaExecutionType, RhenaExecution> typeExecutions = new HashMap<RhenaExecutionType, RhenaExecution>();
+			Map<ExecutionType, RhenaExecution> typeExecutions = new HashMap<ExecutionType, RhenaExecution>();
 			typeExecutions.put(type, execution);
 			executions.put(identifier, typeExecutions);
 		}

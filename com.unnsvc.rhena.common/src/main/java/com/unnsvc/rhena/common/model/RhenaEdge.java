@@ -3,16 +3,16 @@ package com.unnsvc.rhena.common.model;
 
 public class RhenaEdge {
 
-	private RhenaExecutionType executionType;
+	private ExecutionType executionType;
 	private RhenaModule target;
 
-	public RhenaEdge(RhenaExecutionType executionType, RhenaModule target) {
+	public RhenaEdge(ExecutionType executionType, RhenaModule target) {
 
 		this.executionType = executionType;
 		this.target = target;
 	}
 
-	public RhenaExecutionType getExecutionType() {
+	public ExecutionType getExecutionType() {
 
 		return executionType;
 	}

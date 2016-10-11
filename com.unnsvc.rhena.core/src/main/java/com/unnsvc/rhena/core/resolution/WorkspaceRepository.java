@@ -12,7 +12,7 @@ import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaExecution;
-import com.unnsvc.rhena.common.model.RhenaExecutionType;
+import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.RhenaModule;
 import com.unnsvc.rhena.core.execution.ExecutionTypeMaterialiser;
 
@@ -45,7 +45,7 @@ public class WorkspaceRepository extends AbstractRepository {
 	}
 
 	@Override
-	public RhenaExecution materialiseExecution(RhenaModule model, RhenaExecutionType type) throws RhenaException {
+	public RhenaExecution materialiseExecution(RhenaModule model, ExecutionType type) throws RhenaException {
 
 		ExecutionTypeMaterialiser etm = new ExecutionTypeMaterialiser(context, type);
 		return etm.materialiseExecution(model);

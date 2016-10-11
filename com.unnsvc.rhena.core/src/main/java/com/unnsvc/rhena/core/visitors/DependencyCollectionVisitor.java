@@ -14,17 +14,17 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaEdge;
 import com.unnsvc.rhena.common.model.RhenaExecution;
-import com.unnsvc.rhena.common.model.RhenaExecutionType;
+import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.RhenaModule;
 
 public class DependencyCollectionVisitor implements IModelVisitor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private IResolutionContext context;
-	private RhenaExecutionType requested;
+	private ExecutionType requested;
 	private List<ModuleIdentifier> identifiers;
 
-	public DependencyCollectionVisitor(IResolutionContext context, RhenaExecutionType requested) {
+	public DependencyCollectionVisitor(IResolutionContext context, ExecutionType requested) {
 
 		this.context = context;
 		this.requested = requested;

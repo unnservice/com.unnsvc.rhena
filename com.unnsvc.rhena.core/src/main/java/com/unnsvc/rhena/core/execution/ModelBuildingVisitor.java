@@ -10,7 +10,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.lifecycle.LifecycleDeclaration;
 import com.unnsvc.rhena.common.lifecycle.ProcessorReference;
 import com.unnsvc.rhena.common.model.RhenaEdge;
-import com.unnsvc.rhena.common.model.RhenaExecutionType;
+import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.RhenaModule;
 
 public class ModelBuildingVisitor implements IModelVisitor {
@@ -37,12 +37,12 @@ public class ModelBuildingVisitor implements IModelVisitor {
 				
 				RhenaModule processorModel = processor.getModule();
 				
-				resolver.materialiseExecution(processorModel, RhenaExecutionType.COMPILE);
+				resolver.materialiseExecution(processorModel, ExecutionType.COMPILE);
 			}
 			
 			RhenaModule generatorModel = lifecycleDeclaration.getGenerator().getModule();
 			generatorModel.visit(this);
-			resolver.materialiseExecution(generatorModel, RhenaExecutionType.COMPILE);
+			resolver.materialiseExecution(generatorModel, ExecutionType.COMPILE);
 		}
 		
 		for(RhenaEdge edge : model.getDependencyEdges()) {

@@ -2,7 +2,7 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:rhena:dependency" xmlns:tns="urn:rhena:dependency" xmlns:common="urn:rhena:common"
 	elementFormDefault="qualified">
 
-	<xs:import namespace="urn:rhena:common" schemaLocation="common.xsd" />
+	<xs:import namespace="urn:rhena:common" schemaLocation="http://schema.unnsvc.com/rhena/common.xsd" />
 
 	<xs:complexType name="dependencyType">
 		<xs:sequence>
@@ -13,5 +13,14 @@
 	<xs:element name="compile" type="tns:dependencyType" />
 	<xs:element name="test" type="tns:dependencyType" />
 	<xs:element name="itest" type="tns:dependencyType" />
+
+
+	<xs:simpleType name="size">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="small" />
+			<xs:enumeration value="medium" />
+			<xs:enumeration value="large" />
+		</xs:restriction>
+	</xs:simpleType>
 
 </xs:schema>

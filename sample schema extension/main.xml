@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<main xmlns="main" xmlns:dependency="dependency" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="
+		main main.xsd
+		dependency dependency_extended.xsd
+	">
+
+	<dependency:compile />
+	<dependency:test />
+
+</main>
+
+

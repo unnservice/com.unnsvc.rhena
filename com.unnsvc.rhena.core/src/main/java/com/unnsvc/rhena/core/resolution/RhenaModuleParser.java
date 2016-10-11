@@ -26,7 +26,7 @@ import com.unnsvc.rhena.common.lifecycle.LifecycleDeclaration;
 import com.unnsvc.rhena.common.lifecycle.ProcessorReference;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.RhenaEdge;
-import com.unnsvc.rhena.common.model.RhenaExecutionType;
+import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.RhenaModule;
 import com.unnsvc.rhena.common.model.RhenaReference;
 
@@ -170,7 +170,7 @@ public class RhenaModuleParser {
 	private void processDepenencyNode(Node moduleChild) throws DOMException, RhenaException {
 
 		String scopeString = moduleChild.getLocalName();
-		RhenaExecutionType dependencyType = RhenaExecutionType.valueOf(scopeString.toUpperCase());
+		ExecutionType dependencyType = ExecutionType.valueOf(scopeString.toUpperCase());
 		String dependencyTargetModuleIdentifier = moduleChild.getAttributes().getNamedItem("module").getNodeValue();
 
 		ModuleIdentifier moduleIdentifier = ModuleIdentifier.valueOf(dependencyTargetModuleIdentifier);

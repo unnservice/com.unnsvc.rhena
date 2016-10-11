@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.model.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.RhenaExecutionType;
+import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.RhenaModule;
 import com.unnsvc.rhena.core.execution.ModelBuildingVisitor;
 import com.unnsvc.rhena.core.resolution.RhenaResolutionContext;
@@ -45,7 +45,7 @@ public class TestRhenaModule {
 		model.visit(new ModelMergeVisitor(context));
 		model.visit(new ModelBuildingVisitor(context));
 
-		context.materialiseExecution(model, RhenaExecutionType.COMPILE);
+		context.materialiseExecution(model, ExecutionType.COMPILE);
 	}
 }
 

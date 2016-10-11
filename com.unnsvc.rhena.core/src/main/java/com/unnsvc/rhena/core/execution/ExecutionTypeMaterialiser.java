@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.RhenaExecution;
-import com.unnsvc.rhena.common.model.RhenaExecutionType;
+import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.RhenaModule;
 import com.unnsvc.rhena.core.visitors.DependencyCollectionVisitor;
 import com.unnsvc.rhena.lifecycle.DefaultLifecycleFactory;
@@ -23,9 +23,9 @@ public class ExecutionTypeMaterialiser {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private IResolutionContext context;
-	private RhenaExecutionType type;
+	private ExecutionType type;
 
-	public ExecutionTypeMaterialiser(IResolutionContext context, RhenaExecutionType type) {
+	public ExecutionTypeMaterialiser(IResolutionContext context, ExecutionType type) {
 
 		this.context = context; 
 		this.type = type;

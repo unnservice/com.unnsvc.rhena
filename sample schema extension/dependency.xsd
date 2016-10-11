@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="dependency" xmlns:tns="dependency" elementFormDefault="qualified">
+
+	<xs:complexType name="dependencyType">
+
+	</xs:complexType>
+
+	<xs:group name="dependencyTypes">
+		<xs:sequence>
+			<xs:element name="compile" type="tns:dependencyType" />
+		</xs:sequence>
+	</xs:group>
+
+</xs:schema>
