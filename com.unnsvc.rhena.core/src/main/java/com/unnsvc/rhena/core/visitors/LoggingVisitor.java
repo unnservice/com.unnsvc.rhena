@@ -7,10 +7,8 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.lifecycle.LifecycleDeclaration;
-import com.unnsvc.rhena.common.lifecycle.ProcessorReference;
-import com.unnsvc.rhena.common.model.RhenaEdge;
-import com.unnsvc.rhena.common.model.RhenaModule;
+import com.unnsvc.rhena.common.model.IRhenaEdge;
+import com.unnsvc.rhena.common.model.IRhenaModule;
 
 public class LoggingVisitor implements IModelVisitor {
 
@@ -35,7 +33,7 @@ public class LoggingVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void startModel(RhenaModule model) throws RhenaException {
+	public void startModel(IRhenaModule model) throws RhenaException {
 
 		log.info(indent() + (label == null ? "root" : label) + ":" + model.getModuleIdentifier());
 
@@ -61,7 +59,7 @@ public class LoggingVisitor implements IModelVisitor {
 
 		if (!model.getDependencyEdges().isEmpty()) {
 
-			for (RhenaEdge edge : model.getDependencyEdges()) {
+			for (IRhenaEdge edge : model.getDependencyEdges()) {
 
 				edge.getTarget().visit(new LoggingVisitor(context, indents + 1, "dependency"));
 			}
@@ -69,7 +67,7 @@ public class LoggingVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void endModel(RhenaModule module) throws RhenaException {
+	public void endModel(IRhenaModule module) throws RhenaException {
 
 	}
 

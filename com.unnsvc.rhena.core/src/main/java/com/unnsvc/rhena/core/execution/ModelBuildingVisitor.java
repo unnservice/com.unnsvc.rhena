@@ -7,11 +7,11 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.lifecycle.LifecycleDeclaration;
-import com.unnsvc.rhena.common.lifecycle.ProcessorReference;
-import com.unnsvc.rhena.common.model.RhenaEdge;
 import com.unnsvc.rhena.common.model.ExecutionType;
-import com.unnsvc.rhena.common.model.RhenaModule;
+import com.unnsvc.rhena.common.model.IRhenaEdge;
+import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
+import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 
 public class ModelBuildingVisitor implements IModelVisitor {
 
@@ -24,37 +24,37 @@ public class ModelBuildingVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void startModel(RhenaModule model) throws RhenaException {
+	public void startModel(IRhenaModule model) throws RhenaException {
 
 		if (model.getParentModule() != null) {
 			
 			model.getParentModule().visit(this);
 		}
 		
-		for(LifecycleDeclaration lifecycleDeclaration : model.getLifecycleDeclarations().values()) {
+		for(ILifecycleDeclaration lifecycleDeclaration : model.getLifecycleDeclarations().values()) {
 			
-			for(ProcessorReference processor : lifecycleDeclaration.getProcessors()) {
+			for(IProcessorReference processor : lifecycleDeclaration.getProcessors()) {
 				
-				RhenaModule processorModel = processor.getModule();
+				IRhenaModule processorModel = processor.getModule();
 				
-				resolver.materialiseExecution(processorModel, ExecutionType.COMPILE);
+				resolver.materialiseExecution(processorModel, ExecutionType.DELIVERABLE);
 			}
 			
-			RhenaModule generatorModel = lifecycleDeclaration.getGenerator().getModule();
+			IRhenaModule generatorModel = lifecycleDeclaration.getGenerator().getModule();
 			generatorModel.visit(this);
-			resolver.materialiseExecution(generatorModel, ExecutionType.COMPILE);
+			resolver.materialiseExecution(generatorModel, ExecutionType.DELIVERABLE);
 		}
 		
-		for(RhenaEdge edge : model.getDependencyEdges()) {
+		for(IRhenaEdge edge : model.getDependencyEdges()) {
 			
-			RhenaModule dependency = edge.getTarget();
+			IRhenaModule dependency = edge.getTarget();
 			dependency.visit(this);
 			resolver.materialiseExecution(dependency, edge.getExecutionType());
 		}
 	}
 
 	@Override
-	public void endModel(RhenaModule model) throws RhenaException {
+	public void endModel(IRhenaModule model) throws RhenaException {
 
 		// RhenaExecution execution = getResolver().materialiseModuleType(model,
 		// RhenaEdgeType.ITEST);

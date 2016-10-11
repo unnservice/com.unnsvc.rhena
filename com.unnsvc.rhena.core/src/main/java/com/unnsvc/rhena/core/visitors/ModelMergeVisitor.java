@@ -15,11 +15,11 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.lifecycle.LifecycleDeclaration;
-import com.unnsvc.rhena.common.lifecycle.ProcessorReference;
-import com.unnsvc.rhena.common.model.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.RhenaEdge;
-import com.unnsvc.rhena.common.model.RhenaModule;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.IRhenaEdge;
+import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
+import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 
 public class ModelMergeVisitor implements IModelVisitor {
 
@@ -34,37 +34,37 @@ public class ModelMergeVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void startModel(RhenaModule model) throws RhenaException {
+	public void startModel(IRhenaModule model) throws RhenaException {
 
-		if(model.getParentModule() != null) {
-			
+		if (model.getParentModule() != null) {
+
 			model.getParentModule().visit(this);
 		}
-		
-		for(LifecycleDeclaration ld : model.getLifecycleDeclarations().values()) {
-			
-			for(ProcessorReference pr : ld.getProcessors()) {
-				
+
+		for (ILifecycleDeclaration ld : model.getLifecycleDeclarations().values()) {
+
+			for (IProcessorReference pr : ld.getProcessors()) {
+
 				pr.getModule().visit(this);
 			}
-			
+
 			ld.getGenerator().getModule().visit(this);
 		}
-		
-		for(RhenaEdge edge : model.getDependencyEdges()) {
-			
+
+		for (IRhenaEdge edge : model.getDependencyEdges()) {
+
 			edge.getTarget().visit(this);
 		}
 	}
 
 	@Override
-	public void endModel(RhenaModule model) throws RhenaException {
+	public void endModel(IRhenaModule model) throws RhenaException {
 
 		// merge parent into child
 		if (model.getParentModule() != null) {
 
 			if (!merged.contains(model.getModuleIdentifier())) {
-				RhenaModule parent = model.getParentModule();
+				IRhenaModule parent = model.getParentModule();
 				mergeParent(parent, model);
 				merged.add(model.getModuleIdentifier());
 				log.debug("[" + model.getModuleIdentifier() + "]:model merged parent " + parent.getModuleIdentifier());
@@ -85,7 +85,7 @@ public class ModelMergeVisitor implements IModelVisitor {
 	 * @param parent
 	 * @param model
 	 */
-	private void mergeParent(RhenaModule parent, RhenaModule model) {
+	private void mergeParent(IRhenaModule parent, IRhenaModule model) {
 
 		// Merge properties
 		Properties mergedProperties = new Properties();
@@ -94,9 +94,9 @@ public class ModelMergeVisitor implements IModelVisitor {
 		model.setProperties(mergedProperties);
 
 		// Merge dependencies
-		List<RhenaEdge> dependencyEdges = new ArrayList<RhenaEdge>();
+		List<IRhenaEdge> dependencyEdges = new ArrayList<IRhenaEdge>();
 		dependencyEdges.addAll(parent.getDependencyEdges());
-		for (RhenaEdge edge : model.getDependencyEdges()) {
+		for (IRhenaEdge edge : model.getDependencyEdges()) {
 			if (!dependencyEdges.contains(edge)) {
 				dependencyEdges.addAll(model.getDependencyEdges());
 			}
@@ -104,7 +104,7 @@ public class ModelMergeVisitor implements IModelVisitor {
 		model.setDependencyEdges(dependencyEdges);
 
 		// Merge lifecycles
-		Map<String, LifecycleDeclaration> lifecycles = new HashMap<String, LifecycleDeclaration>();
+		Map<String, ILifecycleDeclaration> lifecycles = new HashMap<String, ILifecycleDeclaration>();
 		lifecycles.putAll(parent.getLifecycleDeclarations());
 		lifecycles.putAll(model.getLifecycleDeclarations());
 		model.setLifecycleDeclarations(lifecycles);

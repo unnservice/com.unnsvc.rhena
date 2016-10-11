@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.common.model;
+package com.unnsvc.rhena.core.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,79 +9,92 @@ import java.util.Properties;
 
 import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.IRepository;
-import com.unnsvc.rhena.common.IVisitableModel;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.lifecycle.LifecycleDeclaration;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.IRhenaEdge;
+import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 
-public class RhenaModule implements IVisitableModel {
+public class RhenaModule implements IRhenaModule {
 
 	private ModuleIdentifier moduleIdentifier;
 	private IRepository repository;
 	private String lifecycleName;
-	private RhenaModule parentModule;
-	private List<RhenaEdge> dependencyEdges;
+	private IRhenaModule parentModule;
+	private List<IRhenaEdge> dependencyEdges;
 	private Properties properties;
-	private Map<String, LifecycleDeclaration> lifecyclesDeclarations;
+	private Map<String, ILifecycleDeclaration> lifecyclesDeclarations;
 
 	public RhenaModule(ModuleIdentifier moduleIdentifier, IRepository repository) {
 
 		this.moduleIdentifier = moduleIdentifier;
 		this.repository = repository;
-		this.dependencyEdges = new ArrayList<RhenaEdge>();
+		this.dependencyEdges = new ArrayList<IRhenaEdge>();
 		this.properties = new Properties();
-		this.lifecyclesDeclarations = new HashMap<String, LifecycleDeclaration>();
+		this.lifecyclesDeclarations = new HashMap<String, ILifecycleDeclaration>();
 	}
 
+	@Override
 	public ModuleIdentifier getModuleIdentifier() {
 
 		return moduleIdentifier;
 	}
 
-	public void setParentModule(RhenaModule parentModule) {
+	@Override
+	public void setParentModule(IRhenaModule parentModule) {
 
 		this.parentModule = parentModule;
 	}
 
-	public RhenaModule getParentModule() {
+	@Override
+	public IRhenaModule getParentModule() {
 
 		return parentModule;
 	}
 
+	@Override
 	public void setLifecycleName(String lifecycleName) {
 
 		this.lifecycleName = lifecycleName;
 	}
 
+	@Override
 	public String getLifecycleName() {
 
 		return lifecycleName;
 	}
 
-	public void setDependencyEdges(List<RhenaEdge> dependencyEdges) {
+	@Override
+	public void setDependencyEdges(List<IRhenaEdge> dependencyEdges) {
 
 		this.dependencyEdges = dependencyEdges;
 	}
 
-	public List<RhenaEdge> getDependencyEdges() {
+	@Override
+	public List<IRhenaEdge> getDependencyEdges() {
 
 		return dependencyEdges;
 	}
 
+	@Override
 	public void setProperty(String key, String value) {
 
 		this.properties.setProperty(key, value);
 	}
 
+	@Override
 	public void setProperties(Properties properties) {
 
 		this.properties = properties;
 	}
 
+	@Override
 	public Properties getProperties() {
 
 		return properties;
 	}
 
+	@Override
 	public IRepository getRepository() {
 
 		return repository;
@@ -95,12 +108,14 @@ public class RhenaModule implements IVisitableModel {
 		visitor.endModel(this);
 	}
 
-	public Map<String, LifecycleDeclaration> getLifecycleDeclarations() {
+	@Override
+	public Map<String, ILifecycleDeclaration> getLifecycleDeclarations() {
 
 		return lifecyclesDeclarations;
 	}
 
-	public void setLifecycleDeclarations(Map<String, LifecycleDeclaration> lifecycleDeclarations) {
+	@Override
+	public void setLifecycleDeclarations(Map<String, ILifecycleDeclaration> lifecycleDeclarations) {
 
 		this.lifecyclesDeclarations = lifecycleDeclarations;
 	}

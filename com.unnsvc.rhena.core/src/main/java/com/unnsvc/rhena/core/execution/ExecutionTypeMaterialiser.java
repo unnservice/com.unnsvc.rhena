@@ -2,22 +2,15 @@
 package com.unnsvc.rhena.core.execution;
 
 import java.io.File;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ServiceLoader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.RhenaExecution;
 import com.unnsvc.rhena.common.model.ExecutionType;
-import com.unnsvc.rhena.common.model.RhenaModule;
-import com.unnsvc.rhena.core.visitors.DependencyCollectionVisitor;
-import com.unnsvc.rhena.lifecycle.DefaultLifecycleFactory;
-import com.unnsvc.rhena.lifecycle.ILifecycleFactory;
-import com.unnsvc.rhena.lifecycle.IResourcesProcessor;
+import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.RhenaExecution;
 
 public class ExecutionTypeMaterialiser {
 
@@ -31,7 +24,7 @@ public class ExecutionTypeMaterialiser {
 		this.type = type;
 	}
 
-	public RhenaExecution materialiseExecution(RhenaModule model) throws RhenaException {
+	public RhenaExecution materialiseExecution(IRhenaModule model) throws RhenaException {
 
 //		ILifecycleFactory lifecycleFactory = produceLifecycleFactory(model);
 //		

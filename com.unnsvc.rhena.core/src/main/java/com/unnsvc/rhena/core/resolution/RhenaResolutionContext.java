@@ -12,29 +12,29 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.RhenaExecution;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ExecutionType;
-import com.unnsvc.rhena.common.model.RhenaModule;
+import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.RhenaExecution;
 
 public class RhenaResolutionContext implements IResolutionContext {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private List<IRepository> repositories;
-	private Map<ModuleIdentifier, RhenaModule> models;
+	private Map<ModuleIdentifier, IRhenaModule> models;
 	private Map<ModuleIdentifier, Map<ExecutionType, RhenaExecution>> executions;
 
 	public RhenaResolutionContext() {
 
 		this.repositories = new ArrayList<IRepository>();
-		this.models = new HashMap<ModuleIdentifier, RhenaModule>();
+		this.models = new HashMap<ModuleIdentifier, IRhenaModule>();
 		this.executions = new HashMap<ModuleIdentifier, Map<ExecutionType, RhenaExecution>>();
 	}
 
 	@Override
-	public RhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
+	public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
 
-		RhenaModule model = models.get(moduleIdentifier);
+		IRhenaModule model = models.get(moduleIdentifier);
 		if (model == null) {
 
 			for (IRepository repository : repositories) {
@@ -57,15 +57,7 @@ public class RhenaResolutionContext implements IResolutionContext {
 	}
 
 	@Override
-	public RhenaExecution materialiseExecution(RhenaModule model, ExecutionType type) throws RhenaException {
-
-		/**
-		 * Execution type might have a dependency on another execution type
-		 * first which needs to be executed
-		 */
-		if (type.getDependency() != null) {
-			materialiseExecution(model, type.getDependency());
-		}
+	public RhenaExecution materialiseExecution(IRhenaModule model, ExecutionType type) throws RhenaException {
 
 		ModuleIdentifier identifier = model.getModuleIdentifier();
 

@@ -18,17 +18,19 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.unnsvc.rhena.common.Constants;
 import com.unnsvc.rhena.common.IRepository;
+import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.lifecycle.GeneratorReference;
-import com.unnsvc.rhena.common.lifecycle.LifecycleDeclaration;
-import com.unnsvc.rhena.common.lifecycle.ProcessorReference;
-import com.unnsvc.rhena.common.model.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.RhenaEdge;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ExecutionType;
-import com.unnsvc.rhena.common.model.RhenaModule;
-import com.unnsvc.rhena.common.model.RhenaReference;
+import com.unnsvc.rhena.common.model.TraverseType;
+import com.unnsvc.rhena.core.lifecycle.ConfiguratorReference;
+import com.unnsvc.rhena.core.lifecycle.GeneratorReference;
+import com.unnsvc.rhena.core.lifecycle.LifecycleDeclaration;
+import com.unnsvc.rhena.core.lifecycle.ProcessorReference;
+import com.unnsvc.rhena.core.model.RhenaEdge;
+import com.unnsvc.rhena.core.model.RhenaModule;
+import com.unnsvc.rhena.core.model.RhenaReference;
 
 public class RhenaModuleParser {
 
@@ -65,9 +67,9 @@ public class RhenaModuleParser {
 		for (int i = 0; i < moduleChildren.getLength(); i++) {
 			Node moduleChild = moduleChildren.item(i);
 			if (moduleChild.getNodeType() == Node.ELEMENT_NODE) {
-				if (moduleChild.getNamespaceURI().equals(Constants.NS_RHENA_MODULE)) {
+				if (moduleChild.getNamespaceURI().equals(RhenaConstants.NS_RHENA_MODULE)) {
 					processMetaNode(moduleChild);
-				} else if (moduleChild.getNamespaceURI().equals(Constants.NS_RHENA_DEPENDENCY)) {
+				} else if (moduleChild.getNamespaceURI().equals(RhenaConstants.NS_RHENA_DEPENDENCY)) {
 					processDepenencyNode(moduleChild);
 				}
 			}
@@ -124,16 +126,12 @@ public class RhenaModuleParser {
 		for (int i = 0; i < metaNodeChildren.getLength(); i++) {
 			Node metaChild = metaNodeChildren.item(i);
 			if (metaChild.getNodeType() == Node.ELEMENT_NODE) {
-				if (metaChild.getLocalName().equals("properties")) {
-					NodeList properties = metaChild.getChildNodes();
-					for (int p = 0; p < properties.getLength(); p++) {
-						Node propertyNode = properties.item(p);
-						if (propertyNode.getNodeType() == Node.ELEMENT_NODE) {
-							processPropertyNode(properties.item(p));
-						}
+				if (metaChild.getNamespaceURI().equals(RhenaConstants.NS_RHENA_PROPERTIES)) {
+					processPropertyNode(metaChild);
+				} else if (metaChild.getNamespaceURI().equals(RhenaConstants.NS_RHENA_MODULE)) {
+					if (metaChild.getLocalName().equals("lifecycle")) {
+						processLifecycleNode(metaChild);
 					}
-				} else if (metaChild.getLocalName().equals("lifecycle")) {
-					processLifecycleNode(metaChild);
 				}
 			}
 		}
@@ -152,7 +150,11 @@ public class RhenaModuleParser {
 				String module = child.getAttributes().getNamedItem("module").getNodeValue();
 				String clazz = child.getAttributes().getNamedItem("class").getNodeValue();
 
-				if (child.getLocalName().equals("processor")) {
+				if (child.getLocalName().equals("configurator")) {
+
+					ConfiguratorReference configurator = new ConfiguratorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, child);
+					ld.setConfigurator(configurator);
+				} else if (child.getLocalName().equals("processor")) {
 
 					ProcessorReference processor = new ProcessorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, child);
 					ld.addProcessor(processor);
@@ -169,12 +171,28 @@ public class RhenaModuleParser {
 
 	private void processDepenencyNode(Node moduleChild) throws DOMException, RhenaException {
 
-		String scopeString = moduleChild.getLocalName();
-		ExecutionType dependencyType = ExecutionType.valueOf(scopeString.toUpperCase());
+		ExecutionType dependencyType = ExecutionType.valueOf(moduleChild.getLocalName().toUpperCase());
 		String dependencyTargetModuleIdentifier = moduleChild.getAttributes().getNamedItem("module").getNodeValue();
 
 		ModuleIdentifier moduleIdentifier = ModuleIdentifier.valueOf(dependencyTargetModuleIdentifier);
-		RhenaEdge edge = new RhenaEdge(dependencyType, new RhenaReference(moduleIdentifier));
+		RhenaEdge edge = null;
+
+		if (moduleChild.getAttributes().getNamedItem("traverse") != null) {
+			
+			TraverseType traverseType = TraverseType.valueOf(moduleChild.getAttributes().getNamedItem("traverse").getNodeValue().toUpperCase());
+			edge = new RhenaEdge(dependencyType, new RhenaReference(moduleIdentifier), traverseType);
+		} else {
+
+			/**
+			 * Default to scope traversal for deliverables
+			 */
+			TraverseType traverseType = TraverseType.NONE;
+			if(dependencyType.equals(ExecutionType.DELIVERABLE)) {
+				traverseType = TraverseType.SCOPE;
+			}
+			edge = new RhenaEdge(dependencyType, new RhenaReference(moduleIdentifier), traverseType);
+		}
+
 		if (!module.getDependencyEdges().contains(edge)) {
 			module.getDependencyEdges().add(edge);
 		}

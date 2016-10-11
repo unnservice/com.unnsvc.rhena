@@ -5,8 +5,8 @@ import java.net.URI;
 
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.RhenaModule;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.core.model.RhenaModule;
 
 public abstract class AbstractRepository implements IRepository {
 

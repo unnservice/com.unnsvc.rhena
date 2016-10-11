@@ -7,14 +7,15 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.common.Constants;
+import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.RhenaExecution;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ExecutionType;
-import com.unnsvc.rhena.common.model.RhenaModule;
+import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.RhenaExecution;
 import com.unnsvc.rhena.core.execution.ExecutionTypeMaterialiser;
+import com.unnsvc.rhena.core.model.RhenaModule;
 
 public class WorkspaceRepository extends AbstractRepository {
 
@@ -32,7 +33,7 @@ public class WorkspaceRepository extends AbstractRepository {
 	public RhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
 
 		File workspaceProject = new File(workspaceDirectory, moduleIdentifier.getComponentName() + "." + moduleIdentifier.getModuleName());
-		File moduleDescriptor = new File(workspaceProject, Constants.MODULE_DESCRIPTOR_FILENAME);
+		File moduleDescriptor = new File(workspaceProject, RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
 		URI moduleDescriptorUri = moduleDescriptor.toURI();
 
 		if (!moduleDescriptor.exists()) {
@@ -45,7 +46,7 @@ public class WorkspaceRepository extends AbstractRepository {
 	}
 
 	@Override
-	public RhenaExecution materialiseExecution(RhenaModule model, ExecutionType type) throws RhenaException {
+	public RhenaExecution materialiseExecution(IRhenaModule model, ExecutionType type) throws RhenaException {
 
 		ExecutionTypeMaterialiser etm = new ExecutionTypeMaterialiser(context, type);
 		return etm.materialiseExecution(model);

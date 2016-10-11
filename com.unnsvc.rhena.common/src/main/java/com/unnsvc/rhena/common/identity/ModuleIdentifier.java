@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.common.model;
+package com.unnsvc.rhena.common.identity;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 

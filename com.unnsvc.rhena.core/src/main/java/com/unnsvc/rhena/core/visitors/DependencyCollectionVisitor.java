@@ -11,11 +11,11 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.RhenaEdge;
-import com.unnsvc.rhena.common.model.RhenaExecution;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ExecutionType;
-import com.unnsvc.rhena.common.model.RhenaModule;
+import com.unnsvc.rhena.common.model.IRhenaEdge;
+import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.RhenaExecution;
 
 public class DependencyCollectionVisitor implements IModelVisitor {
 
@@ -32,12 +32,11 @@ public class DependencyCollectionVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void startModel(RhenaModule model) throws RhenaException {
+	public void startModel(IRhenaModule model) throws RhenaException {
 
-		for (RhenaEdge edge : model.getDependencyEdges()) {
+		for (IRhenaEdge edge : model.getDependencyEdges()) {
 
-			// Not all scopes are transient, so we can't traverse all
-			if (requested.isTransitiveOver(edge.getExecutionType())) {
+			if (edge.getExecutionType() == ExecutionType.DELIVERABLE) {
 				edge.getTarget().visit(this);
 				if (!identifiers.contains(edge.getTarget())) {
 					identifiers.add(edge.getTarget().getModuleIdentifier());
@@ -47,7 +46,7 @@ public class DependencyCollectionVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void endModel(RhenaModule model) throws RhenaException {
+	public void endModel(IRhenaModule model) throws RhenaException {
 
 	}
 

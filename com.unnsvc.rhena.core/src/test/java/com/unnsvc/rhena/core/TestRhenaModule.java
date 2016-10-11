@@ -8,9 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IResolutionContext;
-import com.unnsvc.rhena.common.model.ModuleIdentifier;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ExecutionType;
-import com.unnsvc.rhena.common.model.RhenaModule;
+import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.execution.ModelBuildingVisitor;
 import com.unnsvc.rhena.core.resolution.RhenaResolutionContext;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
@@ -39,13 +39,13 @@ public class TestRhenaModule {
 		IResolutionContext context = new RhenaResolutionContext();
 		context.getRepositories().add(new WorkspaceRepository(context, new File("../example-workspace")));
 
-		RhenaModule model = context.materialiseModel(entryPointIdentifier);
+		IRhenaModule model = context.materialiseModel(entryPointIdentifier);
 		model.visit(new ModelResolutionVisitor(context));
 		model.visit(new LoggingVisitor(context));
 		model.visit(new ModelMergeVisitor(context));
 		model.visit(new ModelBuildingVisitor(context));
 
-		context.materialiseExecution(model, ExecutionType.COMPILE);
+		context.materialiseExecution(model, ExecutionType.DELIVERABLE);
 	}
 }
 

@@ -2,14 +2,8 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:rhena:module" xmlns:tns="urn:rhena:module" xmlns:common="urn:rhena:common"
 	xmlns:properties="urn:rhena:properties" xmlns:dependency="urn:rhena:dependency" elementFormDefault="qualified">
 
-	<xs:import namespace="urn:rhena:common" schemaLocation="http://schema.unnsvc.com/rhena/common.xsd" />
-	<xs:import namespace="urn:rhena:dependency" schemaLocation="http://schema.unnsvc.com/rhena/dependency.xsd" />
-
-	<xs:complexType name="propertiesType">
-		<xs:sequence>
-			<xs:any minOccurs="1" maxOccurs="unbounded" namespace="##any" processContents="skip" />
-		</xs:sequence>
-	</xs:complexType>
+	<xs:import namespace="urn:rhena:common" schemaLocation="./common.xsd" />
+	<xs:import namespace="urn:rhena:dependency" schemaLocation="./dependency.xsd" />
 
 	<xs:complexType name="processorType">
 		<xs:sequence>
@@ -19,22 +13,23 @@
 		<xs:attribute name="class" type="xs:string" use="required" />
 	</xs:complexType>
 
-	<xs:complexType name="generatorType">
+	<xs:complexType name="simpleProcessorType">
 		<xs:attribute name="module" type="common:qualifiedIdentifier" use="required" />
 		<xs:attribute name="class" type="xs:string" use="required" />
 	</xs:complexType>
 
 	<xs:complexType name="lifecycleType">
 		<xs:sequence>
+			<xs:element name="configurator" type="tns:simpleProcessorType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="processor" type="tns:processorType" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="generator" type="tns:generatorType" minOccurs="1" maxOccurs="1" />
+			<xs:element name="generator" type="tns:simpleProcessorType" minOccurs="1" maxOccurs="1" />
 		</xs:sequence>
 		<xs:attribute name="name" />
 	</xs:complexType>
 
 	<xs:complexType name="metaType">
 		<xs:sequence>
-			<xs:element name="properties" minOccurs="0" maxOccurs="1" type="tns:propertiesType" />
+			<xs:any minOccurs="0" maxOccurs="unbounded" namespace="urn:rhena:properties" processContents="skip" />
 			<xs:element name="lifecycle" minOccurs="0" maxOccurs="unbounded" type="tns:lifecycleType" />
 		</xs:sequence>
 		<xs:attribute name="component" type="common:identifierType" />

@@ -4,10 +4,10 @@ package com.unnsvc.rhena.common;
 import java.util.List;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.RhenaExecution;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ExecutionType;
-import com.unnsvc.rhena.common.model.RhenaModule;
+import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.RhenaExecution;
 
 /**
  * @TODO Resolver shouldn't be resolution context, which it is now with
@@ -18,9 +18,9 @@ import com.unnsvc.rhena.common.model.RhenaModule;
  */
 public interface IResolutionContext {
 
-	public RhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException;
+	public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException;
 
-	public RhenaExecution materialiseExecution(RhenaModule model, ExecutionType type) throws RhenaException;
+	public RhenaExecution materialiseExecution(IRhenaModule model, ExecutionType type) throws RhenaException;
 
 	public List<IRepository> getRepositories();
 }
