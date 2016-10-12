@@ -37,7 +37,7 @@ public class WorkspaceRepository extends AbstractRepository {
 		URI moduleDescriptorUri = moduleDescriptor.toURI();
 
 		if (!moduleDescriptor.exists()) {
-			throw new RhenaException("Not in repository");
+			throw new RhenaException(moduleIdentifier.toTag() + ": Not in repository");
 		}
 
 		RhenaModule model = resolveModel(moduleIdentifier, moduleDescriptorUri);

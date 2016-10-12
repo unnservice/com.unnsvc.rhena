@@ -40,8 +40,8 @@ public class TestRhenaModule {
 		ModuleIdentifier entryPointIdentifier = ModuleIdentifier.valueOf("com.unnsvc.ide:common:0.0.1");
 
 		IResolutionContext context = new RhenaResolutionContext();
-//		context.getRepositories().add(new WorkspaceRepository(context, new File("../example-workspace")));
 		context.getRepositories().add(new WorkspaceRepository(context, new File("../../com.unnsvc.ide/")));
+		context.getRepositories().add(new WorkspaceRepository(context, new File("../../")));
 
 		IRhenaModule model = context.materialiseModel(entryPointIdentifier);
 		model.visit(new ModelInitialisingVisitor(context));

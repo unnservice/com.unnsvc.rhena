@@ -17,6 +17,13 @@ import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.RhenaExecution;
 
+/**
+ * @TODO maybe add some sort of Class to return from the materialise() methods,
+ *       which encapsulates the result and has a status, so we know whether the
+ *       repository has failed or wants to signal some error state?
+ * @author noname
+ *
+ */
 public class RhenaResolutionContext implements IResolutionContext {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
