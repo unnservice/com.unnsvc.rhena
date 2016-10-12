@@ -48,7 +48,7 @@ public class WorkspaceRepository extends AbstractRepository {
 	@Override
 	public IRhenaExecution materialiseExecution(IRhenaModule model, ExecutionType type) throws RhenaException {
 
-		WorkspaceProjectMaterialiser etm = new WorkspaceProjectMaterialiser(context, type);
-		return etm.materialiseExecution(model);
+		WorkspaceProjectMaterialiser etm = new WorkspaceProjectMaterialiser(context, model, type);
+		return etm.materialiseExecution();
 	}
 }

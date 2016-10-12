@@ -12,7 +12,6 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.core.model.RhenaReference;
 import com.unnsvc.rhena.core.resolution.RhenaResolutionContext;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
 import com.unnsvc.rhena.core.visitors.EdgeVisitor;
@@ -39,7 +38,7 @@ public class TestRhenaModule {
 
 	private void execute() throws Exception {
 
-		ModuleIdentifier entryPointIdentifier = ModuleIdentifier.valueOf("com.unnsvc.ide:common:0.0.1");
+		ModuleIdentifier entryPointIdentifier = ModuleIdentifier.valueOf("com.unnsvc.ide:feature:0.0.1");
 
 		IResolutionContext context = new RhenaResolutionContext();
 		context.getRepositories().add(new WorkspaceRepository(context, new File("../../com.unnsvc.ide/")));

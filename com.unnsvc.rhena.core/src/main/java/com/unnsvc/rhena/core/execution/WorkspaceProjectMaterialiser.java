@@ -45,18 +45,21 @@ public class WorkspaceProjectMaterialiser {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private IResolutionContext context;
+	private IRhenaModule module;
 	private ExecutionType type;
 
-	public WorkspaceProjectMaterialiser(IResolutionContext context, ExecutionType type) {
+	public WorkspaceProjectMaterialiser(IResolutionContext context, IRhenaModule module, ExecutionType type) {
 
 		this.context = context;
+		this.module = module;
 		this.type = type;
 	}
 
 	/**
 	 * @TODO clean up, DRRRRRRYYYYYYYY, and fix logic
+	 * @TODO caching of lifecycle building blocks so they can be reused....
 	 */
-	public IRhenaExecution materialiseExecution(IRhenaModule module) throws RhenaException {
+	public IRhenaExecution materialiseExecution() throws RhenaException {
 
 		File generatedArtifact = null;
 
@@ -72,10 +75,10 @@ public class WorkspaceProjectMaterialiser {
 			DefaultConfigurator configurator = new DefaultConfigurator();
 			DefaultProcessor processor = new DefaultProcessor();
 			DefaultGenerator generator = new DefaultGenerator();
-			configurator.configure(getConfiguration(null));
-			processor.configure(getConfiguration(null));
+			configurator.configure(getConfiguration(null), type);
+			processor.configure(getConfiguration(null), type);
 			processor.process(module, configurator);
-			generator.configure(getConfiguration(null));
+			generator.configure(getConfiguration(null), type);
 			generatedArtifact = generator.generate(module, configurator);
 		}
 
@@ -90,17 +93,17 @@ public class WorkspaceProjectMaterialiser {
 			List<IProcessorReference> processorReferences, IGeneratorReference generatorReference) throws RhenaException {
 
 		IConfigurator configurator = instantiateProcessor(module, configuratorReference, IConfigurator.class);
-		configurator.configure(configuratorReference.getConfiguration());
+		configurator.configure(configuratorReference.getConfiguration(), type);
 
 		for (IProcessorReference pref : processorReferences) {
 
 			IProcessor processor = instantiateProcessor(module, configuratorReference, IProcessor.class);
-			processor.configure(pref.getConfiguration());
+			processor.configure(pref.getConfiguration(), type);
 			processor.process(module, configurator);
 		}
 
 		IGenerator generator = instantiateProcessor(module, configuratorReference, IGenerator.class);
-		generator.configure(generatorReference.getConfiguration());
+		generator.configure(generatorReference.getConfiguration(), type);
 		File artifact = generator.generate(module, configurator);
 
 		if (artifact == null) {
