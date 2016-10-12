@@ -17,7 +17,7 @@ import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
 import com.unnsvc.rhena.core.visitors.EdgeVisitor;
 import com.unnsvc.rhena.core.visitors.EdgeVisitor.EdgeHandler;
 import com.unnsvc.rhena.core.visitors.EdgeVisitor.EnterType;
-import com.unnsvc.rhena.core.visitors.ModelResolutionVisitor;
+import com.unnsvc.rhena.core.visitors.ModelInitialisingHandler;
 
 public class TestRhenaModule {
 
@@ -46,15 +46,22 @@ public class TestRhenaModule {
 
 		IRhenaModule model = context.materialiseModel(entryPointIdentifier);
 
-		model.visit(new ModelResolutionVisitor(context));
-		model.visit(new EdgeVisitor(new EdgeHandler() {
+		model.visit(new EdgeVisitor(EnterType.AFTER, new ModelInitialisingHandler(context)).setEnterUnusedLifecycle(true));
+
+		model.visit(new EdgeVisitor(EnterType.BEFORE, new EdgeHandler() {
 
 			@Override
-			public void handleEdge(IRhenaEdge edge) {
-				
-				System.err.println("Visiting edge: " + edge);
+			public void handleEdge(IRhenaModule module, IRhenaEdge edge) {
+
+				log.debug(module.getModuleIdentifier().toTag() + ": Visiting edge: " + edge);
 			}
-		}, EnterType.BEFORE));
+
+			@Override
+			public boolean canEnter(IRhenaModule source, IRhenaEdge target) {
+
+				return true;
+			}
+		}));
 
 		// model.visit(new ModelInitialisingVisitor(context));
 		// model.visit(new ModelMergeVisitor(context));

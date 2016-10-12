@@ -42,4 +42,10 @@ public class RhenaEdge implements IRhenaEdge {
 
 		return traverseType;
 	}
+
+	@Override
+	public String toString() {
+
+		return "RhenaEdge [executionType=" + executionType + ", target=" + target.getModuleIdentifier() + ", traverseType=" + traverseType + "]";
+	}
 }

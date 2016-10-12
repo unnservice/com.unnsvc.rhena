@@ -39,8 +39,13 @@ public class ModelResolutionVisitor implements IModelVisitor {
 
 		resolveModel(module.getParentModule());
 
-		if (module.getLifecycleName() != null) {
-			ILifecycleDeclaration lifecycle = module.getLifecycleDeclaration(module.getLifecycleName());
+		/**
+		 * resolve if there's a lifecycle declaration instead of on whether this
+		 * module has access to the lifecycle, because we want all model
+		 * reference to be resolved for further processing and traversal.
+		 */
+		for (String key : module.getLifecycleDeclarations().keySet()) {
+			ILifecycleDeclaration lifecycle = module.getLifecycleDeclarations().get(key);
 
 			IConfiguratorReference config = lifecycle.getConfigurator();
 			resolveModel(config);
