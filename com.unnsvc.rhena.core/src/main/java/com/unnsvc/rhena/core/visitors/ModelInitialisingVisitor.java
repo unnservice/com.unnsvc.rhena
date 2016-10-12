@@ -18,11 +18,11 @@ import com.unnsvc.rhena.core.model.RhenaReference;
  *       executions instead of just module to module)
  *
  */
-public class ModelResolutionVisitor implements IModelVisitor {
+public class ModelInitialisingVisitor implements IModelVisitor {
 
 	private IResolutionContext context;
 
-	public ModelResolutionVisitor(IResolutionContext context) {
+	public ModelInitialisingVisitor(IResolutionContext context) {
 
 		this.context = context;
 	}

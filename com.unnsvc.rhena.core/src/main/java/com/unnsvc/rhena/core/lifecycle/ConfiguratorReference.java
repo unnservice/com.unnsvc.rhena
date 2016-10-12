@@ -1,7 +1,7 @@
 
 package com.unnsvc.rhena.core.lifecycle;
 
-import org.w3c.dom.Node;
+import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.IConfiguratorReference;
@@ -10,9 +10,9 @@ public class ConfiguratorReference implements IConfiguratorReference {
 
 	private IRhenaModule module;
 	private String clazz;
-	private Node configuration;
+	private Document configuration;
 
-	public ConfiguratorReference(IRhenaModule module, String clazz, Node configuration) {
+	public ConfiguratorReference(IRhenaModule module, String clazz, Document configuration) {
 
 		this.module = module;
 		this.clazz = clazz;
@@ -38,7 +38,7 @@ public class ConfiguratorReference implements IConfiguratorReference {
 	}
 
 	@Override
-	public Node getConfiguration() {
+	public Document getConfiguration() {
 
 		return configuration;
 	}

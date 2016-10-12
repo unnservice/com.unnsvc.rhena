@@ -1,7 +1,7 @@
 
 package com.unnsvc.rhena.common.model.lifecycle;
 
-import org.w3c.dom.Node;
+import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.model.IRhenaModule;
 
@@ -19,5 +19,5 @@ public interface ILifecycleProcessorReference {
 
 	public String getClazz();
 
-	public Node getConfiguration();
+	public Document getConfiguration();
 }

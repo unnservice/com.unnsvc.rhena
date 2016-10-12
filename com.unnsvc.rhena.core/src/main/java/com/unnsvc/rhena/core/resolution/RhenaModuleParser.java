@@ -6,6 +6,7 @@ import java.net.URI;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -150,23 +151,41 @@ public class RhenaModuleParser {
 				String module = child.getAttributes().getNamedItem("module").getNodeValue();
 				String clazz = child.getAttributes().getNamedItem("class").getNodeValue();
 
+				// Make a document out of the entire processor node
+				Document configuration = nodeToDocument(child);
+
 				if (child.getLocalName().equals("configurator")) {
 
-					ConfiguratorReference configurator = new ConfiguratorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, child);
+					ConfiguratorReference configurator = new ConfiguratorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, configuration);
 					ld.setConfigurator(configurator);
 				} else if (child.getLocalName().equals("processor")) {
 
-					ProcessorReference processor = new ProcessorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, child);
+					ProcessorReference processor = new ProcessorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, configuration);
 					ld.addProcessor(processor);
 				} else if (child.getLocalName().equals("generator")) {
 
-					GeneratorReference generator = new GeneratorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, child);
+					GeneratorReference generator = new GeneratorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, configuration);
 					ld.setGenerator(generator);
 				}
 			}
 		}
 
 		module.getLifecycleDeclarations().put(ld.getName(), ld);
+	}
+
+	private Document nodeToDocument(Node child) throws RhenaException {
+
+		try {
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			factory.setNamespaceAware(true);
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			Document document = builder.newDocument();
+			Node importedNode = document.importNode(child, true);
+			document.appendChild(importedNode);
+			return document;
+		} catch (ParserConfigurationException e) {
+			throw new RhenaException(e.getMessage(), e);
+		}
 	}
 
 	private void processDepenencyNode(Node moduleChild) throws DOMException, RhenaException {
@@ -178,7 +197,7 @@ public class RhenaModuleParser {
 		RhenaEdge edge = null;
 
 		if (moduleChild.getAttributes().getNamedItem("traverse") != null) {
-			
+
 			TraverseType traverseType = TraverseType.valueOf(moduleChild.getAttributes().getNamedItem("traverse").getNodeValue().toUpperCase());
 			edge = new RhenaEdge(dependencyType, new RhenaReference(moduleIdentifier), traverseType);
 		} else {
@@ -187,7 +206,7 @@ public class RhenaModuleParser {
 			 * Default to scope traversal for deliverables
 			 */
 			TraverseType traverseType = TraverseType.NONE;
-			if(dependencyType.equals(ExecutionType.DELIVERABLE)) {
+			if (dependencyType.equals(ExecutionType.DELIVERABLE)) {
 				traverseType = TraverseType.SCOPE;
 			}
 			edge = new RhenaEdge(dependencyType, new RhenaReference(moduleIdentifier), traverseType);
