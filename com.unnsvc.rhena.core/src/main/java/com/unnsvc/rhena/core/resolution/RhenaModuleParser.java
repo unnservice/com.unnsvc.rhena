@@ -152,19 +152,22 @@ public class RhenaModuleParser {
 				String clazz = child.getAttributes().getNamedItem("class").getNodeValue();
 
 				// Make a document out of the entire processor node
-				Document configuration = nodeToDocument(child);
+				Document config = nodeToDocument(child);
+
+				ExecutionType et = ExecutionType.FRAMEWORK;
+				TraverseType tt = TraverseType.SCOPE;
 
 				if (child.getLocalName().equals("configurator")) {
 
-					ConfiguratorReference configurator = new ConfiguratorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, configuration);
+					ConfiguratorReference configurator = new ConfiguratorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, config, et, tt);
 					ld.setConfigurator(configurator);
 				} else if (child.getLocalName().equals("processor")) {
 
-					ProcessorReference processor = new ProcessorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, configuration);
+					ProcessorReference processor = new ProcessorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, config, et, tt);
 					ld.addProcessor(processor);
 				} else if (child.getLocalName().equals("generator")) {
 
-					GeneratorReference generator = new GeneratorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, configuration);
+					GeneratorReference generator = new GeneratorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, config, et, tt);
 					ld.setGenerator(generator);
 				}
 			}

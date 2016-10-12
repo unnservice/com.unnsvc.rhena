@@ -37,56 +37,41 @@ public class ModelResolutionVisitor implements IModelVisitor {
 	@Override
 	public void startModule(IRhenaModule module) throws RhenaException {
 
-		if (module.getParentModule() != null && (module.getParentModule().getTarget() instanceof RhenaReference)
-				&& !resolved.contains(module.getParentModule().getTarget())) {
-
-			IRhenaModule parent = context.materialiseModel(module.getParentModule().getTarget().getModuleIdentifier());
-			parent.visit(this);
-			module.getParentModule().setTarget(parent);
-			resolved.add(parent.getModuleIdentifier());
-		}
+		resolveModel(module.getParentModule());
 
 		if (module.getLifecycleName() != null) {
 			ILifecycleDeclaration lifecycle = module.getLifecycleDeclaration(module.getLifecycleName());
 
 			IConfiguratorReference config = lifecycle.getConfigurator();
-			if (config != null && config.getModule() instanceof RhenaReference && !resolved.contains(config.getModule().getModuleIdentifier())) {
+			resolveModel(config);
 
-				IRhenaModule configModule = context.materialiseModel(config.getModule().getModuleIdentifier());
-				config.setModule(configModule);
-				configModule.visit(this);
-				resolved.add(configModule.getModuleIdentifier());
-			}
 
 			for (IProcessorReference proc : lifecycle.getProcessors()) {
 
-				if (proc.getModule() instanceof RhenaReference && !resolved.contains(proc.getModule().getModuleIdentifier())) {
-					IRhenaModule procModule = context.materialiseModel(proc.getModule().getModuleIdentifier());
-					proc.setModule(procModule);
-					procModule.visit(this);
-					resolved.add(proc.getModule().getModuleIdentifier());
-				}
+				resolveModel(proc);
 			}
 
 			IGeneratorReference generator = lifecycle.getGenerator();
-			if (generator != null && generator.getModule() instanceof RhenaReference && !resolved.contains(generator.getModule().getModuleIdentifier())) {
-
-				IRhenaModule genModule = context.materialiseModel(generator.getModule().getModuleIdentifier());
-				generator.setModule(genModule);
-				genModule.visit(this);
-				resolved.add(genModule.getModuleIdentifier());
-			}
+			resolveModel(generator);
 		}
 
 		for (IRhenaEdge edge : module.getDependencyEdges()) {
 
-			if (edge.getTarget() instanceof RhenaReference && !resolved.contains(edge.getTarget().getModuleIdentifier())) {
-				
-				IRhenaModule depMod = context.materialiseModel(edge.getTarget().getModuleIdentifier());
-				edge.setTarget(depMod);
-				depMod.visit(this);
-				resolved.add(edge.getTarget().getModuleIdentifier());
-			}
+			resolveModel(edge);
+		}
+	}
+
+	private void resolveModel(IRhenaEdge parentModule) throws RhenaException {
+
+		if(parentModule != null && parentModule.getTarget() instanceof RhenaReference && !resolved.contains(parentModule.getTarget().getModuleIdentifier())) {
+			
+			IRhenaModule resolvedModel = context.materialiseModel(parentModule.getTarget().getModuleIdentifier());
+			
+			parentModule.setTarget(resolvedModel);
+			
+			resolved.add(resolvedModel.getModuleIdentifier());
+			
+			parentModule.getTarget().visit(this);
 		}
 	}
 

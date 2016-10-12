@@ -44,6 +44,7 @@ public class TestRhenaModule {
 		
 		model.visit(new ModelResolutionVisitor(context));
 		
+		
 //		model.visit(new ModelInitialisingVisitor(context));
 //		model.visit(new ModelMergeVisitor(context));
 //		model.visit(new LoggingVisitor(context));

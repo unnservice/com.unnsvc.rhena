@@ -35,17 +35,17 @@ public class ModelBuildingVisitor implements IModelVisitor {
 		for (ILifecycleDeclaration lifecycleDeclaration : model.getLifecycleDeclarations().values()) {
 
 			IConfiguratorReference configurator = lifecycleDeclaration.getConfigurator();
-			configurator.getModule().visit(this);
-			resolver.materialiseExecution(configurator.getModule(), ExecutionType.FRAMEWORK);
+			configurator.getTarget().visit(this);
+			resolver.materialiseExecution(configurator.getTarget(), ExecutionType.FRAMEWORK);
 
 			for (IProcessorReference processor : lifecycleDeclaration.getProcessors()) {
 
-				IRhenaModule processorModel = processor.getModule();
+				IRhenaModule processorModel = processor.getTarget();
 
 				resolver.materialiseExecution(processorModel, ExecutionType.FRAMEWORK);
 			}
 
-			IRhenaModule generatorModel = lifecycleDeclaration.getGenerator().getModule();
+			IRhenaModule generatorModel = lifecycleDeclaration.getGenerator().getTarget();
 			generatorModel.visit(this);
 			resolver.materialiseExecution(generatorModel, ExecutionType.FRAMEWORK);
 		}

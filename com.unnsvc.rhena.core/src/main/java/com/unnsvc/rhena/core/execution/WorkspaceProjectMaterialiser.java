@@ -123,10 +123,10 @@ public class WorkspaceProjectMaterialiser {
 
 		List<URL> l = new ArrayList<URL>();
 
-		l.addAll(processor.getModule().visit(new RhenaDependencyCollectionVisitor(context, ExecutionType.FRAMEWORK, TraverseType.NONE)).getDependenciesURL());
+		l.addAll(processor.getTarget().visit(new RhenaDependencyCollectionVisitor(context, ExecutionType.FRAMEWORK, TraverseType.NONE)).getDependenciesURL());
 
 		URLClassLoader dependenciesLoader = new URLClassLoader(l.toArray(new URL[l.size()]), Thread.currentThread().getContextClassLoader());
-		URLClassLoader mainLoader = new URLClassLoader(new URL[] { context.materialiseExecution(processor.getModule(), ExecutionType.FRAMEWORK).getArtifactURL() }, dependenciesLoader);
+		URLClassLoader mainLoader = new URLClassLoader(new URL[] { context.materialiseExecution(processor.getTarget(), ExecutionType.FRAMEWORK).getArtifactURL() }, dependenciesLoader);
 
 		return mainLoader;
 	}
@@ -145,7 +145,7 @@ public class WorkspaceProjectMaterialiser {
 			return (T) o;
 		} catch (Exception ex) {
 			for (URL url : loader.getURLs()) {
-				log.error(processor.getModule().getModuleIdentifier().toTag() + ": classloader has " + url);
+				log.error(processor.getTarget().getModuleIdentifier().toTag() + ": classloader has " + url);
 			}
 			throw new RhenaException(model.getModuleIdentifier().toTag() + ": Failed to instantiate: " + processor.getClazz(), ex);
 		}

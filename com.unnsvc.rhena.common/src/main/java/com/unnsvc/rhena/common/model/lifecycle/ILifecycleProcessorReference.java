@@ -3,6 +3,7 @@ package com.unnsvc.rhena.common.model.lifecycle;
 
 import org.w3c.dom.Document;
 
+import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 
 /**
@@ -11,11 +12,11 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
  * @author noname
  *
  */
-public interface ILifecycleProcessorReference {
+public interface ILifecycleProcessorReference extends IRhenaEdge {
 
-	public IRhenaModule getModule();
+	public IRhenaModule getTarget();
 
-	public void setModule(IRhenaModule module);
+	public void setTarget(IRhenaModule module);
 
 	public String getClazz();
 
