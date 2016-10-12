@@ -8,7 +8,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 
 public class Identifier {
 
-	public static final String IDENTIFIER_PATTERN = "^[a-zA-Z0-9]+(\\.a-zA-Z0-9)?$";
+	public static final String IDENTIFIER_PATTERN = "^[a-zA-Z0-9]+(\\.[a-zA-Z0-9]+)*$";
 	public static final Pattern IDENTIFIER = Pattern.compile(IDENTIFIER_PATTERN);
 	private String identifier;
 

@@ -3,7 +3,7 @@
 
 	<xs:simpleType name="identifierType">
 		<xs:restriction base="xs:string">
-			<xs:pattern value="[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?" />
+			<xs:pattern value="[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*" />
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -16,7 +16,7 @@
 	<xs:simpleType name="qualifiedIdentifier">
 		<xs:restriction base="xs:string">
 			<!-- identifierType:identifierType:versionType(-SNAPSHOT)? -->
-			<xs:pattern value="[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?:[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?:[0-9]+(\.[0-9]+(\.[0-9]+)?)?(-SNAPSHOT)?" />
+			<xs:pattern value="[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*:[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*:[0-9]+(\.[0-9]+(\.[0-9]+)?)?(-SNAPSHOT)?" />
 		</xs:restriction>
 	</xs:simpleType>
 
