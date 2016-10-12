@@ -4,7 +4,8 @@ package com.unnsvc.rhena.common.model;
 public enum TraverseType {
 
 	/**
-	 * Parent is an abstract traversion type used internally
+	 * HIERARCHY is an abstract traversion type used mainly internally, for
+	 * visits up or down a hierarchy
 	 */
-	NONE, PARENT, SCOPE, COMPONENT, DIRECT;
+	NONE, HIERARCHY, SCOPE, COMPONENT, DIRECT;
 }
