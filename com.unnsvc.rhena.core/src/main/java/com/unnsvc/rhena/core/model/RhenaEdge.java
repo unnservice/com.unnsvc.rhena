@@ -16,7 +16,7 @@ public class RhenaEdge implements IRhenaEdge {
 		
 		this.executionType = executionType;
 		this.target = target;
-		this.traverseType = TraverseType.NONE;
+		this.traverseType = traverseType;
 	}
 
 	@Override

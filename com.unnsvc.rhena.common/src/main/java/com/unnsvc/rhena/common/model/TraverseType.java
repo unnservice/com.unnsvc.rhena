@@ -3,5 +3,8 @@ package com.unnsvc.rhena.common.model;
 
 public enum TraverseType {
 
-	NONE, SCOPE, COMPONENT, DIRECT;
+	/**
+	 * Parent is an abstract traversion type used internally
+	 */
+	NONE, PARENT, SCOPE, COMPONENT, DIRECT;
 }

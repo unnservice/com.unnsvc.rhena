@@ -3,20 +3,23 @@ package com.unnsvc.rhena.core.visitors;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
+import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
 /**
  * @TODO bug, merge parent only once, otherwise it will have undetermined effect
@@ -27,18 +30,32 @@ public class ModelMergeVisitor implements IModelVisitor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private IResolutionContext context;
+	private Set<ModuleIdentifier> entered;
 
 	public ModelMergeVisitor(IResolutionContext context) {
 
 		this.context = context;
+		this.entered = new HashSet<ModuleIdentifier>();
 	}
 
 	@Override
 	public void startModule(IRhenaModule module) throws RhenaException {
 
+		if (entered.contains(module.getModuleIdentifier())) {
+			return;
+		}
+
 		if (module.getParentModule() != null) {
 
-			module.getParentModule().visit(this);
+			module.getParentModule().getTarget().visit(this); 
+			
+			// merge parent into child
+			if (module.getParentModule() != null) {
+
+				IRhenaModule parent = module.getParentModule().getTarget();
+				mergeParent(parent, module);
+				log.debug("[" + module.getModuleIdentifier() + "]:model merged parent " + parent.getModuleIdentifier());
+			}
 		}
 
 		for (ILifecycleDeclaration ld : module.getLifecycleDeclarations().values()) {
@@ -52,32 +69,25 @@ public class ModelMergeVisitor implements IModelVisitor {
 
 			ld.getGenerator().getModule().visit(this);
 		}
+		
+		if (module.getLifecycleName() != null) {
+
+			// the model is merged so we can just query this module
+			if (!module.getLifecycleDeclarations().containsKey(module.getLifecycleName())) {
+				throw new RhenaException(module.getModuleIdentifier().toTag() + ": Lifecycle name " + module.getLifecycleName() + " is not found");
+			}
+		}
 
 		for (IRhenaEdge edge : module.getDependencyEdges()) {
 
 			edge.getTarget().visit(this);
 		}
 
+		this.entered.add(module.getModuleIdentifier());
 	}
 
 	@Override
 	public void endModule(IRhenaModule model) throws RhenaException {
-
-		// merge parent into child
-		if (model.getParentModule() != null) {
-
-			IRhenaModule parent = model.getParentModule();
-			mergeParent(parent, model);
-			log.debug("[" + model.getModuleIdentifier() + "]:model merged parent " + parent.getModuleIdentifier());
-		}
-
-		if (model.getLifecycleName() != null) {
-
-			// the model is merged so we can just query this module
-			if (!model.getLifecycleDeclarations().containsKey(model.getLifecycleName())) {
-				throw new RhenaException(model.getModuleIdentifier().toTag() + ": Lifecycle name " + model.getLifecycleName() + " is not found");
-			}
-		}
 
 	}
 

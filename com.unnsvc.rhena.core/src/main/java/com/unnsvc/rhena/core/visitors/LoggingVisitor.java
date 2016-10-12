@@ -4,11 +4,11 @@ package com.unnsvc.rhena.core.visitors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
 public class LoggingVisitor implements IModelVisitor {
 
@@ -39,7 +39,7 @@ public class LoggingVisitor implements IModelVisitor {
 
 		if (model.getParentModule() != null) {
 
-			model.getParentModule().visit(new LoggingVisitor(context, indents + 1, "parent"));
+			model.getParentModule().getTarget().visit(new LoggingVisitor(context, indents + 1, "parent"));
 		}
 
 		

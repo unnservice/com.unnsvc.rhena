@@ -7,21 +7,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import com.unnsvc.rhena.common.IBoundedModelVisitor;
-import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
+import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
 public class RhenaModule implements IRhenaModule {
 
 	private ModuleIdentifier moduleIdentifier;
 	private IRepository repository;
 	private String lifecycleName;
-	private IRhenaModule parentModule;
+	private IRhenaEdge parentModule;
 	private List<IRhenaEdge> dependencyEdges;
 	private Properties properties;
 	private Map<String, ILifecycleDeclaration> lifecyclesDeclarations;
@@ -42,13 +41,13 @@ public class RhenaModule implements IRhenaModule {
 	}
 
 	@Override
-	public void setParentModule(IRhenaModule parentModule) {
+	public void setParentModule(IRhenaEdge parentModule) {
 
 		this.parentModule = parentModule;
 	}
 
 	@Override
-	public IRhenaModule getParentModule() {
+	public IRhenaEdge getParentModule() {
 
 		return parentModule;
 	}
@@ -104,32 +103,11 @@ public class RhenaModule implements IRhenaModule {
 	@Override
 	public <T extends IModelVisitor> T visit(T visitor) throws RhenaException {
 
-		if (visitor instanceof IBoundedModelVisitor) {
-
-			this.visitBounded((IBoundedModelVisitor) visitor);
-		} else {
-			
-			this.visitNormal(visitor);
-		}
-
-		return visitor;
-	}
-
-	protected void visitNormal(IModelVisitor visitor) throws RhenaException {
-
 		visitor.startModule(this);
 
 		visitor.endModule(this);
-	}
 
-	/**
-	 * This method allows for notification of start of tree visit
-	 */
-	protected void visitBounded(IBoundedModelVisitor visitor) throws RhenaException {
-
-		visitor.startTree(this);
-
-		visitor.endTree(this);
+		return visitor;
 	}
 
 	@Override
@@ -142,6 +120,20 @@ public class RhenaModule implements IRhenaModule {
 	public void setLifecycleDeclarations(Map<String, ILifecycleDeclaration> lifecycleDeclarations) {
 
 		this.lifecyclesDeclarations = lifecycleDeclarations;
+	}
+
+	@Override
+	public ILifecycleDeclaration getLifecycleDeclaration(String lifecycleName) throws RhenaException {
+
+		ILifecycleDeclaration decl = lifecyclesDeclarations.get(lifecycleName);
+		if (decl == null) {
+			if (parentModule != null) {
+				return parentModule.getTarget().getLifecycleDeclaration(lifecycleName);
+			} else {
+				throw new RhenaException("Lifecycle " + lifecycleName + " was not found");
+			}
+		}
+		return decl;
 	}
 
 }

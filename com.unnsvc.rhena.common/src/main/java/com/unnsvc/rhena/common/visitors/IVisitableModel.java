@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.common;
+package com.unnsvc.rhena.common.visitors;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 

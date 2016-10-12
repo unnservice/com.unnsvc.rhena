@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
+import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
 public class RhenaReference implements IRhenaModule {
 
@@ -35,7 +35,7 @@ public class RhenaReference implements IRhenaModule {
 	}
 
 	@Override
-	public IRhenaModule getParentModule() {
+	public IRhenaEdge getParentModule() {
 
 		throw new UnsupportedOperationException("Call on model of yet undersolved reference for: " + moduleIdentifier.toString());
 	}
@@ -78,7 +78,7 @@ public class RhenaReference implements IRhenaModule {
 	}
 
 	@Override
-	public void setParentModule(IRhenaModule parentModule) {
+	public void setParentModule(IRhenaEdge parentModule) {
 
 		throw new UnsupportedOperationException("Call on model of yet undersolved reference for: " + moduleIdentifier.toString());
 
@@ -110,5 +110,11 @@ public class RhenaReference implements IRhenaModule {
 
 		throw new UnsupportedOperationException("Call on model of yet undersolved reference for: " + moduleIdentifier.toString());
 
+	}
+
+	@Override
+	public ILifecycleDeclaration getLifecycleDeclaration(String lifecycleName) throws RhenaException {
+
+		throw new UnsupportedOperationException("Call on model of yet undersolved reference for: " + moduleIdentifier.toString());
 	}
 }

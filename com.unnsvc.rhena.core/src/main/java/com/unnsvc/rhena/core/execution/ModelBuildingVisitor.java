@@ -4,7 +4,6 @@ package com.unnsvc.rhena.core.execution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ExecutionType;
@@ -13,6 +12,7 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.IConfiguratorReference;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
+import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
 public class ModelBuildingVisitor implements IModelVisitor {
 
@@ -29,7 +29,7 @@ public class ModelBuildingVisitor implements IModelVisitor {
 
 		if (model.getParentModule() != null) {
 
-			model.getParentModule().visit(this);
+			model.getParentModule().getTarget().visit(this);
 		}
 
 		for (ILifecycleDeclaration lifecycleDeclaration : model.getLifecycleDeclarations().values()) {

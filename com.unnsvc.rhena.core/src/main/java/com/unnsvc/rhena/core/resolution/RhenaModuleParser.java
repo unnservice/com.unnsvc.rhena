@@ -60,7 +60,7 @@ public class RhenaModuleParser {
 			if (extendsAttribute != null) {
 				String extendsModuleIdentifierStr = extendsAttribute.getNodeValue();
 				ModuleIdentifier extendsModuleIdentifier = ModuleIdentifier.valueOf(extendsModuleIdentifierStr);
-				module.setParentModule(new RhenaReference(extendsModuleIdentifier));
+				module.setParentModule(new RhenaEdge(ExecutionType.MODEL, new RhenaReference(extendsModuleIdentifier), TraverseType.PARENT));
 			}
 		}
 

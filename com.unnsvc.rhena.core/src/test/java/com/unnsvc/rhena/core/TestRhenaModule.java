@@ -11,12 +11,9 @@ import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.core.execution.ModelBuildingVisitor;
 import com.unnsvc.rhena.core.resolution.RhenaResolutionContext;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
-import com.unnsvc.rhena.core.visitors.LoggingVisitor;
-import com.unnsvc.rhena.core.visitors.ModelMergeVisitor;
-import com.unnsvc.rhena.core.visitors.ModelInitialisingVisitor;
+import com.unnsvc.rhena.core.visitors.ModelInitializingVisitor;
 
 public class TestRhenaModule {
 
@@ -44,19 +41,15 @@ public class TestRhenaModule {
 		context.getRepositories().add(new WorkspaceRepository(context, new File("../../")));
 
 		IRhenaModule model = context.materialiseModel(entryPointIdentifier);
-		model.visit(new ModelInitialisingVisitor(context));
-		model.visit(new ModelMergeVisitor(context));
-		model.visit(new LoggingVisitor(context));
-		model.visit(new ModelBuildingVisitor(context));
+		
+		model.visit(new ModelInitializingVisitor(context));
+		
+//		model.visit(new ModelInitialisingVisitor(context));
+//		model.visit(new ModelMergeVisitor(context));
+//		model.visit(new LoggingVisitor(context));
+//		model.visit(new ModelBuildingVisitor(context));
 
 		context.materialiseExecution(model, ExecutionType.DELIVERABLE);
-
-//		List<RhenaExecution> deps = model.visit(new RhenaDependencyCollectionVisitor(context, ExecutionType.DELIVERABLE, TraverseType.NONE)).getDependencies();
-//		log.debug(model.getModuleIdentifier().toTag() + ": collected: " + deps.size());
-//		for(RhenaExecution re : deps) {
-//			log.debug(model.getModuleIdentifier().toTag() + ": dep: " + re);
-//		}
-
 	}
 }
 

@@ -126,8 +126,7 @@ public class WorkspaceProjectMaterialiser {
 		l.addAll(processor.getModule().visit(new RhenaDependencyCollectionVisitor(context, ExecutionType.FRAMEWORK, TraverseType.NONE)).getDependenciesURL());
 
 		URLClassLoader dependenciesLoader = new URLClassLoader(l.toArray(new URL[l.size()]), Thread.currentThread().getContextClassLoader());
-		URLClassLoader mainLoader = new URLClassLoader(
-				new URL[] { context.materialiseExecution(processor.getModule(), ExecutionType.FRAMEWORK).getArtifactURL() }, dependenciesLoader);
+		URLClassLoader mainLoader = new URLClassLoader(new URL[] { context.materialiseExecution(processor.getModule(), ExecutionType.FRAMEWORK).getArtifactURL() }, dependenciesLoader);
 
 		return mainLoader;
 	}
