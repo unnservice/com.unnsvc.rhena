@@ -6,7 +6,5 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 
 public interface IModelVisitor {
 
-	public void startModule(IRhenaModule module) throws RhenaException;
-
-	public void endModule(IRhenaModule module) throws RhenaException;
+	public void visit(IRhenaModule module) throws RhenaException;
 }

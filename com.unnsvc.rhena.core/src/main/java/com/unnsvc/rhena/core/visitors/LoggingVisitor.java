@@ -33,7 +33,7 @@ public class LoggingVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void startModule(IRhenaModule model) throws RhenaException {
+	public void visit(IRhenaModule model) throws RhenaException {
 
 		log.info(indent() + (label == null ? "root" : label) + ":" + model.getModuleIdentifier());
 
@@ -42,20 +42,24 @@ public class LoggingVisitor implements IModelVisitor {
 			model.getParentModule().getTarget().visit(new LoggingVisitor(context, indents + 1, "parent"));
 		}
 
-		
 		/**
-		 * To debug print the lifecycle, we need to get the declaration or something or output as structured xml
+		 * To debug print the lifecycle, we need to get the declaration or
+		 * something or output as structured xml
 		 */
-		
-//		for (LifecycleDeclaration lifecycleDeclaration : model.getLifecycleDeclarations().values()) {
-//
-//			for (ProcessorReference processor : lifecycleDeclaration.getProcessors()) {
-//
-//				context.materialiseModel(processor.getModuleIdentifier()).visit(new LoggingVisitor(context, indents + 1, "processor"));
-//			}
-//
-//			context.materialiseModel(lifecycleDeclaration.getGenerator().getModuleIdentifier()).visit(new LoggingVisitor(context, indents + 1, "lifecycle"));
-//		}
+
+		// for (LifecycleDeclaration lifecycleDeclaration :
+		// model.getLifecycleDeclarations().values()) {
+		//
+		// for (ProcessorReference processor :
+		// lifecycleDeclaration.getProcessors()) {
+		//
+		// context.materialiseModel(processor.getModuleIdentifier()).visit(new
+		// LoggingVisitor(context, indents + 1, "processor"));
+		// }
+		//
+		// context.materialiseModel(lifecycleDeclaration.getGenerator().getModuleIdentifier()).visit(new
+		// LoggingVisitor(context, indents + 1, "lifecycle"));
+		// }
 
 		if (!model.getDependencyEdges().isEmpty()) {
 
@@ -64,11 +68,6 @@ public class LoggingVisitor implements IModelVisitor {
 				edge.getTarget().visit(new LoggingVisitor(context, indents + 1, "dependency"));
 			}
 		}
-	}
-
-	@Override
-	public void endModule(IRhenaModule module) throws RhenaException {
-
 	}
 
 	private String indent() {

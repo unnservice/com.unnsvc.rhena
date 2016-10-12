@@ -35,7 +35,7 @@ public class ModelResolutionVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void startModule(IRhenaModule module) throws RhenaException {
+	public void visit(IRhenaModule module) throws RhenaException {
 
 		resolveModel(module.getParentModule());
 
@@ -44,7 +44,6 @@ public class ModelResolutionVisitor implements IModelVisitor {
 
 			IConfiguratorReference config = lifecycle.getConfigurator();
 			resolveModel(config);
-
 
 			for (IProcessorReference proc : lifecycle.getProcessors()) {
 
@@ -63,21 +62,15 @@ public class ModelResolutionVisitor implements IModelVisitor {
 
 	private void resolveModel(IRhenaEdge parentModule) throws RhenaException {
 
-		if(parentModule != null && parentModule.getTarget() instanceof RhenaReference && !resolved.contains(parentModule.getTarget().getModuleIdentifier())) {
-			
+		if (parentModule != null && parentModule.getTarget() instanceof RhenaReference && !resolved.contains(parentModule.getTarget().getModuleIdentifier())) {
+
 			IRhenaModule resolvedModel = context.materialiseModel(parentModule.getTarget().getModuleIdentifier());
-			
+
 			parentModule.setTarget(resolvedModel);
-			
+
 			resolved.add(resolvedModel.getModuleIdentifier());
-			
+
 			parentModule.getTarget().visit(this);
 		}
 	}
-
-	@Override
-	public void endModule(IRhenaModule module) throws RhenaException {
-
-	}
-
 }

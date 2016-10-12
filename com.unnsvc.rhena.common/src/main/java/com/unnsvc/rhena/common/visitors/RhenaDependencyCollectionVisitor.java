@@ -39,7 +39,7 @@ public class RhenaDependencyCollectionVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void startModule(IRhenaModule model) throws RhenaException {
+	public void visit(IRhenaModule model) throws RhenaException {
 
 		for (IRhenaEdge edge : model.getDependencyEdges()) {
 
@@ -76,11 +76,6 @@ public class RhenaDependencyCollectionVisitor implements IModelVisitor {
 	private void addDependency(IRhenaEdge edge) throws RhenaException {
 
 		dependencies.add(resolver.materialiseExecution(edge.getTarget(), edge.getExecutionType()));
-	}
-
-	@Override
-	public void endModule(IRhenaModule model) throws RhenaException {
-
 	}
 
 	public List<IRhenaExecution> getDependencies() {

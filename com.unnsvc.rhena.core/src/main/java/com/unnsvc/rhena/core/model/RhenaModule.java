@@ -103,9 +103,7 @@ public class RhenaModule implements IRhenaModule {
 	@Override
 	public <T extends IModelVisitor> T visit(T visitor) throws RhenaException {
 
-		visitor.startModule(this);
-
-		visitor.endModule(this);
+		visitor.visit(this);
 
 		return visitor;
 	}

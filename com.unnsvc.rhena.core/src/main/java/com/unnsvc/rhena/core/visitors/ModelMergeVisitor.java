@@ -39,7 +39,7 @@ public class ModelMergeVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void startModule(IRhenaModule module) throws RhenaException {
+	public void visit(IRhenaModule module) throws RhenaException {
 
 		if (entered.contains(module.getModuleIdentifier())) {
 			return;
@@ -47,8 +47,8 @@ public class ModelMergeVisitor implements IModelVisitor {
 
 		if (module.getParentModule() != null) {
 
-			module.getParentModule().getTarget().visit(this); 
-			
+			module.getParentModule().getTarget().visit(this);
+
 			// merge parent into child
 			if (module.getParentModule() != null) {
 
@@ -69,7 +69,7 @@ public class ModelMergeVisitor implements IModelVisitor {
 
 			ld.getGenerator().getTarget().visit(this);
 		}
-		
+
 		if (module.getLifecycleName() != null) {
 
 			// the model is merged so we can just query this module
@@ -84,11 +84,6 @@ public class ModelMergeVisitor implements IModelVisitor {
 		}
 
 		this.entered.add(module.getModuleIdentifier());
-	}
-
-	@Override
-	public void endModule(IRhenaModule model) throws RhenaException {
-
 	}
 
 	/**
