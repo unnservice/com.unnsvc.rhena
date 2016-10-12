@@ -23,12 +23,12 @@ import com.unnsvc.rhena.core.model.RhenaReference;
  * @author noname
  *
  */
-public class ModelInitializingVisitor implements IModelVisitor {
+public class ModelResolutionVisitor implements IModelVisitor {
 
 	private IResolutionContext context;
 	private Set<ModuleIdentifier> resolved;
 
-	public ModelInitializingVisitor(IResolutionContext context) {
+	public ModelResolutionVisitor(IResolutionContext context) {
 
 		this.context = context;
 		this.resolved = new HashSet<ModuleIdentifier>();

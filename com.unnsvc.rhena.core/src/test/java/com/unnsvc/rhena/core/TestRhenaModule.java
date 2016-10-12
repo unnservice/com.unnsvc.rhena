@@ -13,7 +13,7 @@ import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.resolution.RhenaResolutionContext;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
-import com.unnsvc.rhena.core.visitors.ModelInitializingVisitor;
+import com.unnsvc.rhena.core.visitors.ModelResolutionVisitor;
 
 public class TestRhenaModule {
 
@@ -42,7 +42,7 @@ public class TestRhenaModule {
 
 		IRhenaModule model = context.materialiseModel(entryPointIdentifier);
 		
-		model.visit(new ModelInitializingVisitor(context));
+		model.visit(new ModelResolutionVisitor(context));
 		
 //		model.visit(new ModelInitialisingVisitor(context));
 //		model.visit(new ModelMergeVisitor(context));
