@@ -4,7 +4,7 @@ package com.unnsvc.rhena.core.lifecycle;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.unnsvc.rhena.common.model.lifecycle.IConfiguratorReference;
+import com.unnsvc.rhena.common.model.lifecycle.IExecutionReference;
 import com.unnsvc.rhena.common.model.lifecycle.IGeneratorReference;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
@@ -12,7 +12,7 @@ import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 public class LifecycleDeclaration implements ILifecycleDeclaration {
 
 	private String name;
-	private IConfiguratorReference configurator;
+	private IExecutionReference configurator;
 	private List<IProcessorReference> processors;
 	private IGeneratorReference generator;
 
@@ -50,13 +50,13 @@ public class LifecycleDeclaration implements ILifecycleDeclaration {
 		return generator;
 	}
 
-	public void setConfigurator(IConfiguratorReference configurator) {
+	public void setConfigurator(IExecutionReference configurator) {
 
 		this.configurator = configurator;
 	}
 
 	@Override
-	public IConfiguratorReference getConfigurator() {
+	public IExecutionReference getConfigurator() {
 
 		return configurator;
 	}

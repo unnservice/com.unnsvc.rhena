@@ -22,8 +22,8 @@ import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaExecution;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.TraverseType;
-import com.unnsvc.rhena.common.model.lifecycle.IConfigurator;
-import com.unnsvc.rhena.common.model.lifecycle.IConfiguratorReference;
+import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
+import com.unnsvc.rhena.common.model.lifecycle.IExecutionReference;
 import com.unnsvc.rhena.common.model.lifecycle.IGenerator;
 import com.unnsvc.rhena.common.model.lifecycle.IGeneratorReference;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
@@ -33,7 +33,7 @@ import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 import com.unnsvc.rhena.common.visitors.RhenaDependencyCollectionVisitor;
 import com.unnsvc.rhena.core.model.RhenaExecution;
-import com.unnsvc.rhena.lifecycle.DefaultConfigurator;
+import com.unnsvc.rhena.lifecycle.DefaultContext;
 import com.unnsvc.rhena.lifecycle.DefaultGenerator;
 import com.unnsvc.rhena.lifecycle.DefaultProcessor;
 
@@ -66,20 +66,20 @@ public class WorkspaceProjectMaterialiser {
 		if (module.getLifecycleName() != null) {
 
 			ILifecycleDeclaration declaration = module.getLifecycleDeclaration(module.getLifecycleName());
-			IConfiguratorReference configuratorReference = declaration.getConfigurator();
+			IExecutionReference executionContextReference = declaration.getConfigurator();
 			List<IProcessorReference> processorReferences = declaration.getProcessors();
 			IGeneratorReference generatorReference = declaration.getGenerator();
-			return processLifecycleReferences(module, configuratorReference, processorReferences, generatorReference);
+			return processLifecycleReferences(module, executionContextReference, processorReferences, generatorReference);
 		} else {
 
-			DefaultConfigurator configurator = new DefaultConfigurator();
+			DefaultContext configurator = new DefaultContext();
 			DefaultProcessor processor = new DefaultProcessor();
 			DefaultGenerator generator = new DefaultGenerator();
 			configurator.configure(getConfiguration(null), type);
 			processor.configure(getConfiguration(null), type);
-			processor.process(module, configurator);
+			processor.process(configurator, module);
 			generator.configure(getConfiguration(null), type);
-			generatedArtifact = generator.generate(module, configurator);
+			generatedArtifact = generator.generate(configurator, module);
 		}
 
 		if (generatedArtifact == null || !generatedArtifact.isFile()) {
@@ -89,22 +89,22 @@ public class WorkspaceProjectMaterialiser {
 		return new RhenaExecution(module.getModuleIdentifier(), type, generatedArtifact);
 	}
 
-	private IRhenaExecution processLifecycleReferences(IRhenaModule module, IConfiguratorReference configuratorReference,
+	private IRhenaExecution processLifecycleReferences(IRhenaModule module, IExecutionReference contextReference,
 			List<IProcessorReference> processorReferences, IGeneratorReference generatorReference) throws RhenaException {
 
-		IConfigurator configurator = instantiateProcessor(module, configuratorReference, IConfigurator.class);
-		configurator.configure(configuratorReference.getConfiguration(), type);
+		IExecutionContext executionContext = instantiateProcessor(module, contextReference, IExecutionContext.class);
+		executionContext.configure(contextReference.getConfiguration(), type);
 
 		for (IProcessorReference pref : processorReferences) {
 
-			IProcessor processor = instantiateProcessor(module, configuratorReference, IProcessor.class);
+			IProcessor processor = instantiateProcessor(module, contextReference, IProcessor.class);
 			processor.configure(pref.getConfiguration(), type);
-			processor.process(module, configurator);
+			processor.process(executionContext, module);
 		}
 
-		IGenerator generator = instantiateProcessor(module, configuratorReference, IGenerator.class);
+		IGenerator generator = instantiateProcessor(module, contextReference, IGenerator.class);
 		generator.configure(generatorReference.getConfiguration(), type);
-		File artifact = generator.generate(module, configurator);
+		File artifact = generator.generate(executionContext, module);
 
 		if (artifact == null) {
 			throw new RhenaException(module.getModuleIdentifier().toTag() + ":generator " + generator.getClass().getName() + " produced null artifact.");

@@ -20,7 +20,7 @@
 
 	<xs:complexType name="lifecycleType">
 		<xs:sequence>
-			<xs:element name="configurator" type="tns:simpleProcessorType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="context" type="tns:simpleProcessorType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="processor" type="tns:processorType" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="generator" type="tns:simpleProcessorType" minOccurs="1" maxOccurs="1" />
 		</xs:sequence>

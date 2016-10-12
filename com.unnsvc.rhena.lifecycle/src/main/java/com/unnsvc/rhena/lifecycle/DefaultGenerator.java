@@ -10,8 +10,8 @@ import org.w3c.dom.Document;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IGenerator;
-import com.unnsvc.rhena.common.model.lifecycle.IProjectConfiguration;
 
 public class DefaultGenerator implements IGenerator {
 
@@ -23,7 +23,7 @@ public class DefaultGenerator implements IGenerator {
 	}
 
 	@Override
-	public File generate(IRhenaModule model, IProjectConfiguration configurator) throws RhenaException {
+	public File generate(IExecutionContext context, IRhenaModule model) throws RhenaException {
 
 		File sysTempDir = new File(System.getProperty("java.io.tmpdir"));
 		File dummyFile = new File(sysTempDir, "rhena-default-processor-dummy-" + model.getModuleIdentifier().getModuleName());

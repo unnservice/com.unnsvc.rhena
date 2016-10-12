@@ -8,6 +8,6 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 
 public interface IGenerator extends ILifecycleProcessor {
 
-	public File generate(IRhenaModule model, IProjectConfiguration configurator) throws RhenaException;
+	public File generate(IExecutionContext context, IRhenaModule model) throws RhenaException;
 
 }

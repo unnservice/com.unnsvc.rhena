@@ -6,6 +6,6 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 
 public interface IProcessor extends ILifecycleProcessor {
 
-	public void process(IRhenaModule model, IProjectConfiguration configurator) throws RhenaException;
+	public void process(IExecutionContext context, IRhenaModule model) throws RhenaException;
 
 }

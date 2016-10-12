@@ -35,7 +35,7 @@ import com.unnsvc.rhena.core.model.RhenaReference;
 
 public class RhenaModuleParser {
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
+	private Logger log = LoggerFactory.getLogger(getClass());
 	private RhenaModule module;
 
 	public RhenaModuleParser(ModuleIdentifier moduleIdentifier, URI location, IRepository repository) throws RhenaException {
@@ -92,6 +92,7 @@ public class RhenaModuleParser {
 			Validator validator = schema.newValidator();
 			validator.validate(new DOMSource(document));
 		} catch (Exception ex) {
+			log.error("Schema validation failed for : " + uri);
 			throw new RhenaException("Schema validation error for: " + uri.toString(), ex);
 		}
 
@@ -102,7 +103,6 @@ public class RhenaModuleParser {
 
 		String nodeName = propertyNode.getLocalName();
 		String nodeValue = propertyNode.getTextContent();
-		logger.debug("Set property: " + nodeName + "=" + nodeValue + " on " + module.getModuleIdentifier());
 		module.setProperty(nodeName, nodeValue);
 	}
 
@@ -157,7 +157,7 @@ public class RhenaModuleParser {
 				ExecutionType et = ExecutionType.FRAMEWORK;
 				TraverseType tt = TraverseType.SCOPE;
 
-				if (child.getLocalName().equals("configurator")) {
+				if (child.getLocalName().equals("context")) {
 
 					ConfiguratorReference configurator = new ConfiguratorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, config, et, tt);
 					ld.setConfigurator(configurator);

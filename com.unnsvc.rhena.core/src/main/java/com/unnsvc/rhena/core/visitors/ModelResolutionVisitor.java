@@ -9,7 +9,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.lifecycle.IConfiguratorReference;
+import com.unnsvc.rhena.common.model.lifecycle.IExecutionReference;
 import com.unnsvc.rhena.common.model.lifecycle.IGeneratorReference;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
@@ -47,7 +47,7 @@ public class ModelResolutionVisitor implements IModelVisitor {
 		for (String key : module.getLifecycleDeclarations().keySet()) {
 			ILifecycleDeclaration lifecycle = module.getLifecycleDeclarations().get(key);
 
-			IConfiguratorReference config = lifecycle.getConfigurator();
+			IExecutionReference config = lifecycle.getConfigurator();
 			resolveModel(config);
 
 			for (IProcessorReference proc : lifecycle.getProcessors()) {

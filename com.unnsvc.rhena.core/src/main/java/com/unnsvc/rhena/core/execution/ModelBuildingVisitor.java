@@ -9,7 +9,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.lifecycle.IConfiguratorReference;
+import com.unnsvc.rhena.common.model.lifecycle.IExecutionReference;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
@@ -34,7 +34,7 @@ public class ModelBuildingVisitor implements IModelVisitor {
 
 		for (ILifecycleDeclaration lifecycleDeclaration : model.getLifecycleDeclarations().values()) {
 
-			IConfiguratorReference configurator = lifecycleDeclaration.getConfigurator();
+			IExecutionReference configurator = lifecycleDeclaration.getConfigurator();
 			configurator.getTarget().visit(this);
 			resolver.materialiseExecution(configurator.getTarget(), ExecutionType.FRAMEWORK);
 
