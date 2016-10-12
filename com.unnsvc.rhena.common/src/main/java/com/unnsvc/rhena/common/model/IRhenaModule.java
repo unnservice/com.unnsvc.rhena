@@ -37,5 +37,4 @@ public interface IRhenaModule extends IVisitableModel {
 	public void setProperty(String key, String value);
 
 	public void setProperties(Properties properties);
-
 }

@@ -33,7 +33,7 @@ public class LoggingVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void startModel(IRhenaModule model) throws RhenaException {
+	public void startModule(IRhenaModule model) throws RhenaException {
 
 		log.info(indent() + (label == null ? "root" : label) + ":" + model.getModuleIdentifier());
 
@@ -67,7 +67,7 @@ public class LoggingVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void endModel(IRhenaModule module) throws RhenaException {
+	public void endModule(IRhenaModule module) throws RhenaException {
 
 	}
 

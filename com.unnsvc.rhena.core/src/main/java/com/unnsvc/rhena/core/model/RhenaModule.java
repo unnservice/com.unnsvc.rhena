@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import com.unnsvc.rhena.common.IBoundedModelVisitor;
 import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -101,11 +102,34 @@ public class RhenaModule implements IRhenaModule {
 	}
 
 	@Override
-	public void visit(IModelVisitor visitor) throws RhenaException {
+	public <T extends IModelVisitor> T visit(T visitor) throws RhenaException {
 
-		visitor.startModel(this);
+		if (visitor instanceof IBoundedModelVisitor) {
 
-		visitor.endModel(this);
+			this.visitBounded((IBoundedModelVisitor) visitor);
+		} else {
+			
+			this.visitNormal(visitor);
+		}
+
+		return visitor;
+	}
+
+	protected void visitNormal(IModelVisitor visitor) throws RhenaException {
+
+		visitor.startModule(this);
+
+		visitor.endModule(this);
+	}
+
+	/**
+	 * This method allows for notification of start of tree visit
+	 */
+	protected void visitBounded(IBoundedModelVisitor visitor) throws RhenaException {
+
+		visitor.startTree(this);
+
+		visitor.endTree(this);
 	}
 
 	@Override
@@ -119,4 +143,5 @@ public class RhenaModule implements IRhenaModule {
 
 		this.lifecyclesDeclarations = lifecycleDeclarations;
 	}
+
 }

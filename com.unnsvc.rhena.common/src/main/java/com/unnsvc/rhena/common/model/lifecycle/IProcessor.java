@@ -1,6 +1,10 @@
+
 package com.unnsvc.rhena.common.model.lifecycle;
 
+import com.unnsvc.rhena.common.model.IRhenaModule;
 
-public interface IProcessor {
+public interface IProcessor extends ILifecycleProcessor {
+
+	public void process(IProjectConfiguration configuration, IRhenaModule model);
 
 }

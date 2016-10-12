@@ -24,12 +24,15 @@ public class TestRhenaModule {
 
 	@Test
 	public void test() throws Exception {
-		
+
 		long start = System.currentTimeMillis();
 		execute();
 		long end = System.currentTimeMillis();
 
-		log.info("Executed in " + (end - start) + "ms");
+		/**
+		 * @TODO This is where metrics come into play, implement metrics
+		 */
+		log.info("Executed in " + (end - start) + "ms (core: Xms, lifecycles: Xms)");
 	}
 
 	private void execute() throws Exception {
@@ -46,6 +49,13 @@ public class TestRhenaModule {
 		model.visit(new ModelBuildingVisitor(context));
 
 		context.materialiseExecution(model, ExecutionType.DELIVERABLE);
+
+//		List<RhenaExecution> deps = model.visit(new RhenaDependencyCollectionVisitor(context, ExecutionType.DELIVERABLE, TraverseType.NONE)).getDependencies();
+//		log.debug(model.getModuleIdentifier().toTag() + ": collected: " + deps.size());
+//		for(RhenaExecution re : deps) {
+//			log.debug(model.getModuleIdentifier().toTag() + ": dep: " + re);
+//		}
+
 	}
 }
 

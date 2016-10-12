@@ -25,7 +25,7 @@ public class ModelBuildingVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void startModel(IRhenaModule model) throws RhenaException {
+	public void startModule(IRhenaModule model) throws RhenaException {
 
 		if (model.getParentModule() != null) {
 
@@ -59,9 +59,8 @@ public class ModelBuildingVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void endModel(IRhenaModule model) throws RhenaException {
+	public void endModule(IRhenaModule model) throws RhenaException {
 
-		// RhenaExecution execution = getResolver().materialiseModuleType(model,
-		// RhenaEdgeType.ITEST);
+		// no-op, project is materialised by resolvers
 	}
 }

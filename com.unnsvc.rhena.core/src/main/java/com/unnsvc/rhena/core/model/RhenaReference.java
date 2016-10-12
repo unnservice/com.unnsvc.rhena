@@ -23,7 +23,7 @@ public class RhenaReference implements IRhenaModule {
 	}
 
 	@Override
-	public void visit(IModelVisitor visitor) throws RhenaException {
+	public <T extends IModelVisitor> T visit(T visitor) throws RhenaException {
 
 		throw new UnsupportedOperationException("Call on model of yet undersolved reference for: " + moduleIdentifier.toString());
 	}

@@ -16,37 +16,47 @@ import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.RhenaExecution;
+import com.unnsvc.rhena.common.model.TraverseType;
 
+/**
+ * This is mainly an internal class for allowing modules to provide dependency
+ * collection functionality
+ * 
+ * @author noname
+ *
+ */
 public class DependencyCollectionVisitor implements IModelVisitor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private IResolutionContext context;
 	private ExecutionType requested;
 	private List<ModuleIdentifier> identifiers;
+	private TraverseType traverseType;
 
-	public DependencyCollectionVisitor(IResolutionContext context, ExecutionType requested) {
+	public DependencyCollectionVisitor(IResolutionContext context, ExecutionType startScope, TraverseType traverseType) {
 
 		this.context = context;
-		this.requested = requested;
+		this.requested = startScope;
 		this.identifiers = new ArrayList<ModuleIdentifier>();
+		this.traverseType = traverseType;
 	}
 
 	@Override
-	public void startModel(IRhenaModule model) throws RhenaException {
+	public void startModule(IRhenaModule model) throws RhenaException {
 
 		for (IRhenaEdge edge : model.getDependencyEdges()) {
 
-			if (edge.getExecutionType() == ExecutionType.DELIVERABLE) {
-				edge.getTarget().visit(this);
-				if (!identifiers.contains(edge.getTarget())) {
-					identifiers.add(edge.getTarget().getModuleIdentifier());
-				}
-			}
+			// if (edge.getExecutionType() == ExecutionType.DELIVERABLE) {
+			// edge.getTarget().visit(this);
+			// if (!identifiers.contains(edge.getTarget())) {
+			// identifiers.add(edge.getTarget().getModuleIdentifier());
+			// }
+			// }
 		}
 	}
 
 	@Override
-	public void endModel(IRhenaModule model) throws RhenaException {
+	public void endModule(IRhenaModule model) throws RhenaException {
 
 	}
 

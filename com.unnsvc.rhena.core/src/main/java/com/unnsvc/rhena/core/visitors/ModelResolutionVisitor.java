@@ -28,7 +28,7 @@ public class ModelResolutionVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void startModel(IRhenaModule model) throws RhenaException {
+	public void startModule(IRhenaModule model) throws RhenaException {
 
 		// materialise parent
 		if (model.getParentModule() != null && model.getParentModule() instanceof RhenaReference) {
@@ -79,7 +79,7 @@ public class ModelResolutionVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void endModel(IRhenaModule model) throws RhenaException {
+	public void endModule(IRhenaModule model) throws RhenaException {
 
 	}
 }

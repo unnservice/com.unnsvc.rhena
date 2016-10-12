@@ -5,6 +5,6 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 
 public interface IVisitableModel {
 
-	public void visit(IModelVisitor visitor) throws RhenaException;
+	public <T extends IModelVisitor> T visit(T visitor) throws RhenaException;
 
 }

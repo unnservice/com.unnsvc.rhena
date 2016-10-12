@@ -11,13 +11,13 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 public class RhenaExecution {
 
 	private ModuleIdentifier moduleIdentifier;
-	private ExecutionType edgeType;
+	private ExecutionType executionType;
 	private File artifact;
 
-	public RhenaExecution(ModuleIdentifier moduleIdentifier, ExecutionType edgeType, File artifact) {
+	public RhenaExecution(ModuleIdentifier moduleIdentifier, ExecutionType executionType, File artifact) {
 
 		this.moduleIdentifier = moduleIdentifier;
-		this.edgeType = edgeType;
+		this.executionType = executionType;
 		this.artifact = artifact;
 	}
 
@@ -26,9 +26,9 @@ public class RhenaExecution {
 		return moduleIdentifier;
 	}
 
-	public ExecutionType getEdgeType() {
+	public ExecutionType getExecutionType() {
 
-		return edgeType;
+		return executionType;
 	}
 
 	public File getArtifact() {
@@ -57,7 +57,7 @@ public class RhenaExecution {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((artifact == null) ? 0 : artifact.hashCode());
-		result = prime * result + ((edgeType == null) ? 0 : edgeType.hashCode());
+		result = prime * result + ((executionType == null) ? 0 : executionType.hashCode());
 		result = prime * result + ((moduleIdentifier == null) ? 0 : moduleIdentifier.hashCode());
 		return result;
 	}
@@ -77,7 +77,7 @@ public class RhenaExecution {
 				return false;
 		} else if (!artifact.equals(other.artifact))
 			return false;
-		if (edgeType != other.edgeType)
+		if (executionType != other.executionType)
 			return false;
 		if (moduleIdentifier == null) {
 			if (other.moduleIdentifier != null)
@@ -90,7 +90,7 @@ public class RhenaExecution {
 	@Override
 	public String toString() {
 
-		return "RhenaExecution [moduleIdentifier=" + moduleIdentifier + ", edgeType=" + edgeType + ", artifact=" + artifact + "]";
+		return "RhenaExecution [moduleIdentifier=" + moduleIdentifier + ", executionType=" + executionType + ", artifact=" + artifact + "]";
 	}
 
 }

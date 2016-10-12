@@ -16,8 +16,10 @@ import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.TraverseType;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 
@@ -34,7 +36,7 @@ public class ModelMergeVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void startModel(IRhenaModule model) throws RhenaException {
+	public void startModule(IRhenaModule model) throws RhenaException {
 
 		if (model.getParentModule() != null) {
 
@@ -58,17 +60,19 @@ public class ModelMergeVisitor implements IModelVisitor {
 	}
 
 	@Override
-	public void endModel(IRhenaModule model) throws RhenaException {
+	public void endModule(IRhenaModule model) throws RhenaException {
+
+		if (merged.contains(model.getModuleIdentifier())) {
+			return;
+		}
 
 		// merge parent into child
 		if (model.getParentModule() != null) {
 
-			if (!merged.contains(model.getModuleIdentifier())) {
-				IRhenaModule parent = model.getParentModule();
-				mergeParent(parent, model);
-				merged.add(model.getModuleIdentifier());
-				log.debug("[" + model.getModuleIdentifier() + "]:model merged parent " + parent.getModuleIdentifier());
-			}
+			IRhenaModule parent = model.getParentModule();
+			mergeParent(parent, model);
+			merged.add(model.getModuleIdentifier());
+			log.debug("[" + model.getModuleIdentifier() + "]:model merged parent " + parent.getModuleIdentifier());
 		}
 
 		if (model.getLifecycleName() != null) {
@@ -78,6 +82,8 @@ public class ModelMergeVisitor implements IModelVisitor {
 				throw new RhenaException(model.getModuleIdentifier().toTag() + ": Lifecycle name " + model.getLifecycleName() + " is not found");
 			}
 		}
+
+		this.merged.add(model.getModuleIdentifier());
 	}
 
 	/**

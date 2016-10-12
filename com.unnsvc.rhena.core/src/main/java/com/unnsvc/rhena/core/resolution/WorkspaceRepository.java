@@ -14,7 +14,7 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.RhenaExecution;
-import com.unnsvc.rhena.core.execution.ExecutionTypeMaterialiser;
+import com.unnsvc.rhena.core.execution.WorkspaceProjectMaterialiser;
 import com.unnsvc.rhena.core.model.RhenaModule;
 
 public class WorkspaceRepository extends AbstractRepository {
@@ -48,7 +48,7 @@ public class WorkspaceRepository extends AbstractRepository {
 	@Override
 	public RhenaExecution materialiseExecution(IRhenaModule model, ExecutionType type) throws RhenaException {
 
-		ExecutionTypeMaterialiser etm = new ExecutionTypeMaterialiser(context, type);
+		WorkspaceProjectMaterialiser etm = new WorkspaceProjectMaterialiser(context, type);
 		return etm.materialiseExecution(model);
 	}
 }
