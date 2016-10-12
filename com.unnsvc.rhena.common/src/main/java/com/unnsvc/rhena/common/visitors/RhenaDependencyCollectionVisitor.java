@@ -13,24 +13,24 @@ import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
+import com.unnsvc.rhena.common.model.IRhenaExecution;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.RhenaExecution;
 import com.unnsvc.rhena.common.model.TraverseType;
 
 public class RhenaDependencyCollectionVisitor implements IModelVisitor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private List<RhenaExecution> dependencies;
+	private List<IRhenaExecution> dependencies;
 	private ExecutionType executionType;
 	private IResolutionContext resolver;
 	private TraverseType traverseType;
 
 	public RhenaDependencyCollectionVisitor(IResolutionContext resolver, ExecutionType executionType, TraverseType traverseType) {
 
-		this(resolver, executionType, new ArrayList<RhenaExecution>(), traverseType);
+		this(resolver, executionType, new ArrayList<IRhenaExecution>(), traverseType);
 	}
 
-	public RhenaDependencyCollectionVisitor(IResolutionContext resolver, ExecutionType executionType, List<RhenaExecution> dependencies,
+	public RhenaDependencyCollectionVisitor(IResolutionContext resolver, ExecutionType executionType, List<IRhenaExecution> dependencies,
 			TraverseType traverseType) {
 
 		this.executionType = executionType;
@@ -84,7 +84,7 @@ public class RhenaDependencyCollectionVisitor implements IModelVisitor {
 
 	}
 
-	public List<RhenaExecution> getDependencies() {
+	public List<IRhenaExecution> getDependencies() {
 
 		return dependencies;
 	}
@@ -92,7 +92,7 @@ public class RhenaDependencyCollectionVisitor implements IModelVisitor {
 	public List<URL> getDependenciesURL() throws RhenaException {
 
 		List<URL> urls = new ArrayList<URL>();
-		for (RhenaExecution re : getDependencies()) {
+		for (IRhenaExecution re : getDependencies()) {
 			urls.add(re.getArtifactURL());
 		}
 		return urls;

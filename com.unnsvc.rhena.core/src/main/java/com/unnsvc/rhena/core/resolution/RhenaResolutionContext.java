@@ -14,8 +14,8 @@ import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ExecutionType;
+import com.unnsvc.rhena.common.model.IRhenaExecution;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.RhenaExecution;
 
 /**
  * @TODO maybe add some sort of Class to return from the materialise() methods,
@@ -29,13 +29,13 @@ public class RhenaResolutionContext implements IResolutionContext {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private List<IRepository> repositories;
 	private Map<ModuleIdentifier, IRhenaModule> models;
-	private Map<ModuleIdentifier, Map<ExecutionType, RhenaExecution>> executions;
+	private Map<ModuleIdentifier, Map<ExecutionType, IRhenaExecution>> executions;
 
 	public RhenaResolutionContext() {
 
 		this.repositories = new ArrayList<IRepository>();
 		this.models = new HashMap<ModuleIdentifier, IRhenaModule>();
-		this.executions = new HashMap<ModuleIdentifier, Map<ExecutionType, RhenaExecution>>();
+		this.executions = new HashMap<ModuleIdentifier, Map<ExecutionType, IRhenaExecution>>();
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class RhenaResolutionContext implements IResolutionContext {
 	}
 
 	@Override
-	public RhenaExecution materialiseExecution(IRhenaModule model, ExecutionType type) throws RhenaException {
+	public IRhenaExecution materialiseExecution(IRhenaModule model, ExecutionType type) throws RhenaException {
 
 		ModuleIdentifier identifier = model.getModuleIdentifier();
 
@@ -78,13 +78,13 @@ public class RhenaResolutionContext implements IResolutionContext {
 		 * Doing this one-off thing of passing down this context into the
 		 * repository, so the repository can use the context if it needs
 		 */
-		RhenaExecution execution = model.getRepository().materialiseExecution(model, type);
+		IRhenaExecution execution = model.getRepository().materialiseExecution(model, type);
 
 		if (executions.containsKey(identifier)) {
 
 			executions.get(identifier).put(type, execution);
 		} else {
-			Map<ExecutionType, RhenaExecution> typeExecutions = new HashMap<ExecutionType, RhenaExecution>();
+			Map<ExecutionType, IRhenaExecution> typeExecutions = new HashMap<ExecutionType, IRhenaExecution>();
 			typeExecutions.put(type, execution);
 			executions.put(identifier, typeExecutions);
 		}

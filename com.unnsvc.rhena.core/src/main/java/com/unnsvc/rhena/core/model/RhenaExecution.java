@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.common.model;
+package com.unnsvc.rhena.core.model;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -7,8 +7,10 @@ import java.net.URL;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.ExecutionType;
+import com.unnsvc.rhena.common.model.IRhenaExecution;
 
-public class RhenaExecution {
+public class RhenaExecution implements IRhenaExecution {
 
 	private ModuleIdentifier moduleIdentifier;
 	private ExecutionType executionType;
@@ -41,6 +43,7 @@ public class RhenaExecution {
 	 *       execution type instead of File?
 	 * @return
 	 */
+	@Override
 	public URL getArtifactURL() throws RhenaException {
 
 		try {

@@ -13,8 +13,8 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.RhenaExecution;
 import com.unnsvc.rhena.core.execution.WorkspaceProjectMaterialiser;
+import com.unnsvc.rhena.core.model.RhenaExecution;
 import com.unnsvc.rhena.core.model.RhenaModule;
 
 public class WorkspaceRepository extends AbstractRepository {
