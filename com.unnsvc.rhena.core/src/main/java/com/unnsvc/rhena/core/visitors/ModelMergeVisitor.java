@@ -3,11 +3,9 @@ package com.unnsvc.rhena.core.visitors;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,35 +13,37 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.TraverseType;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 
+/**
+ * @TODO bug, merge parent only once, otherwise it will have undetermined effect
+ * @author noname
+ *
+ */
 public class ModelMergeVisitor implements IModelVisitor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private IResolutionContext context;
-	private Set<ModuleIdentifier> merged;
 
 	public ModelMergeVisitor(IResolutionContext context) {
 
 		this.context = context;
-		this.merged = new HashSet<ModuleIdentifier>();
 	}
 
 	@Override
-	public void startModule(IRhenaModule model) throws RhenaException {
+	public void startModule(IRhenaModule module) throws RhenaException {
 
-		if (model.getParentModule() != null) {
+		if (module.getParentModule() != null) {
 
-			model.getParentModule().visit(this);
+			module.getParentModule().visit(this);
 		}
 
-		for (ILifecycleDeclaration ld : model.getLifecycleDeclarations().values()) {
+		for (ILifecycleDeclaration ld : module.getLifecycleDeclarations().values()) {
+
+			ld.getConfigurator().getModule().visit(this);
 
 			for (IProcessorReference pr : ld.getProcessors()) {
 
@@ -53,25 +53,21 @@ public class ModelMergeVisitor implements IModelVisitor {
 			ld.getGenerator().getModule().visit(this);
 		}
 
-		for (IRhenaEdge edge : model.getDependencyEdges()) {
+		for (IRhenaEdge edge : module.getDependencyEdges()) {
 
 			edge.getTarget().visit(this);
 		}
+
 	}
 
 	@Override
 	public void endModule(IRhenaModule model) throws RhenaException {
-
-		if (merged.contains(model.getModuleIdentifier())) {
-			return;
-		}
 
 		// merge parent into child
 		if (model.getParentModule() != null) {
 
 			IRhenaModule parent = model.getParentModule();
 			mergeParent(parent, model);
-			merged.add(model.getModuleIdentifier());
 			log.debug("[" + model.getModuleIdentifier() + "]:model merged parent " + parent.getModuleIdentifier());
 		}
 
@@ -83,7 +79,6 @@ public class ModelMergeVisitor implements IModelVisitor {
 			}
 		}
 
-		this.merged.add(model.getModuleIdentifier());
 	}
 
 	/**

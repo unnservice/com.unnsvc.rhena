@@ -1,6 +1,9 @@
 
 package com.unnsvc.rhena.core.visitors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.unnsvc.rhena.common.IModelVisitor;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -20,11 +23,14 @@ import com.unnsvc.rhena.core.model.RhenaReference;
  */
 public class ModelInitialisingVisitor implements IModelVisitor {
 
+	private IRhenaModule currentModule;
 	private IResolutionContext context;
-
+	private List<IRhenaModule> model;
+	
 	public ModelInitialisingVisitor(IResolutionContext context) {
 
 		this.context = context;
+		this.model = new ArrayList<IRhenaModule>();
 	}
 
 	@Override
