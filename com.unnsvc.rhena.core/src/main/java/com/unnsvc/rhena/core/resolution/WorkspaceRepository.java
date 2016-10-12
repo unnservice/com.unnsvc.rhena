@@ -26,7 +26,7 @@ public class WorkspaceRepository extends AbstractRepository {
 	public WorkspaceRepository(IResolutionContext context, File workspaceDirectory) {
 
 		this.context = context;
-		this.workspaceDirectory = workspaceDirectory;
+		this.workspaceDirectory = workspaceDirectory.getAbsoluteFile();
 	}
 
 	@Override
