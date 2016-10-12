@@ -12,6 +12,7 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.core.model.RhenaReference;
 import com.unnsvc.rhena.core.resolution.RhenaResolutionContext;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
 import com.unnsvc.rhena.core.visitors.EdgeVisitor;
@@ -48,12 +49,15 @@ public class TestRhenaModule {
 
 		model.visit(new EdgeVisitor(EnterType.AFTER, new ModelInitialisingHandler(context)).setEnterUnusedLifecycle(true));
 
+		/**
+		 * Do the logging here
+		 */
 		model.visit(new EdgeVisitor(EnterType.BEFORE, new EdgeHandler() {
 
 			@Override
 			public void handleEdge(IRhenaModule module, IRhenaEdge edge) {
 
-				log.debug(module.getModuleIdentifier().toTag() + ": Visiting edge: " + edge);
+				log.debug(module.getModuleIdentifier().toTag() + ": entering edge: " + edge);
 			}
 
 			@Override

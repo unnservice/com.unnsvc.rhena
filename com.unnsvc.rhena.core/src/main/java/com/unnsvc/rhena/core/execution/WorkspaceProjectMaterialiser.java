@@ -10,15 +10,16 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ExecutionType;
+import com.unnsvc.rhena.common.model.IRhenaExecution;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.TraverseType;
 import com.unnsvc.rhena.common.model.lifecycle.IConfigurator;
@@ -36,6 +37,10 @@ import com.unnsvc.rhena.lifecycle.DefaultConfigurator;
 import com.unnsvc.rhena.lifecycle.DefaultGenerator;
 import com.unnsvc.rhena.lifecycle.DefaultProcessor;
 
+/**
+ * @author noname
+ *
+ */
 public class WorkspaceProjectMaterialiser {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
@@ -49,73 +54,81 @@ public class WorkspaceProjectMaterialiser {
 	}
 
 	/**
-	 * @TODO DRRRRRRYYYYYYYY
+	 * @TODO clean up, DRRRRRRYYYYYYYY, and fix logic
 	 */
-	public RhenaExecution materialiseExecution(IRhenaModule model) throws RhenaException {
+	public IRhenaExecution materialiseExecution(IRhenaModule module) throws RhenaException {
 
-		ILifecycleDeclaration lifecycleDeclaration = model.getLifecycleDeclarations().get(model.getLifecycleName());
-		if (lifecycleDeclaration == null) {
-			log.debug(model.getModuleIdentifier().toTag() + ": no lifecycle declaration found, using framework default.");
+		File generatedArtifact = null;
 
-			try {
-				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-				factory.setNamespaceAware(true);
-				DocumentBuilder builder = factory.newDocumentBuilder();
-				Document document = builder.newDocument();
+		if (module.getLifecycleName() != null) {
 
-				DefaultConfigurator configurator = new DefaultConfigurator();
-				configurator.configure(document);
-
-				DefaultProcessor processor = new DefaultProcessor();
-				processor.configure(document);
-				processor.process(model, configurator);
-
-				DefaultGenerator generator = new DefaultGenerator();
-				generator.configure(document);
-				File artifact = generator.generate(model, configurator);
-
-				if (artifact == null) {
-					throw new RhenaException(model.getModuleIdentifier().toTag() + ":generator " + generator.getClass().getName() + " produced null artifact.");
-				} else if (!artifact.exists() || !artifact.isFile()) {
-					throw new RhenaException(model.getModuleIdentifier().toTag() + ":generator " + generator.getClass().getName()
-							+ " produced an artifact which is either not a file, or does not exist: " + artifact);
-				}
-
-				return new RhenaExecution(model.getModuleIdentifier(), type, artifact);
-
-			} catch (ParserConfigurationException e) {
-
-				throw new RhenaException(e.getMessage(), e);
-			}
-
+			ILifecycleDeclaration declaration = module.getLifecycleDeclaration(module.getLifecycleName());
+			IConfiguratorReference configuratorReference = declaration.getConfigurator();
+			List<IProcessorReference> processorReferences = declaration.getProcessors();
+			IGeneratorReference generatorReference = declaration.getGenerator();
+			return processLifecycleReferences(module, configuratorReference, processorReferences, generatorReference);
 		} else {
-			//
-			IConfiguratorReference configuratorReference = lifecycleDeclaration.getConfigurator();
-			List<IProcessorReference> processorReferences = lifecycleDeclaration.getProcessors();
-			IGeneratorReference generatorReference = lifecycleDeclaration.getGenerator();
 
-			IConfigurator configurator = instantiateProcessor(model, configuratorReference, IConfigurator.class);
-			configurator.configure(configuratorReference.getConfiguration());
+			DefaultConfigurator configurator = new DefaultConfigurator();
+			DefaultProcessor processor = new DefaultProcessor();
+			DefaultGenerator generator = new DefaultGenerator();
+			configurator.configure(getConfiguration(null));
+			processor.configure(getConfiguration(null));
+			processor.process(module, configurator);
+			generator.configure(getConfiguration(null));
+			generatedArtifact = generator.generate(module, configurator);
+		}
 
-			for (IProcessorReference pref : processorReferences) {
+		if (generatedArtifact == null || !generatedArtifact.isFile()) {
+			throw new RhenaException(module.getModuleIdentifier().toTag() + ": generated missing or invalid artifact: " + generatedArtifact);
+		}
 
-				IProcessor processor = instantiateProcessor(model, configuratorReference, IProcessor.class);
-				processor.configure(pref.getConfiguration());
-				processor.process(model, configurator);
+		return new RhenaExecution(module.getModuleIdentifier(), type, generatedArtifact);
+	}
+
+	private IRhenaExecution processLifecycleReferences(IRhenaModule module, IConfiguratorReference configuratorReference,
+			List<IProcessorReference> processorReferences, IGeneratorReference generatorReference) throws RhenaException {
+
+		IConfigurator configurator = instantiateProcessor(module, configuratorReference, IConfigurator.class);
+		configurator.configure(configuratorReference.getConfiguration());
+
+		for (IProcessorReference pref : processorReferences) {
+
+			IProcessor processor = instantiateProcessor(module, configuratorReference, IProcessor.class);
+			processor.configure(pref.getConfiguration());
+			processor.process(module, configurator);
+		}
+
+		IGenerator generator = instantiateProcessor(module, configuratorReference, IGenerator.class);
+		generator.configure(generatorReference.getConfiguration());
+		File artifact = generator.generate(module, configurator);
+
+		if (artifact == null) {
+			throw new RhenaException(module.getModuleIdentifier().toTag() + ":generator " + generator.getClass().getName() + " produced null artifact.");
+		} else if (!artifact.exists() || !artifact.isFile()) {
+			throw new RhenaException(module.getModuleIdentifier().toTag() + ":generator " + generator.getClass().getName()
+					+ " produced an artifact which is either not a file, or does not exist: " + artifact);
+		}
+
+		return new RhenaExecution(module.getModuleIdentifier(), type, artifact);
+	}
+
+	private Document getConfiguration(Node configNode) throws RhenaException {
+
+		try {
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			factory.setNamespaceAware(true);
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			Document document = builder.newDocument();
+
+			if (configNode != null) {
+				Node importedNode = document.importNode(configNode, true);
+				document.appendChild(importedNode);
 			}
 
-			IGenerator generator = instantiateProcessor(model, configuratorReference, IGenerator.class);
-			generator.configure(generatorReference.getConfiguration());
-			File artifact = generator.generate(model, configurator);
-
-			if (artifact == null) {
-				throw new RhenaException(model.getModuleIdentifier().toTag() + ":generator " + generator.getClass().getName() + " produced null artifact.");
-			} else if (!artifact.exists() || !artifact.isFile()) {
-				throw new RhenaException(model.getModuleIdentifier().toTag() + ":generator " + generator.getClass().getName()
-						+ " produced an artifact which is either not a file, or does not exist: " + artifact);
-			}
-
-			return new RhenaExecution(model.getModuleIdentifier(), type, artifact);
+			return document;
+		} catch (Exception ex) {
+			throw new RhenaException(ex.getMessage(), ex);
 		}
 	}
 
@@ -126,7 +139,8 @@ public class WorkspaceProjectMaterialiser {
 		l.addAll(processor.getTarget().visit(new RhenaDependencyCollectionVisitor(context, ExecutionType.FRAMEWORK, TraverseType.NONE)).getDependenciesURL());
 
 		URLClassLoader dependenciesLoader = new URLClassLoader(l.toArray(new URL[l.size()]), Thread.currentThread().getContextClassLoader());
-		URLClassLoader mainLoader = new URLClassLoader(new URL[] { context.materialiseExecution(processor.getTarget(), ExecutionType.FRAMEWORK).getArtifactURL() }, dependenciesLoader);
+		URLClassLoader mainLoader = new URLClassLoader(
+				new URL[] { context.materialiseExecution(processor.getTarget(), ExecutionType.FRAMEWORK).getArtifactURL() }, dependenciesLoader);
 
 		return mainLoader;
 	}

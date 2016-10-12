@@ -89,7 +89,7 @@ public class RhenaResolutionContext implements IResolutionContext {
 			executions.put(identifier, typeExecutions);
 		}
 
-		log.info("[" + identifier + "]:" + type.toLabel() + " materialised");
+		log.info("[" + identifier + "]:" + type.toLabel() + " materialised " + execution.getArtifactURL());
 
 		// RhenaModule module = modules.get(new Object[] {
 		// model.getModuleIdentifier(), type });
