@@ -46,19 +46,18 @@ public class RhenaResolutionContext implements IResolutionContext {
 
 			for (IRepository repository : repositories) {
 
-				try {
-					model = repository.materialiseModel(moduleIdentifier);
-					models.put(moduleIdentifier, model);
+				model = repository.materialiseModel(moduleIdentifier);
 
+				if (model != null) {
+					models.put(moduleIdentifier, model);
 					log.info("[" + moduleIdentifier + "]:model materialised");
 
 					return model;
-				} catch (RhenaException repositoryException) {
-					log.info(repositoryException.getMessage(), repositoryException);
 				}
+
 			}
 
-			throw new RhenaException("Failed to resolve model of: " + moduleIdentifier + ":model");
+			throw new RhenaException(moduleIdentifier.toTag(ExecutionType.MODEL) + " failed to resolve");
 		}
 		return model;
 	}

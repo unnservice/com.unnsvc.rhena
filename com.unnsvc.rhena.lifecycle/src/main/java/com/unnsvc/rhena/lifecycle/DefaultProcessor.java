@@ -37,11 +37,13 @@ public class DefaultProcessor implements IProcessor {
 
 		for (IResource resource : context.getResources(type)) {
 
-			if (resource.getSource().exists() && resource.getSource().list().length > 0) {
+			if (resource.getSource().exists() && resource.getSource().listFiles().length > 0) {
 				if (!resource.getTarget().exists()) {
 					resource.getTarget().mkdirs();
 				}
 				compile(module, resource, type);
+			} else {
+				System.err.println("Skipping: " + resource);
 			}
 		}
 	}

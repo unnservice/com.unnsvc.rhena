@@ -53,6 +53,11 @@ public class DefaultGenerator implements IGenerator {
 
 	private void generateJar(List<IResource> resources, File outLocation) throws FileNotFoundException, IOException {
 
+		File outDir = outLocation.getParentFile();
+		if (!outDir.exists()) {
+			outDir.mkdirs();
+		}
+
 		List<File> added = new ArrayList<File>();
 
 		JarOutputStream jos = new JarOutputStream(new FileOutputStream(outLocation));

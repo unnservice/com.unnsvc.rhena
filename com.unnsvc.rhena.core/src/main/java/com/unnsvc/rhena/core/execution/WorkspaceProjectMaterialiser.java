@@ -161,10 +161,11 @@ public class WorkspaceProjectMaterialiser {
 			Object o = constr.newInstance();
 			return (T) o;
 		} catch (Exception ex) {
+			log.error(processor.getTarget().getModuleIdentifier().toTag(type) + " lifecycle classloader has " + loader.getURLs().length + " urls");
 			for (URL url : loader.getURLs()) {
-				log.error(processor.getTarget().getModuleIdentifier().toTag(type) + ": classloader has " + url);
+				log.error(processor.getTarget().getModuleIdentifier().toTag(type) + " lifecycle contains " + url);
 			}
-			throw new RhenaException(model.getModuleIdentifier().toTag(type) + ": Failed to instantiate: " + processor.getClazz(), ex);
+			throw new RhenaException(model.getModuleIdentifier().toTag(type) + " Failed to instantiate: " + processor.getClazz(), ex);
 		}
 	}
 
