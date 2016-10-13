@@ -1,7 +1,9 @@
 
 package com.unnsvc.rhena.core.resolution;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,7 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaExecution;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.core.model.RhenaExecution;
 
 //   /some/path/repository/component1/module1/version/module.xml
 //   /some/path/repository/component1/module1/version/<execution>/execution.xml
@@ -53,14 +56,43 @@ public class RemoteRepository extends AbstractRepository {
 	}
 
 	@Override
-	public IRhenaExecution materialiseExecution(IRhenaModule model, ExecutionType type) {
+	public IRhenaExecution materialiseExecution(IRhenaModule module, ExecutionType type) throws RhenaException {
 
-		StringBuilder executionDescriptorPath = new StringBuilder(getModuleBase(model.getModuleIdentifier()));
+		StringBuilder base = new StringBuilder(getModuleBase(module.getModuleIdentifier()));
+		base.append(type.toString().toLowerCase()).append("/");
+
+		StringBuilder executionDescriptorPath = new StringBuilder(base);
 		executionDescriptorPath.append(RhenaConstants.EXECUTION_DESCRIPTOR_FILENAME);
 		URI executionDescriptor = URI.create(executionDescriptorPath.toString());
+		
+		
+		if(!Utils.exists(executionDescriptor)) {
+			return null;
+		}
 
-		throw new UnsupportedOperationException("Not implemented");
+		RhenaExecutionDescriptorParser parser = new RhenaExecutionDescriptorParser(executionDescriptor);
+		ExecutionDescriptor descriptor = parser.getDescriptor();
+		ArtifactDescriptor artifact = descriptor.getArtifact();
 
+		StringBuilder artifactUrl = new StringBuilder(base.toString());
+		artifactUrl.append(artifact.getArtifact());
+
+		/**
+		 * @TODO .... the code doesn't quite connect here... how do we check for
+		 *       sha1 etc. Just do it like this until production when a solution
+		 *       will need to be found
+		 */
+
+		try {
+			URL url = new URL(artifactUrl.toString());
+			RhenaExecution execution = new RhenaExecution(module.getModuleIdentifier(), type, url);
+			return execution;
+		} catch (MalformedURLException mue) {
+			throw new RhenaException(mue.getMessage(), mue);
+		}
 	}
+
+	// Add a publish method which can know whether this repository is local and
+	// can install accordingly
 
 }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<execution xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:rhena:execution" xsi:schemaLocation="urn:rhena:execution ./execution.xsd" default="main">
+<execution xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:rhena:execution" xsi:schemaLocation="urn:rhena:execution ./execution.xsd">
 
-	<artifact tag="main" file="somefile.file" sha1="" />
-	<artifact tag="sources" file="somefile.file" sha1="" />
+	<artifact file="somefile.file" sha1="" date="2016-10-13" />
 
 </execution>

@@ -38,9 +38,7 @@ public class WorkspaceRepository extends AbstractRepository {
 		}
 
 		URI projectLocationUri = workspaceProject.toURI();
-		RhenaModule model = resolveModel(moduleIdentifier, projectLocationUri);
-
-		return model;
+		return resolveModel(moduleIdentifier, projectLocationUri);
 	}
 
 	@Override

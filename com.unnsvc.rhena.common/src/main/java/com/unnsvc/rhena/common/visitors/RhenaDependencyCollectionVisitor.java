@@ -87,7 +87,7 @@ public class RhenaDependencyCollectionVisitor implements IModelVisitor {
 
 		List<URL> urls = new ArrayList<URL>();
 		for (IRhenaExecution re : getDependencies()) {
-			urls.add(re.getArtifactURL());
+			urls.add(re.getArtifact());
 		}
 		return urls;
 	}

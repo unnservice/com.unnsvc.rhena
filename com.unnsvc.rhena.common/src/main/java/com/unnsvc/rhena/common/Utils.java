@@ -1,9 +1,12 @@
 
 package com.unnsvc.rhena.common;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 
 public class Utils {
-	
+
 	private static Logger log = LoggerFactory.getLogger(Utils.class);
 
 	public static int stackTraceCount() {
@@ -54,5 +57,14 @@ public class Utils {
 		}
 
 		return false;
+	}
+
+	public static URL toUrl(File file) throws RhenaException {
+
+		try {
+			return file.toURI().toURL();
+		} catch (MalformedURLException mue) {
+			throw new RhenaException(mue.getMessage(), mue);
+		}
 	}
 }

@@ -1,11 +1,8 @@
 
 package com.unnsvc.rhena.core.model;
 
-import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 
-import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaExecution;
@@ -14,9 +11,9 @@ public class RhenaExecution implements IRhenaExecution {
 
 	private ModuleIdentifier moduleIdentifier;
 	private ExecutionType executionType;
-	private File artifact;
+	private URL artifact;
 
-	public RhenaExecution(ModuleIdentifier moduleIdentifier, ExecutionType executionType, File artifact) {
+	public RhenaExecution(ModuleIdentifier moduleIdentifier, ExecutionType executionType, URL artifact) {
 
 		this.moduleIdentifier = moduleIdentifier;
 		this.executionType = executionType;
@@ -33,25 +30,9 @@ public class RhenaExecution implements IRhenaExecution {
 		return executionType;
 	}
 
-	public File getArtifact() {
+	public URL getArtifact() {
 
 		return artifact;
-	}
-
-	/**
-	 * @TODO shouldn't do this here because its super ugly, keep URLs in the
-	 *       execution type instead of File?
-	 * @return
-	 */
-	@Override
-	public URL getArtifactURL() throws RhenaException {
-
-		try {
-
-			return artifact.toURI().toURL();
-		} catch (MalformedURLException e) {
-			throw new RhenaException("This shouldn't happen, please report a bug", e);
-		}
 	}
 
 	@Override

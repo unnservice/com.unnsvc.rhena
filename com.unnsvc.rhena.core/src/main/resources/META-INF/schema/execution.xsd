@@ -2,15 +2,19 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:rhena:execution" xmlns:tns="urn:rhena:execution" xmlns:common="urn:rhena:common"
 	elementFormDefault="qualified">
 
+	<!-- in the future, extend the schema to allow a default="" on <execution> and a tag="" on artifact, to allow for multiple artifacts in an execution. Or more importantly, 
+		we want for example to access the sources -->
+
 	<xs:import namespace="urn:rhena:common" schemaLocation="./common.xsd" />
 
 	<xs:complexType name="artifactType">
 		<xs:sequence>
 
 		</xs:sequence>
-		<xs:attribute name="tag" type="xs:string" use="required" />
+		<!-- <xs:attribute name="tag" type="xs:string" use="required" /> -->
 		<xs:attribute name="file" type="xs:string" use="required" />
 		<xs:attribute name="sha1" type="xs:string" use="required" />
+		<xs:attribute name="date" type="xs:date" use="required" />
 	</xs:complexType>
 
 	<xs:element name="execution">
@@ -18,7 +22,7 @@
 			<xs:sequence>
 				<xs:element name="artifact" type="tns:artifactType" minOccurs="1" maxOccurs="unbounded" />
 			</xs:sequence>
-			<xs:attribute name="default" type="xs:string" />
+			<!-- <xs:attribute name="default" type="xs:string" /> -->
 		</xs:complexType>
 	</xs:element>
 

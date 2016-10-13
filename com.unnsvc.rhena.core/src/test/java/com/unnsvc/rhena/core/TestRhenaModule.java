@@ -11,7 +11,8 @@ import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.core.resolution.RhenaResolutionContext;
+import com.unnsvc.rhena.core.configuration.RhenaConfiguration;
+import com.unnsvc.rhena.core.resolution.CachingResolutionContext;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
 import com.unnsvc.rhena.core.visitors.EdgeVisitor;
 import com.unnsvc.rhena.core.visitors.EdgeVisitor.EnterType;
@@ -38,9 +39,11 @@ public class TestRhenaModule {
 
 		ModuleIdentifier entryPointIdentifier = ModuleIdentifier.valueOf("com.unnsvc.ide:common:0.0.1");
 
-		IResolutionContext context = new RhenaResolutionContext();
+		RhenaConfiguration config = new RhenaConfiguration();
+		IResolutionContext context = new CachingResolutionContext(config);
 		context.getRepositories().add(new WorkspaceRepository(context, new File("../../com.unnsvc.ide/")));
 		context.getRepositories().add(new WorkspaceRepository(context, new File("../../")));
+//		context.getRepositories().add(new RemoteRepository(URI.create(str)));
 //		context.getRepositories().add(new WorkspaceRepository(context, new File("../example-workspace")));
 
 		IRhenaModule model = context.materialiseModel(entryPointIdentifier);

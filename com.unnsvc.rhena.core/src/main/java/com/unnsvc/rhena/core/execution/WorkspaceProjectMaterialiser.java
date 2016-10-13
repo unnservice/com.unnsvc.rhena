@@ -17,6 +17,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import com.unnsvc.rhena.common.IResolutionContext;
+import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaExecution;
@@ -86,11 +87,11 @@ public class WorkspaceProjectMaterialiser {
 			throw new RhenaException(module.getModuleIdentifier().toTag(type) + ": generated missing or invalid artifact: " + generatedArtifact);
 		}
 
-		return new RhenaExecution(module.getModuleIdentifier(), type, generatedArtifact);
+		return new RhenaExecution(module.getModuleIdentifier(), type, Utils.toUrl(generatedArtifact));
 	}
 
-	private IRhenaExecution processLifecycleReferences(IRhenaModule module, IExecutionReference contextReference,
-			List<IProcessorReference> processorReferences, IGeneratorReference generatorReference) throws RhenaException {
+	private IRhenaExecution processLifecycleReferences(IRhenaModule module, IExecutionReference contextReference, List<IProcessorReference> processorReferences,
+			IGeneratorReference generatorReference) throws RhenaException {
 
 		IExecutionContext executionContext = instantiateProcessor(module, contextReference, IExecutionContext.class);
 		executionContext.configure(module, contextReference.getConfiguration());
@@ -113,7 +114,7 @@ public class WorkspaceProjectMaterialiser {
 					+ " produced an artifact which is either not a file, or does not exist: " + artifact);
 		}
 
-		return new RhenaExecution(module.getModuleIdentifier(), type, artifact);
+		return new RhenaExecution(module.getModuleIdentifier(), type, Utils.toUrl(artifact));
 	}
 
 	private Document getConfiguration(Node configNode) throws RhenaException {
@@ -142,8 +143,8 @@ public class WorkspaceProjectMaterialiser {
 		l.addAll(processor.getTarget().visit(new RhenaDependencyCollectionVisitor(context, ExecutionType.FRAMEWORK, TraverseType.NONE)).getDependenciesURL());
 
 		URLClassLoader dependenciesLoader = new URLClassLoader(l.toArray(new URL[l.size()]), Thread.currentThread().getContextClassLoader());
-		URLClassLoader mainLoader = new URLClassLoader(
-				new URL[] { context.materialiseExecution(processor.getTarget(), ExecutionType.FRAMEWORK).getArtifactURL() }, dependenciesLoader);
+		URLClassLoader mainLoader = new URLClassLoader(new URL[] { context.materialiseExecution(processor.getTarget(), ExecutionType.FRAMEWORK).getArtifact() },
+				dependenciesLoader);
 
 		return mainLoader;
 	}
