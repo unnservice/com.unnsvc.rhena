@@ -11,6 +11,6 @@ public interface ILifecycleDeclaration {
 
 	public IGeneratorReference getGenerator();
 
-	public IExecutionReference getConfigurator();
+	public IExecutionReference getContext();
 
 }

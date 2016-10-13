@@ -5,9 +5,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.ExecutionType;
@@ -18,7 +15,7 @@ import com.unnsvc.rhena.common.model.TraverseType;
 
 public class RhenaDependencyCollectionVisitor implements IModelVisitor {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	// private Logger log = LoggerFactory.getLogger(getClass());
 	private List<IRhenaExecution> dependencies;
 	private ExecutionType executionType;
 	private IResolutionContext resolver;
@@ -49,7 +46,7 @@ public class RhenaDependencyCollectionVisitor implements IModelVisitor {
 
 				if (traverseType.equals(TraverseType.NONE)) {
 
-					// no-op
+					// no-op .... why, oh why
 				} else if (traverseType.equals(TraverseType.COMPONENT)) {
 
 					if (model.getModuleIdentifier().getComponentName().equals(edge.getTarget().getModuleIdentifier().getComponentName())) {

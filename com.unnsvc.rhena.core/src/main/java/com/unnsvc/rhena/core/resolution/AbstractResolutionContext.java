@@ -2,12 +2,7 @@
 package com.unnsvc.rhena.core.resolution;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IResolutionContext;
@@ -26,7 +21,7 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
  */
 public abstract class AbstractResolutionContext implements IResolutionContext {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	// private Logger log = LoggerFactory.getLogger(getClass());
 	protected List<IRepository> repositories;
 
 	public AbstractResolutionContext() {

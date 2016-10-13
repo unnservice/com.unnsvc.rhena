@@ -14,8 +14,8 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.configuration.RhenaConfiguration;
 import com.unnsvc.rhena.core.resolution.CachingResolutionContext;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
-import com.unnsvc.rhena.core.visitors.EdgeVisitor;
-import com.unnsvc.rhena.core.visitors.EdgeVisitor.EnterType;
+import com.unnsvc.rhena.core.visitors.EventedVisitor;
+import com.unnsvc.rhena.core.visitors.EventedVisitor.EnterType;
 import com.unnsvc.rhena.core.visitors.ModelInitialisingHandler;
 
 public class TestRhenaModule {
@@ -48,7 +48,7 @@ public class TestRhenaModule {
 
 		IRhenaModule model = context.materialiseModel(entryPointIdentifier);
 
-		model.visit(new EdgeVisitor(EnterType.AFTER, new ModelInitialisingHandler(context)).setEnterUnusedLifecycle(true));
+		model.visit(new EventedVisitor(EnterType.AFTER, new ModelInitialisingHandler(context)).setEnterUnusedLifecycle(true));
 
 		/**
 		 * Do the logging here

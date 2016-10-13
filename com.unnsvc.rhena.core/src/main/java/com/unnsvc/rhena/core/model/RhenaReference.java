@@ -125,4 +125,10 @@ public class RhenaReference implements IRhenaModule {
 		throw new UnsupportedOperationException("Call on model of yet undersolved reference for: " + moduleIdentifier.toString());
 	}
 
+	@Override
+	public boolean hasLifecycleDeclaration(String lifecycleName) throws RhenaException {
+
+		throw new UnsupportedOperationException("Call on model of yet undersolved reference for: " + moduleIdentifier.toString());
+	}
+
 }

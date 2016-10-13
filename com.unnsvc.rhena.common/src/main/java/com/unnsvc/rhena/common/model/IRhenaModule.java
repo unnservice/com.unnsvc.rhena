@@ -52,4 +52,6 @@ public interface IRhenaModule extends IVisitableModel {
 	 */
 	public ILifecycleDeclaration getLifecycleDeclaration(String lifecycleName) throws RhenaException;
 
+	public boolean hasLifecycleDeclaration(String lifecycleName) throws RhenaException;
+
 }

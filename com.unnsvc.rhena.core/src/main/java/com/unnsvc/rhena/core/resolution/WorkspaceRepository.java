@@ -4,9 +4,6 @@ package com.unnsvc.rhena.core.resolution;
 import java.io.File;
 import java.net.URI;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.ExecutionType;
@@ -18,7 +15,7 @@ import com.unnsvc.rhena.core.model.RhenaModule;
 
 public class WorkspaceRepository extends AbstractRepository {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	// private Logger log = LoggerFactory.getLogger(getClass());
 	private File workspaceDirectory;
 	private IResolutionContext context;
 

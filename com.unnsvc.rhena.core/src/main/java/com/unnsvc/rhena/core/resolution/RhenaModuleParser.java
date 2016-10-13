@@ -6,7 +6,6 @@ import java.net.URI;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -21,11 +20,12 @@ import org.w3c.dom.NodeList;
 
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.RhenaConstants;
+import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.ExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.TraverseType;
-import com.unnsvc.rhena.core.lifecycle.ConfiguratorReference;
+import com.unnsvc.rhena.core.lifecycle.ContextReference;
 import com.unnsvc.rhena.core.lifecycle.GeneratorReference;
 import com.unnsvc.rhena.core.lifecycle.LifecycleDeclaration;
 import com.unnsvc.rhena.core.lifecycle.ProcessorReference;
@@ -42,7 +42,7 @@ public class RhenaModuleParser {
 
 		this.module = new RhenaModule(moduleIdentifier, projectLocationUri, repository);
 		try {
-			
+
 			URI moduleDescriptorUri = new URI(projectLocationUri.toString() + "/module.xml").normalize();
 			parse(moduleDescriptorUri);
 		} catch (Exception ex) {
@@ -153,7 +153,7 @@ public class RhenaModuleParser {
 				String module = child.getAttributes().getNamedItem("module").getNodeValue();
 				String clazz = child.getAttributes().getNamedItem("class").getNodeValue();
 				String schema = null;
-				if(child.getAttributes().getNamedItem("schema") != null) {
+				if (child.getAttributes().getNamedItem("schema") != null) {
 					schema = child.getAttributes().getNamedItem("schema").getNodeValue();
 				}
 
@@ -165,8 +165,8 @@ public class RhenaModuleParser {
 
 				if (child.getLocalName().equals("context")) {
 
-					ConfiguratorReference configurator = new ConfiguratorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, schema, config, et, tt);
-					ld.setConfigurator(configurator);
+					ContextReference configurator = new ContextReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, schema, config, et, tt);
+					ld.setContext(configurator);
 				} else if (child.getLocalName().equals("processor")) {
 
 					ProcessorReference processor = new ProcessorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, schema, config, et, tt);
@@ -184,17 +184,10 @@ public class RhenaModuleParser {
 
 	private Document nodeToDocument(Node child) throws RhenaException {
 
-		try {
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			factory.setNamespaceAware(true);
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document document = builder.newDocument();
-			Node importedNode = document.importNode(child, true);
-			document.appendChild(importedNode);
-			return document;
-		} catch (ParserConfigurationException e) {
-			throw new RhenaException(e.getMessage(), e);
-		}
+		Document document = Utils.newEmptyDocument();
+		Node importedNode = document.importNode(child, true);
+		document.appendChild(importedNode);
+		return document;
 	}
 
 	private void processDepenencyNode(Node moduleChild) throws DOMException, RhenaException {

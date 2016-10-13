@@ -47,7 +47,7 @@ public class ModelResolutionVisitor implements IModelVisitor {
 		for (String key : module.getLifecycleDeclarations().keySet()) {
 			ILifecycleDeclaration lifecycle = module.getLifecycleDeclarations().get(key);
 
-			IExecutionReference config = lifecycle.getConfigurator();
+			IExecutionReference config = lifecycle.getContext();
 			resolveModel(config);
 
 			for (IProcessorReference proc : lifecycle.getProcessors()) {

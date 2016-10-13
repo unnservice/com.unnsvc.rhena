@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
+import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
@@ -27,6 +28,10 @@ public class DefaultGenerator implements IGenerator {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 
+	public DefaultGenerator(IResolutionContext context) {
+		
+	}
+	
 	@Override
 	public void configure(IRhenaModule module, Document configuration) {
 

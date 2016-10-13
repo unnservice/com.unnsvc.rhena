@@ -10,4 +10,6 @@ public class RhenaConstants {
 	public static final String NS_RHENA_DEPENDENCY = "urn:rhena:dependency";
 	public static final String NS_RHENA_PROPERTIES = "urn:rhena:properties";
 	public static final String NS_RHENA_EXECUTION = "urn:rhena:execution";
+
+	public static final String DEFAULT_LIFECYCLE_NAME = "default";
 }

@@ -30,12 +30,12 @@ import com.unnsvc.rhena.common.visitors.IModelVisitor;
 public class ModelMergeVisitor implements IModelVisitor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private IResolutionContext context;
+	// private IResolutionContext context;
 	private Set<ModuleIdentifier> entered;
 
 	public ModelMergeVisitor(IResolutionContext context) {
 
-		this.context = context;
+		// this.context = context;
 		this.entered = new HashSet<ModuleIdentifier>();
 	}
 
@@ -61,7 +61,7 @@ public class ModelMergeVisitor implements IModelVisitor {
 
 		for (ILifecycleDeclaration ld : module.getLifecycleDeclarations().values()) {
 
-			ld.getConfigurator().getTarget().visit(this);
+			ld.getContext().getTarget().visit(this);
 
 			for (IProcessorReference pr : ld.getProcessors()) {
 
@@ -75,7 +75,8 @@ public class ModelMergeVisitor implements IModelVisitor {
 
 			// the model is merged so we can just query this module
 			if (!module.getLifecycleDeclarations().containsKey(module.getLifecycleName())) {
-				throw new RhenaException(module.getModuleIdentifier().toTag(ExecutionType.MODEL) + " Lifecycle name " + module.getLifecycleName() + " is not found");
+				throw new RhenaException(
+						module.getModuleIdentifier().toTag(ExecutionType.MODEL) + " Lifecycle name " + module.getLifecycleName() + " is not found");
 			}
 		}
 

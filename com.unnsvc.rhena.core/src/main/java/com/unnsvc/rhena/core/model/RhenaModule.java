@@ -143,4 +143,22 @@ public class RhenaModule implements IRhenaModule {
 		return decl;
 	}
 
+	/**
+	 * @TODO Remove this, make getLifecycleDeclaration(lifecycleName) return
+	 *       null if not found, and throw exceptions where that method is used
+	 */
+	@Override
+	public boolean hasLifecycleDeclaration(String lifecycleName) throws RhenaException {
+
+		if (lifecyclesDeclarations.get(lifecycleName) != null) {
+			return true;
+		}
+
+		if (parentModule != null) {
+			return parentModule.getTarget().hasLifecycleDeclaration(lifecycleName);
+		}
+
+		return false;
+	}
+
 }

@@ -8,8 +8,13 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 
@@ -65,6 +70,21 @@ public class Utils {
 			return file.toURI().toURL();
 		} catch (MalformedURLException mue) {
 			throw new RhenaException(mue.getMessage(), mue);
+		}
+	}
+
+	public static Document newEmptyDocument() throws RhenaException {
+
+		try {
+
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			factory.setNamespaceAware(true);
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			Document document = builder.newDocument();
+			return document;
+		} catch (ParserConfigurationException pce) {
+
+			throw new RhenaException(pce.getMessage(), pce);
 		}
 	}
 }

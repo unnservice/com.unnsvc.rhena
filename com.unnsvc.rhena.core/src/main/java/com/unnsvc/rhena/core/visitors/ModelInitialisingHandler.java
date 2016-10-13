@@ -2,13 +2,24 @@
 package com.unnsvc.rhena.core.visitors;
 
 import com.unnsvc.rhena.common.IResolutionContext;
+import com.unnsvc.rhena.common.RhenaConstants;
+import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.ExecutionType;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.TraverseType;
+import com.unnsvc.rhena.core.lifecycle.ContextReference;
+import com.unnsvc.rhena.core.lifecycle.GeneratorReference;
+import com.unnsvc.rhena.core.lifecycle.LifecycleDeclaration;
+import com.unnsvc.rhena.core.lifecycle.ProcessorReference;
 import com.unnsvc.rhena.core.model.RhenaReference;
-import com.unnsvc.rhena.core.visitors.EdgeVisitor.EdgeHandler;
+import com.unnsvc.rhena.lifecycle.DefaultContext;
+import com.unnsvc.rhena.lifecycle.DefaultGenerator;
+import com.unnsvc.rhena.lifecycle.DefaultProcessor;
 
-public class ModelInitialisingHandler implements EdgeHandler {
+public class ModelInitialisingHandler implements EdgeVisitationHandler, ModuleVisitationHandler {
 
 	private IResolutionContext context;
 
@@ -22,6 +33,34 @@ public class ModelInitialisingHandler implements EdgeHandler {
 
 		IRhenaModule target = context.materialiseModel(edge.getTarget().getModuleIdentifier());
 		edge.setTarget(target);
+	}
+
+	@Override
+	public void startModule(IRhenaModule module) throws RhenaException {
+
+		// we create the default lifecycles here, and they will be resolved as
+		// the visitor enters them
+		if(!module.hasLifecycleDeclaration(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
+
+			ExecutionType et = ExecutionType.FRAMEWORK;
+			TraverseType tt = TraverseType.SCOPE;
+
+			// IRhenaModule lifecycleModule =
+			// context.materialiseModel(ModuleIdentifier.valueOf("com.unnsvc.rhena:lifecycle:0.0.1"));
+			RhenaReference lifecycleReference = new RhenaReference(ModuleIdentifier.valueOf("com.unnsvc.rhena:lifecycle:0.0.1"));
+			LifecycleDeclaration lifecycle = new LifecycleDeclaration("default");
+
+			lifecycle.setContext(new ContextReference(lifecycleReference, DefaultContext.class.getName(), null, Utils.newEmptyDocument(), et, tt));
+			lifecycle.addProcessor(new ProcessorReference(lifecycleReference, DefaultProcessor.class.getName(), null, Utils.newEmptyDocument(), et, tt));
+			lifecycle.setGenerator(new GeneratorReference(lifecycleReference, DefaultGenerator.class.getName(), null, Utils.newEmptyDocument(), et, tt));
+
+			module.getLifecycleDeclarations().put(RhenaConstants.DEFAULT_LIFECYCLE_NAME, lifecycle);
+		}
+	}
+
+	@Override
+	public void endModule(IRhenaModule module) {
+
 	}
 
 	@Override

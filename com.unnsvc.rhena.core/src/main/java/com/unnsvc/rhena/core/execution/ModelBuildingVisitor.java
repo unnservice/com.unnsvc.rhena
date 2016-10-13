@@ -1,9 +1,6 @@
 
 package com.unnsvc.rhena.core.execution;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.ExecutionType;
@@ -16,7 +13,7 @@ import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
 public class ModelBuildingVisitor implements IModelVisitor {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	// private Logger log = LoggerFactory.getLogger(getClass());
 	private IResolutionContext resolver;
 
 	public ModelBuildingVisitor(IResolutionContext resolver) {
@@ -34,7 +31,7 @@ public class ModelBuildingVisitor implements IModelVisitor {
 
 		for (ILifecycleDeclaration lifecycleDeclaration : model.getLifecycleDeclarations().values()) {
 
-			IExecutionReference configurator = lifecycleDeclaration.getConfigurator();
+			IExecutionReference configurator = lifecycleDeclaration.getContext();
 			configurator.getTarget().visit(this);
 			resolver.materialiseExecution(configurator.getTarget(), ExecutionType.FRAMEWORK);
 

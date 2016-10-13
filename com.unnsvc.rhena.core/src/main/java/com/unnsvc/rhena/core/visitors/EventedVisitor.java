@@ -8,13 +8,13 @@ import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
-public class EdgeVisitor implements IModelVisitor {
+public class EventedVisitor implements IModelVisitor {
 
-	private EdgeHandler handler;
+	private VisitationHandler handler;
 	private EnterType enter;
 	private boolean enterUnusedLifecycle = false;
 
-	public EdgeVisitor(EnterType enter, EdgeHandler handler) {
+	public EventedVisitor(EnterType enter, VisitationHandler handler) {
 
 		this.handler = handler;
 		this.enter = enter;
@@ -26,6 +26,12 @@ public class EdgeVisitor implements IModelVisitor {
 		if (module.getParentModule() != null) {
 
 			enterTree(module, module.getParentModule());
+		}
+
+		// after parent so we can call getLifecycleDecalartion on model, which
+		// chains up to parent
+		if (handler instanceof ModuleVisitationHandler) {
+			((ModuleVisitationHandler) handler).startModule(module);
 		}
 
 		if (enterUnusedLifecycle) {
@@ -44,11 +50,14 @@ public class EdgeVisitor implements IModelVisitor {
 			enterTree(module, edge);
 		}
 
+		if (handler instanceof ModuleVisitationHandler) {
+			((ModuleVisitationHandler) handler).endModule(module);
+		}
 	}
 
 	private void processLifecycle(IRhenaModule module, ILifecycleDeclaration lifecycle) throws RhenaException {
 
-		enterTree(module, lifecycle.getConfigurator());
+		enterTree(module, lifecycle.getContext());
 
 		for (IProcessorReference proc : lifecycle.getProcessors()) {
 
@@ -65,7 +74,9 @@ public class EdgeVisitor implements IModelVisitor {
 				edge.getTarget().visit(this);
 			}
 
-			handler.handleEdge(module, edge);
+			if (handler instanceof EdgeVisitationHandler) {
+				((EdgeVisitationHandler) handler).handleEdge(module, edge);
+			}
 
 			if (enter == EnterType.AFTER) {
 				edge.getTarget().visit(this);
@@ -73,19 +84,12 @@ public class EdgeVisitor implements IModelVisitor {
 		}
 	}
 
-	public interface EdgeHandler {
-
-		public void handleEdge(IRhenaModule module, IRhenaEdge edge) throws RhenaException;
-
-		public boolean canEnter(IRhenaModule module, IRhenaEdge edge) throws RhenaException;
-	}
-
 	public enum EnterType {
 
 		BEFORE, AFTER, NOENTER
 	}
 
-	public EdgeVisitor setEnterUnusedLifecycle(boolean enterUnusedLifecycle) {
+	public EventedVisitor setEnterUnusedLifecycle(boolean enterUnusedLifecycle) {
 
 		this.enterUnusedLifecycle = enterUnusedLifecycle;
 		return this;

@@ -12,7 +12,7 @@ import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 public class LifecycleDeclaration implements ILifecycleDeclaration {
 
 	private String name;
-	private IExecutionReference configurator;
+	private IExecutionReference context;
 	private List<IProcessorReference> processors;
 	private IGeneratorReference generator;
 
@@ -50,14 +50,14 @@ public class LifecycleDeclaration implements ILifecycleDeclaration {
 		return generator;
 	}
 
-	public void setConfigurator(IExecutionReference configurator) {
+	public void setContext(IExecutionReference context) {
 
-		this.configurator = configurator;
+		this.context = context;
 	}
 
 	@Override
-	public IExecutionReference getConfigurator() {
+	public IExecutionReference getContext() {
 
-		return configurator;
+		return context;
 	}
 }
