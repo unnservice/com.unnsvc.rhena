@@ -4,9 +4,9 @@ package com.unnsvc.rhena.common;
 import java.util.List;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.ExecutionType;
+import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.ExecutionType;
-import com.unnsvc.rhena.common.model.IRhenaExecution;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 
 /**

@@ -1,23 +1,31 @@
 
-package com.unnsvc.rhena.core.model;
+package com.unnsvc.rhena.core.execution;
 
-import java.net.URL;
+import java.util.Calendar;
 
+import com.unnsvc.rhena.common.execution.ExecutionType;
+import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
+import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.ExecutionType;
-import com.unnsvc.rhena.common.model.IRhenaExecution;
 
 public class RhenaExecution implements IRhenaExecution {
 
 	private ModuleIdentifier moduleIdentifier;
 	private ExecutionType executionType;
-	private URL artifact;
+	private IArtifactDescriptor artifact;
+	private Calendar executionDate;
 
-	public RhenaExecution(ModuleIdentifier moduleIdentifier, ExecutionType executionType, URL artifact) {
+	public RhenaExecution(ModuleIdentifier moduleIdentifier, ExecutionType executionType, IArtifactDescriptor artifact, Calendar executionDate) {
 
 		this.moduleIdentifier = moduleIdentifier;
 		this.executionType = executionType;
 		this.artifact = artifact;
+		this.executionDate = executionDate;
+	}
+
+	public RhenaExecution(ModuleIdentifier moduleIdentifier, ExecutionType executionType, IArtifactDescriptor artifact) {
+
+		this(moduleIdentifier, executionType, artifact, Calendar.getInstance());
 	}
 
 	public ModuleIdentifier getModuleIdentifier() {
@@ -30,9 +38,15 @@ public class RhenaExecution implements IRhenaExecution {
 		return executionType;
 	}
 
-	public URL getArtifact() {
+	@Override
+	public IArtifactDescriptor getArtifact() {
 
 		return artifact;
+	}
+
+	public Calendar getExecutionDate() {
+
+		return executionDate;
 	}
 
 	@Override

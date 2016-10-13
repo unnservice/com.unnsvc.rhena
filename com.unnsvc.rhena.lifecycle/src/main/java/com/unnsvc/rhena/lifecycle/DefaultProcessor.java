@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.ExecutionType;
+import com.unnsvc.rhena.common.execution.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessor;

@@ -2,7 +2,7 @@
 package com.unnsvc.rhena.common.identity;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.ExecutionType;
+import com.unnsvc.rhena.common.execution.ExecutionType;
 
 public class ModuleIdentifier {
 

@@ -19,8 +19,8 @@ import org.w3c.dom.Node;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.ExecutionType;
-import com.unnsvc.rhena.common.model.IRhenaExecution;
+import com.unnsvc.rhena.common.execution.ExecutionType;
+import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.TraverseType;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
@@ -33,7 +33,6 @@ import com.unnsvc.rhena.common.model.lifecycle.ILifecycleProcessorReference;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 import com.unnsvc.rhena.common.visitors.RhenaDependencyCollectionVisitor;
-import com.unnsvc.rhena.core.model.RhenaExecution;
 import com.unnsvc.rhena.lifecycle.DefaultContext;
 import com.unnsvc.rhena.lifecycle.DefaultGenerator;
 import com.unnsvc.rhena.lifecycle.DefaultProcessor;
@@ -57,8 +56,7 @@ public class WorkspaceProjectMaterialiser {
 	}
 
 	/**
-	 * @TODO clean up, DRRRRRRYYYYYYYY, and fix logic
-	 * @TODO caching of lifecycle building blocks so they can be reused....
+	 * @TODO remove direct instantiation of lifecycle
 	 */
 	public IRhenaExecution materialiseExecution() throws RhenaException {
 
@@ -87,7 +85,9 @@ public class WorkspaceProjectMaterialiser {
 			throw new RhenaException(module.getModuleIdentifier().toTag(type) + ": generated missing or invalid artifact: " + generatedArtifact);
 		}
 
-		return new RhenaExecution(module.getModuleIdentifier(), type, Utils.toUrl(generatedArtifact));
+		// @TODO calc sha1
+		ArtifactDescriptor descriptor = new ArtifactDescriptor(generatedArtifact.getName(), Utils.toUrl(generatedArtifact), "sha1-not-implemented");
+		return new RhenaExecution(module.getModuleIdentifier(), type, descriptor);
 	}
 
 	private IRhenaExecution processLifecycleReferences(IRhenaModule module, IExecutionReference contextReference, List<IProcessorReference> processorReferences,
@@ -114,7 +114,8 @@ public class WorkspaceProjectMaterialiser {
 					+ " produced an artifact which is either not a file, or does not exist: " + artifact);
 		}
 
-		return new RhenaExecution(module.getModuleIdentifier(), type, Utils.toUrl(artifact));
+		ArtifactDescriptor descriptor = new ArtifactDescriptor(artifact.getName(), Utils.toUrl(artifact), "sha1-not-implemented");
+		return new RhenaExecution(module.getModuleIdentifier(), type, descriptor);
 	}
 
 	private Document getConfiguration(Node configNode) throws RhenaException {
@@ -143,8 +144,8 @@ public class WorkspaceProjectMaterialiser {
 		l.addAll(processor.getTarget().visit(new RhenaDependencyCollectionVisitor(context, ExecutionType.FRAMEWORK, TraverseType.NONE)).getDependenciesURL());
 
 		URLClassLoader dependenciesLoader = new URLClassLoader(l.toArray(new URL[l.size()]), Thread.currentThread().getContextClassLoader());
-		URLClassLoader mainLoader = new URLClassLoader(new URL[] { context.materialiseExecution(processor.getTarget(), ExecutionType.FRAMEWORK).getArtifact() },
-				dependenciesLoader);
+		URLClassLoader mainLoader = new URLClassLoader(
+				new URL[] { context.materialiseExecution(processor.getTarget(), ExecutionType.FRAMEWORK).getArtifact().getArtifactUrl() }, dependenciesLoader);
 
 		return mainLoader;
 	}

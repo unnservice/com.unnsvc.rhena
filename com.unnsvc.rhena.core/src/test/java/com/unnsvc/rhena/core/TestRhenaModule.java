@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IResolutionContext;
+import com.unnsvc.rhena.common.execution.ExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.configuration.RhenaConfiguration;
 import com.unnsvc.rhena.core.resolution.CachingResolutionContext;

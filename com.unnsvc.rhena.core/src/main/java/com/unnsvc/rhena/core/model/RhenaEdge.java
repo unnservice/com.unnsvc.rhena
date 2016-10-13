@@ -1,7 +1,7 @@
 
 package com.unnsvc.rhena.core.model;
 
-import com.unnsvc.rhena.common.model.ExecutionType;
+import com.unnsvc.rhena.common.execution.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.TraverseType;

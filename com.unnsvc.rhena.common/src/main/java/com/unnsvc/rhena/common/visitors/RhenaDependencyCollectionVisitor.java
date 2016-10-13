@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.ExecutionType;
+import com.unnsvc.rhena.common.execution.ExecutionType;
+import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
-import com.unnsvc.rhena.common.model.IRhenaExecution;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.TraverseType;
 
@@ -87,7 +87,7 @@ public class RhenaDependencyCollectionVisitor implements IModelVisitor {
 
 		List<URL> urls = new ArrayList<URL>();
 		for (IRhenaExecution re : getDependencies()) {
-			urls.add(re.getArtifact());
+			urls.add(re.getArtifact().getArtifactUrl());
 		}
 		return urls;
 	}

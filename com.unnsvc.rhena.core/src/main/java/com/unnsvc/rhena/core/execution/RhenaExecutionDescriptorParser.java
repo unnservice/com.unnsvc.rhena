@@ -2,7 +2,9 @@
 package com.unnsvc.rhena.core.execution;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.DatatypeConverter;
@@ -19,22 +21,43 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.ExecutionType;
+import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
+import com.unnsvc.rhena.common.execution.IRhenaExecution;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 
 public class RhenaExecutionDescriptorParser {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private ExecutionDescriptor descriptor;
+	private ModuleIdentifier identifier;
+	private ExecutionType type;
+	private URI baseUri;
 
-	public RhenaExecutionDescriptorParser(URI executionDescriptor) throws RhenaException {
+	/**
+	 * 
+	 * @param identifier
+	 * @param type
+	 * @param executionDescriptor
+	 * @throws RhenaException
+	 */
+	public RhenaExecutionDescriptorParser(ModuleIdentifier identifier, ExecutionType type, URI baseUri) throws RhenaException {
 
+		this.identifier = identifier;
+		this.type = type;
+		this.baseUri = baseUri;
 		try {
 
-			parse(executionDescriptor);
+			URI descriptor = new URI(baseUri.toString() + "/" + RhenaConstants.EXECUTION_DESCRIPTOR_FILENAME).normalize();
+			parse(descriptor);
 		} catch (Exception ex) {
 			throw new RhenaException(ex);
 		}
 	}
+
+	private List<IArtifactDescriptor> artifacts = new ArrayList<IArtifactDescriptor>();
+	private Calendar date;
 
 	private void parse(URI executionDescriptorUri) throws Exception {
 
@@ -46,12 +69,18 @@ public class RhenaExecutionDescriptorParser {
 			Node node = children.item(i);
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 
-				if (node.getLocalName().equals("artifact")) {
+				if (node.getLocalName().equals("meta")) {
 
-					String file = node.getAttributes().getNamedItem("file").getNodeValue();
+					String dateValue = node.getAttributes().getNamedItem("date").getNodeValue();
+					date = DatatypeConverter.parseDateTime(dateValue);
+				} else if (node.getLocalName().equals("artifact")) {
+
+					String fileName = node.getAttributes().getNamedItem("name").getNodeValue();
 					String sha1 = node.getAttributes().getNamedItem("sha1").getNodeName();
-					Calendar date = DatatypeConverter.parseDateTime(node.getAttributes().getNamedItem("date").getNodeValue());
-					descriptor = new ExecutionDescriptor(new ArtifactDescriptor(file, sha1, date));
+
+					URI location = new URI(baseUri.toString() + "/" + fileName).normalize();
+
+					artifacts.add(new ArtifactDescriptor(fileName, location.toURL(), sha1));
 					return;
 				}
 			}
@@ -80,9 +109,9 @@ public class RhenaExecutionDescriptorParser {
 		return document;
 	}
 
-	public ExecutionDescriptor getDescriptor() {
+	public IRhenaExecution getExecution() {
 
-		return null;
+		return new RhenaExecution(identifier, type, artifacts.get(0), date);
 	}
 
 }

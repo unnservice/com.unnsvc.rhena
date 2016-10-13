@@ -12,17 +12,20 @@
 
 		</xs:sequence>
 		<!-- <xs:attribute name="tag" type="xs:string" use="required" /> -->
-		<xs:attribute name="file" type="xs:string" use="required" />
+		<xs:attribute name="name" type="xs:string" use="required" />
 		<xs:attribute name="sha1" type="xs:string" use="required" />
-		<xs:attribute name="date" type="xs:date" use="required" />
+	</xs:complexType>
+	
+	<xs:complexType name="metaType">
+		<xs:attribute name="date" type="xs:dateTime" use="required" />
 	</xs:complexType>
 
 	<xs:element name="execution">
 		<xs:complexType>
 			<xs:sequence>
+				<xs:element name="meta" type="tns:metaType" minOccurs="1" maxOccurs="1" />
 				<xs:element name="artifact" type="tns:artifactType" minOccurs="1" maxOccurs="unbounded" />
 			</xs:sequence>
-			<!-- <xs:attribute name="default" type="xs:string" /> -->
 		</xs:complexType>
 	</xs:element>
 

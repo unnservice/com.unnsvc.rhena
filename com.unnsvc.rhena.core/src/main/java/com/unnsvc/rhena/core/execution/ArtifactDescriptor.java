@@ -1,33 +1,44 @@
 
 package com.unnsvc.rhena.core.execution;
 
-import java.util.Calendar;
+import java.net.URL;
 
-public class ArtifactDescriptor {
+import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 
-	private String artifact;
+public class ArtifactDescriptor implements IArtifactDescriptor {
+
+	private String name;
+	private URL artifactUrl;
 	private String sha1;
-	private Calendar date;
 
-	public ArtifactDescriptor(String artifact, String sha1, Calendar date) {
+	public ArtifactDescriptor(String name, URL artifactUrl, String sha1) {
 
-		this.artifact = artifact;
+		this.name = name;
+		this.artifactUrl = artifactUrl;
 		this.sha1 = sha1;
-		this.date = date;
 	}
 
-	public String getArtifact() {
+	@Override
+	public String getArtifactName() {
 
-		return artifact;
+		return name;
 	}
 
-	public Calendar getDate() {
+	@Override
+	public URL getArtifactUrl() {
 
-		return date;
+		return artifactUrl;
 	}
 
+	@Override
 	public String getSha1() {
 
 		return sha1;
+	}
+
+	@Override
+	public String toString() {
+
+		return "ArtifactDescriptor [name=" + name + ", artifactUrl=" + artifactUrl + ", sha1=" + sha1 + "]";
 	}
 }

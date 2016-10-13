@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.ExecutionType;
+import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.ExecutionType;
-import com.unnsvc.rhena.common.model.IRhenaExecution;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.execution.WorkspaceProjectMaterialiser;
 import com.unnsvc.rhena.core.model.RhenaModule;
