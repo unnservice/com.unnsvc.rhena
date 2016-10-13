@@ -43,9 +43,9 @@ public class ModuleIdentifier {
 		return componentName.toString() + ":" + moduleName.toString() + ":" + version.toString();
 	}
 
-	public String toTag() {
+	public String toTag(ExecutionType type) {
 
-		return "[" + toString() + "]";
+		return "[" + toString() + "]:" + type.toString().toLowerCase();
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class ModuleIdentifier {
 
 	public String toFileName(ExecutionType type) {
 
-		return componentName.toString() + "." + moduleName.toString() + "-" + type.toLabel() + "-" + version.toString();
+		return componentName.toString() + "." + moduleName.toString() + "-" + type.toString().toLowerCase() + "-" + version.toString();
 	}
 
 }

@@ -8,9 +8,4 @@ public enum ExecutionType {
 	ExecutionType() {
 
 	}
-
-	public String toLabel() {
-
-		return toString().toLowerCase();
-	}
 }

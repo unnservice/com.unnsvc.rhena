@@ -83,7 +83,7 @@ public class WorkspaceProjectMaterialiser {
 		}
 
 		if (generatedArtifact == null || !generatedArtifact.isFile()) {
-			throw new RhenaException(module.getModuleIdentifier().toTag() + ": generated missing or invalid artifact: " + generatedArtifact);
+			throw new RhenaException(module.getModuleIdentifier().toTag(type) + ": generated missing or invalid artifact: " + generatedArtifact);
 		}
 
 		return new RhenaExecution(module.getModuleIdentifier(), type, generatedArtifact);
@@ -107,9 +107,9 @@ public class WorkspaceProjectMaterialiser {
 		File artifact = generator.generate(executionContext, module, type);
 
 		if (artifact == null) {
-			throw new RhenaException(module.getModuleIdentifier().toTag() + ":generator " + generator.getClass().getName() + " produced null artifact.");
+			throw new RhenaException(module.getModuleIdentifier().toTag(type) + " " + generator.getClass().getName() + " produced null artifact.");
 		} else if (!artifact.exists() || !artifact.isFile()) {
-			throw new RhenaException(module.getModuleIdentifier().toTag() + ":generator " + generator.getClass().getName()
+			throw new RhenaException(module.getModuleIdentifier().toTag(type) + " " + generator.getClass().getName()
 					+ " produced an artifact which is either not a file, or does not exist: " + artifact);
 		}
 
@@ -149,7 +149,7 @@ public class WorkspaceProjectMaterialiser {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T extends ILifecycleProcessor> T instantiateProcessor(IRhenaModule model, ILifecycleProcessorReference processor, Class<T> type)
+	private <T extends ILifecycleProcessor> T instantiateProcessor(IRhenaModule model, ILifecycleProcessorReference processor, Class<T> clazzType)
 			throws RhenaException {
 
 		URLClassLoader loader = createClassloader(processor);
@@ -162,9 +162,9 @@ public class WorkspaceProjectMaterialiser {
 			return (T) o;
 		} catch (Exception ex) {
 			for (URL url : loader.getURLs()) {
-				log.error(processor.getTarget().getModuleIdentifier().toTag() + ": classloader has " + url);
+				log.error(processor.getTarget().getModuleIdentifier().toTag(type) + ": classloader has " + url);
 			}
-			throw new RhenaException(model.getModuleIdentifier().toTag() + ": Failed to instantiate: " + processor.getClazz(), ex);
+			throw new RhenaException(model.getModuleIdentifier().toTag(type) + ": Failed to instantiate: " + processor.getClazz(), ex);
 		}
 	}
 

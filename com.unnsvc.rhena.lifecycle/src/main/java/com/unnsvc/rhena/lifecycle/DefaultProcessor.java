@@ -35,22 +35,21 @@ public class DefaultProcessor implements IProcessor {
 	@Override
 	public void process(IExecutionContext context, IRhenaModule module, ExecutionType type) throws RhenaException {
 
-		log.debug(module.getModuleIdentifier().toTag() + ":" + type.toLabel() + " Calling compilation on : " + context + " resources: "
-				+ context.getResources(type).size() + " type: " + type);
-
 		for (IResource resource : context.getResources(type)) {
 
 			if (resource.getSource().exists() && resource.getSource().list().length > 0) {
 				if (!resource.getTarget().exists()) {
 					resource.getTarget().mkdirs();
 				}
-				compile(module, resource);
+				compile(module, resource, type);
 			}
 		}
 	}
 
-	private void compile(IRhenaModule module, IResource resource) throws RhenaException {
+	private void compile(IRhenaModule module, IResource resource, ExecutionType type) throws RhenaException {
 
+		log.debug(module.getModuleIdentifier().toTag(type) + " compiling");
+		
 		CompilationProgress progress = new CompilationProgress() {
 
 			@Override

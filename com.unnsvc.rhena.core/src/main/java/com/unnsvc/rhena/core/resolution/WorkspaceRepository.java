@@ -35,7 +35,7 @@ public class WorkspaceRepository extends AbstractRepository {
 //		File moduleDescriptor = new File(workspaceProject, RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
 
 		if (!workspaceProject.exists()) {
-			throw new RhenaException(moduleIdentifier.toTag() + ": Not in repository");
+			throw new RhenaException(moduleIdentifier.toTag(ExecutionType.MODEL) + ": Not in repository");
 		}
 
 		URI projectLocationUri = workspaceProject.toURI();

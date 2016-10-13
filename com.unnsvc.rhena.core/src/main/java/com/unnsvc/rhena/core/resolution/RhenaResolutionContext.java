@@ -64,9 +64,9 @@ public class RhenaResolutionContext implements IResolutionContext {
 	}
 
 	@Override
-	public IRhenaExecution materialiseExecution(IRhenaModule model, ExecutionType type) throws RhenaException {
+	public IRhenaExecution materialiseExecution(IRhenaModule module, ExecutionType type) throws RhenaException {
 
-		ModuleIdentifier identifier = model.getModuleIdentifier();
+		ModuleIdentifier identifier = module.getModuleIdentifier();
 
 		if (executions.get(identifier) != null && executions.get(identifier).get(type) != null) {
 			return executions.get(identifier).get(type);
@@ -78,7 +78,7 @@ public class RhenaResolutionContext implements IResolutionContext {
 		 * Doing this one-off thing of passing down this context into the
 		 * repository, so the repository can use the context if it needs
 		 */
-		IRhenaExecution execution = model.getRepository().materialiseExecution(model, type);
+		IRhenaExecution execution = module.getRepository().materialiseExecution(module, type);
 
 		if (executions.containsKey(identifier)) {
 
@@ -89,7 +89,7 @@ public class RhenaResolutionContext implements IResolutionContext {
 			executions.put(identifier, typeExecutions);
 		}
 
-		log.info("[" + identifier + "]:" + type.toLabel() + " materialised " + execution.getArtifactURL());
+		log.info(module.getModuleIdentifier().toTag(type) + " materialised " + execution.getArtifactURL());
 
 		// RhenaModule module = modules.get(new Object[] {
 		// model.getModuleIdentifier(), type });

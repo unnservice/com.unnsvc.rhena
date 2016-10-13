@@ -43,7 +43,7 @@ public class DefaultGenerator implements IGenerator {
 
 		try {
 			generateJar(resources, outLocation);
-			log.debug(module.getModuleIdentifier().toTag() + ":" + type.toLabel() + " Generated: " + outLocation.getAbsolutePath());
+			log.debug(module.getModuleIdentifier().toTag(type) + " Generated: " + outLocation.getAbsolutePath());
 		} catch (Exception ex) {
 			throw new RhenaException(ex.getMessage(), ex);
 		}
