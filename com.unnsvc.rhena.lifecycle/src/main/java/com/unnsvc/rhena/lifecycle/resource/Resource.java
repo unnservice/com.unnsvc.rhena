@@ -8,4 +8,10 @@ public class Resource implements IResource {
 	private String source;
 	private String target;
 
+	public Resource(String source, String target) {
+
+		this.source = source;
+		this.target = target;
+	}
+
 }

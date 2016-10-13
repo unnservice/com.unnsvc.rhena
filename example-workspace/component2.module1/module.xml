@@ -2,7 +2,32 @@
 <module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:rhena:module" xmlns:dependency="urn:rhena:dependency"
 	xsi:schemaLocation="urn:rhena:module http://schema.unnsvc.com/rhena/module.xsd" extends="component2:module2:0.0.1">
 
-	<meta component="component2" version="0.0.1" />
+	<meta component="component2" version="0.0.1">
+		<lifecycle name="default">
+			<!-- The configurator configures each execution type, sets source-target paths, final artifact names(?) etc. -->
+			<!-- If no generator is defined in this lifecycle, the default one will be used -->
+			<context module="component2:module1:0.0.1" class="com.some.Configurator" schema="META-INF/rhena/schema/context.xsd">
+				<resources>
+					<deliverable>
+						<resource source="src/main/java" target="target/classes" />
+						<resource source="src/main/resurces" target="targetc/classes" />
+					</deliverable>
+				</resources>
+			</context>
+			<!-- Each processor needs custom configuration so there can't be a generic configurator -->
+			<!-- <configurator module="component2:module2:0.0.1" class="some.config.Configurator" /> -->
+			<!-- each processor is called in 2 stages. Once for its IModuleConfigurator interface that IProcessor implements, and once for the execution... -->
+			<!-- implementations of an IProcessor -->
+			<processor module="component2:module1:0.0.1" class="com.some.Processor">
+				<someElementConfiguration xmlns="component2:module1:0.0.1" />
+			</processor>
+			<processor module="component2:module1:0.0.1" class="com.another.Processor" />
+			<!-- implementations of an IGenerator to generate the actual artifact, might not actually be needed? -->
+			<!-- @TODO "generator" does not seem to be the right term for it -->
+			<generator module="component2:module1:0.0.1" class="com.some.Generator" />
+			<!-- can't group them in any way to not repeat module= all the time, the grouping would prevent interpolation from other modules -->
+		</lifecycle>
+	</meta>
 
 </module>
 

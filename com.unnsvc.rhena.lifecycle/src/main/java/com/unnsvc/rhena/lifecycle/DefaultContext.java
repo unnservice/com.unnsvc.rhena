@@ -2,14 +2,18 @@
 package com.unnsvc.rhena.lifecycle;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
+import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IResource;
+import com.unnsvc.rhena.lifecycle.resource.Resource;
 
 public class DefaultContext implements IExecutionContext {
 
@@ -24,12 +28,12 @@ public class DefaultContext implements IExecutionContext {
 	// private Document configuration
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private List<IResource> resources;
+	private Map<ExecutionType, List<IResource>> resources;
 	// private Map<Class<? extends ILifecycleProcessor>, Object>
 
 	public DefaultContext() {
 
-		this.resources = new ArrayList<IResource>();
+		this.resources = new EnumMap<ExecutionType, List<IResource>>(ExecutionType.class);
 	}
 
 	/**
@@ -40,11 +44,24 @@ public class DefaultContext implements IExecutionContext {
 	@Override
 	public void configure(Document configuration) {
 
+		List<IResource> deliverable = new ArrayList<IResource>();
+		deliverable.add(new Resource("src/main/java", "target/classes"));
+		deliverable.add(new Resource("src/main/resoources", "target/classes"));
+		this.resources.put(ExecutionType.DELIVERABLE, resourcesAsList());
+	}
+	
+	protected List<IResource> resourcesAsList(IResource... resources) {
+		
+		List<IResource> reslist = new ArrayList<IResource>();
+		for(IResource res : resources) {
+			reslist.add(res);
+		}
+		return reslist;
 	}
 
 	@Override
-	public List<IResource> getResources() {
+	public List<IResource> getResources(ExecutionType execution) {
 
-		return resources;
+		return resources.get(execution);
 	}
 }
