@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.core.resolution;
+package com.unnsvc.rhena.core.execution;
 
 import java.net.URI;
 import java.util.Calendar;

@@ -15,6 +15,9 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaExecution;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.core.execution.ArtifactDescriptor;
+import com.unnsvc.rhena.core.execution.ExecutionDescriptor;
+import com.unnsvc.rhena.core.execution.RhenaExecutionDescriptorParser;
 import com.unnsvc.rhena.core.model.RhenaExecution;
 
 //   /some/path/repository/component1/module1/version/module.xml

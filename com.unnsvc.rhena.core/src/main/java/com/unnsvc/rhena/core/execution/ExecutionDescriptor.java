@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.core.resolution;
+package com.unnsvc.rhena.core.execution;
 
 public class ExecutionDescriptor {
 
