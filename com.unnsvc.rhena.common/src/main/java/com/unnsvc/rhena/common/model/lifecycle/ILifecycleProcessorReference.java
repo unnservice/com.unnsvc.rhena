@@ -4,7 +4,6 @@ package com.unnsvc.rhena.common.model.lifecycle;
 import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.model.IRhenaEdge;
-import com.unnsvc.rhena.common.model.IRhenaModule;
 
 /**
  * Common interface for all processors in ILifecycleDeclaration
@@ -14,9 +13,7 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
  */
 public interface ILifecycleProcessorReference extends IRhenaEdge {
 
-	public IRhenaModule getTarget();
-
-	public void setTarget(IRhenaModule module);
+	public String getSchema();
 
 	public String getClazz();
 

@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:rhena:module" xmlns:prop="urn:rhena:properties" xmlns:dependency="urn:rhena:dependency"
 	xsi:schemaLocation="urn:rhena:module http://schema.unnsvc.com/rhena/module.xsd" extends="component2:module1:0.0.1">
-<!--  lifecycle="customLifecycle" -->
-	<meta component="component1" version="0.0.1">
+
+	<meta component="component1" version="0.0.1" lifecycle="default">
 
 		<prop:someprop>somevalue</prop:someprop>
 		<prop:anotherprop>anothervalue</prop:anotherprop>
 
-		<!-- Lifecycle becomes composable by aggregating processors and blocks from different sources -->
-		<!-- Lifecycle is designed so that once all of its building blocks have been instantiated, they remain cached in the runtime? -->
-		<lifecycle name="customLifecycle">
+		<lifecycle name="default">
 			<!-- The configurator configures each execution type, sets source-target paths, final artifact names(?) etc. -->
 			<!-- If no generator is defined in this lifecycle, the default one will be used -->
-			<context module="component2:module1:0.0.1" class="com.some.Configurator" />
+			<context module="component2:module1:0.0.1" class="com.some.Configurator" schema="META-INF/rhena/schema/context.xsd" />
 			<!-- Each processor needs custom configuration so there can't be a generic configurator -->
 			<!-- <configurator module="component2:module2:0.0.1" class="some.config.Configurator" /> -->
 			<!-- each processor is called in 2 stages. Once for its IModuleConfigurator interface that IProcessor implements, and once for the execution... -->
@@ -26,6 +24,7 @@
 			<generator module="component2:module1:0.0.1" class="com.some.Generator" />
 			<!-- can't group them in any way to not repeat module= all the time, the grouping would prevent interpolation from other modules -->
 		</lifecycle>
+
 
 	</meta>
 

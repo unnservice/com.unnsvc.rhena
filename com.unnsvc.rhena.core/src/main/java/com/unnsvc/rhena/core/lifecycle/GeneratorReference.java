@@ -12,13 +12,20 @@ import com.unnsvc.rhena.core.model.RhenaEdge;
 public class GeneratorReference extends RhenaEdge implements IGeneratorReference {
 
 	private String clazz;
+	private String schema;
 	private Document configuration;
 
-	public GeneratorReference(IRhenaModule module, String clazz, Document configuration, ExecutionType et, TraverseType tt) {
+	public GeneratorReference(IRhenaModule module, String clazz, String schema, Document configuration, ExecutionType et, TraverseType tt) {
 
 		super(et, module, tt);
 		this.clazz = clazz;
 		this.configuration = configuration;
+	}
+
+	@Override
+	public String getSchema() {
+
+		return schema;
 	}
 
 	@Override

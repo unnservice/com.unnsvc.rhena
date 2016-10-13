@@ -150,6 +150,10 @@ public class RhenaModuleParser {
 
 				String module = child.getAttributes().getNamedItem("module").getNodeValue();
 				String clazz = child.getAttributes().getNamedItem("class").getNodeValue();
+				String schema = null;
+				if(child.getAttributes().getNamedItem("schema") != null) {
+					schema = child.getAttributes().getNamedItem("schema").getNodeValue();
+				}
 
 				// Make a document out of the entire processor node
 				Document config = nodeToDocument(child);
@@ -159,15 +163,15 @@ public class RhenaModuleParser {
 
 				if (child.getLocalName().equals("context")) {
 
-					ConfiguratorReference configurator = new ConfiguratorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, config, et, tt);
+					ConfiguratorReference configurator = new ConfiguratorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, schema, config, et, tt);
 					ld.setConfigurator(configurator);
 				} else if (child.getLocalName().equals("processor")) {
 
-					ProcessorReference processor = new ProcessorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, config, et, tt);
+					ProcessorReference processor = new ProcessorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, schema, config, et, tt);
 					ld.addProcessor(processor);
 				} else if (child.getLocalName().equals("generator")) {
 
-					GeneratorReference generator = new GeneratorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, config, et, tt);
+					GeneratorReference generator = new GeneratorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, schema, config, et, tt);
 					ld.setGenerator(generator);
 				}
 			}

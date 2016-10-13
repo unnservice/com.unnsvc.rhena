@@ -75,10 +75,10 @@ public class WorkspaceProjectMaterialiser {
 			DefaultContext configurator = new DefaultContext();
 			DefaultProcessor processor = new DefaultProcessor();
 			DefaultGenerator generator = new DefaultGenerator();
-			configurator.configure(getConfiguration(null), type);
-			processor.configure(getConfiguration(null), type);
+			configurator.configure(getConfiguration(null));
+			processor.configure(getConfiguration(null));
 			processor.process(configurator, module);
-			generator.configure(getConfiguration(null), type);
+			generator.configure(getConfiguration(null));
 			generatedArtifact = generator.generate(configurator, module);
 		}
 
@@ -93,17 +93,17 @@ public class WorkspaceProjectMaterialiser {
 			List<IProcessorReference> processorReferences, IGeneratorReference generatorReference) throws RhenaException {
 
 		IExecutionContext executionContext = instantiateProcessor(module, contextReference, IExecutionContext.class);
-		executionContext.configure(contextReference.getConfiguration(), type);
+		executionContext.configure(contextReference.getConfiguration());
 
 		for (IProcessorReference pref : processorReferences) {
 
 			IProcessor processor = instantiateProcessor(module, contextReference, IProcessor.class);
-			processor.configure(pref.getConfiguration(), type);
+			processor.configure(pref.getConfiguration());
 			processor.process(executionContext, module);
 		}
 
 		IGenerator generator = instantiateProcessor(module, contextReference, IGenerator.class);
-		generator.configure(generatorReference.getConfiguration(), type);
+		generator.configure(generatorReference.getConfiguration());
 		File artifact = generator.generate(executionContext, module);
 
 		if (artifact == null) {

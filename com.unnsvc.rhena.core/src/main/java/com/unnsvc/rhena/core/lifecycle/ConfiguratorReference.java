@@ -13,12 +13,20 @@ public class ConfiguratorReference extends RhenaEdge implements IExecutionRefere
 
 	private String clazz;
 	private Document configuration;
+	private String schema;
 
-	public ConfiguratorReference(IRhenaModule module, String clazz, Document configuration, ExecutionType et, TraverseType tt) {
+	public ConfiguratorReference(IRhenaModule module, String clazz, String schema, Document configuration, ExecutionType et, TraverseType tt) {
 
 		super(et, module, tt);
 		this.clazz = clazz;
+		this.schema = schema;
 		this.configuration = configuration;
+	}
+
+	@Override
+	public String getSchema() {
+
+		return schema;
 	}
 
 	@Override

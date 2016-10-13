@@ -5,28 +5,6 @@
 	<xs:import namespace="urn:rhena:common" schemaLocation="./common.xsd" />
 	<xs:import namespace="urn:rhena:dependency" schemaLocation="./dependency.xsd" />
 
-	<xs:complexType name="processorType">
-		<xs:sequence>
-			<xs:any minOccurs="0" maxOccurs="unbounded" namespace="##any" processContents="lax" />
-		</xs:sequence>
-		<xs:attribute name="module" type="common:qualifiedIdentifier" use="required" />
-		<xs:attribute name="class" type="xs:string" use="required" />
-	</xs:complexType>
-
-	<xs:complexType name="simpleProcessorType">
-		<xs:attribute name="module" type="common:qualifiedIdentifier" use="required" />
-		<xs:attribute name="class" type="xs:string" use="required" />
-	</xs:complexType>
-
-	<xs:complexType name="lifecycleType">
-		<xs:sequence>
-			<xs:element name="context" type="tns:simpleProcessorType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="processor" type="tns:processorType" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="generator" type="tns:simpleProcessorType" minOccurs="1" maxOccurs="1" />
-		</xs:sequence>
-		<xs:attribute name="name" />
-	</xs:complexType>
-
 	<xs:complexType name="metaType">
 		<xs:sequence>
 			<xs:any minOccurs="0" maxOccurs="unbounded" namespace="urn:rhena:properties" processContents="skip" />
@@ -35,6 +13,25 @@
 		<xs:attribute name="component" type="common:identifierType" />
 		<xs:attribute name="version" type="common:versionType" />
 		<xs:attribute name="lifecycle" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="processorType">
+		<xs:sequence>
+			<xs:any minOccurs="0" maxOccurs="unbounded" namespace="##any" processContents="skip" />
+		</xs:sequence>
+		<xs:attribute name="module" type="common:qualifiedIdentifier" use="required" />
+		<xs:attribute name="class" type="xs:string" use="required" />
+		<xs:attribute name="schema" type="xs:string" use="optional" />
+
+	</xs:complexType>
+
+	<xs:complexType name="lifecycleType">
+		<xs:sequence>
+			<xs:element name="context" type="tns:processorType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="processor" type="tns:processorType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="generator" type="tns:processorType" minOccurs="1" maxOccurs="1" />
+		</xs:sequence>
+		<xs:attribute name="name" use="required" type="xs:string" />
 	</xs:complexType>
 
 	<xs:element name="module">

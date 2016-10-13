@@ -12,13 +12,21 @@ import com.unnsvc.rhena.core.model.RhenaEdge;
 public class ProcessorReference extends RhenaEdge implements IProcessorReference {
 
 	private String clazz;
+	private String schema;
 	private Document configuration;
 
-	public ProcessorReference(IRhenaModule module, String clazz, Document configuration, ExecutionType et, TraverseType tt) {
+	public ProcessorReference(IRhenaModule module, String clazz, String schema, Document configuration, ExecutionType et, TraverseType tt) {
 
 		super(et, module, tt);
 		this.clazz = clazz;
+		this.schema = schema;
 		this.configuration = configuration;
+	}
+	
+	@Override
+	public String getSchema() {
+
+		return schema;
 	}
 
 	@Override
