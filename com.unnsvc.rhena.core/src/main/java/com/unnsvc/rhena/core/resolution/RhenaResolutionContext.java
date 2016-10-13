@@ -54,7 +54,7 @@ public class RhenaResolutionContext implements IResolutionContext {
 
 					return model;
 				} catch (RhenaException repositoryException) {
-					log.debug(repositoryException.getMessage(), repositoryException);
+					log.info(repositoryException.getMessage(), repositoryException);
 				}
 			}
 

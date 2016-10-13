@@ -17,7 +17,7 @@ public class DefaultGenerator implements IGenerator {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	@Override
-	public void configure(Document configuration) {
+	public void configure(IRhenaModule module, Document configuration) {
 
 	}
 

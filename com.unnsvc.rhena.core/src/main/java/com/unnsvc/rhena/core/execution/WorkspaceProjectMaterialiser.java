@@ -72,14 +72,14 @@ public class WorkspaceProjectMaterialiser {
 			return processLifecycleReferences(module, executionContextReference, processorReferences, generatorReference);
 		} else {
 
-			DefaultContext configurator = new DefaultContext();
+			DefaultContext context = new DefaultContext();
 			DefaultProcessor processor = new DefaultProcessor();
 			DefaultGenerator generator = new DefaultGenerator();
-			configurator.configure(getConfiguration(null));
-			processor.configure(getConfiguration(null));
-			processor.process(configurator, module);
-			generator.configure(getConfiguration(null));
-			generatedArtifact = generator.generate(configurator, module);
+			context.configure(module, getConfiguration(null));
+			processor.configure(module, getConfiguration(null));
+			processor.process(context, module, type);
+			generator.configure(module, getConfiguration(null));
+			generatedArtifact = generator.generate(context, module);
 		}
 
 		if (generatedArtifact == null || !generatedArtifact.isFile()) {
@@ -93,17 +93,17 @@ public class WorkspaceProjectMaterialiser {
 			List<IProcessorReference> processorReferences, IGeneratorReference generatorReference) throws RhenaException {
 
 		IExecutionContext executionContext = instantiateProcessor(module, contextReference, IExecutionContext.class);
-		executionContext.configure(contextReference.getConfiguration());
+		executionContext.configure(module, contextReference.getConfiguration());
 
 		for (IProcessorReference pref : processorReferences) {
 
 			IProcessor processor = instantiateProcessor(module, contextReference, IProcessor.class);
-			processor.configure(pref.getConfiguration());
-			processor.process(executionContext, module);
+			processor.configure(module, pref.getConfiguration());
+			processor.process(executionContext, module, type);
 		}
 
 		IGenerator generator = instantiateProcessor(module, contextReference, IGenerator.class);
-		generator.configure(generatorReference.getConfiguration());
+		generator.configure(module, generatorReference.getConfiguration());
 		File artifact = generator.generate(executionContext, module);
 
 		if (artifact == null) {

@@ -33,14 +33,14 @@ public class WorkspaceRepository extends AbstractRepository {
 	public RhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
 
 		File workspaceProject = new File(workspaceDirectory, moduleIdentifier.getComponentName() + "." + moduleIdentifier.getModuleName());
-		File moduleDescriptor = new File(workspaceProject, RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
-		URI moduleDescriptorUri = moduleDescriptor.toURI();
+//		File moduleDescriptor = new File(workspaceProject, RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
 
-		if (!moduleDescriptor.exists()) {
+		if (!workspaceProject.exists()) {
 			throw new RhenaException(moduleIdentifier.toTag() + ": Not in repository");
 		}
 
-		RhenaModule model = resolveModel(moduleIdentifier, moduleDescriptorUri);
+		URI projectLocationUri = workspaceProject.toURI();
+		RhenaModule model = resolveModel(moduleIdentifier, projectLocationUri);
 
 		return model;
 	}

@@ -38,11 +38,13 @@ public class RhenaModuleParser {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private RhenaModule module;
 
-	public RhenaModuleParser(ModuleIdentifier moduleIdentifier, URI location, IRepository repository) throws RhenaException {
+	public RhenaModuleParser(ModuleIdentifier moduleIdentifier, URI projectLocationUri, IRepository repository) throws RhenaException {
 
-		this.module = new RhenaModule(moduleIdentifier, repository);
+		this.module = new RhenaModule(moduleIdentifier, projectLocationUri, repository);
 		try {
-			parse(location);
+			
+			URI moduleDescriptorUri = new URI(projectLocationUri.toString() + "/module.xml").normalize();
+			parse(moduleDescriptorUri);
 		} catch (Exception ex) {
 			throw new RhenaException(ex);
 		}

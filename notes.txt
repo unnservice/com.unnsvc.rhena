@@ -1,0 +1,1 @@
+an execution should be able to produce multiple artifacts, which are tagged, allowing dependency declarations to "select" the types, and include all if selection not specified

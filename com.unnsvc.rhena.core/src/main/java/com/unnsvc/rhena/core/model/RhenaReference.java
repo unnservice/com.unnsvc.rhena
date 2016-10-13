@@ -1,6 +1,7 @@
 
 package com.unnsvc.rhena.core.model;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -32,6 +33,12 @@ public class RhenaReference implements IRhenaModule {
 	public ModuleIdentifier getModuleIdentifier() {
 
 		return moduleIdentifier;
+	}
+
+	@Override
+	public URI getLocation() {
+
+		throw new UnsupportedOperationException("Call on model of yet undersolved reference for: " + moduleIdentifier.toString());
 	}
 
 	@Override
@@ -117,4 +124,5 @@ public class RhenaReference implements IRhenaModule {
 
 		throw new UnsupportedOperationException("Call on model of yet undersolved reference for: " + moduleIdentifier.toString());
 	}
+
 }

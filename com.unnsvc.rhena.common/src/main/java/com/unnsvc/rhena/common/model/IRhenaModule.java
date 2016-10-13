@@ -1,6 +1,7 @@
 
 package com.unnsvc.rhena.common.model;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -14,6 +15,8 @@ import com.unnsvc.rhena.common.visitors.IVisitableModel;
 public interface IRhenaModule extends IVisitableModel {
 
 	public ModuleIdentifier getModuleIdentifier();
+
+	public URI getLocation();
 
 	public IRhenaEdge getParentModule();
 
@@ -41,9 +44,12 @@ public interface IRhenaModule extends IVisitableModel {
 
 	/**
 	 * Traverse parents until we find lifecycle
+	 * 
 	 * @param lifecycleName
 	 * @return
-	 * @throws RhenaException if no lifecycle with that name was found
+	 * @throws RhenaException
+	 *             if no lifecycle with that name was found
 	 */
 	public ILifecycleDeclaration getLifecycleDeclaration(String lifecycleName) throws RhenaException;
+
 }

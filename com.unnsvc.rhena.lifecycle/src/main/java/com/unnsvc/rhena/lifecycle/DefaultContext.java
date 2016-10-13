@@ -1,6 +1,7 @@
 
 package com.unnsvc.rhena.lifecycle;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.model.ExecutionType;
+import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IResource;
 import com.unnsvc.rhena.lifecycle.resource.Resource;
@@ -42,12 +44,14 @@ public class DefaultContext implements IExecutionContext {
 	 *       not set then use framework defaults
 	 */
 	@Override
-	public void configure(Document configuration) {
+	public void configure(IRhenaModule module, Document configuration) {
 
-		List<IResource> deliverable = new ArrayList<IResource>();
-		deliverable.add(new Resource("src/main/java", "target/classes"));
-		deliverable.add(new Resource("src/main/resoources", "target/classes"));
-		this.resources.put(ExecutionType.DELIVERABLE, resourcesAsList());
+		File location = new File(module.getLocation().getPath()).getAbsoluteFile();
+		
+		this.resources.put(ExecutionType.DELIVERABLE, resourcesAsList(
+				new Resource(new File(location, "src/main/java"), new File(location, "target/deliverable/classes")),
+				new Resource(new File(location, "src/main/resources"), new File(location, "target/deliverable/classes"))
+			));
 	}
 	
 	protected List<IResource> resourcesAsList(IResource... resources) {
