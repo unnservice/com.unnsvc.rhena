@@ -79,7 +79,7 @@ public class WorkspaceProjectMaterialiser {
 			processor.configure(module, getConfiguration(null));
 			processor.process(context, module, type);
 			generator.configure(module, getConfiguration(null));
-			generatedArtifact = generator.generate(context, module);
+			generatedArtifact = generator.generate(context, module, type);
 		}
 
 		if (generatedArtifact == null || !generatedArtifact.isFile()) {
@@ -104,7 +104,7 @@ public class WorkspaceProjectMaterialiser {
 
 		IGenerator generator = instantiateProcessor(module, contextReference, IGenerator.class);
 		generator.configure(module, generatorReference.getConfiguration());
-		File artifact = generator.generate(executionContext, module);
+		File artifact = generator.generate(executionContext, module, type);
 
 		if (artifact == null) {
 			throw new RhenaException(module.getModuleIdentifier().toTag() + ":generator " + generator.getClass().getName() + " produced null artifact.");

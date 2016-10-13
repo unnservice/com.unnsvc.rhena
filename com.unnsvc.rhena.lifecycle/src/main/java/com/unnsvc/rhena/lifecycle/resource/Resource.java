@@ -23,8 +23,8 @@ public class Resource implements IResource {
 
 	public Resource(File source, File target, boolean staged) {
 
-		this.source = source;
-		this.target = target;
+		this.source = new File(source.toURI().normalize().getPath());
+		this.target = new File(target.toURI().normalize().getPath());
 		this.staged = true;
 	}
 

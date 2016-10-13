@@ -10,12 +10,10 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ExecutionType;
-import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.resolution.RhenaResolutionContext;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
 import com.unnsvc.rhena.core.visitors.EdgeVisitor;
-import com.unnsvc.rhena.core.visitors.EdgeVisitor.EdgeHandler;
 import com.unnsvc.rhena.core.visitors.EdgeVisitor.EnterType;
 import com.unnsvc.rhena.core.visitors.ModelInitialisingHandler;
 
@@ -52,20 +50,20 @@ public class TestRhenaModule {
 		/**
 		 * Do the logging here
 		 */
-		model.visit(new EdgeVisitor(EnterType.BEFORE, new EdgeHandler() {
-
-			@Override
-			public void handleEdge(IRhenaModule module, IRhenaEdge edge) {
-
-				log.debug(module.getModuleIdentifier().toTag() + ": entering edge: " + edge);
-			}
-
-			@Override
-			public boolean canEnter(IRhenaModule source, IRhenaEdge target) {
-
-				return true;
-			}
-		}));
+//		model.visit(new EdgeVisitor(EnterType.BEFORE, new EdgeHandler() {
+//
+//			@Override
+//			public void handleEdge(IRhenaModule module, IRhenaEdge edge) {
+//
+//				log.debug(module.getModuleIdentifier().toTag() + ": entering edge: " + edge);
+//			}
+//
+//			@Override
+//			public boolean canEnter(IRhenaModule source, IRhenaEdge target) {
+//
+//				return true;
+//			}
+//		}));
 
 		// model.visit(new ModelInitialisingVisitor(context));
 		// model.visit(new ModelMergeVisitor(context));

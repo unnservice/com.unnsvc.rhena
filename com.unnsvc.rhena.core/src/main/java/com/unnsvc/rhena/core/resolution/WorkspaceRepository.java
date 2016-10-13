@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IResolutionContext;
-import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ExecutionType;
@@ -26,7 +25,7 @@ public class WorkspaceRepository extends AbstractRepository {
 	public WorkspaceRepository(IResolutionContext context, File workspaceDirectory) {
 
 		this.context = context;
-		this.workspaceDirectory = workspaceDirectory.getAbsoluteFile();
+		this.workspaceDirectory = new File(workspaceDirectory.getAbsoluteFile().toURI().normalize().getPath());
 	}
 
 	@Override

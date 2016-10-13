@@ -2,6 +2,7 @@
 package com.unnsvc.rhena.common.identity;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.model.ExecutionType;
 
 public class ModuleIdentifier {
 
@@ -93,6 +94,11 @@ public class ModuleIdentifier {
 			throw new RhenaException("Invalid identifier: " + moduleIdentifierStr);
 		}
 		return new ModuleIdentifier(parts[0], parts[1], parts[2]);
+	}
+
+	public String toFileName(ExecutionType type) {
+
+		return componentName.toString() + "." + moduleName.toString() + "-" + type.toLabel() + "-" + version.toString();
 	}
 
 }
