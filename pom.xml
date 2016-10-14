@@ -9,6 +9,7 @@
 		<module>com.unnsvc.rhena.core</module>
 		<module>com.unnsvc.rhena.lifecycle</module>
 		<module>com.unnsvc.rhena.common</module>
+		<module>com.unnsvc.rhena.cmdline</module>
 	</modules>
 
 	<build>

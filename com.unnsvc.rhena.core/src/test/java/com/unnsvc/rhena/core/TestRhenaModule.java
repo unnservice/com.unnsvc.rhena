@@ -50,6 +50,9 @@ public class TestRhenaModule {
 
 		model.visit(new EventedVisitor(EnterType.AFTER, new ModelInitialisingHandler(context)).setEnterUnusedLifecycle(true));
 
+		context.materialiseExecution(model, ExecutionType.DELIVERABLE);
+
+		
 		/**
 		 * Do the logging here
 		 */
@@ -73,7 +76,6 @@ public class TestRhenaModule {
 		// model.visit(new LoggingVisitor(context));
 		// model.visit(new ModelBuildingVisitor(context));
 
-		context.materialiseExecution(model, ExecutionType.DELIVERABLE);
 	}
 }
 

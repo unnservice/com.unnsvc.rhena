@@ -89,7 +89,7 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 		}
 
 		log.info(module.getModuleIdentifier().toTag(type) + " materialised " + execution.getArtifact());
-
+		
 		return execution;
 	}
 }

@@ -15,9 +15,21 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.execution.RhenaExecutionDescriptorParser;
 
-//   </some/path/repository>/com/component/module1/version/module.xml													workspace
-//   </some/path/repository>/com/component/module1/version/<execution>/execution.xml									remote
-//   </some/path/repository>/com/component/module1/version/<execution>/component1.module1-deliverable-version.ext		remote
+/**
+ * 
+ * 
+ * Can't really cause a path collision as we check the module.xml contents
+ * before using it
+ * 
+ * <pre>
+ * 	workspace		</some/path/repository>/com/component/module1/version/module.xml
+ *  remote			</some/path/repository>/com/component/module1/version/<execution>/execution.xml
+ *  remote			</some/path/repository>/com/component/module1/version/<execution>/component1.module1-deliverable-version.ext
+ * </pre>
+ * 
+ * @author noname
+ *
+ */
 public class RemoteRepository extends AbstractRepository {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
