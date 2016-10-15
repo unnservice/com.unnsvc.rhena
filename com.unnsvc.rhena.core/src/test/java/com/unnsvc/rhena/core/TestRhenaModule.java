@@ -49,32 +49,30 @@ public class TestRhenaModule {
 		IRhenaModule model = context.materialiseModel(entryPointIdentifier);
 
 		GraphResolver gr = new GraphResolver(context);
-		
-		gr.resolveReferences(new RhenaEdge(EExecutionType.TEST, model, TraverseType.SCOPE));
-		
-		
-		
-		
+
+		EExecutionType type = EExecutionType.PROTOTYPE;
+		gr.resolveReferences(new RhenaEdge(type, model, TraverseType.SCOPE));
+
 		
 		
-		
-		for(ILifecycleDeclaration lifecycle : gr.getLifecycles()) {
-			log.info("Lifecycle " + lifecycle.getName());
-			lifecycle.getContext().getModuleEdge().getTarget().visit(new LoggingVisitor(lifecycle.getContext().getModuleEdge().getExecutionType(), context));
-			lifecycle.getProcessors().forEach( processor -> 
-				{
-					try {
-						processor.getModuleEdge().getTarget().visit(new LoggingVisitor(processor.getModuleEdge().getExecutionType(), context));
-					} catch (RhenaException e) {
-						
-						e.printStackTrace();
-					}
-				}
-			);
-			lifecycle.getGenerator().getModuleEdge().getTarget().visit(new LoggingVisitor(lifecycle.getGenerator().getModuleEdge().getExecutionType(), context));
-		}
-		log.info("Execution plan: ");
-		model.visit(new LoggingVisitor(EExecutionType.TEST, context));
+		/**
+		 * Test debug log
+		 */
+//		for (ILifecycleDeclaration lifecycle : gr.getLifecycles()) {
+//			log.info("Lifecycle " + lifecycle.getName());
+//			lifecycle.getContext().getModuleEdge().getTarget().visit(new LoggingVisitor(lifecycle.getContext().getModuleEdge().getExecutionType(), context));
+//			lifecycle.getProcessors().forEach(processor -> {
+//				try {
+//					processor.getModuleEdge().getTarget().visit(new LoggingVisitor(processor.getModuleEdge().getExecutionType(), context));
+//				} catch (RhenaException e) {
+//
+//					e.printStackTrace();
+//				}
+//			});
+//			lifecycle.getGenerator().getModuleEdge().getTarget().visit(new LoggingVisitor(lifecycle.getGenerator().getModuleEdge().getExecutionType(), context));
+//		}
+//		log.info("Execution plan: ");
+//		model.visit(new LoggingVisitor(type, context));
 
 		// model.visit(new EventedVisitor(EnterType.AFTER, new
 		// ModelInitialisingHandler(context)).setEnterUnusedLifecycle(true));

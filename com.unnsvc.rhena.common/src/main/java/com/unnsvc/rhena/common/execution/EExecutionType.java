@@ -1,30 +1,35 @@
 
 package com.unnsvc.rhena.common.execution;
 
-public enum EExecutionType {
+public enum EExecutionType implements Comparable<EExecutionType> {
 
-	MODEL, DELIVERABLE(MODEL), FRAMEWORK(MODEL), TEST(DELIVERABLE, FRAMEWORK), INTEGRATION(TEST), PROTOTYPE(TEST);
+	/**
+	 * Keep it simple without any processing overhead if we were to chain one to
+	 * one to one
+	 *
+	 */
+	MODEL, DELIVERABLE(MODEL), FRAMEWORK(MODEL), TEST(MODEL, DELIVERABLE, FRAMEWORK), INTEGRATION(MODEL, DELIVERABLE, FRAMEWORK, TEST), PROTOTYPE(MODEL, DELIVERABLE, FRAMEWORK, TEST);
 
-	private EExecutionType[] depends;
+	private EExecutionType[] traversables;
 
-	EExecutionType(EExecutionType... depends) {
+	EExecutionType(EExecutionType... traversables) {
 
-		this.depends = depends;
+		this.traversables = traversables;
 	}
 
 	EExecutionType() {
 
-		this.depends = new EExecutionType[] {};
+		this.traversables = new EExecutionType[] {};
 	}
 
-	public boolean isA(EExecutionType other) {
+	public boolean canTraverse(EExecutionType that) {
 
-		if (other == this) {
+		if (this == that) {
 			return true;
 		}
 
-		for (EExecutionType d : depends) {
-			if (d == other) {
+		for (EExecutionType supertype : traversables) {
+			if (that == supertype) {
 				return true;
 			}
 		}
@@ -32,6 +37,11 @@ public enum EExecutionType {
 		return false;
 	}
 
+	/**
+	 * Convenience method
+	 * 
+	 * @return
+	 */
 	public String literal() {
 
 		return toString().toLowerCase();

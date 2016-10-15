@@ -1,6 +1,9 @@
 
 package com.unnsvc.rhena.core.visitors;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +39,13 @@ public class LoggingVisitor implements IModelVisitor {
 		this(type, context, 0, null);
 	}
 
+	private static Set<IRhenaEdge> edges;
+	static {
+		if(edges == null) {
+			edges = new HashSet<IRhenaEdge>();
+		}
+	}
+
 	@Override
 	public void visit(IRhenaModule model) throws RhenaException {
 
@@ -43,31 +53,23 @@ public class LoggingVisitor implements IModelVisitor {
 
 		if (model.getParentModule() != null) {
 
-			model.getParentModule().getTarget().visit(new LoggingVisitor(type, context, indents + 1, "parent"));
-		}
+			if (!edges.contains(model.getParentModule())) {
 
-		/**
-		 * To debug print the lifecycle, we need to get the declaration or
-		 * something or output as structured xml
-		 */
-//		if (model.getLifecycleName() != null) {
-//			ILifecycleDeclaration lifecycleDeclaration = model.getLifecycleDeclaration(model.getLifecycleName());
-//
-//			lifecycleDeclaration.getContext().getTarget().visit(new LoggingVisitor(context, indents + 1, "context"));
-//
-//			for (IProcessorReference processor : lifecycleDeclaration.getProcessors()) {
-//
-//				processor.getTarget().visit(new LoggingVisitor(context, indents + 1, "processor"));
-//			}
-//
-//			lifecycleDeclaration.getGenerator().getTarget().visit(new LoggingVisitor(context, indents + 1, "generator"));
-//		}
+				model.getParentModule().getTarget().visit(new LoggingVisitor(EExecutionType.MODEL, context, indents + 1, "parent"));
+				edges.add(model.getParentModule());
+			}
+		}
 
 		if (!model.getDependencyEdges().isEmpty()) {
 
 			for (IRhenaEdge edge : model.getDependencyEdges()) {
-				if(!(edge.getTarget() instanceof RhenaReference) && edge.getExecutionType().isA(type)) {
-					edge.getTarget().visit(new LoggingVisitor(type, context, indents + 1, "dependency"));
+				if (!(edge.getTarget() instanceof RhenaReference)) {
+					if (type.canTraverse(edge.getExecutionType())) {
+						if (!edges.contains(edge)) {
+							edge.getTarget().visit(new LoggingVisitor(type, context, indents + 1, "dependency"));
+							edges.add(edge);
+						}
+					}
 				}
 			}
 		}

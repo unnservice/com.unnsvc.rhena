@@ -117,9 +117,9 @@ public class GraphResolver {
 						 * We only care about dependencies which we can use in
 						 * the requested scope
 						 */
-						if (currentEdge.getExecutionType().isA(dependency.getExecutionType())) {
-							if (!processed.contains(dependency)) {
+						if (currentEdge.getExecutionType().canTraverse(dependency.getExecutionType())) {
 
+							if (!processed.contains(dependency)) {
 								edges.pushUnique(dependency);
 								break edgeProcessing;
 							}
@@ -147,6 +147,7 @@ public class GraphResolver {
 					startlog = true;
 				}
 				if (startlog) {
+					// @TODO
 					log.error("cycle: " + (shift ? "↓" : "↓") + " " + edge.getTarget().getModuleIdentifier().toTag(edge.getExecutionType()));
 					shift = !shift;
 				}
