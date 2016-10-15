@@ -61,14 +61,14 @@ public class ModelMergeVisitor implements IModelVisitor {
 
 		for (ILifecycleDeclaration ld : module.getLifecycleDeclarations().values()) {
 
-			ld.getContext().getTarget().visit(this);
+			ld.getContext().getModuleEdge().getTarget().visit(this);
 
 			for (IProcessorReference pr : ld.getProcessors()) {
 
-				pr.getTarget().visit(this);
+				pr.getModuleEdge().getTarget().visit(this);
 			}
 
-			ld.getGenerator().getTarget().visit(this);
+			ld.getGenerator().getModuleEdge().getTarget().visit(this);
 		}
 
 		if (module.getLifecycleName() != null) {

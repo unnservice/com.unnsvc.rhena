@@ -4,20 +4,22 @@ package com.unnsvc.rhena.core.lifecycle;
 import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.execution.EExecutionType;
+import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.TraverseType;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionReference;
 import com.unnsvc.rhena.core.model.RhenaEdge;
 
-public class ContextReference extends RhenaEdge implements IExecutionReference {
+public class ContextReference implements IExecutionReference {
 
 	private String clazz;
 	private Document configuration;
 	private String schema;
+	private IRhenaEdge moduleEdge;
 
-	public ContextReference(IRhenaModule module, String clazz, String schema, Document configuration, EExecutionType et, TraverseType tt) {
+	public ContextReference(IRhenaModule module, String clazz, String schema, Document configuration) {
 
-		super(et, module, tt);
+		this.moduleEdge = new RhenaEdge(EExecutionType.FRAMEWORK, module, TraverseType.SCOPE);
 		this.clazz = clazz;
 		this.schema = schema;
 		this.configuration = configuration;
@@ -39,5 +41,11 @@ public class ContextReference extends RhenaEdge implements IExecutionReference {
 	public Document getConfiguration() {
 
 		return configuration;
+	}
+
+	@Override
+	public IRhenaEdge getModuleEdge() {
+
+		return moduleEdge;
 	}
 }

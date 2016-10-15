@@ -11,11 +11,13 @@ import com.unnsvc.rhena.common.model.IRhenaEdge;
  * @author noname
  *
  */
-public interface ILifecycleProcessorReference extends IRhenaEdge {
+public interface ILifecycleProcessorReference {
 
 	public String getSchema();
 
 	public String getClazz();
 
 	public Document getConfiguration();
+
+	public IRhenaEdge getModuleEdge();
 }

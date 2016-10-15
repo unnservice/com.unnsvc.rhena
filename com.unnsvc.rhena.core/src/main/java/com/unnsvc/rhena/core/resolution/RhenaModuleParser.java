@@ -165,15 +165,15 @@ public class RhenaModuleParser {
 
 				if (child.getLocalName().equals("context")) {
 
-					ContextReference configurator = new ContextReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, schema, config, et, tt);
+					ContextReference configurator = new ContextReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, schema, config);
 					ld.setContext(configurator);
 				} else if (child.getLocalName().equals("processor")) {
 
-					ProcessorReference processor = new ProcessorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, schema, config, et, tt);
+					ProcessorReference processor = new ProcessorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, schema, config);
 					ld.addProcessor(processor);
 				} else if (child.getLocalName().equals("generator")) {
 
-					GeneratorReference generator = new GeneratorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, schema, config, et, tt);
+					GeneratorReference generator = new GeneratorReference(new RhenaReference(ModuleIdentifier.valueOf(module)), clazz, schema, config);
 					ld.setGenerator(generator);
 				}
 			}

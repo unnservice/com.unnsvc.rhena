@@ -6,10 +6,9 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
-import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
 import com.unnsvc.rhena.core.model.RhenaReference;
 
@@ -17,11 +16,13 @@ public class LoggingVisitor implements IModelVisitor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private IResolutionContext context;
+	private EExecutionType type;
 	private int indents;
 	private String label;
 
-	public LoggingVisitor(IResolutionContext context, int indents, String label) {
+	public LoggingVisitor(EExecutionType type, IResolutionContext context, int indents, String label) {
 
+		this.type = type;
 		this.context = context;
 		this.indents = indents;
 		this.label = label;
@@ -30,9 +31,9 @@ public class LoggingVisitor implements IModelVisitor {
 		// }
 	}
 
-	public LoggingVisitor(IResolutionContext context) {
+	public LoggingVisitor(EExecutionType type, IResolutionContext context) {
 
-		this(context, 0, null);
+		this(type, context, 0, null);
 	}
 
 	@Override
@@ -42,31 +43,31 @@ public class LoggingVisitor implements IModelVisitor {
 
 		if (model.getParentModule() != null) {
 
-			model.getParentModule().getTarget().visit(new LoggingVisitor(context, indents + 1, "parent"));
+			model.getParentModule().getTarget().visit(new LoggingVisitor(type, context, indents + 1, "parent"));
 		}
 
 		/**
 		 * To debug print the lifecycle, we need to get the declaration or
 		 * something or output as structured xml
 		 */
-		if (model.getLifecycleName() != null) {
-			ILifecycleDeclaration lifecycleDeclaration = model.getLifecycleDeclaration(model.getLifecycleName());
-
-			lifecycleDeclaration.getContext().getTarget().visit(new LoggingVisitor(context, indents + 1, "context"));
-
-			for (IProcessorReference processor : lifecycleDeclaration.getProcessors()) {
-
-				processor.getTarget().visit(new LoggingVisitor(context, indents + 1, "processor"));
-			}
-
-			lifecycleDeclaration.getGenerator().getTarget().visit(new LoggingVisitor(context, indents + 1, "generator"));
-		}
+//		if (model.getLifecycleName() != null) {
+//			ILifecycleDeclaration lifecycleDeclaration = model.getLifecycleDeclaration(model.getLifecycleName());
+//
+//			lifecycleDeclaration.getContext().getTarget().visit(new LoggingVisitor(context, indents + 1, "context"));
+//
+//			for (IProcessorReference processor : lifecycleDeclaration.getProcessors()) {
+//
+//				processor.getTarget().visit(new LoggingVisitor(context, indents + 1, "processor"));
+//			}
+//
+//			lifecycleDeclaration.getGenerator().getTarget().visit(new LoggingVisitor(context, indents + 1, "generator"));
+//		}
 
 		if (!model.getDependencyEdges().isEmpty()) {
 
 			for (IRhenaEdge edge : model.getDependencyEdges()) {
-				if(!(edge.getTarget() instanceof RhenaReference)) {
-					edge.getTarget().visit(new LoggingVisitor(context, indents + 1, "dependency"));
+				if(!(edge.getTarget() instanceof RhenaReference) && edge.getExecutionType().isA(type)) {
+					edge.getTarget().visit(new LoggingVisitor(type, context, indents + 1, "dependency"));
 				}
 			}
 		}

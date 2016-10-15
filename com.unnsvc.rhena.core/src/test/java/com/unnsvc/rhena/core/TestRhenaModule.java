@@ -8,10 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IResolutionContext;
+import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.TraverseType;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 import com.unnsvc.rhena.core.configuration.RhenaConfiguration;
 import com.unnsvc.rhena.core.model.RhenaEdge;
 import com.unnsvc.rhena.core.model.processing.GraphResolver;
@@ -47,7 +50,26 @@ public class TestRhenaModule {
 		IRhenaModule model = context.materialiseModel(entryPointIdentifier);
 
 		GraphResolver gr = new GraphResolver(context);
+		
 		gr.resolveReferences(new RhenaEdge(EExecutionType.TEST, model, TraverseType.SCOPE));
+		
+		for(ILifecycleDeclaration lifecycle : gr.getLifecycles()) {
+			log.info("Lifecycle " + lifecycle.getName());
+			lifecycle.getContext().getModuleEdge().getTarget().visit(new LoggingVisitor(lifecycle.getContext().getModuleEdge().getExecutionType(), context));
+			lifecycle.getProcessors().forEach( processor -> 
+				{
+					try {
+						processor.getModuleEdge().getTarget().visit(new LoggingVisitor(processor.getModuleEdge().getExecutionType(), context));
+					} catch (RhenaException e) {
+						
+						e.printStackTrace();
+					}
+				}
+			);
+			lifecycle.getGenerator().getModuleEdge().getTarget().visit(new LoggingVisitor(lifecycle.getGenerator().getModuleEdge().getExecutionType(), context));
+		}
+		log.info("Execution plan: ");
+		model.visit(new LoggingVisitor(EExecutionType.TEST, context));
 
 		// model.visit(new EventedVisitor(EnterType.AFTER, new
 		// ModelInitialisingHandler(context)).setEnterUnusedLifecycle(true));
@@ -55,7 +77,6 @@ public class TestRhenaModule {
 
 		// model.visit(new ModelInitialisingVisitor(context));
 		// model.visit(new ModelMergeVisitor(context));
-		model.visit(new LoggingVisitor(context));
 		// model.visit(new ModelBuildingVisitor(context));
 
 		log.info("Finished");

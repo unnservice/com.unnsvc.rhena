@@ -94,10 +94,10 @@ public class WorkspaceProjectMaterialiser {
 
 		List<URL> l = new ArrayList<URL>();
 
-		l.addAll(processor.getTarget().visit(new RhenaDependencyCollectionVisitor(context, EExecutionType.FRAMEWORK, TraverseType.SCOPE)).getDependenciesURL());
+		l.addAll(processor.getModuleEdge().getTarget().visit(new RhenaDependencyCollectionVisitor(context, EExecutionType.FRAMEWORK, TraverseType.SCOPE)).getDependenciesURL());
 		URLClassLoader dependenciesLoader = new URLClassLoader(l.toArray(new URL[l.size()]), Thread.currentThread().getContextClassLoader());
 		URLClassLoader mainLoader = new URLClassLoader(
-				new URL[] { context.materialiseExecution(processor.getTarget(), EExecutionType.FRAMEWORK).getArtifact().getArtifactUrl() }, dependenciesLoader);
+				new URL[] { context.materialiseExecution(processor.getModuleEdge().getTarget(), EExecutionType.FRAMEWORK).getArtifact().getArtifactUrl() }, dependenciesLoader);
 
 		// try {
 		// Class c = mainLoader.loadClass(IResolutionContext.class.getName());
@@ -134,9 +134,9 @@ public class WorkspaceProjectMaterialiser {
 			Object o = constr.newInstance(context);
 			return (T) o;
 		} catch (Exception ex) {
-			log.error(processor.getTarget().getModuleIdentifier().toTag(type) + " lifecycle classloader has " + loader.getURLs().length + " urls");
+			log.error(processor.getModuleEdge().getTarget().getModuleIdentifier().toTag(type) + " lifecycle classloader has " + loader.getURLs().length + " urls");
 			for (URL url : loader.getURLs()) {
-				log.error(processor.getTarget().getModuleIdentifier().toTag(type) + " lifecycle contains " + url);
+				log.error(processor.getModuleEdge().getTarget().getModuleIdentifier().toTag(type) + " lifecycle contains " + url);
 			}
 			throw new RhenaException(model.getModuleIdentifier().toTag(type) + " Failed to instantiate: " + processor.getClazz(), ex);
 		}

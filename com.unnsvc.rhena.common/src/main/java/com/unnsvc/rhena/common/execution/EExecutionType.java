@@ -14,6 +14,7 @@ public enum EExecutionType {
 
 	EExecutionType() {
 
+		this.depends = new EExecutionType[] {};
 	}
 
 	public boolean isA(EExecutionType other) {
