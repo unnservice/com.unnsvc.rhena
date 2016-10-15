@@ -11,7 +11,6 @@ import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.TraverseType;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
@@ -52,6 +51,12 @@ public class TestRhenaModule {
 		GraphResolver gr = new GraphResolver(context);
 		
 		gr.resolveReferences(new RhenaEdge(EExecutionType.TEST, model, TraverseType.SCOPE));
+		
+		
+		
+		
+		
+		
 		
 		for(ILifecycleDeclaration lifecycle : gr.getLifecycles()) {
 			log.info("Lifecycle " + lifecycle.getName());

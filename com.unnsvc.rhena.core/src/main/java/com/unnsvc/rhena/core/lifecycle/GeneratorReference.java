@@ -17,9 +17,9 @@ public class GeneratorReference implements IGeneratorReference {
 	private Document configuration;
 	private IRhenaEdge moduleEdge;
 
-	public GeneratorReference(IRhenaModule module, String clazz, String schema, Document configuration) {
+	public GeneratorReference(IRhenaEdge edge, String clazz, String schema, Document configuration) {
 
-		this.moduleEdge = new RhenaEdge(EExecutionType.FRAMEWORK, module, TraverseType.SCOPE);
+		this.moduleEdge = edge;
 		this.clazz = clazz;
 		this.configuration = configuration;
 	}

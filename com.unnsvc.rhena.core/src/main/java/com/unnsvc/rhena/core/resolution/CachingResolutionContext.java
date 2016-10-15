@@ -3,7 +3,9 @@ package com.unnsvc.rhena.core.resolution;
 
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.configuration.RhenaConfiguration;
 
@@ -29,12 +32,14 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 	private LocalCacheRepository cacheRepository;
 	protected Map<ModuleIdentifier, IRhenaModule> models;
 	protected Map<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>> executions;
+	private Set<IRhenaEdge> edges;
 
 	public CachingResolutionContext(RhenaConfiguration configuration) {
 
-		this.cacheRepository = new LocalCacheRepository(configuration.getLocalCacheRepository());
+		this.cacheRepository = new LocalCacheRepository(this, configuration.getLocalCacheRepository());
 		this.models = new HashMap<ModuleIdentifier, IRhenaModule>();
 		this.executions = new HashMap<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>>();
+		this.edges = new HashSet<IRhenaEdge>();
 	}
 
 	@Override
@@ -92,5 +97,11 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 		log.info(module.getModuleIdentifier().toTag(type) + " materialised " + execution.getArtifact());
 
 		return execution;
+	}
+
+	@Override
+	public Set<IRhenaEdge> getEdges() {
+
+		return edges;
 	}
 }

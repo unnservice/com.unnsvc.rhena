@@ -6,6 +6,7 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 
@@ -19,9 +20,9 @@ public class LocalCacheRepository extends RemoteRepository {
 	
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	public LocalCacheRepository(URI location) {
+	public LocalCacheRepository(IResolutionContext context, URI location) {
 
-		super(location);
+		super(context, location);
 	}
 
 	/**

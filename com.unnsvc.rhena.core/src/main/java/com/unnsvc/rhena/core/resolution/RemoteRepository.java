@@ -6,6 +6,7 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -35,8 +36,9 @@ public class RemoteRepository extends AbstractRepository {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private URI location;
 
-	public RemoteRepository(URI location) {
+	public RemoteRepository(IResolutionContext context, URI location) {
 
+		super(context);
 		this.location = location.normalize();
 	}
 

@@ -17,9 +17,9 @@ public class ProcessorReference implements IProcessorReference {
 	private Document configuration;
 	private IRhenaEdge moduleEdge;
 
-	public ProcessorReference(IRhenaModule module, String clazz, String schema, Document configuration) {
+	public ProcessorReference(IRhenaEdge edge, String clazz, String schema, Document configuration) {
 
-		this.moduleEdge = new RhenaEdge(EExecutionType.FRAMEWORK, module, TraverseType.SCOPE);
+		this.moduleEdge = edge;
 		this.clazz = clazz;
 		this.schema = schema;
 		this.configuration = configuration;

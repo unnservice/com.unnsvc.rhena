@@ -26,4 +26,6 @@ public interface IResolutionContext {
 
 	public List<IRepository> getRepositories();
 
+	public Set<IRhenaEdge> getEdges();
+
 }

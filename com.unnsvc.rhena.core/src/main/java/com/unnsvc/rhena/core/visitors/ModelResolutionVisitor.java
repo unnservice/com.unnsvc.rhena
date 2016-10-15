@@ -48,15 +48,15 @@ public class ModelResolutionVisitor implements IModelVisitor {
 			ILifecycleDeclaration lifecycle = module.getLifecycleDeclarations().get(key);
 
 			IExecutionReference config = lifecycle.getContext();
-			resolveModel(config);
+			resolveModel(config.getModuleEdge());
 
 			for (IProcessorReference proc : lifecycle.getProcessors()) {
 
-				resolveModel(proc);
+				resolveModel(proc.getModuleEdge());
 			}
 
 			IGeneratorReference generator = lifecycle.getGenerator();
-			resolveModel(generator);
+			resolveModel(generator.getModuleEdge());
 		}
 
 		for (IRhenaEdge edge : module.getDependencyEdges()) {

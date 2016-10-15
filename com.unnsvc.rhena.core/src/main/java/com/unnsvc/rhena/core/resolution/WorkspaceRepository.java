@@ -17,11 +17,10 @@ public class WorkspaceRepository extends AbstractRepository {
 
 	// private Logger log = LoggerFactory.getLogger(getClass());
 	private File workspaceDirectory;
-	private IResolutionContext context;
 
 	public WorkspaceRepository(IResolutionContext context, File workspaceDirectory) {
 
-		this.context = context;
+		super(context);
 		this.workspaceDirectory = new File(workspaceDirectory.getAbsoluteFile().toURI().normalize().getPath());
 	}
 
@@ -41,7 +40,7 @@ public class WorkspaceRepository extends AbstractRepository {
 	@Override
 	public IRhenaExecution materialiseExecution(IRhenaModule model, EExecutionType type) throws RhenaException {
 
-		WorkspaceProjectMaterialiser etm = new WorkspaceProjectMaterialiser(context, model, type);
+		WorkspaceProjectMaterialiser etm = new WorkspaceProjectMaterialiser(getContext(), model, type);
 		return etm.materialiseExecution();
 	}
 }
