@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.ExecutionType;
+//import com.unnsvc.rhena.common.execution.ExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
@@ -75,8 +75,10 @@ public class ModelMergeVisitor implements IModelVisitor {
 
 			// the model is merged so we can just query this module
 			if (!module.getLifecycleDeclarations().containsKey(module.getLifecycleName())) {
-				throw new RhenaException(
-						module.getModuleIdentifier().toTag(ExecutionType.MODEL) + " Lifecycle name " + module.getLifecycleName() + " is not found");
+				// throw new RhenaException(
+				// module.getModuleIdentifier().toTag(ExecutionType.MODEL) + "
+				// Lifecycle name " + module.getLifecycleName() + " is not
+				// found");
 			}
 		}
 

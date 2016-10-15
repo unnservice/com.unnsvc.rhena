@@ -3,9 +3,10 @@ package com.unnsvc.rhena.core.execution;
 
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.ExecutionType;
+//import com.unnsvc.rhena.common.execution.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.executiontype.IExecutionType;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionReference;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
@@ -33,18 +34,18 @@ public class ModelBuildingVisitor implements IModelVisitor {
 
 			IExecutionReference configurator = lifecycleDeclaration.getContext();
 			configurator.getTarget().visit(this);
-			resolver.materialiseExecution(configurator.getTarget(), ExecutionType.FRAMEWORK);
+			resolver.materialiseExecution(configurator.getTarget(), IExecutionType.FRAMEWORK);
 
 			for (IProcessorReference processor : lifecycleDeclaration.getProcessors()) {
 
 				IRhenaModule processorModel = processor.getTarget();
 
-				resolver.materialiseExecution(processorModel, ExecutionType.FRAMEWORK);
+				resolver.materialiseExecution(processorModel, IExecutionType.FRAMEWORK);
 			}
 
 			IRhenaModule generatorModel = lifecycleDeclaration.getGenerator().getTarget();
 			generatorModel.visit(this);
-			resolver.materialiseExecution(generatorModel, ExecutionType.FRAMEWORK);
+			resolver.materialiseExecution(generatorModel, IExecutionType.FRAMEWORK);
 		}
 
 		for (IRhenaEdge edge : model.getDependencyEdges()) {

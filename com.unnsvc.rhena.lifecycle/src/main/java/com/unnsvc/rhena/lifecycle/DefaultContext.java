@@ -3,15 +3,15 @@ package com.unnsvc.rhena.lifecycle;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.IResolutionContext;
-import com.unnsvc.rhena.common.execution.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.executiontype.IExecutionType;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IResource;
 import com.unnsvc.rhena.lifecycle.resource.Resource;
@@ -29,12 +29,12 @@ public class DefaultContext implements IExecutionContext {
 	// private Document configuration
 
 	// private Logger log = LoggerFactory.getLogger(getClass());
-	private Map<ExecutionType, List<IResource>> resources;
+	private Map<IExecutionType, List<IResource>> resources;
 	// private Map<Class<? extends ILifecycleProcessor>, Object>
 
 	public DefaultContext(IResolutionContext context) {
 
-		this.resources = new EnumMap<ExecutionType, List<IResource>>(ExecutionType.class);
+		this.resources = new HashMap<IExecutionType, List<IResource>>();
 	}
 
 	/**
@@ -47,11 +47,11 @@ public class DefaultContext implements IExecutionContext {
 
 		File location = new File(module.getLocation().getPath()).getAbsoluteFile();
 
-		this.resources.put(ExecutionType.DELIVERABLE,
+		this.resources.put(IExecutionType.DELIVERABLE,
 				resourcesAsList(new Resource(new File(location, "src/main/java"), new File(location, "target/deliverable/classes")),
 						new Resource(new File(location, "src/main/resources"), new File(location, "target/deliverable/classes"))));
 
-		this.resources.put(ExecutionType.FRAMEWORK,
+		this.resources.put(IExecutionType.FRAMEWORK,
 				resourcesAsList(new Resource(new File(location, "src/framework/java"), new File(location, "target/framework/classes")),
 						new Resource(new File(location, "src/framework/resources"), new File(location, "target/framework/classes"))));
 	}
@@ -66,7 +66,7 @@ public class DefaultContext implements IExecutionContext {
 	}
 
 	@Override
-	public List<IResource> getResources(ExecutionType execution) {
+	public List<IResource> getResources(IExecutionType execution) {
 
 		return resources.get(execution);
 	}

@@ -3,19 +3,19 @@ package com.unnsvc.rhena.core.execution;
 
 import java.util.Calendar;
 
-import com.unnsvc.rhena.common.execution.ExecutionType;
 import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.executiontype.IExecutionType;
 
 public class RhenaExecution implements IRhenaExecution {
 
 	private ModuleIdentifier moduleIdentifier;
-	private ExecutionType executionType;
+	private IExecutionType executionType;
 	private IArtifactDescriptor artifact;
 	private Calendar executionDate;
 
-	public RhenaExecution(ModuleIdentifier moduleIdentifier, ExecutionType executionType, IArtifactDescriptor artifact, Calendar executionDate) {
+	public RhenaExecution(ModuleIdentifier moduleIdentifier, IExecutionType executionType, IArtifactDescriptor artifact, Calendar executionDate) {
 
 		this.moduleIdentifier = moduleIdentifier;
 		this.executionType = executionType;
@@ -23,7 +23,7 @@ public class RhenaExecution implements IRhenaExecution {
 		this.executionDate = executionDate;
 	}
 
-	public RhenaExecution(ModuleIdentifier moduleIdentifier, ExecutionType executionType, IArtifactDescriptor artifact) {
+	public RhenaExecution(ModuleIdentifier moduleIdentifier, IExecutionType executionType, IArtifactDescriptor artifact) {
 
 		this(moduleIdentifier, executionType, artifact, Calendar.getInstance());
 	}
@@ -33,7 +33,7 @@ public class RhenaExecution implements IRhenaExecution {
 		return moduleIdentifier;
 	}
 
-	public ExecutionType getExecutionType() {
+	public IExecutionType getExecutionType() {
 
 		return executionType;
 	}

@@ -9,10 +9,10 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.ExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.executiontype.IExecutionType;
 import com.unnsvc.rhena.core.execution.RhenaExecutionDescriptorParser;
 
 /**
@@ -52,7 +52,7 @@ public class RemoteRepository extends AbstractRepository {
 			return resolveModel(moduleIdentifier, URI.create(getModuleBase(moduleIdentifier)));
 		} else {
 
-			log.debug(moduleIdentifier.toTag(ExecutionType.MODEL) + " was not found at: " + moduleDescriptor.toASCIIString());
+			log.debug(moduleIdentifier.toTag(IExecutionType.MODEL) + " was not found at: " + moduleDescriptor.toASCIIString());
 			return null;
 		}
 	}
@@ -68,7 +68,7 @@ public class RemoteRepository extends AbstractRepository {
 	}
 
 	@Override
-	public IRhenaExecution materialiseExecution(IRhenaModule module, ExecutionType type) throws RhenaException {
+	public IRhenaExecution materialiseExecution(IRhenaModule module, IExecutionType type) throws RhenaException {
 
 		StringBuilder base = new StringBuilder(getModuleBase(module.getModuleIdentifier()));
 		base.append(type.toString().toLowerCase()).append("/");

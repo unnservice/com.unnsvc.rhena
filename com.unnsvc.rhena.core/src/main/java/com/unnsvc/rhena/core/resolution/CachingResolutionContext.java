@@ -8,10 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.ExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.executiontype.IExecutionType;
 import com.unnsvc.rhena.core.configuration.RhenaConfiguration;
 
 /**
@@ -27,13 +27,13 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private LocalCacheRepository cacheRepository;
 	protected Map<ModuleIdentifier, IRhenaModule> models;
-	protected Map<ModuleIdentifier, Map<ExecutionType, IRhenaExecution>> executions;
+	protected Map<ModuleIdentifier, Map<IExecutionType, IRhenaExecution>> executions;
 
 	public CachingResolutionContext(RhenaConfiguration configuration) {
 
 		this.cacheRepository = new LocalCacheRepository(configuration.getLocalCacheRepository());
 		this.models = new HashMap<ModuleIdentifier, IRhenaModule>();
-		this.executions = new HashMap<ModuleIdentifier, Map<ExecutionType, IRhenaExecution>>();
+		this.executions = new HashMap<ModuleIdentifier, Map<IExecutionType, IRhenaExecution>>();
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 				module = super.materialiseModel(moduleIdentifier);
 				if (module == null) {
 
-					throw new RhenaException(moduleIdentifier.toTag(ExecutionType.MODEL) + " failed to resolve");
+					throw new RhenaException(moduleIdentifier.toTag(IExecutionType.MODEL) + " failed to resolve");
 				}
 			}
 
@@ -61,7 +61,7 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 	}
 
 	@Override
-	public IRhenaExecution materialiseExecution(IRhenaModule module, ExecutionType type) throws RhenaException {
+	public IRhenaExecution materialiseExecution(IRhenaModule module, IExecutionType type) throws RhenaException {
 
 		ModuleIdentifier identifier = module.getModuleIdentifier();
 		if (executions.get(identifier) != null && executions.get(identifier).get(type) != null) {
@@ -83,13 +83,13 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 
 			executions.get(identifier).put(type, execution);
 		} else {
-			Map<ExecutionType, IRhenaExecution> typeExecutions = new HashMap<ExecutionType, IRhenaExecution>();
+			Map<IExecutionType, IRhenaExecution> typeExecutions = new HashMap<IExecutionType, IRhenaExecution>();
 			typeExecutions.put(type, execution);
 			executions.put(identifier, typeExecutions);
 		}
 
 		log.info(module.getModuleIdentifier().toTag(type) + " materialised " + execution.getArtifact());
-		
+
 		return execution;
 	}
 }

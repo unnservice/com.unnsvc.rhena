@@ -8,7 +8,10 @@ import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
+import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
+import com.unnsvc.rhena.core.model.RhenaReference;
 
 public class LoggingVisitor implements IModelVisitor {
 
@@ -46,26 +49,25 @@ public class LoggingVisitor implements IModelVisitor {
 		 * To debug print the lifecycle, we need to get the declaration or
 		 * something or output as structured xml
 		 */
+		if (model.getLifecycleName() != null) {
+			ILifecycleDeclaration lifecycleDeclaration = model.getLifecycleDeclaration(model.getLifecycleName());
 
-		// for (LifecycleDeclaration lifecycleDeclaration :
-		// model.getLifecycleDeclarations().values()) {
-		//
-		// for (ProcessorReference processor :
-		// lifecycleDeclaration.getProcessors()) {
-		//
-		// context.materialiseModel(processor.getModuleIdentifier()).visit(new
-		// LoggingVisitor(context, indents + 1, "processor"));
-		// }
-		//
-		// context.materialiseModel(lifecycleDeclaration.getGenerator().getModuleIdentifier()).visit(new
-		// LoggingVisitor(context, indents + 1, "lifecycle"));
-		// }
+			lifecycleDeclaration.getContext().getTarget().visit(new LoggingVisitor(context, indents + 1, "context"));
+
+			for (IProcessorReference processor : lifecycleDeclaration.getProcessors()) {
+
+				processor.getTarget().visit(new LoggingVisitor(context, indents + 1, "processor"));
+			}
+
+			lifecycleDeclaration.getGenerator().getTarget().visit(new LoggingVisitor(context, indents + 1, "generator"));
+		}
 
 		if (!model.getDependencyEdges().isEmpty()) {
 
 			for (IRhenaEdge edge : model.getDependencyEdges()) {
-
-				edge.getTarget().visit(new LoggingVisitor(context, indents + 1, "dependency"));
+				if(!(edge.getTarget() instanceof RhenaReference)) {
+					edge.getTarget().visit(new LoggingVisitor(context, indents + 1, "dependency"));
+				}
 			}
 		}
 	}

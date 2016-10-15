@@ -8,15 +8,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IResolutionContext;
-import com.unnsvc.rhena.common.execution.ExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.TraverseType;
+import com.unnsvc.rhena.common.model.executiontype.IExecutionType;
 import com.unnsvc.rhena.core.configuration.RhenaConfiguration;
+import com.unnsvc.rhena.core.model.RhenaEdge;
+import com.unnsvc.rhena.core.model.processing.GraphResolver;
 import com.unnsvc.rhena.core.resolution.CachingResolutionContext;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
-import com.unnsvc.rhena.core.visitors.EventedVisitor;
-import com.unnsvc.rhena.core.visitors.EventedVisitor.EnterType;
-import com.unnsvc.rhena.core.visitors.ModelInitialisingHandler;
+import com.unnsvc.rhena.core.visitors.LoggingVisitor;
 
 public class TestRhenaModule {
 
@@ -37,62 +38,27 @@ public class TestRhenaModule {
 
 	private void execute() throws Exception {
 
-		ModuleIdentifier entryPointIdentifier = ModuleIdentifier.valueOf("com.unnsvc.ide:common:0.0.1");
-
 		RhenaConfiguration config = new RhenaConfiguration();
 		IResolutionContext context = new CachingResolutionContext(config);
-		context.getRepositories().add(new WorkspaceRepository(context, new File("../../com.unnsvc.ide/")));
+		context.getRepositories().add(new WorkspaceRepository(context, new File("../../com.unnsvc.erhena/")));
 		context.getRepositories().add(new WorkspaceRepository(context, new File("../../")));
-//		context.getRepositories().add(new RemoteRepository(URI.create(str)));
-//		context.getRepositories().add(new WorkspaceRepository(context, new File("../example-workspace")));
 
+		ModuleIdentifier entryPointIdentifier = ModuleIdentifier.valueOf("com.unnsvc.erhena:core:0.0.1");
 		IRhenaModule model = context.materialiseModel(entryPointIdentifier);
 
-		model.visit(new EventedVisitor(EnterType.AFTER, new ModelInitialisingHandler(context)).setEnterUnusedLifecycle(true));
+		GraphResolver gr = new GraphResolver(context);
+		gr.resolveReferences(new RhenaEdge(IExecutionType.DELIVERABLE, model, TraverseType.SCOPE));
 
-		context.materialiseExecution(model, ExecutionType.DELIVERABLE);
-
-		
-		/**
-		 * Do the logging here
-		 */
-//		model.visit(new EdgeVisitor(EnterType.BEFORE, new EdgeHandler() {
-//
-//			@Override
-//			public void handleEdge(IRhenaModule module, IRhenaEdge edge) {
-//
-//				log.debug(module.getModuleIdentifier().toTag() + ": entering edge: " + edge);
-//			}
-//
-//			@Override
-//			public boolean canEnter(IRhenaModule source, IRhenaEdge target) {
-//
-//				return true;
-//			}
-//		}));
+		// model.visit(new EventedVisitor(EnterType.AFTER, new
+		// ModelInitialisingHandler(context)).setEnterUnusedLifecycle(true));
+		// context.materialiseExecution(model, ExecutionType.DELIVERABLE);
 
 		// model.visit(new ModelInitialisingVisitor(context));
 		// model.visit(new ModelMergeVisitor(context));
-		// model.visit(new LoggingVisitor(context));
+		model.visit(new LoggingVisitor(context));
 		// model.visit(new ModelBuildingVisitor(context));
 
+		log.info("Finished");
 	}
-}
 
-// Could do something like...
-// model.visit(new RhenaModelProcessingVisitor(resolver, new ModuleCallback() {
-//
-// @Override
-// public void onModel(RhenaModel model) {
-//
-//// log.debug("Model node: " + model);
-// }
-// }));
-//
-// model.visit(new RhenaEdgeProcessingVisitor(resolver, new EdgeCallback() {
-//
-// @Override
-// public void onModelEdge(RhenaEdge edge) {
-//// log.debug("On edge: " + edge);
-// }
-// }));
+}

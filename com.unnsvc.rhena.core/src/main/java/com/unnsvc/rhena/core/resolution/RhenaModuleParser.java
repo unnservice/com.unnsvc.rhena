@@ -22,9 +22,9 @@ import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.ExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.TraverseType;
+import com.unnsvc.rhena.common.model.executiontype.IExecutionType;
 import com.unnsvc.rhena.core.lifecycle.ContextReference;
 import com.unnsvc.rhena.core.lifecycle.GeneratorReference;
 import com.unnsvc.rhena.core.lifecycle.LifecycleDeclaration;
@@ -62,7 +62,7 @@ public class RhenaModuleParser {
 			if (extendsAttribute != null) {
 				String extendsModuleIdentifierStr = extendsAttribute.getNodeValue();
 				ModuleIdentifier extendsModuleIdentifier = ModuleIdentifier.valueOf(extendsModuleIdentifierStr);
-				module.setParentModule(new RhenaEdge(ExecutionType.MODEL, new RhenaReference(extendsModuleIdentifier), TraverseType.HIERARCHY));
+				module.setParentModule(new RhenaEdge(IExecutionType.MODEL, new RhenaReference(extendsModuleIdentifier), TraverseType.HIERARCHY));
 			}
 		}
 
@@ -160,7 +160,7 @@ public class RhenaModuleParser {
 				// Make a document out of the entire processor node
 				Document config = nodeToDocument(child);
 
-				ExecutionType et = ExecutionType.FRAMEWORK;
+				IExecutionType et = IExecutionType.FRAMEWORK;
 				TraverseType tt = TraverseType.SCOPE;
 
 				if (child.getLocalName().equals("context")) {
@@ -192,7 +192,7 @@ public class RhenaModuleParser {
 
 	private void processDepenencyNode(Node moduleChild) throws DOMException, RhenaException {
 
-		ExecutionType dependencyType = ExecutionType.valueOf(moduleChild.getLocalName().toUpperCase());
+		IExecutionType dependencyType = Utils.valueOf(moduleChild.getLocalName());
 		String dependencyTargetModuleIdentifier = moduleChild.getAttributes().getNamedItem("module").getNodeValue();
 
 		ModuleIdentifier moduleIdentifier = ModuleIdentifier.valueOf(dependencyTargetModuleIdentifier);
@@ -208,7 +208,7 @@ public class RhenaModuleParser {
 			 * Default to scope traversal for deliverables
 			 */
 			TraverseType traverseType = TraverseType.NONE;
-			if (dependencyType.equals(ExecutionType.DELIVERABLE)) {
+			if (dependencyType.equals(IExecutionType.DELIVERABLE)) {
 				traverseType = TraverseType.SCOPE;
 			}
 			edge = new RhenaEdge(dependencyType, new RhenaReference(moduleIdentifier), traverseType);

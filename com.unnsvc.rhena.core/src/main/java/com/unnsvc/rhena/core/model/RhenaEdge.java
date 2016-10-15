@@ -1,18 +1,18 @@
 
 package com.unnsvc.rhena.core.model;
 
-import com.unnsvc.rhena.common.execution.ExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.TraverseType;
+import com.unnsvc.rhena.common.model.executiontype.IExecutionType;
 
 public class RhenaEdge implements IRhenaEdge {
 
-	private ExecutionType executionType;
+	private IExecutionType executionType;
 	private IRhenaModule target;
 	private TraverseType traverseType;
 
-	public RhenaEdge(ExecutionType executionType, IRhenaModule target, TraverseType traverseType) {
+	public RhenaEdge(IExecutionType executionType, IRhenaModule target, TraverseType traverseType) {
 		
 		this.executionType = executionType;
 		this.target = target;
@@ -20,7 +20,7 @@ public class RhenaEdge implements IRhenaEdge {
 	}
 
 	@Override
-	public ExecutionType getExecutionType() {
+	public IExecutionType getExecutionType() {
 
 		return executionType;
 	}
