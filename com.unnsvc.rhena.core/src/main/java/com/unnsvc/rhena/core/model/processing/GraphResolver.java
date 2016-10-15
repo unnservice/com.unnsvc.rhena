@@ -33,7 +33,7 @@ public class GraphResolver {
 		while (!edges.isEmpty()) {
 			edgeProcessing: {
 				IRhenaEdge currentEdge = edges.peek();
-				// Always resolve
+				// Always resolve as we visit
 				if (currentEdge.getTarget() instanceof RhenaReference) {
 					currentEdge.setTarget(context.materialiseModel(currentEdge.getTarget().getModuleIdentifier()));
 				}
@@ -81,15 +81,14 @@ public class GraphResolver {
 					 * We only care about dependencies which we can use in the
 					 * requested scope
 					 */
-					if (currentEdge.getExecutionType().getClass().isInstance(dependency.getExecutionType())) {
-						log.info(currentEdge.getExecutionType().getClass().getName() + " isInstance on -> " + dependency.getExecutionType().getClass().getName());
+					if (
+							currentEdge.getExecutionType() == dependency.getExecutionType() ||
+							currentEdge.getExecutionType().isA(dependency.getExecutionType())) {
 						if (!processed.contains(dependency)) {
 
 							edges.pushUnique(dependency);
 							break edgeProcessing;
 						}
-					} else {
-						log.info(dependency.getExecutionType().getClass().getName() + " not assignable to " + currentEdge.getExecutionType().getClass());
 					}
 				}
 

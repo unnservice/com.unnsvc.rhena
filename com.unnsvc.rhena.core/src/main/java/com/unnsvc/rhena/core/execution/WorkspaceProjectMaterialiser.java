@@ -15,10 +15,10 @@ import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.TraverseType;
-import com.unnsvc.rhena.common.model.executiontype.IExecutionType;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionReference;
 import com.unnsvc.rhena.common.model.lifecycle.IGenerator;
@@ -39,9 +39,9 @@ public class WorkspaceProjectMaterialiser {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private IResolutionContext context;
 	private IRhenaModule module;
-	private IExecutionType type;
+	private EExecutionType type;
 
-	public WorkspaceProjectMaterialiser(IResolutionContext context, IRhenaModule module, IExecutionType type) {
+	public WorkspaceProjectMaterialiser(IResolutionContext context, IRhenaModule module, EExecutionType type) {
 
 		this.context = context;
 		this.module = module;
@@ -94,10 +94,10 @@ public class WorkspaceProjectMaterialiser {
 
 		List<URL> l = new ArrayList<URL>();
 
-		l.addAll(processor.getTarget().visit(new RhenaDependencyCollectionVisitor(context, IExecutionType.FRAMEWORK, TraverseType.SCOPE)).getDependenciesURL());
+		l.addAll(processor.getTarget().visit(new RhenaDependencyCollectionVisitor(context, EExecutionType.FRAMEWORK, TraverseType.SCOPE)).getDependenciesURL());
 		URLClassLoader dependenciesLoader = new URLClassLoader(l.toArray(new URL[l.size()]), Thread.currentThread().getContextClassLoader());
 		URLClassLoader mainLoader = new URLClassLoader(
-				new URL[] { context.materialiseExecution(processor.getTarget(), IExecutionType.FRAMEWORK).getArtifact().getArtifactUrl() }, dependenciesLoader);
+				new URL[] { context.materialiseExecution(processor.getTarget(), EExecutionType.FRAMEWORK).getArtifact().getArtifactUrl() }, dependenciesLoader);
 
 		// try {
 		// Class c = mainLoader.loadClass(IResolutionContext.class.getName());

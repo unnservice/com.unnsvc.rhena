@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.executiontype.IExecutionType;
+import com.unnsvc.rhena.common.execution.EExecutionType;
 
 public class Utils {
 
@@ -89,21 +89,21 @@ public class Utils {
 		}
 	}
 
-	public static IExecutionType valueOf(String executionType) throws RhenaException {
+	public static EExecutionType valueOf(String executionType) throws RhenaException {
 
 		switch (executionType) {
 			case "model":
-				return IExecutionType.MODEL;
+				return EExecutionType.MODEL;
 			case "framework":
-				return IExecutionType.FRAMEWORK;
+				return EExecutionType.FRAMEWORK;
 			case "deliverable":
-				return IExecutionType.DELIVERABLE;
+				return EExecutionType.DELIVERABLE;
 			case "test":
-				return IExecutionType.TEST;
+				return EExecutionType.TEST;
 			case "integration":
-				return IExecutionType.INTEGRATION;
+				return EExecutionType.INTEGRATION;
 			case "prototype":
-				return IExecutionType.PROTOTYPE;
+				return EExecutionType.PROTOTYPE;
 			default:
 				throw new RhenaException("Unknown execution type: " + executionType);
 		}

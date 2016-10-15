@@ -15,10 +15,10 @@ import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.TraverseType;
-import com.unnsvc.rhena.common.model.executiontype.IExecutionType;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.model.lifecycle.IResource;
@@ -46,7 +46,7 @@ public class DefaultProcessor implements IProcessor {
 	 * @TODO batch instead of running for each resource
 	 */
 	@Override
-	public void process(IExecutionContext context, IRhenaModule module, IExecutionType type) throws RhenaException {
+	public void process(IExecutionContext context, IRhenaModule module, EExecutionType type) throws RhenaException {
 
 		for (IResource resource : context.getResources(type)) {
 
@@ -61,7 +61,7 @@ public class DefaultProcessor implements IProcessor {
 		}
 	}
 
-	private void compile(IRhenaModule module, IResource resource, IExecutionType type) throws RhenaException {
+	private void compile(IRhenaModule module, IResource resource, EExecutionType type) throws RhenaException {
 
 		CompilationProgress progress = new CompilationProgress() {
 
@@ -96,7 +96,7 @@ public class DefaultProcessor implements IProcessor {
 		for (IRhenaEdge edge : module.getDependencyEdges()) {
 
 			if (edge.getExecutionType().equals(type)) {
-				deps.addAll(module.visit(new RhenaDependencyCollectionVisitor(context, IExecutionType.FRAMEWORK, TraverseType.SCOPE)).getDependenciesURL());
+				deps.addAll(module.visit(new RhenaDependencyCollectionVisitor(context, EExecutionType.FRAMEWORK, TraverseType.SCOPE)).getDependenciesURL());
 			}
 		}
 

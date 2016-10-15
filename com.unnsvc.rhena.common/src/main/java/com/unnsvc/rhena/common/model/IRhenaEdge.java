@@ -1,10 +1,10 @@
 package com.unnsvc.rhena.common.model;
 
-import com.unnsvc.rhena.common.model.executiontype.IExecutionType;
+import com.unnsvc.rhena.common.execution.EExecutionType;
 
 public interface IRhenaEdge {
 
-	public IExecutionType getExecutionType();
+	public EExecutionType getExecutionType();
 
 	public IRhenaModule getTarget();
 

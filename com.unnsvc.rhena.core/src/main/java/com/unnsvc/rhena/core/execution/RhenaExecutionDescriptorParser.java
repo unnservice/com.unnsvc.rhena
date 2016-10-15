@@ -24,15 +24,15 @@ import org.w3c.dom.NodeList;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
+import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.executiontype.IExecutionType;
 
 public class RhenaExecutionDescriptorParser {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ModuleIdentifier identifier;
-	private IExecutionType type;
+	private EExecutionType type;
 	private URI baseUri;
 
 	/**
@@ -42,7 +42,7 @@ public class RhenaExecutionDescriptorParser {
 	 * @param executionDescriptor
 	 * @throws RhenaException
 	 */
-	public RhenaExecutionDescriptorParser(ModuleIdentifier identifier, IExecutionType type, URI baseUri) throws RhenaException {
+	public RhenaExecutionDescriptorParser(ModuleIdentifier identifier, EExecutionType type, URI baseUri) throws RhenaException {
 
 		this.identifier = identifier;
 		this.type = type;

@@ -7,10 +7,10 @@ import java.util.List;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.executiontype.IExecutionType;
 
 /**
  * @TODO maybe add some sort of Class to return from the materialise() methods,
@@ -49,7 +49,7 @@ public abstract class AbstractResolutionContext implements IResolutionContext {
 	}
 
 	@Override
-	public IRhenaExecution materialiseExecution(IRhenaModule module, IExecutionType type) throws RhenaException {
+	public IRhenaExecution materialiseExecution(IRhenaModule module, EExecutionType type) throws RhenaException {
 
 		IRhenaExecution execution = module.getRepository().materialiseExecution(module, type);
 

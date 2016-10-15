@@ -18,8 +18,8 @@ import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.executiontype.IExecutionType;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IGenerator;
 import com.unnsvc.rhena.common.model.lifecycle.IResource;
@@ -38,7 +38,7 @@ public class DefaultGenerator implements IGenerator {
 	}
 
 	@Override
-	public File generate(IExecutionContext context, IRhenaModule module, IExecutionType type) throws RhenaException {
+	public File generate(IExecutionContext context, IRhenaModule module, EExecutionType type) throws RhenaException {
 
 		List<IResource> resources = context.getResources(type);
 

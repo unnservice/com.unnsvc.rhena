@@ -10,8 +10,8 @@ import java.util.Map;
 import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.IResolutionContext;
+import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.executiontype.IExecutionType;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IResource;
 import com.unnsvc.rhena.lifecycle.resource.Resource;
@@ -29,12 +29,12 @@ public class DefaultContext implements IExecutionContext {
 	// private Document configuration
 
 	// private Logger log = LoggerFactory.getLogger(getClass());
-	private Map<IExecutionType, List<IResource>> resources;
+	private Map<EExecutionType, List<IResource>> resources;
 	// private Map<Class<? extends ILifecycleProcessor>, Object>
 
 	public DefaultContext(IResolutionContext context) {
 
-		this.resources = new HashMap<IExecutionType, List<IResource>>();
+		this.resources = new HashMap<EExecutionType, List<IResource>>();
 	}
 
 	/**
@@ -47,11 +47,11 @@ public class DefaultContext implements IExecutionContext {
 
 		File location = new File(module.getLocation().getPath()).getAbsoluteFile();
 
-		this.resources.put(IExecutionType.DELIVERABLE,
+		this.resources.put(EExecutionType.DELIVERABLE,
 				resourcesAsList(new Resource(new File(location, "src/main/java"), new File(location, "target/deliverable/classes")),
 						new Resource(new File(location, "src/main/resources"), new File(location, "target/deliverable/classes"))));
 
-		this.resources.put(IExecutionType.FRAMEWORK,
+		this.resources.put(EExecutionType.FRAMEWORK,
 				resourcesAsList(new Resource(new File(location, "src/framework/java"), new File(location, "target/framework/classes")),
 						new Resource(new File(location, "src/framework/resources"), new File(location, "target/framework/classes"))));
 	}
@@ -66,7 +66,7 @@ public class DefaultContext implements IExecutionContext {
 	}
 
 	@Override
-	public List<IResource> getResources(IExecutionType execution) {
+	public List<IResource> getResources(EExecutionType execution) {
 
 		return resources.get(execution);
 	}

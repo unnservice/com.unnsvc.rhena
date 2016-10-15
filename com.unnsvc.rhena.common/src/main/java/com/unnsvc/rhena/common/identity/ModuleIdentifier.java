@@ -2,7 +2,7 @@
 package com.unnsvc.rhena.common.identity;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.executiontype.IExecutionType;
+import com.unnsvc.rhena.common.execution.EExecutionType;
 
 public class ModuleIdentifier {
 
@@ -43,7 +43,7 @@ public class ModuleIdentifier {
 		return componentName.toString() + ":" + moduleName.toString() + ":" + version.toString();
 	}
 
-	public String toTag(IExecutionType type) {
+	public String toTag(EExecutionType type) {
 
 		return "[" + toString() + "]:" + type.literal();
 	}
@@ -96,7 +96,7 @@ public class ModuleIdentifier {
 		return new ModuleIdentifier(parts[0], parts[1], parts[2]);
 	}
 
-	public String toFileName(IExecutionType type) {
+	public String toFileName(EExecutionType type) {
 
 		return componentName.toString() + "." + moduleName.toString() + "-" + type.toString() + "-" + version.toString();
 	}

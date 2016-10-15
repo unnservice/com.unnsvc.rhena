@@ -6,10 +6,10 @@ import java.net.URI;
 
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.executiontype.IExecutionType;
 import com.unnsvc.rhena.core.execution.WorkspaceProjectMaterialiser;
 import com.unnsvc.rhena.core.model.RhenaModule;
 
@@ -39,7 +39,7 @@ public class WorkspaceRepository extends AbstractRepository {
 	}
 
 	@Override
-	public IRhenaExecution materialiseExecution(IRhenaModule model, IExecutionType type) throws RhenaException {
+	public IRhenaExecution materialiseExecution(IRhenaModule model, EExecutionType type) throws RhenaException {
 
 		WorkspaceProjectMaterialiser etm = new WorkspaceProjectMaterialiser(context, model, type);
 		return etm.materialiseExecution();

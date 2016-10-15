@@ -8,10 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IResolutionContext;
+import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.TraverseType;
-import com.unnsvc.rhena.common.model.executiontype.IExecutionType;
 import com.unnsvc.rhena.core.configuration.RhenaConfiguration;
 import com.unnsvc.rhena.core.model.RhenaEdge;
 import com.unnsvc.rhena.core.model.processing.GraphResolver;
@@ -47,7 +47,7 @@ public class TestRhenaModule {
 		IRhenaModule model = context.materialiseModel(entryPointIdentifier);
 
 		GraphResolver gr = new GraphResolver(context);
-		gr.resolveReferences(new RhenaEdge(IExecutionType.TEST, model, TraverseType.SCOPE));
+		gr.resolveReferences(new RhenaEdge(EExecutionType.TEST, model, TraverseType.SCOPE));
 
 		// model.visit(new EventedVisitor(EnterType.AFTER, new
 		// ModelInitialisingHandler(context)).setEnterUnusedLifecycle(true));
