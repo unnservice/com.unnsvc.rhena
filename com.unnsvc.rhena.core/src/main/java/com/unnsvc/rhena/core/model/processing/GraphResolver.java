@@ -81,7 +81,7 @@ public class GraphResolver {
 					 * We only care about dependencies which we can use in the
 					 * requested scope
 					 */
-					if (dependency.getExecutionType().equals(currentEdge.getExecutionType())) {
+					if (currentEdge.getExecutionType().getClass().isInstance(dependency.getExecutionType())) {
 						log.info(currentEdge.getExecutionType().getClass().getName() + " isInstance on -> " + dependency.getExecutionType().getClass().getName());
 						if (!processed.contains(dependency)) {
 

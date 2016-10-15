@@ -47,7 +47,7 @@ public class TestRhenaModule {
 		IRhenaModule model = context.materialiseModel(entryPointIdentifier);
 
 		GraphResolver gr = new GraphResolver(context);
-		gr.resolveReferences(new RhenaEdge(IExecutionType.DELIVERABLE, model, TraverseType.SCOPE));
+		gr.resolveReferences(new RhenaEdge(IExecutionType.TEST, model, TraverseType.SCOPE));
 
 		// model.visit(new EventedVisitor(EnterType.AFTER, new
 		// ModelInitialisingHandler(context)).setEnterUnusedLifecycle(true));
