@@ -57,14 +57,14 @@ public class EventedVisitor implements IModelVisitor {
 
 	private void processLifecycle(IRhenaModule module, ILifecycleDeclaration lifecycle) throws RhenaException {
 
-		enterTree(module, lifecycle.getContext());
+		enterTree(module, lifecycle.getContext().getModuleEdge());
 
 		for (IProcessorReference proc : lifecycle.getProcessors()) {
 
-			enterTree(module, proc);
+			enterTree(module, proc.getModuleEdge());
 		}
 
-		enterTree(module, lifecycle.getGenerator());
+		enterTree(module, lifecycle.getGenerator().getModuleEdge());
 	}
 
 	private void enterTree(IRhenaModule module, IRhenaEdge edge) throws RhenaException {

@@ -29,9 +29,6 @@ public class LoggingVisitor implements IModelVisitor {
 		this.context = context;
 		this.indents = indents;
 		this.label = label;
-		// if(label != null) {
-		// log.info(indent() + label);
-		// }
 	}
 
 	public LoggingVisitor(EExecutionType type, IResolutionContext context) {
@@ -40,10 +37,9 @@ public class LoggingVisitor implements IModelVisitor {
 	}
 
 	private static Set<IRhenaEdge> edges;
+
 	static {
-		if(edges == null) {
-			edges = new HashSet<IRhenaEdge>();
-		}
+		edges = new HashSet<IRhenaEdge>();
 	}
 
 	@Override
@@ -55,8 +51,8 @@ public class LoggingVisitor implements IModelVisitor {
 
 			if (!edges.contains(model.getParentModule())) {
 
-				model.getParentModule().getTarget().visit(new LoggingVisitor(EExecutionType.MODEL, context, indents + 1, "parent"));
 				edges.add(model.getParentModule());
+				model.getParentModule().getTarget().visit(new LoggingVisitor(EExecutionType.MODEL, context, indents + 1, "parent"));
 			}
 		}
 
@@ -66,8 +62,8 @@ public class LoggingVisitor implements IModelVisitor {
 				if (!(edge.getTarget() instanceof RhenaReference)) {
 					if (type.canTraverse(edge.getExecutionType())) {
 						if (!edges.contains(edge)) {
-							edge.getTarget().visit(new LoggingVisitor(type, context, indents + 1, "dependency"));
 							edges.add(edge);
+							edge.getTarget().visit(new LoggingVisitor(type, context, indents + 1, "dependency"));
 						}
 					}
 				}
@@ -79,7 +75,7 @@ public class LoggingVisitor implements IModelVisitor {
 
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < indents; i++) {
-			sb.append("    ");
+			sb.append("\t");
 		}
 		return sb.toString();
 	}

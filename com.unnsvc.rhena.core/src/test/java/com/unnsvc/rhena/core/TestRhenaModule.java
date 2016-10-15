@@ -58,29 +58,21 @@ public class TestRhenaModule {
 		/**
 		 * Test debug log
 		 */
-//		for (ILifecycleDeclaration lifecycle : gr.getLifecycles()) {
-//			log.info("Lifecycle " + lifecycle.getName());
-//			lifecycle.getContext().getModuleEdge().getTarget().visit(new LoggingVisitor(lifecycle.getContext().getModuleEdge().getExecutionType(), context));
-//			lifecycle.getProcessors().forEach(processor -> {
-//				try {
-//					processor.getModuleEdge().getTarget().visit(new LoggingVisitor(processor.getModuleEdge().getExecutionType(), context));
-//				} catch (RhenaException e) {
-//
-//					e.printStackTrace();
-//				}
-//			});
-//			lifecycle.getGenerator().getModuleEdge().getTarget().visit(new LoggingVisitor(lifecycle.getGenerator().getModuleEdge().getExecutionType(), context));
-//		}
-//		log.info("Execution plan: ");
-//		model.visit(new LoggingVisitor(type, context));
+		for (ILifecycleDeclaration lifecycle : gr.getLifecycles()) {
+			log.info("Lifecycle " + lifecycle.getName() + ":");
+			lifecycle.getContext().getModuleEdge().getTarget().visit(new LoggingVisitor(lifecycle.getContext().getModuleEdge().getExecutionType(), context, 0, "context"));
+			lifecycle.getProcessors().forEach(processor -> {
+				try {
+					processor.getModuleEdge().getTarget().visit(new LoggingVisitor(processor.getModuleEdge().getExecutionType(), context, 0, "processor"));
+				} catch (RhenaException e) {
 
-		// model.visit(new EventedVisitor(EnterType.AFTER, new
-		// ModelInitialisingHandler(context)).setEnterUnusedLifecycle(true));
-		// context.materialiseExecution(model, ExecutionType.DELIVERABLE);
-
-		// model.visit(new ModelInitialisingVisitor(context));
-		// model.visit(new ModelMergeVisitor(context));
-		// model.visit(new ModelBuildingVisitor(context));
+					e.printStackTrace();
+				}
+			});
+			lifecycle.getGenerator().getModuleEdge().getTarget().visit(new LoggingVisitor(lifecycle.getGenerator().getModuleEdge().getExecutionType(), context, 0, "generator"));
+		}
+		log.info("Execution plan: ");
+		model.visit(new LoggingVisitor(type, context, 0 , "entry"));
 
 		log.info("Finished");
 	}
