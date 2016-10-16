@@ -7,6 +7,7 @@ import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.ModuleType;
 import com.unnsvc.rhena.core.model.RhenaModule;
 
 public abstract class AbstractRepository implements IRepository {
@@ -19,9 +20,9 @@ public abstract class AbstractRepository implements IRepository {
 		this.context = context;
 	}
 
-	protected RhenaModule resolveModel(ModuleIdentifier moduleIdentifier, URI projectLocationUri) throws RhenaException {
+	protected RhenaModule resolveModel(ModuleType moduleType, ModuleIdentifier moduleIdentifier, URI projectLocationUri) throws RhenaException {
 
-		RhenaModule model = new RhenaModuleParser(context, moduleIdentifier, projectLocationUri, this).getModel();
+		RhenaModule model = new RhenaModuleParser(context, moduleType, moduleIdentifier, projectLocationUri, this).getModel();
 		return model;
 	}
 

@@ -2,25 +2,28 @@
 package com.unnsvc.rhena.core.model;
 
 import java.net.URI;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import com.unnsvc.rhena.common.IRepository;
+import com.unnsvc.rhena.common.exceptions.NotExistsException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.ModuleType;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
 public class RhenaReference implements IRhenaModule {
 
+	private ModuleType moduleType;
 	private ModuleIdentifier moduleIdentifier;
 
 	public RhenaReference(ModuleIdentifier moduleIdentifier) {
 
+		this.moduleType = ModuleType.REFERENCE;
 		this.moduleIdentifier = moduleIdentifier;
 	}
 
@@ -103,7 +106,6 @@ public class RhenaReference implements IRhenaModule {
 	public void setDependencyEdges(List<IRhenaEdge> dependencyEdges) {
 
 		throw new UnsupportedOperationException("Call on model of yet undersolved reference for: " + moduleIdentifier.toString());
-
 	}
 
 	@Override
@@ -121,7 +123,7 @@ public class RhenaReference implements IRhenaModule {
 	}
 
 	@Override
-	public ILifecycleDeclaration getLifecycleDeclaration(String lifecycleName) throws RhenaException {
+	public ILifecycleDeclaration getLifecycleDeclaration(String lifecycleName) throws NotExistsException {
 
 		throw new UnsupportedOperationException("Call on model of yet undersolved reference for: " + moduleIdentifier.toString());
 	}
@@ -130,5 +132,11 @@ public class RhenaReference implements IRhenaModule {
 	public boolean hasLifecycleDeclaration(String lifecycleName) throws RhenaException {
 
 		throw new UnsupportedOperationException("Call on model of yet undersolved reference for: " + moduleIdentifier.toString());
+	}
+
+	@Override
+	public ModuleType getModuleType() {
+
+		return moduleType;
 	}
 }

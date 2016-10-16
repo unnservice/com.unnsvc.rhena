@@ -98,7 +98,7 @@ public class ModuleIdentifier {
 
 	public String toFileName(EExecutionType type) {
 
-		return componentName.toString() + "." + moduleName.toString() + "-" + type.toString() + "-" + version.toString();
+		return componentName.toString() + "." + moduleName.toString() + "-" + type.literal() + "-" + version.toString();
 	}
 
 }

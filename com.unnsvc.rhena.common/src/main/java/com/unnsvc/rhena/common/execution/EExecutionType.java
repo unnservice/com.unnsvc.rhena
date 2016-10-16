@@ -24,6 +24,10 @@ public enum EExecutionType implements Comparable<EExecutionType> {
 
 	public boolean canTraverse(EExecutionType that) {
 
+		if(that == null) {
+			return false;
+		}
+		
 		if (this == that) {
 			return true;
 		}

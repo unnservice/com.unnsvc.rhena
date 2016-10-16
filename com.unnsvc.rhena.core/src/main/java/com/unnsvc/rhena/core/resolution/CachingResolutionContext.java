@@ -6,10 +6,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.unnsvc.rhena.common.exceptions.NotExistsException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
@@ -31,6 +33,11 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private LocalCacheRepository cacheRepository;
 	protected Map<ModuleIdentifier, IRhenaModule> models;
+	/**
+	 * This will become modified from multiple threads as materialiseExecutor is
+	 * called from execution threads.
+	 * @TODO take it out of here and into a rhena context
+	 */
 	protected Map<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>> executions;
 	private Set<IRhenaEdge> edges;
 
@@ -38,7 +45,7 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 
 		this.cacheRepository = new LocalCacheRepository(this, configuration.getLocalCacheRepository());
 		this.models = new HashMap<ModuleIdentifier, IRhenaModule>();
-		this.executions = new HashMap<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>>();
+		this.executions = new ConcurrentHashMap<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>>();
 		this.edges = new HashSet<IRhenaEdge>();
 	}
 
@@ -74,7 +81,13 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 			return executions.get(identifier).get(type);
 		}
 
-		IRhenaExecution execution = cacheRepository.materialiseExecution(module, type);
+		IRhenaExecution execution = null;
+
+		try {
+			execution = cacheRepository.materialiseExecution(module, type);
+		} catch (NotExistsException nee) {
+			log.debug("Not in local cache repository: " + module.getModuleIdentifier().toTag(type));
+		}
 
 		if (execution == null) {
 

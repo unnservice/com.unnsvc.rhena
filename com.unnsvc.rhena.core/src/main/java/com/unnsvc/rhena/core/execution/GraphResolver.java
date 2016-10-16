@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.core.model.processing;
+package com.unnsvc.rhena.core.execution;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,9 +13,9 @@ import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.NotUniqueException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
+import com.unnsvc.rhena.common.model.ModuleType;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
-import com.unnsvc.rhena.core.model.RhenaReference;
 
 public class GraphResolver {
 
@@ -44,7 +44,7 @@ public class GraphResolver {
 				edgeProcessing: {
 					IRhenaEdge currentEdge = edges.peek();
 					// Always resolve as we visit
-					if (currentEdge.getTarget() instanceof RhenaReference) {
+					if (currentEdge.getTarget().getModuleType() == ModuleType.REFERENCE) {
 						currentEdge.setTarget(context.materialiseModel(currentEdge.getTarget().getModuleIdentifier()));
 					}
 
@@ -55,55 +55,35 @@ public class GraphResolver {
 						break edgeProcessing;
 					}
 
-					/**
-					 * Then process lifecycle, but only the one the target
-					 * module references.
-					 * 
-					 **/
-					String lifecycleName = currentEdge.getTarget().getLifecycleName();
-					if (lifecycleName != null) {
-						ILifecycleDeclaration lifecycle = currentEdge.getTarget().getLifecycleDeclaration(lifecycleName);
-
+					if (currentEdge.getTarget().getModuleType() == ModuleType.WORKSPACE) {
 						/**
-						 * @TODO It may already contain a lifecycle which was
-						 *       declared somewhere else, but under the same
-						 *       name, it won't be re-processed. Evalute if this
-						 *       is even possible.
-						 */
-						if (!lifecycles.contains(lifecycle)) {
+						 * Then process lifecycle if the module is workspace
+						 * 
+						 **/
+						String lifecycleName = currentEdge.getTarget().getLifecycleName();
+						if (lifecycleName != null) {
+							ILifecycleDeclaration lifecycle = currentEdge.getTarget().getLifecycleDeclaration(lifecycleName);
 
-							resolveReferences(lifecycle.getContext().getModuleEdge());
+							/**
+							 * @TODO It may already contain a lifecycle which
+							 *       was declared somewhere else, but under the
+							 *       same name, it won't be re-processed.
+							 *       Evalute if this is even possible.
+							 */
+							if (!lifecycles.contains(lifecycle)) {
 
-							for (IProcessorReference processor : lifecycle.getProcessors()) {
+								resolveReferences(lifecycle.getContext().getModuleEdge());
 
-								resolveReferences(processor.getModuleEdge());
+								for (IProcessorReference processor : lifecycle.getProcessors()) {
+
+									resolveReferences(processor.getModuleEdge());
+								}
+
+								resolveReferences(lifecycle.getGenerator().getModuleEdge());
+
+								lifecycles.add(lifecycle);
 							}
-
-							resolveReferences(lifecycle.getGenerator().getModuleEdge());
-
-							lifecycles.add(lifecycle);
 						}
-
-						// if (!processed.contains(lifecycle.getContext())) {
-						//
-						// edges.pushUnique(lifecycle.getContext());
-						// break edgeProcessing;
-						// }
-						//
-						// for (IProcessorReference processor :
-						// lifecycle.getProcessors()) {
-						//
-						// if (!processed.contains(processor)) {
-						// edges.pushUnique(processor);
-						// break edgeProcessing;
-						// }
-						// }
-						//
-						// if (!processed.contains(lifecycle.getGenerator())) {
-						//
-						// edges.pushUnique(lifecycle.getGenerator());
-						// break edgeProcessing;
-						// }
 					}
 
 					/**

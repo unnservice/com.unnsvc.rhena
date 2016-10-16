@@ -29,6 +29,9 @@ import com.unnsvc.rhena.common.model.lifecycle.ILifecycleProcessorReference;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 import com.unnsvc.rhena.common.visitors.RhenaDependencyCollectionVisitor;
+import com.unnsvc.rhena.lifecycle.DefaultContext;
+import com.unnsvc.rhena.lifecycle.DefaultGenerator;
+import com.unnsvc.rhena.lifecycle.DefaultProcessor;
 
 /**
  * @author noname
@@ -38,44 +41,80 @@ public class WorkspaceProjectMaterialiser {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private IResolutionContext context;
-	private IRhenaModule module;
-	private EExecutionType type;
 
-	public WorkspaceProjectMaterialiser(IResolutionContext context, IRhenaModule module, EExecutionType type) {
+	public WorkspaceProjectMaterialiser(IResolutionContext context) {
 
 		this.context = context;
-		this.module = module;
-		this.type = type;
 	}
 
-	public IRhenaExecution materialiseExecution() throws RhenaException {
+	public IRhenaExecution materialiseExecution(IRhenaModule module, EExecutionType type) throws RhenaException {
 
 		String lifecycleName = module.getLifecycleName();
-		if (lifecycleName == null) {
-			lifecycleName = RhenaConstants.DEFAULT_LIFECYCLE_NAME;
-		}
 
-		ILifecycleDeclaration declaration = module.getLifecycleDeclaration(lifecycleName);
-		IExecutionReference executionContextReference = declaration.getContext();
-		List<IProcessorReference> processorReferences = declaration.getProcessors();
-		IGeneratorReference generatorReference = declaration.getGenerator();
-		return processLifecycleReferences(module, executionContextReference, processorReferences, generatorReference);
+		// lifecycleName = RhenaConstants.DEFAULT_LIFECYCLE_NAME;
+		/**
+		 * @TODO I don't think it's right to use a null lifecycle as a default,
+		 *       but until a better strategy is thought up, because adding the
+		 *       lifecycle into the model would cause circular dependency
+		 *       lifecycleModule->defaultLifecycle->lifecycleModule
+		 */
+
+		if (module.getLifecycleName() != null) {
+			ILifecycleDeclaration declaration = module.getLifecycleDeclaration(lifecycleName);
+			IExecutionReference executionContextReference = declaration.getContext();
+			List<IProcessorReference> processorReferences = declaration.getProcessors();
+			IGeneratorReference generatorReference = declaration.getGenerator();
+
+			return processUsingLifecycleReferences(module, type, declaration.getName(), executionContextReference, processorReferences, generatorReference);
+		} else {
+			return processUsingDefaultLifecycle(module, type);
+		}
 	}
 
-	private IRhenaExecution processLifecycleReferences(IRhenaModule module, IExecutionReference contextReference, List<IProcessorReference> processorReferences,
-			IGeneratorReference generatorReference) throws RhenaException {
+	private IRhenaExecution processUsingDefaultLifecycle(IRhenaModule module, EExecutionType type) throws RhenaException {
 
-		IExecutionContext executionContext = instantiateProcessor(module, contextReference, IExecutionContext.class);
+		DefaultContext contextProc = new DefaultContext(context);
+		contextProc.configure(module, Utils.newEmptyDocument());
+		validateContext(RhenaConstants.DEFAULT_LIFECYCLE_NAME, contextProc);
+
+		DefaultProcessor procProc = new DefaultProcessor(context);
+		procProc.configure(module, Utils.newEmptyDocument());
+		procProc.process(contextProc, module, type);
+
+		DefaultGenerator genProc = new DefaultGenerator(context);
+		genProc.configure(module, Utils.newEmptyDocument());
+		File result = genProc.generate(contextProc, module, type);
+
+		return new RhenaExecution(module.getModuleIdentifier(), type, new ArtifactDescriptor(result.getName(), Utils.toUrl(result), "not-implemented"));
+	}
+
+	private void validateContext(String lifecycleName, IExecutionContext contextProc) throws RhenaException {
+
+		for (EExecutionType type : EExecutionType.values()) {
+
+			if (contextProc.getResources(type) == null) {
+				if (type != EExecutionType.MODEL) {
+					throw new RhenaException("Lifecycle context \"" + lifecycleName + "\", is invalid. Missing resources for execution type: " + type.literal());
+				}
+			}
+		}
+	}
+
+	private IRhenaExecution processUsingLifecycleReferences(IRhenaModule module, EExecutionType type, String lifecycleName,
+			IExecutionReference contextReference, List<IProcessorReference> processorReferences, IGeneratorReference generatorReference) throws RhenaException {
+
+		IExecutionContext executionContext = instantiateProcessor(module, contextReference, IExecutionContext.class, type);
 		executionContext.configure(module, contextReference.getConfiguration());
+		validateContext(lifecycleName, executionContext);
 
 		for (IProcessorReference pref : processorReferences) {
 
-			IProcessor processor = instantiateProcessor(module, pref, IProcessor.class);
+			IProcessor processor = instantiateProcessor(module, pref, IProcessor.class, type);
 			processor.configure(module, pref.getConfiguration());
 			processor.process(executionContext, module, type);
 		}
 
-		IGenerator generator = instantiateProcessor(module, generatorReference, IGenerator.class);
+		IGenerator generator = instantiateProcessor(module, generatorReference, IGenerator.class, type);
 		generator.configure(module, generatorReference.getConfiguration());
 		File artifact = generator.generate(executionContext, module, type);
 
@@ -94,10 +133,12 @@ public class WorkspaceProjectMaterialiser {
 
 		List<URL> l = new ArrayList<URL>();
 
-		l.addAll(processor.getModuleEdge().getTarget().visit(new RhenaDependencyCollectionVisitor(context, EExecutionType.FRAMEWORK, TraverseType.SCOPE)).getDependenciesURL());
+		l.addAll(processor.getModuleEdge().getTarget().visit(new RhenaDependencyCollectionVisitor(context, EExecutionType.FRAMEWORK, TraverseType.SCOPE))
+				.getDependenciesURL());
 		URLClassLoader dependenciesLoader = new URLClassLoader(l.toArray(new URL[l.size()]), Thread.currentThread().getContextClassLoader());
 		URLClassLoader mainLoader = new URLClassLoader(
-				new URL[] { context.materialiseExecution(processor.getModuleEdge().getTarget(), EExecutionType.FRAMEWORK).getArtifact().getArtifactUrl() }, dependenciesLoader);
+				new URL[] { context.materialiseExecution(processor.getModuleEdge().getTarget(), EExecutionType.FRAMEWORK).getArtifact().getArtifactUrl() },
+				dependenciesLoader);
 
 		// try {
 		// Class c = mainLoader.loadClass(IResolutionContext.class.getName());
@@ -121,8 +162,8 @@ public class WorkspaceProjectMaterialiser {
 	 * @throws RhenaException
 	 */
 	@SuppressWarnings("unchecked")
-	private <T extends ILifecycleProcessor> T instantiateProcessor(IRhenaModule model, ILifecycleProcessorReference processor, Class<T> clazzType)
-			throws RhenaException {
+	private <T extends ILifecycleProcessor> T instantiateProcessor(IRhenaModule model, ILifecycleProcessorReference processor, Class<T> clazzType,
+			EExecutionType type) throws RhenaException {
 
 		URLClassLoader loader = createClassloader(processor);
 		try {
@@ -134,7 +175,8 @@ public class WorkspaceProjectMaterialiser {
 			Object o = constr.newInstance(context);
 			return (T) o;
 		} catch (Exception ex) {
-			log.error(processor.getModuleEdge().getTarget().getModuleIdentifier().toTag(type) + " lifecycle classloader has " + loader.getURLs().length + " urls");
+			log.error(processor.getModuleEdge().getTarget().getModuleIdentifier().toTag(type) + " lifecycle classloader has " + loader.getURLs().length
+					+ " urls");
 			for (URL url : loader.getURLs()) {
 				log.error(processor.getModuleEdge().getTarget().getModuleIdentifier().toTag(type) + " lifecycle contains " + url);
 			}
@@ -143,6 +185,27 @@ public class WorkspaceProjectMaterialiser {
 	}
 
 }
+// private ILifecycleDeclaration getDefaultLifecycle() throws RhenaException {
+//
+// LifecycleDeclaration decl = new
+// LifecycleDeclaration(RhenaConstants.DEFAULT_LIFECYCLE_NAME);
+//
+// decl.setContext(new ContextReference(getDefaultProcessorEdge(),
+// DefaultContext.class.getName(), null, Utils.newEmptyDocument()));
+// decl.addProcessor(new ProcessorReference(getDefaultProcessorEdge(),
+// DefaultProcessor.class.getName(), null, Utils.newEmptyDocument()));
+// decl.setGenerator(new GeneratorReference(getDefaultProcessorEdge(),
+// DefaultGenerator.class.getName(), null, Utils.newEmptyDocument()));
+//
+// return decl;
+// }
+//
+// private IRhenaEdge getDefaultProcessorEdge() throws RhenaException {
+//
+// return new RhenaEdge(EExecutionType.FRAMEWORK, new
+// RhenaReference(ModuleIdentifier.valueOf("com.unnsvc.rhena:lifecycle:0.0.1")),
+// TraverseType.SCOPE);
+// }
 
 // private Document getConfiguration(Node configNode) throws RhenaException {
 //

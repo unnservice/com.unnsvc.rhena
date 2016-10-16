@@ -26,6 +26,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
+import com.unnsvc.rhena.common.model.ModuleType;
 import com.unnsvc.rhena.common.model.TraverseType;
 import com.unnsvc.rhena.core.lifecycle.ContextReference;
 import com.unnsvc.rhena.core.lifecycle.GeneratorReference;
@@ -41,11 +42,11 @@ public class RhenaModuleParser {
 	private IResolutionContext context;
 	private RhenaModule module;
 
-	public RhenaModuleParser(IResolutionContext context, ModuleIdentifier moduleIdentifier, URI projectLocationUri, IRepository repository)
-			throws RhenaException {
+	public RhenaModuleParser(IResolutionContext context, ModuleType moduleType, ModuleIdentifier moduleIdentifier, URI projectLocationUri,
+			IRepository repository) throws RhenaException {
 
 		this.context = context;
-		this.module = new RhenaModule(moduleIdentifier, projectLocationUri, repository);
+		this.module = new RhenaModule(moduleType, moduleIdentifier, projectLocationUri, repository);
 		try {
 
 			URI moduleDescriptorUri = new URI(projectLocationUri.toString() + "/module.xml").normalize();
@@ -136,8 +137,7 @@ public class RhenaModuleParser {
 		String versionStr = moduleChild.getAttributes().getNamedItem("version").getNodeValue();
 
 		if (moduleChild.getAttributes().getNamedItem("lifecycle") != null) {
-			// logger.debug("Lifecycle declaration: " +
-			// moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue());
+
 			String lifecycleName = moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue();
 			module.setLifecycleName(lifecycleName);
 		}
@@ -205,6 +205,7 @@ public class RhenaModuleParser {
 		}
 
 		module.getLifecycleDeclarations().put(ld.getName(), ld);
+
 	}
 
 	private Document nodeToDocument(Node child) throws RhenaException {

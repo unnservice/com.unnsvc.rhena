@@ -9,26 +9,30 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.unnsvc.rhena.common.IRepository;
+import com.unnsvc.rhena.common.exceptions.NotExistsException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.ModuleType;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
 public class RhenaModule implements IRhenaModule {
 
 	private ModuleIdentifier moduleIdentifier;
-	private URI location;
-	private IRepository repository;
-	private String lifecycleName;
-	private IRhenaEdge parentModule;
+	private ModuleType moduleType;
 	private List<IRhenaEdge> dependencyEdges;
-	private Properties properties;
+	private String lifecycleName;
 	private Map<String, ILifecycleDeclaration> lifecyclesDeclarations;
+	private URI location;
+	private IRhenaEdge parentModule;
+	private Properties properties;
+	private IRepository repository;
 
-	public RhenaModule(ModuleIdentifier moduleIdentifier, URI location, IRepository repository) {
+	public RhenaModule(ModuleType moduleType, ModuleIdentifier moduleIdentifier, URI location, IRepository repository) {
 
+		this.moduleType = moduleType;
 		this.moduleIdentifier = moduleIdentifier;
 		this.location = location;
 		this.repository = repository;
@@ -38,33 +42,29 @@ public class RhenaModule implements IRhenaModule {
 	}
 
 	@Override
-	public ModuleIdentifier getModuleIdentifier() {
+	public List<IRhenaEdge> getDependencyEdges() {
 
-		return moduleIdentifier;
+		return dependencyEdges;
 	}
 
 	@Override
-	public URI getLocation() {
+	public ILifecycleDeclaration getLifecycleDeclaration(String lifecycleName) throws NotExistsException {
 
-		return location;
+		ILifecycleDeclaration decl = lifecyclesDeclarations.get(lifecycleName);
+		if (decl == null) {
+			if (parentModule != null) {
+				return parentModule.getTarget().getLifecycleDeclaration(lifecycleName);
+			} else {
+				throw new NotExistsException("Lifecycle " + lifecycleName + " was not found");
+			}
+		}
+		return decl;
 	}
 
 	@Override
-	public void setParentModule(IRhenaEdge parentModule) {
+	public Map<String, ILifecycleDeclaration> getLifecycleDeclarations() {
 
-		this.parentModule = parentModule;
-	}
-
-	@Override
-	public IRhenaEdge getParentModule() {
-
-		return parentModule;
-	}
-
-	@Override
-	public void setLifecycleName(String lifecycleName) {
-
-		this.lifecycleName = lifecycleName;
+		return lifecyclesDeclarations;
 	}
 
 	@Override
@@ -74,27 +74,27 @@ public class RhenaModule implements IRhenaModule {
 	}
 
 	@Override
-	public void setDependencyEdges(List<IRhenaEdge> dependencyEdges) {
+	public URI getLocation() {
 
-		this.dependencyEdges = dependencyEdges;
+		return location;
 	}
 
 	@Override
-	public List<IRhenaEdge> getDependencyEdges() {
+	public ModuleIdentifier getModuleIdentifier() {
 
-		return dependencyEdges;
+		return moduleIdentifier;
 	}
 
 	@Override
-	public void setProperty(String key, String value) {
+	public ModuleType getModuleType() {
 
-		this.properties.setProperty(key, value);
+		return moduleType;
 	}
 
 	@Override
-	public void setProperties(Properties properties) {
+	public IRhenaEdge getParentModule() {
 
-		this.properties = properties;
+		return parentModule;
 	}
 
 	@Override
@@ -107,40 +107,6 @@ public class RhenaModule implements IRhenaModule {
 	public IRepository getRepository() {
 
 		return repository;
-	}
-
-	@Override
-	public <T extends IModelVisitor> T visit(T visitor) throws RhenaException {
-
-		visitor.visit(this);
-
-		return visitor;
-	}
-
-	@Override
-	public Map<String, ILifecycleDeclaration> getLifecycleDeclarations() {
-
-		return lifecyclesDeclarations;
-	}
-
-	@Override
-	public void setLifecycleDeclarations(Map<String, ILifecycleDeclaration> lifecycleDeclarations) {
-
-		this.lifecyclesDeclarations = lifecycleDeclarations;
-	}
-
-	@Override
-	public ILifecycleDeclaration getLifecycleDeclaration(String lifecycleName) throws RhenaException {
-
-		ILifecycleDeclaration decl = lifecyclesDeclarations.get(lifecycleName);
-		if (decl == null) {
-			if (parentModule != null) {
-				return parentModule.getTarget().getLifecycleDeclaration(lifecycleName);
-			} else {
-				throw new RhenaException("Lifecycle " + lifecycleName + " was not found");
-			}
-		}
-		return decl;
 	}
 
 	/**
@@ -159,6 +125,50 @@ public class RhenaModule implements IRhenaModule {
 		}
 
 		return false;
+	}
+
+	@Override
+	public void setDependencyEdges(List<IRhenaEdge> dependencyEdges) {
+
+		this.dependencyEdges = dependencyEdges;
+	}
+
+	@Override
+	public void setLifecycleDeclarations(Map<String, ILifecycleDeclaration> lifecycleDeclarations) {
+
+		this.lifecyclesDeclarations = lifecycleDeclarations;
+	}
+
+	@Override
+	public void setLifecycleName(String lifecycleName) {
+
+		this.lifecycleName = lifecycleName;
+	}
+
+	@Override
+	public void setParentModule(IRhenaEdge parentModule) {
+
+		this.parentModule = parentModule;
+	}
+
+	@Override
+	public void setProperties(Properties properties) {
+
+		this.properties = properties;
+	}
+
+	@Override
+	public void setProperty(String key, String value) {
+
+		this.properties.setProperty(key, value);
+	}
+
+	@Override
+	public <T extends IModelVisitor> T visit(T visitor) throws RhenaException {
+
+		visitor.visit(this);
+
+		return visitor;
 	}
 
 }

@@ -8,18 +8,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IResolutionContext;
-import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.TraverseType;
-import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 import com.unnsvc.rhena.core.configuration.RhenaConfiguration;
+import com.unnsvc.rhena.core.execution.GraphResolver;
+import com.unnsvc.rhena.core.execution.ParallelGraphProcessor;
 import com.unnsvc.rhena.core.model.RhenaEdge;
-import com.unnsvc.rhena.core.model.processing.GraphResolver;
 import com.unnsvc.rhena.core.resolution.CachingResolutionContext;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
-import com.unnsvc.rhena.core.visitors.LoggingVisitor;
 
 public class TestRhenaModule {
 
@@ -40,41 +40,30 @@ public class TestRhenaModule {
 
 	private void execute() throws Exception {
 
+		// creaate a rhenacontext which will also have event listeners, use
+		// listeners for sending logging events?
+
+		// not sure how to pass this context around, it will keep track of
+		// everything that we save from the model and execution so that it can
+		// be accessed at a common place
+		IRhenaContext context = new RhenaContext();
+
 		RhenaConfiguration config = new RhenaConfiguration();
-		IResolutionContext context = new CachingResolutionContext(config);
-		context.getRepositories().add(new WorkspaceRepository(context, new File("../../com.unnsvc.erhena/")));
-		context.getRepositories().add(new WorkspaceRepository(context, new File("../../")));
+
+		IResolutionContext resolver = new CachingResolutionContext(config);
+		resolver.getRepositories().add(new WorkspaceRepository(resolver, new File("../../com.unnsvc.erhena/")));
+		resolver.getRepositories().add(new WorkspaceRepository(resolver, new File("../../")));
 
 		ModuleIdentifier entryPointIdentifier = ModuleIdentifier.valueOf("com.unnsvc.erhena:core:0.0.1");
-		IRhenaModule model = context.materialiseModel(entryPointIdentifier);
-
-		GraphResolver gr = new GraphResolver(context);
+		IRhenaModule model = resolver.materialiseModel(entryPointIdentifier);
 
 		EExecutionType type = EExecutionType.PROTOTYPE;
-		gr.resolveReferences(new RhenaEdge(type, model, TraverseType.SCOPE));
+		IRhenaEdge entryPointEdge = new RhenaEdge(type, model, TraverseType.SCOPE);
+		GraphResolver graphResovler = new GraphResolver(resolver);
+		graphResovler.resolveReferences(entryPointEdge);
 
-		
-		
-		/**
-		 * Test debug log
-		 */
-		for (ILifecycleDeclaration lifecycle : gr.getLifecycles()) {
-			log.info("Lifecycle " + lifecycle.getName() + ":");
-			lifecycle.getContext().getModuleEdge().getTarget().visit(new LoggingVisitor(lifecycle.getContext().getModuleEdge().getExecutionType(), context, 0, "context"));
-			lifecycle.getProcessors().forEach(processor -> {
-				try {
-					processor.getModuleEdge().getTarget().visit(new LoggingVisitor(processor.getModuleEdge().getExecutionType(), context, 0, "processor"));
-				} catch (RhenaException e) {
+		new ParallelGraphProcessor(resolver).processEdges(resolver.getEdges());
 
-					e.printStackTrace();
-				}
-			});
-			lifecycle.getGenerator().getModuleEdge().getTarget().visit(new LoggingVisitor(lifecycle.getGenerator().getModuleEdge().getExecutionType(), context, 0, "generator"));
-		}
-		log.info("Execution plan: ");
-		model.visit(new LoggingVisitor(type, context, 0 , "entry"));
-
-		log.info("Finished");
 	}
 
 }

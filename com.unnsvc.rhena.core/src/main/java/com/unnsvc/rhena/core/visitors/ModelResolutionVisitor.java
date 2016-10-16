@@ -9,12 +9,12 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.ModuleType;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionReference;
 import com.unnsvc.rhena.common.model.lifecycle.IGeneratorReference;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
-import com.unnsvc.rhena.core.model.RhenaReference;
 
 /**
  * This class will initialise the model by resolving reference to other models.
@@ -67,7 +67,7 @@ public class ModelResolutionVisitor implements IModelVisitor {
 
 	private void resolveModel(IRhenaEdge parentModule) throws RhenaException {
 
-		if (parentModule != null && parentModule.getTarget() instanceof RhenaReference && !resolved.contains(parentModule.getTarget().getModuleIdentifier())) {
+		if (parentModule != null && parentModule.getTarget().getModuleType() == ModuleType.REFERENCE && !resolved.contains(parentModule.getTarget().getModuleIdentifier())) {
 
 			IRhenaModule resolvedModel = context.materialiseModel(parentModule.getTarget().getModuleIdentifier());
 

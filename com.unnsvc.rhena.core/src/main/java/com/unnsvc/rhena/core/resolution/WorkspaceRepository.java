@@ -10,6 +10,7 @@ import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.ModuleType;
 import com.unnsvc.rhena.core.execution.WorkspaceProjectMaterialiser;
 import com.unnsvc.rhena.core.model.RhenaModule;
 
@@ -34,13 +35,13 @@ public class WorkspaceRepository extends AbstractRepository {
 		}
 
 		URI projectLocationUri = workspaceProject.toURI();
-		return resolveModel(moduleIdentifier, projectLocationUri);
+		return resolveModel(ModuleType.WORKSPACE, moduleIdentifier, projectLocationUri);
 	}
 
 	@Override
 	public IRhenaExecution materialiseExecution(IRhenaModule model, EExecutionType type) throws RhenaException {
 
-		WorkspaceProjectMaterialiser etm = new WorkspaceProjectMaterialiser(getContext(), model, type);
-		return etm.materialiseExecution();
+		WorkspaceProjectMaterialiser etm = new WorkspaceProjectMaterialiser(getContext());
+		return etm.materialiseExecution(model, type);
 	}
 }

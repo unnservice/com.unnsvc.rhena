@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.unnsvc.rhena.common.IRepository;
+import com.unnsvc.rhena.common.exceptions.NotExistsException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
@@ -17,6 +18,8 @@ public interface IRhenaModule extends IVisitableModel {
 	public ModuleIdentifier getModuleIdentifier();
 
 	public URI getLocation();
+
+	public ModuleType getModuleType();
 
 	public IRhenaEdge getParentModule();
 
@@ -50,7 +53,7 @@ public interface IRhenaModule extends IVisitableModel {
 	 * @throws RhenaException
 	 *             if no lifecycle with that name was found
 	 */
-	public ILifecycleDeclaration getLifecycleDeclaration(String lifecycleName) throws RhenaException;
+	public ILifecycleDeclaration getLifecycleDeclaration(String lifecycleName) throws NotExistsException;
 
 	public boolean hasLifecycleDeclaration(String lifecycleName) throws RhenaException;
 

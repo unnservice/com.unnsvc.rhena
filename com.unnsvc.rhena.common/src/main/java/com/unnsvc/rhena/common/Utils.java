@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -106,6 +107,15 @@ public class Utils {
 				return EExecutionType.PROTOTYPE;
 			default:
 				throw new RhenaException("Unknown execution type: " + executionType);
+		}
+	}
+
+	public static URI toUri(String uriString) throws RhenaException {
+
+		try {
+			return new URI(uriString).normalize();
+		} catch (URISyntaxException use) {
+			throw new RhenaException(use.getMessage(), use);
 		}
 	}
 }

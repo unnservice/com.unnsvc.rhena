@@ -48,6 +48,7 @@ public class DefaultProcessor implements IProcessor {
 	@Override
 	public void process(IExecutionContext context, IRhenaModule module, EExecutionType type) throws RhenaException {
 
+//		System.err.println("Context is " + context + " type is " + type);
 		for (IResource resource : context.getResources(type)) {
 
 			if (resource.getSource().exists() && resource.getSource().listFiles().length > 0) {
@@ -103,7 +104,7 @@ public class DefaultProcessor implements IProcessor {
 		File source = resource.getSource();
 		File target = resource.getTarget();
 
-		String cmdline = "-1.8 -classpath " + toClasspath(deps) + " -d " + target + " " + source;
+		String cmdline = "-1.8 " + toClasspathFlag(deps) + " -d " + target + " " + source;
 
 		log.debug(module.getModuleIdentifier().toTag(type) + " compiling");
 		for (URL classpath : deps) {
@@ -116,7 +117,7 @@ public class DefaultProcessor implements IProcessor {
 		}
 	}
 
-	private String toClasspath(List<URL> deps) {
+	private String toClasspathFlag(List<URL> deps) {
 
 		if (deps.isEmpty()) {
 			return "";
@@ -127,7 +128,7 @@ public class DefaultProcessor implements IProcessor {
 			sb.append(url.getPath()).append(File.pathSeparatorChar);
 		}
 
-		return sb.toString().substring(0, sb.toString().length() - 1);
+		return "-classpath " + sb.toString().substring(0, sb.toString().length() - 1);
 	}
 
 }

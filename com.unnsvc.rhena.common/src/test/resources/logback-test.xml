@@ -6,14 +6,17 @@
 		</encoder>
 	</appender>
 
-	<logger name="com.unnsvc.rhena.core.resolution.LocalCacheRepository" level="INFO" />
-	<logger name="com.unnsvc.rhena.common.Utils" level="INFO" />
-	<logger name="com.unnsvc.rhena.core.visitors.ModelMergeVisitor" level="INFO" />
+	<!-- <logger name="com.unnsvc.rhena.core.resolution.LocalCacheRepository" level="INFO" /> -->
+	<!-- <logger name="com.unnsvc.rhena.common.Utils" level="INFO" /> -->
+	<!-- <logger name="com.unnsvc.rhena.core.visitors.ModelMergeVisitor" level="INFO" /> -->
 	<!-- <logger name="com.unnsvc.rhena.core.resolution.RhenaModuleParser" level="INFO" /> -->
-	<logger name="com.unnsvc.rhena.core.resolution.RhenaResolutionContext" level="INFO" />
-	<logger name="com.unnsvc.rhena.core" level="TRACE" />
+	<!-- <logger name="com.unnsvc.rhena.core.resolution.RhenaResolutionContext" level="INFO" /> -->
+	<!-- <logger name="com.unnsvc.rhena.core" level="TRACE" /> -->
 
-	<root level="DEBUG">
+
+	<logger name="com.unnsvc.rhena.core.execution" level="INFO" />
+
+	<root level="INFO">
 		<appender-ref ref="STDOUT" />
 	</root>
 

@@ -47,13 +47,19 @@ public class DefaultContext implements IExecutionContext {
 
 		File location = new File(module.getLocation().getPath()).getAbsoluteFile();
 
-		this.resources.put(EExecutionType.DELIVERABLE,
-				resourcesAsList(new Resource(new File(location, "src/main/java"), new File(location, "target/deliverable/classes")),
-						new Resource(new File(location, "src/main/resources"), new File(location, "target/deliverable/classes"))));
+		for (EExecutionType type : EExecutionType.values()) {
 
-		this.resources.put(EExecutionType.FRAMEWORK,
-				resourcesAsList(new Resource(new File(location, "src/framework/java"), new File(location, "target/framework/classes")),
-						new Resource(new File(location, "src/framework/resources"), new File(location, "target/framework/classes"))));
+			if (type != EExecutionType.MODEL) {
+				String actual = type.literal();
+				if (type == EExecutionType.DELIVERABLE) {
+					actual = "main";
+				}
+
+				this.resources.put(type,
+						resourcesAsList(new Resource(new File(location, "src/" + actual + "/java"), new File(location, "target/" + actual + "/classes")),
+								new Resource(new File(location, "src/" + actual + "/resources"), new File(location, "target/" + actual + "/classes"))));
+			}
+		}
 	}
 
 	protected List<IResource> resourcesAsList(IResource... resources) {

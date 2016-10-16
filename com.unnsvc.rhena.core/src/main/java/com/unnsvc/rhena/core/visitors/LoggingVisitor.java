@@ -12,8 +12,8 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.ModuleType;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
-import com.unnsvc.rhena.core.model.RhenaReference;
 
 public class LoggingVisitor implements IModelVisitor {
 
@@ -59,7 +59,7 @@ public class LoggingVisitor implements IModelVisitor {
 		if (!model.getDependencyEdges().isEmpty()) {
 
 			for (IRhenaEdge edge : model.getDependencyEdges()) {
-				if (!(edge.getTarget() instanceof RhenaReference)) {
+				if (edge.getTarget().getModuleType() == ModuleType.REFERENCE) {
 					if (type.canTraverse(edge.getExecutionType())) {
 						if (!edges.contains(edge)) {
 							edges.add(edge);

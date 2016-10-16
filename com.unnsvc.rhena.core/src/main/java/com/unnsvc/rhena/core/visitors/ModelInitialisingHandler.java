@@ -5,7 +5,7 @@ import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.core.model.RhenaReference;
+import com.unnsvc.rhena.common.model.ModuleType;
 
 public class ModelInitialisingHandler implements EdgeVisitationHandler, ModuleVisitationHandler {
 
@@ -65,7 +65,7 @@ public class ModelInitialisingHandler implements EdgeVisitationHandler, ModuleVi
 	@Override
 	public boolean canEnter(IRhenaModule module, IRhenaEdge edge) throws RhenaException {
 
-		if (edge.getTarget() instanceof RhenaReference) {
+		if (edge.getTarget().getModuleType() == ModuleType.REFERENCE) {
 
 			return true;
 		}

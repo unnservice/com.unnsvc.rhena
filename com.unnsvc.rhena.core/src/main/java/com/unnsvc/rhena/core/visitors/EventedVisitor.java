@@ -25,7 +25,7 @@ public class EventedVisitor implements IModelVisitor {
 
 		if (module.getParentModule() != null) {
 
-			enterTree(module, module.getParentModule());
+			onEdge(module, module.getParentModule());
 		}
 
 		// after parent so we can call getLifecycleDecalartion on model, which
@@ -47,7 +47,7 @@ public class EventedVisitor implements IModelVisitor {
 
 		for (IRhenaEdge edge : module.getDependencyEdges()) {
 
-			enterTree(module, edge);
+			onEdge(module, edge);
 		}
 
 		if (handler instanceof ModuleVisitationHandler) {
@@ -57,17 +57,17 @@ public class EventedVisitor implements IModelVisitor {
 
 	private void processLifecycle(IRhenaModule module, ILifecycleDeclaration lifecycle) throws RhenaException {
 
-		enterTree(module, lifecycle.getContext().getModuleEdge());
+		onEdge(module, lifecycle.getContext().getModuleEdge());
 
 		for (IProcessorReference proc : lifecycle.getProcessors()) {
 
-			enterTree(module, proc.getModuleEdge());
+			onEdge(module, proc.getModuleEdge());
 		}
 
-		enterTree(module, lifecycle.getGenerator().getModuleEdge());
+		onEdge(module, lifecycle.getGenerator().getModuleEdge());
 	}
 
-	private void enterTree(IRhenaModule module, IRhenaEdge edge) throws RhenaException {
+	private void onEdge(IRhenaModule module, IRhenaEdge edge) throws RhenaException {
 
 		if (handler.canEnter(module, edge)) {
 			if (enter == EnterType.BEFORE) {

@@ -17,5 +17,7 @@ public class TestExecutionType {
 		Assert.assertTrue(EExecutionType.INTEGRATION.canTraverse(EExecutionType.INTEGRATION));
 		Assert.assertTrue(EExecutionType.PROTOTYPE.canTraverse(EExecutionType.TEST));
 		Assert.assertFalse(EExecutionType.TEST.canTraverse(EExecutionType.PROTOTYPE));
+		
+		System.err.println("test matches");
 	}
 }

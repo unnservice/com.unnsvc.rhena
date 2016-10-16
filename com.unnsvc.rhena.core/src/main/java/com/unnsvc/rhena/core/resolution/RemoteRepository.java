@@ -9,11 +9,13 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
+import com.unnsvc.rhena.common.exceptions.NotExistsException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.ModuleType;
 import com.unnsvc.rhena.core.execution.RhenaExecutionDescriptorParser;
 
 /**
@@ -47,11 +49,11 @@ public class RemoteRepository extends AbstractRepository {
 
 		StringBuilder moduleDescriptorPath = new StringBuilder(getModuleBase(moduleIdentifier));
 		moduleDescriptorPath.append(RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
-		URI moduleDescriptor = URI.create(moduleDescriptorPath.toString()).normalize();
+		URI moduleDescriptor = Utils.toUri(moduleDescriptorPath.toString());
 
 		if (Utils.exists(moduleDescriptor)) {
 
-			return resolveModel(moduleIdentifier, URI.create(getModuleBase(moduleIdentifier)));
+			return resolveModel(ModuleType.REMOTE, moduleIdentifier, Utils.toUri(getModuleBase(moduleIdentifier)));
 		} else {
 
 			log.debug(moduleIdentifier.toTag(EExecutionType.MODEL) + " was not found at: " + moduleDescriptor.toASCIIString());
@@ -78,13 +80,14 @@ public class RemoteRepository extends AbstractRepository {
 		// ------------ @TODO clean
 		StringBuilder executionDescriptorPath = new StringBuilder(base);
 		executionDescriptorPath.append(RhenaConstants.EXECUTION_DESCRIPTOR_FILENAME);
-		URI executionDescriptor = URI.create(executionDescriptorPath.toString());
+		URI executionDescriptor = Utils.toUri(executionDescriptorPath.toString());
 		if (!Utils.exists(executionDescriptor)) {
-			return null;
+
+			throw new NotExistsException("Descriptor does not exist: " + executionDescriptor);
 		}
 		// ------------
 
-		RhenaExecutionDescriptorParser parser = new RhenaExecutionDescriptorParser(module.getModuleIdentifier(), type, URI.create(base.toString()));
+		RhenaExecutionDescriptorParser parser = new RhenaExecutionDescriptorParser(module.getModuleIdentifier(), type, Utils.toUri(base.toString()));
 		IRhenaExecution execution = parser.getExecution();
 
 		return execution;
