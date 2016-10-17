@@ -22,12 +22,38 @@ import com.unnsvc.rhena.core.resolution.CachingResolutionContext;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
 import com.unnsvc.rhena.core.visitors.LoggingVisitor;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.ConsoleAppender;
+
 public class TestRhenaModule {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	// private Logger log = LoggerFactory.getLogger(getClass());
 
 	@Test
 	public void test() throws Exception {
+
+		ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+		rootLogger.detachAndStopAllAppenders();
+		rootLogger.setLevel(Level.INFO);
+
+		ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.unnsvc.rhena");
+		log.setLevel(Level.INFO);
+
+		LoggerContext c = rootLogger.getLoggerContext();
+
+		ConsoleAppender<ILoggingEvent> ca = new ConsoleAppender<ILoggingEvent>();
+		PatternLayoutEncoder encoder = new PatternLayoutEncoder();
+		encoder.setPattern("%d{ss.SSS} %-5level %40.40logger - %msg%n");
+		encoder.setContext(c);
+		encoder.start();
+		ca.setEncoder(encoder);
+		ca.setContext(c);
+		ca.start();
+
+		rootLogger.addAppender(ca);
 
 		long start = System.currentTimeMillis();
 		execute();
@@ -36,21 +62,17 @@ public class TestRhenaModule {
 		/**
 		 * @TODO This is where metrics come into play, implement metrics
 		 */
-		log.info("Executed in " + (end - start) + "ms (core: Xms, lifecycles: Xms)");
+		// log.info("Executed in " + (end - start) + "ms (core: Xms, lifecycles:
+		// Xms)");
 	}
 
 	private void execute() throws Exception {
 
-		// creaate a rhenacontext which will also have event listeners, use
-		// listeners for sending logging events? For now just keep it in the
-		// resolution context
-
-		// not sure how to pass this context around, it will keep track of
-		// everything that we save from the model and execution so that it can
-		// be accessed at a common place
-
 		RhenaConfiguration config = new RhenaConfiguration();
 		IRhenaContext context = new CachingResolutionContext(config);
+
+		// context.addListener(new LogbackListener());
+		// context.addListener(new MetricsListenr());
 
 		context.getRepositories().add(new WorkspaceRepository(context, new File("../../com.unnsvc.erhena/")));
 		context.getRepositories().add(new WorkspaceRepository(context, new File("../../")));
@@ -79,3 +101,22 @@ public class TestRhenaModule {
 	}
 
 }
+
+// LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+// StatusManager statusManager = lc.getStatusManager();
+//
+// if (statusManager != null) {
+// statusManager.add(new InfoStatus("Configuring logger", lc));
+// }
+//
+// SiftingAppender sa = new SiftingAppender();
+// sa.setName("SIFT");
+// sa.setContext(lc);
+//
+// MDCBasedDiscriminator discriminator = new MDCBasedDiscriminator();
+// discriminator.setKey("vhost");
+// discriminator.setDefaultValue("administration");
+// discriminator.start();
+//
+// sa.setDiscriminator(discriminator);
+// see https://gist.github.com/kazimsarikaya/8645769

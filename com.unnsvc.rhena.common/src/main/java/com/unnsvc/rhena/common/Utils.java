@@ -48,7 +48,7 @@ public class Utils {
 			con.setRequestMethod("HEAD");
 			return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.trace(e.getMessage(), e);
 			return false;
 		}
 	}
@@ -60,7 +60,7 @@ public class Utils {
 			return true;
 
 		} catch (Exception ex) {
-			log.debug(ex.getMessage());
+
 		}
 
 		return false;
