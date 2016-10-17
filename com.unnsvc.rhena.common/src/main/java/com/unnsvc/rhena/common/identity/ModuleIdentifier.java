@@ -45,7 +45,7 @@ public class ModuleIdentifier {
 
 	public String toTag(EExecutionType type) {
 
-		return "[" + toString() + "]:" + type.literal();
+		return "[" + toString() + ":" + type.literal() + "]";
 	}
 
 	@Override

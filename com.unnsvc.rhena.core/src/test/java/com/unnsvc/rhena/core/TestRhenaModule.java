@@ -13,12 +13,14 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.TraverseType;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 import com.unnsvc.rhena.core.configuration.RhenaConfiguration;
 import com.unnsvc.rhena.core.execution.GraphResolver;
 import com.unnsvc.rhena.core.execution.ParallelGraphProcessor;
 import com.unnsvc.rhena.core.model.RhenaEdge;
 import com.unnsvc.rhena.core.resolution.CachingResolutionContext;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
+import com.unnsvc.rhena.core.visitors.LoggingVisitor;
 
 public class TestRhenaModule {
 
@@ -40,7 +42,8 @@ public class TestRhenaModule {
 	private void execute() throws Exception {
 
 		// creaate a rhenacontext which will also have event listeners, use
-		// listeners for sending logging events? For now just keep it in the resolution context
+		// listeners for sending logging events? For now just keep it in the
+		// resolution context
 
 		// not sure how to pass this context around, it will keep track of
 		// everything that we save from the model and execution so that it can
@@ -48,7 +51,7 @@ public class TestRhenaModule {
 
 		RhenaConfiguration config = new RhenaConfiguration();
 		IRhenaContext context = new CachingResolutionContext(config);
-		
+
 		context.getRepositories().add(new WorkspaceRepository(context, new File("../../com.unnsvc.erhena/")));
 		context.getRepositories().add(new WorkspaceRepository(context, new File("../../")));
 
@@ -56,11 +59,23 @@ public class TestRhenaModule {
 
 		EExecutionType type = EExecutionType.PROTOTYPE;
 		IRhenaEdge entryPointEdge = new RhenaEdge(type, model, TraverseType.SCOPE);
-		
+
 		GraphResolver graphResovler = new GraphResolver(context);
 		graphResovler.resolveReferences(entryPointEdge);
+
+		debugModel(context, type, model);
+
 		new ParallelGraphProcessor(context).processEdges(context.getEdges());
 
+	}
+
+	private void debugModel(IRhenaContext context, EExecutionType type, IRhenaModule model) throws Exception {
+
+		ILifecycleDeclaration decl = model.getLifecycleDeclaration(model.getLifecycleName());
+
+		decl.getGenerator().getModuleEdge().getTarget().visit(new LoggingVisitor(EExecutionType.FRAMEWORK, context));
+
+		model.visit(new LoggingVisitor(type, context));
 	}
 
 }

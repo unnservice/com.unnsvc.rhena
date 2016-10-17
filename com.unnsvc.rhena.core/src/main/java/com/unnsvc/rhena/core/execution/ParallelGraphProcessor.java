@@ -52,7 +52,8 @@ public class ParallelGraphProcessor {
 				executing.remove(result.getEdge());
 				executed.add(result.getEdge());
 
-				log.debug("Completed "+result.getEdge().getTarget().getModuleIdentifier().toTag(result.getEdge().getExecutionType())+", executors remaining in running state: " + executing.size());
+				log.debug("Completed " + result.getEdge().getTarget().getModuleIdentifier().toTag(result.getEdge().getExecutionType())
+						+ ", executors remaining in running state: " + executing.size());
 
 			} catch (InterruptedException | ExecutionException ie) {
 
@@ -93,17 +94,20 @@ public class ParallelGraphProcessor {
 		if (target.getLifecycleName() != null) {
 			ILifecycleDeclaration lifecycle = edge.getTarget().getLifecycleDeclaration(target.getLifecycleName());
 			if (!executed.contains(lifecycle.getContext().getModuleEdge())) {
-				log.debug(edge.getTarget().getModuleIdentifier().toTag(edge.getExecutionType()) + " waiting on " + lifecycle.getContext().getModuleEdge());
+				// log.debug(edge.getTarget().getModuleIdentifier().toTag(edge.getExecutionType())
+				// + " waiting on context " +
+				// lifecycle.getContext().getModuleEdge());
+				debugPrintWaitingOn(edge, lifecycle.getContext().getModuleEdge());
 				return true;
 			}
 			for (IProcessorReference processor : lifecycle.getProcessors()) {
 				if (!executed.contains(processor.getModuleEdge())) {
-					log.debug(edge.getTarget().getModuleIdentifier().toTag(edge.getExecutionType()) + " waiting on " + processor.getModuleEdge());
+					debugPrintWaitingOn(edge, processor.getModuleEdge());
 					return true;
 				}
 			}
 			if (!executed.contains(lifecycle.getGenerator().getModuleEdge())) {
-				log.debug(edge.getTarget().getModuleIdentifier().toTag(edge.getExecutionType()) + " waiting on " + lifecycle.getGenerator().getModuleEdge());
+				debugPrintWaitingOn(edge, lifecycle.getGenerator().getModuleEdge());
 				return true;
 			}
 		}
@@ -112,14 +116,21 @@ public class ParallelGraphProcessor {
 
 			if (edge.getTarget().getModuleType() != ModuleType.REFERENCE) {
 				if (edge.getExecutionType().canTraverse(dependency.getExecutionType())) {
-					// this node is interesting to us, so we are
-					// waiting on it
-					log.debug(edge.getTarget().getModuleIdentifier().toTag(edge.getExecutionType()) + " waiting on " + edge.getTarget());
-					return true;
+					if (!executed.contains(dependency)) {
+						debugPrintWaitingOn(edge, dependency);
+						return true;
+					}
 				}
 			}
 		}
 
 		return false;
+	}
+
+	private void debugPrintWaitingOn(IRhenaEdge thisEdge, IRhenaEdge waitingOn) {
+
+		String tag = thisEdge.getTarget().getModuleIdentifier().toTag(thisEdge.getExecutionType());
+		String thatTag = thisEdge.getTarget().getModuleIdentifier().toTag(thisEdge.getExecutionType());
+		log.debug(tag + " -> waiting on -> " + thatTag);
 	}
 }
