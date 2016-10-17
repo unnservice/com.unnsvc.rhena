@@ -9,7 +9,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.common.IResolutionContext;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.NotUniqueException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
@@ -22,9 +22,9 @@ public class GraphResolver {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private Set<ILifecycleDeclaration> lifecycles = new HashSet<ILifecycleDeclaration>();
 	private List<IRhenaEdge> processed = new ArrayList<IRhenaEdge>();
-	private IResolutionContext context;
+	private IRhenaContext context;
 
-	public GraphResolver(IResolutionContext context) {
+	public GraphResolver(IRhenaContext context) {
 
 		this.context = context;
 	}

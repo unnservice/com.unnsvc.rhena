@@ -1,7 +1,7 @@
 
 package com.unnsvc.rhena.core.visitors;
 
-import com.unnsvc.rhena.common.IResolutionContext;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
@@ -9,9 +9,9 @@ import com.unnsvc.rhena.common.model.ModuleType;
 
 public class ModelInitialisingHandler implements EdgeVisitationHandler, ModuleVisitationHandler {
 
-	private IResolutionContext context;
+	private IRhenaContext context;
 
-	public ModelInitialisingHandler(IResolutionContext context) {
+	public ModelInitialisingHandler(IRhenaContext context) {
 
 		this.context = context;
 	}

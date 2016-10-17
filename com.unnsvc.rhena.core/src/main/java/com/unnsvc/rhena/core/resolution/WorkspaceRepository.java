@@ -4,7 +4,10 @@ package com.unnsvc.rhena.core.resolution;
 import java.io.File;
 import java.net.URI;
 
-import com.unnsvc.rhena.common.IResolutionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
@@ -16,13 +19,14 @@ import com.unnsvc.rhena.core.model.RhenaModule;
 
 public class WorkspaceRepository extends AbstractRepository {
 
-	// private Logger log = LoggerFactory.getLogger(getClass());
+	private Logger log = LoggerFactory.getLogger(getClass());
 	private File workspaceDirectory;
 
-	public WorkspaceRepository(IResolutionContext context, File workspaceDirectory) {
+	public WorkspaceRepository(IRhenaContext context, File workspaceDirectory) {
 
 		super(context);
-		this.workspaceDirectory = new File(workspaceDirectory.getAbsoluteFile().toURI().normalize().getPath());
+		this.workspaceDirectory = new File(workspaceDirectory.getAbsoluteFile().toURI().normalize().getPath()).getAbsoluteFile();
+		log.info("Workspace at: " + this.workspaceDirectory);
 	}
 
 	@Override

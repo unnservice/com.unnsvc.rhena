@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.unnsvc.rhena.common.IRepository;
-import com.unnsvc.rhena.common.IResolutionContext;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
@@ -19,7 +19,7 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
  * @author noname
  *
  */
-public abstract class AbstractResolutionContext implements IResolutionContext {
+public abstract class AbstractResolutionContext implements IRhenaContext {
 
 	// private Logger log = LoggerFactory.getLogger(getClass());
 	protected List<IRepository> repositories;

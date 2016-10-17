@@ -6,17 +6,17 @@ import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.common.IResolutionContext;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 
 public class ExecutingCallable implements Callable<ExecutionResult> {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private IResolutionContext context;
+	private IRhenaContext context;
 	private IRhenaEdge edge;
 
-	public ExecutingCallable(IResolutionContext context, IRhenaEdge edge) {
+	public ExecutingCallable(IRhenaContext context, IRhenaEdge edge) {
 
 		this.context = context;
 		this.edge = edge;

@@ -1,8 +1,8 @@
 
 package com.unnsvc.rhena.core.resolution;
 
+import java.util.Collections;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -44,14 +44,18 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 	public CachingResolutionContext(RhenaConfiguration configuration) {
 
 		this.cacheRepository = new LocalCacheRepository(this, configuration.getLocalCacheRepository());
-		this.models = new HashMap<ModuleIdentifier, IRhenaModule>();
+		this.models = new ConcurrentHashMap<ModuleIdentifier, IRhenaModule>();
 		this.executions = new ConcurrentHashMap<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>>();
-		this.edges = new HashSet<IRhenaEdge>();
+		this.edges = Collections.synchronizedSet(new HashSet<IRhenaEdge>());
 	}
 
 	@Override
 	public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
 
+		if (repositories.isEmpty()) {
+			throw new NotExistsException("No repository in context.");
+		}
+		
 		IRhenaModule module = models.get(moduleIdentifier);
 
 		if (module == null) {

@@ -4,7 +4,7 @@ package com.unnsvc.rhena.core.visitors;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.unnsvc.rhena.common.IResolutionContext;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
@@ -25,10 +25,10 @@ import com.unnsvc.rhena.common.visitors.IModelVisitor;
  */
 public class ModelResolutionVisitor implements IModelVisitor {
 
-	private IResolutionContext context;
+	private IRhenaContext context;
 	private Set<ModuleIdentifier> resolved;
 
-	public ModelResolutionVisitor(IResolutionContext context) {
+	public ModelResolutionVisitor(IRhenaContext context) {
 
 		this.context = context;
 		this.resolved = new HashSet<ModuleIdentifier>();

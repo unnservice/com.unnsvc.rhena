@@ -4,7 +4,7 @@ package com.unnsvc.rhena.core.execution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.common.IResolutionContext;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
@@ -15,10 +15,10 @@ public class ModelDebugPrinter {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private IResolutionContext context;
+	private IRhenaContext context;
 	private GraphResolver graphResolver;
 
-	public ModelDebugPrinter(IResolutionContext context, GraphResolver graphResovler) {
+	public ModelDebugPrinter(IRhenaContext context, GraphResolver graphResovler) {
 
 		this.context = context;
 		this.graphResolver = graphResovler;

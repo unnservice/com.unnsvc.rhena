@@ -3,5 +3,5 @@ package com.unnsvc.rhena.common;
 
 public enum BuildType {
 	
-	COMPILE, TEST, ITEST
+	CLEAN, COMPILE, TEST, ITEST, PROTOTYPE
 }

@@ -5,7 +5,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.unnsvc.rhena.common.IResolutionContext;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
@@ -18,15 +18,15 @@ public class RhenaDependencyCollectionVisitor implements IModelVisitor {
 	// private Logger log = LoggerFactory.getLogger(getClass());
 	private List<IRhenaExecution> dependencies;
 	private EExecutionType executionType;
-	private IResolutionContext resolver;
+	private IRhenaContext resolver;
 	private TraverseType traverseType;
 
-	public RhenaDependencyCollectionVisitor(IResolutionContext resolver, EExecutionType executionType, TraverseType traverseType) {
+	public RhenaDependencyCollectionVisitor(IRhenaContext resolver, EExecutionType executionType, TraverseType traverseType) {
 
 		this(resolver, executionType, new ArrayList<IRhenaExecution>(), traverseType);
 	}
 
-	public RhenaDependencyCollectionVisitor(IResolutionContext resolver, EExecutionType executionType, List<IRhenaExecution> dependencies,
+	public RhenaDependencyCollectionVisitor(IRhenaContext resolver, EExecutionType executionType, List<IRhenaExecution> dependencies,
 			TraverseType traverseType) {
 
 		this.executionType = executionType;

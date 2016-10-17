@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.common.IResolutionContext;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
@@ -41,28 +40,26 @@ public class TestRhenaModule {
 	private void execute() throws Exception {
 
 		// creaate a rhenacontext which will also have event listeners, use
-		// listeners for sending logging events?
+		// listeners for sending logging events? For now just keep it in the resolution context
 
 		// not sure how to pass this context around, it will keep track of
 		// everything that we save from the model and execution so that it can
 		// be accessed at a common place
-		IRhenaContext context = new RhenaContext();
 
 		RhenaConfiguration config = new RhenaConfiguration();
+		IRhenaContext context = new CachingResolutionContext(config);
+		
+		context.getRepositories().add(new WorkspaceRepository(context, new File("../../com.unnsvc.erhena/")));
+		context.getRepositories().add(new WorkspaceRepository(context, new File("../../")));
 
-		IResolutionContext resolver = new CachingResolutionContext(config);
-		resolver.getRepositories().add(new WorkspaceRepository(resolver, new File("../../com.unnsvc.erhena/")));
-		resolver.getRepositories().add(new WorkspaceRepository(resolver, new File("../../")));
-
-		ModuleIdentifier entryPointIdentifier = ModuleIdentifier.valueOf("com.unnsvc.erhena:core:0.0.1");
-		IRhenaModule model = resolver.materialiseModel(entryPointIdentifier);
+		IRhenaModule model = context.materialiseModel(ModuleIdentifier.valueOf("com.unnsvc.erhena:core:0.0.1"));
 
 		EExecutionType type = EExecutionType.PROTOTYPE;
 		IRhenaEdge entryPointEdge = new RhenaEdge(type, model, TraverseType.SCOPE);
-		GraphResolver graphResovler = new GraphResolver(resolver);
+		
+		GraphResolver graphResovler = new GraphResolver(context);
 		graphResovler.resolveReferences(entryPointEdge);
-
-		new ParallelGraphProcessor(resolver).processEdges(resolver.getEdges());
+		new ParallelGraphProcessor(context).processEdges(context.getEdges());
 
 	}
 

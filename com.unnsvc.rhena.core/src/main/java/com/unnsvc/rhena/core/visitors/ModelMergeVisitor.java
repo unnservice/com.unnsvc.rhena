@@ -12,7 +12,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.common.IResolutionContext;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 //import com.unnsvc.rhena.common.execution.ExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
@@ -33,7 +33,7 @@ public class ModelMergeVisitor implements IModelVisitor {
 	// private IResolutionContext context;
 	private Set<ModuleIdentifier> entered;
 
-	public ModelMergeVisitor(IResolutionContext context) {
+	public ModelMergeVisitor(IRhenaContext context) {
 
 		// this.context = context;
 		this.entered = new HashSet<ModuleIdentifier>();

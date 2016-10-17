@@ -7,7 +7,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.common.IResolutionContext;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
@@ -18,12 +18,12 @@ import com.unnsvc.rhena.common.visitors.IModelVisitor;
 public class LoggingVisitor implements IModelVisitor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private IResolutionContext context;
+	private IRhenaContext context;
 	private EExecutionType type;
 	private int indents;
 	private String label;
 
-	public LoggingVisitor(EExecutionType type, IResolutionContext context, int indents, String label) {
+	public LoggingVisitor(EExecutionType type, IRhenaContext context, int indents, String label) {
 
 		this.type = type;
 		this.context = context;
@@ -31,7 +31,7 @@ public class LoggingVisitor implements IModelVisitor {
 		this.label = label;
 	}
 
-	public LoggingVisitor(EExecutionType type, IResolutionContext context) {
+	public LoggingVisitor(EExecutionType type, IRhenaContext context) {
 
 		this(type, context, 0, null);
 	}

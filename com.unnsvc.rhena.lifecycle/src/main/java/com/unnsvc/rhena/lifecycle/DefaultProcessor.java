@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
-import com.unnsvc.rhena.common.IResolutionContext;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
@@ -29,9 +29,9 @@ import com.unnsvc.rhena.lifecycle.misc.LoggingPrintWriter.FileDescriptor;
 public class DefaultProcessor implements IProcessor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private IResolutionContext context;
+	private IRhenaContext context;
 
-	public DefaultProcessor(IResolutionContext context) {
+	public DefaultProcessor(IRhenaContext context) {
 
 		this.context = context;
 	}

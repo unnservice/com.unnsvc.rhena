@@ -1,7 +1,7 @@
 
 package com.unnsvc.rhena.core.execution;
 
-import com.unnsvc.rhena.common.IResolutionContext;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 //import com.unnsvc.rhena.common.execution.ExecutionType;
@@ -15,9 +15,9 @@ import com.unnsvc.rhena.common.visitors.IModelVisitor;
 public class ModelBuildingVisitor implements IModelVisitor {
 
 	// private Logger log = LoggerFactory.getLogger(getClass());
-	private IResolutionContext resolver;
+	private IRhenaContext resolver;
 
-	public ModelBuildingVisitor(IResolutionContext resolver) {
+	public ModelBuildingVisitor(IRhenaContext resolver) {
 
 		this.resolver = resolver;
 	}

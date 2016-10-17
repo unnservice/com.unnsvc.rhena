@@ -19,7 +19,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.unnsvc.rhena.common.IRepository;
-import com.unnsvc.rhena.common.IResolutionContext;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -39,10 +39,10 @@ import com.unnsvc.rhena.core.model.RhenaReference;
 public class RhenaModuleParser {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private IResolutionContext context;
+	private IRhenaContext context;
 	private RhenaModule module;
 
-	public RhenaModuleParser(IResolutionContext context, ModuleType moduleType, ModuleIdentifier moduleIdentifier, URI projectLocationUri,
+	public RhenaModuleParser(IRhenaContext context, ModuleType moduleType, ModuleIdentifier moduleIdentifier, URI projectLocationUri,
 			IRepository repository) throws RhenaException {
 
 		this.context = context;

@@ -11,7 +11,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.common.IResolutionContext;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -40,9 +40,9 @@ import com.unnsvc.rhena.lifecycle.DefaultProcessor;
 public class WorkspaceProjectMaterialiser {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private IResolutionContext context;
+	private IRhenaContext context;
 
-	public WorkspaceProjectMaterialiser(IResolutionContext context) {
+	public WorkspaceProjectMaterialiser(IRhenaContext context) {
 
 		this.context = context;
 	}
@@ -94,7 +94,8 @@ public class WorkspaceProjectMaterialiser {
 
 			if (contextProc.getResources(type) == null) {
 				if (type != EExecutionType.MODEL) {
-					throw new RhenaException("Lifecycle context \"" + lifecycleName + "\", is invalid. Missing resources for execution type: " + type.literal());
+					throw new RhenaException(
+							"Lifecycle context \"" + lifecycleName + "\", is invalid. Missing resources for execution type: " + type.literal());
 				}
 			}
 		}
@@ -171,16 +172,25 @@ public class WorkspaceProjectMaterialiser {
 			Class<?> c = loader.loadClass(processor.getClazz());
 			// @TODO enable constructor selection so we can pass in model if
 			// such a constructor exists??? Do injection instead???
-			Constructor<?> constr = c.getConstructor(IResolutionContext.class);
+
+			Constructor<?> constr = c.getConstructor(IRhenaContext.class);
 			Object o = constr.newInstance(context);
 			return (T) o;
-		} catch (Exception ex) {
-			log.error(processor.getModuleEdge().getTarget().getModuleIdentifier().toTag(type) + " lifecycle classloader has " + loader.getURLs().length
-					+ " urls");
-			for (URL url : loader.getURLs()) {
-				log.error(processor.getModuleEdge().getTarget().getModuleIdentifier().toTag(type) + " lifecycle contains " + url);
-			}
+		} catch (Throwable ex) {
+
+			String tag = processor.getModuleEdge().getTarget().getModuleIdentifier().toTag(type);
+			debugClassloader(tag, "lifecycle", loader);
+			debugClassloader(tag, "lifecycle dep", (URLClassLoader) loader.getParent());
+
 			throw new RhenaException(model.getModuleIdentifier().toTag(type) + " Failed to instantiate: " + processor.getClazz(), ex);
+		}
+	}
+
+	private void debugClassloader(String moduleTag, String loaderName, URLClassLoader loader) {
+
+		for (URL url : loader.getURLs()) {
+
+			log.error(moduleTag + " Classloader [" + loaderName + "] contains: " + url);
 		}
 	}
 
