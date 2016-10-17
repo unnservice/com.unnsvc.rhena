@@ -8,20 +8,6 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.0.2</version>
-				<configuration>
-					<outputDirectory>/home/noname/.rhena/repository/com/unnsvc/rhena/lifecycle/0.0.1/framework</outputDirectory>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.eclipse.jdt.core.compiler</groupId>

@@ -69,6 +69,8 @@ public class TestRhenaModule {
 	private void execute() throws Exception {
 
 		RhenaConfiguration config = new RhenaConfiguration();
+//		config.configureLoggingAppender();
+		
 		IRhenaContext context = new CachingResolutionContext(config);
 
 		// context.addListener(new LogbackListener());
