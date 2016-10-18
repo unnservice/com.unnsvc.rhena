@@ -8,7 +8,9 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.listener.IContextEvent;
 import com.unnsvc.rhena.common.listener.IContextListener;
+import com.unnsvc.rhena.common.logging.IRhenaLogger;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 
@@ -31,4 +33,8 @@ public interface IRhenaContext {
 
 	public void addListener(IContextListener listener);
 
-}
+	public IRhenaLogger getLogger(Class<?> type);
+
+	public void fireEvent(IContextEvent event) throws RhenaException;
+
+} 

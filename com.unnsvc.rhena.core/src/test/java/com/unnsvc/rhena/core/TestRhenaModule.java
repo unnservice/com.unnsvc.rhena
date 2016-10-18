@@ -4,8 +4,6 @@ package com.unnsvc.rhena.core;
 import java.io.File;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.execution.EExecutionType;
@@ -22,12 +20,6 @@ import com.unnsvc.rhena.core.resolution.CachingResolutionContext;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
 import com.unnsvc.rhena.core.visitors.LoggingVisitor;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.ConsoleAppender;
-
 public class TestRhenaModule {
 
 	// private Logger log = LoggerFactory.getLogger(getClass());
@@ -35,25 +27,25 @@ public class TestRhenaModule {
 	@Test
 	public void test() throws Exception {
 
-		ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-		rootLogger.detachAndStopAllAppenders();
-		rootLogger.setLevel(Level.INFO);
-
-		ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.unnsvc.rhena");
-		log.setLevel(Level.INFO);
-
-		LoggerContext c = rootLogger.getLoggerContext();
-
-		ConsoleAppender<ILoggingEvent> ca = new ConsoleAppender<ILoggingEvent>();
-		PatternLayoutEncoder encoder = new PatternLayoutEncoder();
-		encoder.setPattern("%d{ss.SSS} %-5level %40.40logger - %msg%n");
-		encoder.setContext(c);
-		encoder.start();
-		ca.setEncoder(encoder);
-		ca.setContext(c);
-		ca.start();
-
-		rootLogger.addAppender(ca);
+//		ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+//		rootLogger.detachAndStopAllAppenders();
+//		rootLogger.setLevel(Level.INFO);
+//
+//		ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.unnsvc.rhena");
+//		log.setLevel(Level.INFO);
+//
+//		LoggerContext c = rootLogger.getLoggerContext();
+//
+//		ConsoleAppender<ILoggingEvent> ca = new ConsoleAppender<ILoggingEvent>();
+//		PatternLayoutEncoder encoder = new PatternLayoutEncoder();
+//		encoder.setPattern("%d{ss.SSS} %-5level %40.40logger - %msg%n");
+//		encoder.setContext(c);
+//		encoder.start();
+//		ca.setEncoder(encoder);
+//		ca.setContext(c);
+//		ca.start();
+//
+//		rootLogger.addAppender(ca);
 
 		long start = System.currentTimeMillis();
 		execute();

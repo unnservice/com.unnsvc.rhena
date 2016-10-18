@@ -13,16 +13,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 
 public class Utils {
-
-	private static Logger log = LoggerFactory.getLogger(Utils.class);
 
 	public static int stackTraceCount() {
 
@@ -48,7 +44,6 @@ public class Utils {
 			con.setRequestMethod("HEAD");
 			return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
 		} catch (Exception e) {
-			log.trace(e.getMessage(), e);
 			return false;
 		}
 	}

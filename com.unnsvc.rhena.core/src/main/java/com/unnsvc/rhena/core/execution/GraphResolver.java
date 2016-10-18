@@ -6,12 +6,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.NotUniqueException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.logging.IRhenaLogger;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.ModuleType;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
@@ -19,7 +17,7 @@ import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 
 public class GraphResolver {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private IRhenaLogger log;
 	private Set<ILifecycleDeclaration> lifecycles = new HashSet<ILifecycleDeclaration>();
 	private List<IRhenaEdge> processed = new ArrayList<IRhenaEdge>();
 	private IRhenaContext context;
@@ -27,6 +25,7 @@ public class GraphResolver {
 	public GraphResolver(IRhenaContext context) {
 
 		this.context = context;
+		this.log = context.getLogger(getClass());
 	}
 
 	public void resolveReferences(IRhenaEdge rhenaEdge) throws RhenaException {

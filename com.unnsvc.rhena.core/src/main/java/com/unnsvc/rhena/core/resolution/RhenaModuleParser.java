@@ -11,8 +11,6 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -25,6 +23,7 @@ import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.logging.IRhenaLogger;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.ModuleType;
 import com.unnsvc.rhena.common.model.TraverseType;
@@ -38,7 +37,7 @@ import com.unnsvc.rhena.core.model.RhenaReference;
 
 public class RhenaModuleParser {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private IRhenaLogger log;
 	private IRhenaContext context;
 	private RhenaModule module;
 
@@ -46,6 +45,7 @@ public class RhenaModuleParser {
 			IRepository repository) throws RhenaException {
 
 		this.context = context;
+		this.log = context.getLogger(getClass());
 		this.module = new RhenaModule(moduleType, moduleIdentifier, projectLocationUri, repository);
 		try {
 
@@ -117,7 +117,7 @@ public class RhenaModuleParser {
 			Validator validator = schema.newValidator();
 			validator.validate(new DOMSource(document));
 		} catch (Exception ex) {
-			log.error("Schema validation failed for : " + uri);
+			log.error(module.getModuleIdentifier(), EExecutionType.MODEL, "Schema validation failed for : " + uri);
 			throw new RhenaException("Schema validation error for: " + uri.toString(), ex);
 		}
 

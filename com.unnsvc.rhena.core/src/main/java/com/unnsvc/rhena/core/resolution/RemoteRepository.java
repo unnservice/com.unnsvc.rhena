@@ -3,9 +3,6 @@ package com.unnsvc.rhena.core.resolution;
 
 import java.net.URI;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
@@ -14,6 +11,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.logging.IRhenaLogger;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.ModuleType;
 import com.unnsvc.rhena.core.execution.RhenaExecutionDescriptorParser;
@@ -35,13 +33,14 @@ import com.unnsvc.rhena.core.execution.RhenaExecutionDescriptorParser;
  */
 public class RemoteRepository extends AbstractRepository {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private IRhenaLogger log;
 	private URI location;
 
 	public RemoteRepository(IRhenaContext context, URI location) {
 
 		super(context);
 		this.location = location.normalize();
+		this.log = context.getLogger(getClass());
 	}
 
 	@Override
@@ -56,7 +55,7 @@ public class RemoteRepository extends AbstractRepository {
 			return resolveModel(ModuleType.REMOTE, moduleIdentifier, Utils.toUri(getModuleBase(moduleIdentifier)));
 		} else {
 
-			log.debug(moduleIdentifier.toTag(EExecutionType.MODEL) + " was not found at: " + moduleDescriptor.toASCIIString());
+			log.debug(moduleIdentifier, EExecutionType.MODEL, " was not found at: " + moduleDescriptor.toASCIIString());
 			return null;
 		}
 	}
@@ -87,7 +86,7 @@ public class RemoteRepository extends AbstractRepository {
 		}
 		// ------------
 
-		RhenaExecutionDescriptorParser parser = new RhenaExecutionDescriptorParser(module.getModuleIdentifier(), type, Utils.toUri(base.toString()));
+		RhenaExecutionDescriptorParser parser = new RhenaExecutionDescriptorParser(getContext(), module.getModuleIdentifier(), type, Utils.toUri(base.toString()));
 		IRhenaExecution execution = parser.getExecution();
 
 		return execution;

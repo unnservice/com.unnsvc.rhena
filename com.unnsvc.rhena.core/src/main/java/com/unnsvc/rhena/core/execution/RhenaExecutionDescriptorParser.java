@@ -15,22 +15,22 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.EExecutionType;
+import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.logging.IRhenaLogger;
 
 public class RhenaExecutionDescriptorParser {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private IRhenaLogger log;
 	private ModuleIdentifier identifier;
 	private EExecutionType type;
 	private URI baseUri;
@@ -42,11 +42,12 @@ public class RhenaExecutionDescriptorParser {
 	 * @param executionDescriptor
 	 * @throws RhenaException
 	 */
-	public RhenaExecutionDescriptorParser(ModuleIdentifier identifier, EExecutionType type, URI baseUri) throws RhenaException {
+	public RhenaExecutionDescriptorParser(IRhenaContext context, ModuleIdentifier identifier, EExecutionType type, URI baseUri) throws RhenaException {
 
 		this.identifier = identifier;
 		this.type = type;
 		this.baseUri = baseUri;
+		this.log = context.getLogger(getClass());
 		try {
 
 			URI descriptor = new URI(baseUri.toString() + "/" + RhenaConstants.EXECUTION_DESCRIPTOR_FILENAME).normalize();
@@ -102,7 +103,7 @@ public class RhenaExecutionDescriptorParser {
 			Validator validator = schema.newValidator();
 			validator.validate(new DOMSource(document));
 		} catch (Exception ex) {
-			log.error("Schema validation failed for : " + uri);
+			log.error(identifier, type, "Schema validation failed for : " + uri);
 			throw new RhenaException("Schema validation error for: " + uri.toString(), ex);
 		}
 

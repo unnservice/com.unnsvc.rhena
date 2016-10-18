@@ -8,20 +8,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.unnsvc.rhena.common.exceptions.NotExistsException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.logging.IRhenaLogger;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.configuration.RhenaConfiguration;
-
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.Appender;
 
 /**
  * This resolution context will first attempt to resolve the artifact form the
@@ -33,9 +28,11 @@ import ch.qos.logback.core.Appender;
  */
 public class CachingResolutionContext extends AbstractResolutionContext {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private IRhenaLogger log;
 	private LocalCacheRepository cacheRepository;
 	protected Map<ModuleIdentifier, IRhenaModule> models;
+	
+	
 	/**
 	 * This will become modified from multiple threads as materialiseExecutor is
 	 * called from execution threads.
@@ -47,24 +44,29 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 
 	public CachingResolutionContext(RhenaConfiguration configuration) {
 
-		System.err.println("Constructed CachingCachingResolutionContext context, in classloader: " + getClass().getClassLoader());
-
 		this.cacheRepository = new LocalCacheRepository(this, configuration.getLocalCacheRepository());
 		this.models = new ConcurrentHashMap<ModuleIdentifier, IRhenaModule>();
 		this.executions = new ConcurrentHashMap<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>>();
 		this.edges = Collections.synchronizedSet(new HashSet<IRhenaEdge>());
+		this.log = getLogger(getClass());
 	}
 
 	@Override
 	public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
 
-//		ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-//		Appender<ILoggingEvent> stdoutAppender = rootLogger.getAppender("STDOUT");
-//		System.err.println("STDOUT appender is: " + stdoutAppender + " and was loaded with classloader: " + stdoutAppender.getClass().getClassLoader());
-//		
-//		System.err.println("Attempting to materialise model using classloader: " + getClass().getClassLoader());
-//		LoggerFactory.getLogger(getClass()).info("TEST LOG");
-//		System.err.println("Logged message.");
+		// ch.qos.logback.classic.Logger rootLogger =
+		// (ch.qos.logback.classic.Logger)
+		// LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+		// Appender<ILoggingEvent> stdoutAppender =
+		// rootLogger.getAppender("STDOUT");
+		// System.err.println("STDOUT appender is: " + stdoutAppender + " and
+		// was loaded with classloader: " +
+		// stdoutAppender.getClass().getClassLoader());
+		//
+		// System.err.println("Attempting to materialise model using
+		// classloader: " + getClass().getClassLoader());
+		// LoggerFactory.getLogger(getClass()).info("TEST LOG");
+		// System.err.println("Logged message.");
 
 		if (repositories.isEmpty()) {
 			throw new NotExistsException("No repository in context.");
@@ -84,7 +86,7 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 				}
 			}
 
-			log.info("[" + moduleIdentifier + "]:model materialised");
+			log.info(moduleIdentifier, EExecutionType.MODEL, "materialised");
 			models.put(moduleIdentifier, module);
 		}
 
@@ -104,7 +106,7 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 		try {
 			execution = cacheRepository.materialiseExecution(module, type);
 		} catch (NotExistsException nee) {
-			log.debug("Not in local cache repository: " + module.getModuleIdentifier().toTag(type));
+			log.debug(module.getModuleIdentifier(), type, "Not in local cache repository: " + module.getModuleIdentifier().toTag(type));
 		}
 
 		if (execution == null) {
@@ -125,7 +127,7 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 			executions.put(identifier, typeExecutions);
 		}
 
-		log.info(module.getModuleIdentifier().toTag(type) + " materialised " + execution.getArtifact());
+		log.info(module.getModuleIdentifier(), type, " materialised " + execution.getArtifact());
 
 		return execution;
 	}

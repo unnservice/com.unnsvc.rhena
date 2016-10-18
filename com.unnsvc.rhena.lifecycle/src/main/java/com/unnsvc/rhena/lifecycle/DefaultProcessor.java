@@ -9,13 +9,12 @@ import java.util.List;
 
 import org.eclipse.jdt.core.compiler.CompilationProgress;
 import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
+import com.unnsvc.rhena.common.logging.IRhenaLogger;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.TraverseType;
@@ -28,12 +27,13 @@ import com.unnsvc.rhena.lifecycle.misc.LoggingPrintWriter.FileDescriptor;
 
 public class DefaultProcessor implements IProcessor {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private IRhenaLogger log;
 	private IRhenaContext context;
 
 	public DefaultProcessor(IRhenaContext context) {
 
 		this.context = context;
+		this.log = context.getLogger(getClass());
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class DefaultProcessor implements IProcessor {
 	@Override
 	public void process(IExecutionContext context, IRhenaModule module, EExecutionType type) throws RhenaException {
 
-//		System.err.println("Context is " + context + " type is " + type);
+		// System.err.println("Context is " + context + " type is " + type);
 		for (IResource resource : context.getResources(type)) {
 
 			if (resource.getSource().exists() && resource.getSource().listFiles().length > 0) {
@@ -57,7 +57,7 @@ public class DefaultProcessor implements IProcessor {
 				}
 				compile(module, resource, type);
 			} else {
-				log.debug(module.getModuleIdentifier().toTag(type) + " skipping empty resource: " + resource);
+				log.debug(module.getModuleIdentifier(), type, "skipping empty resource: " + resource);
 			}
 		}
 	}

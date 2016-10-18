@@ -8,15 +8,14 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.logging.IRhenaLogger;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.TraverseType;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
@@ -39,12 +38,13 @@ import com.unnsvc.rhena.lifecycle.DefaultProcessor;
  */
 public class WorkspaceProjectMaterialiser {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private IRhenaLogger log;
 	private IRhenaContext context;
 
 	public WorkspaceProjectMaterialiser(IRhenaContext context) {
 
 		this.context = context;
+		this.log = context.getLogger(getClass());
 	}
 
 	public IRhenaExecution materialiseExecution(IRhenaModule module, EExecutionType type) throws RhenaException {
@@ -178,18 +178,18 @@ public class WorkspaceProjectMaterialiser {
 		} catch (Throwable ex) {
 
 			String tag = processor.getModuleEdge().getTarget().getModuleIdentifier().toTag(type);
-			debugClassloader(tag, "dependencies", (URLClassLoader) loader.getParent());
-			debugClassloader(tag, "lifecycle", loader);
+			debugClassloader(model.getModuleIdentifier(), tag, "dependencies", (URLClassLoader) loader.getParent());
+			debugClassloader(model.getModuleIdentifier(), tag, "lifecycle", loader);
 
 			throw new RhenaException(model.getModuleIdentifier().toTag(type) + " Failed to instantiate: " + processor.getClazz(), ex);
 		}
 	}
 
-	private void debugClassloader(String moduleTag, String loaderName, URLClassLoader loader) {
+	private void debugClassloader(ModuleIdentifier identifier, String moduleTag, String loaderName, URLClassLoader loader) {
 
 		for (URL url : loader.getURLs()) {
 
-			log.error(moduleTag + " Classloader [" + loaderName + "] contains: " + url);
+			log.error(identifier, EExecutionType.MODEL, moduleTag + " Classloader [" + loaderName + "] contains: " + url);
 		}
 	}
 

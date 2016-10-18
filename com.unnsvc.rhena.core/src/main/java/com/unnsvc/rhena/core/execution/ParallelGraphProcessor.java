@@ -9,12 +9,10 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
+import com.unnsvc.rhena.common.logging.IRhenaLogger;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.ModuleType;
@@ -23,7 +21,7 @@ import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 
 public class ParallelGraphProcessor {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private IRhenaLogger log;
 	private IRhenaContext context;
 	private ExecutorService executor;
 	private CompletionService<ExecutionResult> completionService;
@@ -36,6 +34,7 @@ public class ParallelGraphProcessor {
 	public ParallelGraphProcessor(IRhenaContext context) {
 
 		this.context = context;
+		this.log = context.getLogger(getClass());
 		this.executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 		this.executed = new HashSet<IRhenaEdge>();
 		this.completionService = new ExecutorCompletionService<ExecutionResult>(executor);

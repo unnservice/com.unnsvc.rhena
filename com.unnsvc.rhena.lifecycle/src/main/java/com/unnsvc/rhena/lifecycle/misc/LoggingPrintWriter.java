@@ -4,14 +4,14 @@ package com.unnsvc.rhena.lifecycle.misc;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.slf4j.Logger;
+import com.unnsvc.rhena.common.logging.IRhenaLogger;
 
 public class LoggingPrintWriter extends Writer {
 
-	private Logger log;
+	private IRhenaLogger log;
 	private FileDescriptor fd;
 
-	public LoggingPrintWriter(Logger logger, FileDescriptor fd) {
+	public LoggingPrintWriter(IRhenaLogger logger, FileDescriptor fd) {
 
 		this.log = logger;
 		this.fd = fd;

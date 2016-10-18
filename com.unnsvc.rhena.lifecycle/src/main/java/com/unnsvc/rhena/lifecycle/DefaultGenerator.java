@@ -12,13 +12,12 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
+import com.unnsvc.rhena.common.logging.IRhenaLogger;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IGenerator;
@@ -26,10 +25,11 @@ import com.unnsvc.rhena.common.model.lifecycle.IResource;
 
 public class DefaultGenerator implements IGenerator {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private IRhenaLogger log;
 
 	public DefaultGenerator(IRhenaContext context) {
 		
+		this.log = context.getLogger(getClass());
 	}
 	
 	@Override
@@ -48,7 +48,7 @@ public class DefaultGenerator implements IGenerator {
 
 		try {
 			generateJar(resources, outLocation);
-			log.debug(module.getModuleIdentifier().toTag(type) + " Generated: " + outLocation.getAbsolutePath());
+			log.debug(module.getModuleIdentifier(), type, "Generated: " + outLocation.getAbsolutePath());
 		} catch (Exception ex) {
 			throw new RhenaException(ex.getMessage(), ex);
 		}

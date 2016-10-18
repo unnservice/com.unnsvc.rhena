@@ -9,13 +9,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.EExecutionType;
 //import com.unnsvc.rhena.common.execution.ExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.logging.IRhenaLogger;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
@@ -29,7 +28,7 @@ import com.unnsvc.rhena.common.visitors.IModelVisitor;
  */
 public class ModelMergeVisitor implements IModelVisitor {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private IRhenaLogger log;
 	// private IResolutionContext context;
 	private Set<ModuleIdentifier> entered;
 
@@ -37,6 +36,7 @@ public class ModelMergeVisitor implements IModelVisitor {
 
 		// this.context = context;
 		this.entered = new HashSet<ModuleIdentifier>();
+		this.log = context.getLogger(getClass());
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class ModelMergeVisitor implements IModelVisitor {
 
 				IRhenaModule parent = module.getParentModule().getTarget();
 				mergeParent(parent, module);
-				log.debug("[" + module.getModuleIdentifier() + "]:model merged parent " + parent.getModuleIdentifier());
+				log.debug(module.getModuleIdentifier(), EExecutionType.MODEL, "merged parent " + parent.getModuleIdentifier());
 			}
 		}
 

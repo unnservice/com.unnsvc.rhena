@@ -4,12 +4,10 @@ package com.unnsvc.rhena.core.visitors;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
+import com.unnsvc.rhena.common.logging.IRhenaLogger;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.ModuleType;
@@ -17,7 +15,7 @@ import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
 public class LoggingVisitor implements IModelVisitor {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private IRhenaLogger log;
 	private IRhenaContext context;
 	private EExecutionType type;
 	private int indents;
@@ -29,6 +27,7 @@ public class LoggingVisitor implements IModelVisitor {
 		this.context = context;
 		this.indents = indents;
 		this.label = label;
+		this.log = context.getLogger(getClass());
 	}
 
 	public LoggingVisitor(EExecutionType type, IRhenaContext context) {
