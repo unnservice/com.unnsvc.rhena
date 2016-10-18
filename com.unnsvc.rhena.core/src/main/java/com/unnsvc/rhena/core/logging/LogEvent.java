@@ -8,6 +8,7 @@ import com.unnsvc.rhena.common.logging.ELogLevel;
 
 public class LogEvent implements IContextEvent {
 
+	private long timestamp;
 	private String source;
 	private ELogLevel level;
 	private ModuleIdentifier identifier;
@@ -16,6 +17,7 @@ public class LogEvent implements IContextEvent {
 
 	public LogEvent(String source, ELogLevel level, ModuleIdentifier identifier, EExecutionType type, String message) {
 
+		this.timestamp = System.currentTimeMillis();
 		this.source = source;
 		this.level = level;
 		this.identifier = identifier;
@@ -28,6 +30,11 @@ public class LogEvent implements IContextEvent {
 		this.source = source;
 		this.level = level;
 		this.message = message;
+	}
+
+	public long getTimestamp() {
+
+		return timestamp;
 	}
 
 	public String getSource() {
