@@ -1,13 +1,15 @@
 
-package com.unnsvc.rhena.core;
+package com.unnsvc.rhena.cmdline;
 
 import java.io.File;
 
 import org.junit.Test;
 
 import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.listener.IContextListener;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.TraverseType;
@@ -15,6 +17,7 @@ import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 import com.unnsvc.rhena.core.configuration.RhenaConfiguration;
 import com.unnsvc.rhena.core.execution.GraphResolver;
 import com.unnsvc.rhena.core.execution.ParallelGraphProcessor;
+import com.unnsvc.rhena.core.logging.LogEvent;
 import com.unnsvc.rhena.core.model.RhenaEdge;
 import com.unnsvc.rhena.core.resolution.CachingResolutionContext;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
@@ -22,30 +25,8 @@ import com.unnsvc.rhena.core.visitors.LoggingVisitor;
 
 public class TestRhenaModule {
 
-	// private Logger log = LoggerFactory.getLogger(getClass());
-
 	@Test
 	public void test() throws Exception {
-
-//		ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-//		rootLogger.detachAndStopAllAppenders();
-//		rootLogger.setLevel(Level.INFO);
-//
-//		ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.unnsvc.rhena");
-//		log.setLevel(Level.INFO);
-//
-//		LoggerContext c = rootLogger.getLoggerContext();
-//
-//		ConsoleAppender<ILoggingEvent> ca = new ConsoleAppender<ILoggingEvent>();
-//		PatternLayoutEncoder encoder = new PatternLayoutEncoder();
-//		encoder.setPattern("%d{ss.SSS} %-5level %40.40logger - %msg%n");
-//		encoder.setContext(c);
-//		encoder.start();
-//		ca.setEncoder(encoder);
-//		ca.setContext(c);
-//		ca.start();
-//
-//		rootLogger.addAppender(ca);
 
 		long start = System.currentTimeMillis();
 		execute();
@@ -61,11 +42,25 @@ public class TestRhenaModule {
 	private void execute() throws Exception {
 
 		RhenaConfiguration config = new RhenaConfiguration();
-//		config.configureLoggingAppender();
-		
+
 		IRhenaContext context = new CachingResolutionContext(config);
 
-		// context.addListener(new LogbackListener());
+		context.addListener(new IContextListener<LogEvent>() {
+
+			@Override
+			public void onEvent(LogEvent event) throws RhenaException {
+
+				// Logger log = LoggerFactory.getLogger(event.getSource());
+				System.err.println(event);
+			}
+
+			@Override
+			public Class<LogEvent> getType() {
+
+				return LogEvent.class;
+			}
+		});
+
 		// context.addListener(new MetricsListenr());
 
 		context.getRepositories().add(new WorkspaceRepository(context, new File("../../com.unnsvc.erhena/")));

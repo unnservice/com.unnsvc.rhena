@@ -31,12 +31,12 @@ public abstract class AbstractResolutionContext implements IRhenaContext {
 
 	private Map<String, IRhenaLogger> loggers = new HashMap<String, IRhenaLogger>();
 	protected List<IRepository> repositories;
-	private Map<Class<? extends IContextEvent>, Set<IContextListener>> listeners;
+	private Map<Class<? extends IContextEvent>, Set<IContextListener<? extends IContextEvent>>> listeners;
 
 	public AbstractResolutionContext() {
 
 		this.repositories = new ArrayList<IRepository>();
-		this.listeners = new HashMap<Class<? extends IContextEvent>, Set<IContextListener>>();
+		this.listeners = new HashMap<Class<? extends IContextEvent>, Set<IContextListener<? extends IContextEvent>>>();
 	}
 
 	@Override
@@ -73,23 +73,25 @@ public abstract class AbstractResolutionContext implements IRhenaContext {
 	}
 
 	@Override
-	public void addListener(IContextListener listener) {
+	public void addListener(IContextListener<? extends IContextEvent> listener) {
 
-		Set<IContextListener> l = listeners.get(listener.getType());
+		Set<IContextListener<? extends IContextEvent>> l = listeners.get(listener.getType());
 
 		if (l == null) {
-			l = new HashSet<IContextListener>();
+			l = new HashSet<IContextListener<? extends IContextEvent>>();
 			l.add(listener);
 			listeners.put(listener.getType(), l);
 		}
 	}
-	
+
 	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void fireEvent(IContextEvent event) throws RhenaException {
-		
-		Set<IContextListener> l = listeners.get(event.getClass());
-		if(l != null) {
-			for(IContextListener listener : l) {
+
+		Set<IContextListener<? extends IContextEvent>> l = listeners.get(event.getClass());
+		if (l != null) {
+			for (IContextListener listener : l) {
+
 				listener.onEvent(event);
 			}
 		}

@@ -31,10 +31,10 @@ public interface IRhenaContext {
 
 	public Set<IRhenaEdge> getEdges();
 
-	public void addListener(IContextListener listener);
+	public void addListener(IContextListener<? extends IContextEvent> listener);
 
 	public IRhenaLogger getLogger(Class<?> type);
 
 	public void fireEvent(IContextEvent event) throws RhenaException;
 
-} 
+}

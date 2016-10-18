@@ -1,7 +1,7 @@
 
 package com.unnsvc.rhena.common.logging;
 
-public enum ELevel {
+public enum ELogLevel {
 
 	INFO, WARN, ERROR, DEBUG, TRACE
 }

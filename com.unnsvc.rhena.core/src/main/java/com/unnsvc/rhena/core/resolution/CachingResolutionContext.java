@@ -54,20 +54,6 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 	@Override
 	public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
 
-		// ch.qos.logback.classic.Logger rootLogger =
-		// (ch.qos.logback.classic.Logger)
-		// LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-		// Appender<ILoggingEvent> stdoutAppender =
-		// rootLogger.getAppender("STDOUT");
-		// System.err.println("STDOUT appender is: " + stdoutAppender + " and
-		// was loaded with classloader: " +
-		// stdoutAppender.getClass().getClassLoader());
-		//
-		// System.err.println("Attempting to materialise model using
-		// classloader: " + getClass().getClassLoader());
-		// LoggerFactory.getLogger(getClass()).info("TEST LOG");
-		// System.err.println("Logged message.");
-
 		if (repositories.isEmpty()) {
 			throw new NotExistsException("No repository in context.");
 		}
