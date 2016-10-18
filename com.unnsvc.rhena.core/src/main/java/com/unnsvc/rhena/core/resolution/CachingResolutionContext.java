@@ -16,10 +16,12 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.listener.IContextListener;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.configuration.RhenaConfiguration;
+
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Appender;
 
 /**
  * This resolution context will first attempt to resolve the artifact form the
@@ -37,12 +39,15 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 	/**
 	 * This will become modified from multiple threads as materialiseExecutor is
 	 * called from execution threads.
+	 * 
 	 * @TODO take it out of here and into a rhena context
 	 */
 	protected Map<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>> executions;
 	private Set<IRhenaEdge> edges;
 
 	public CachingResolutionContext(RhenaConfiguration configuration) {
+
+		System.err.println("Constructed CachingCachingResolutionContext context, in classloader: " + getClass().getClassLoader());
 
 		this.cacheRepository = new LocalCacheRepository(this, configuration.getLocalCacheRepository());
 		this.models = new ConcurrentHashMap<ModuleIdentifier, IRhenaModule>();
@@ -53,10 +58,18 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 	@Override
 	public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
 
+//		ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+//		Appender<ILoggingEvent> stdoutAppender = rootLogger.getAppender("STDOUT");
+//		System.err.println("STDOUT appender is: " + stdoutAppender + " and was loaded with classloader: " + stdoutAppender.getClass().getClassLoader());
+//		
+//		System.err.println("Attempting to materialise model using classloader: " + getClass().getClassLoader());
+//		LoggerFactory.getLogger(getClass()).info("TEST LOG");
+//		System.err.println("Logged message.");
+
 		if (repositories.isEmpty()) {
 			throw new NotExistsException("No repository in context.");
 		}
-		
+
 		IRhenaModule module = models.get(moduleIdentifier);
 
 		if (module == null) {

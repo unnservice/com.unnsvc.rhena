@@ -7,13 +7,10 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.common.listener.ILoggingListener;
-import com.unnsvc.rhena.common.listener.LogEvent;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.Appender;
 
 /**
  * @TODO different locations for RHENA_HOME for windows and unix etc?
@@ -36,7 +33,7 @@ public class RhenaConfiguration {
 		return localCacheRepository;
 	}
 
-	public void configureLoggingAppender(ILoggingListener customListener) {
+	public void configureLoggingAppender(Appender<ILoggingEvent> appender) {
 
 		ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 		rootLogger.detachAndStopAllAppenders();
@@ -46,6 +43,11 @@ public class RhenaConfiguration {
 		log.setLevel(Level.INFO);
 
 		LoggerContext c = rootLogger.getLoggerContext();
+		
+		appender.setContext(c);
+		appender.setName("STDOUT");
+
+		rootLogger.addAppender(appender);
 
 		// ConsoleAppender<ILoggingEvent> ca = new
 		// ConsoleAppender<ILoggingEvent>();
@@ -58,19 +60,20 @@ public class RhenaConfiguration {
 		// ca.start();
 
 		// rootLogger.addAppender(ca);
+		
+//		Appender<ILoggingEvent> appender = new AppenderBase<ILoggingEvent>() {
+//
+//			@Override
+//			protected void append(ILoggingEvent evt) {
+//
+//				LogEvent event = new LogEvent();
+//				event.setLevel(evt.getLevel().toString());
+//				event.setLogger(evt.getLoggerName());
+//				event.setMessage(evt.getMessage());
+//
+//				customListener.append(event);
+//			}
+//		};
 
-		rootLogger.addAppender(new AppenderBase<ILoggingEvent>() {
-
-			@Override
-			protected void append(ILoggingEvent evt) {
-
-				LogEvent event = new LogEvent();
-				event.setLevel(evt.getLevel().toString());
-				event.setLogger(evt.getLoggerName());
-				event.setMessage(evt.getMessage());
-
-				customListener.append(event);
-			}
-		});
 	}
 }
