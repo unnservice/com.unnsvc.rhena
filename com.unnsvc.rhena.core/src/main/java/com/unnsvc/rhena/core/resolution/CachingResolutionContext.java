@@ -17,6 +17,8 @@ import com.unnsvc.rhena.common.logging.IRhenaLogger;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.configuration.RhenaConfiguration;
+import com.unnsvc.rhena.core.events.ModuleAddRemoveEvent;
+import com.unnsvc.rhena.core.events.ModuleAddRemoveEvent.EAddRemove;
 
 /**
  * This resolution context will first attempt to resolve the artifact form the
@@ -30,9 +32,13 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 
 	private IRhenaLogger log;
 	private LocalCacheRepository cacheRepository;
+	/**
+	 * @TODO create an implementation which has listener support, or some sort
+	 *       of observation mechanism so we can observe all add/remove inside
+	 *       this map
+	 */
 	protected Map<ModuleIdentifier, IRhenaModule> models;
-	
-	
+
 	/**
 	 * This will become modified from multiple threads as materialiseExecutor is
 	 * called from execution threads.
@@ -74,6 +80,7 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 
 			log.info(moduleIdentifier, EExecutionType.MODEL, "materialised");
 			models.put(moduleIdentifier, module);
+			fireEvent(new ModuleAddRemoveEvent(moduleIdentifier, EAddRemove.ADDED ));
 		}
 
 		return module;
