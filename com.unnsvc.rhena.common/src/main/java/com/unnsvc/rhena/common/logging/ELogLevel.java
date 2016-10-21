@@ -3,5 +3,10 @@ package com.unnsvc.rhena.common.logging;
 
 public enum ELogLevel {
 
-	DEBUG, TRACE, INFO, WARN, ERROR
+	TRACE, DEBUG, INFO, WARN, ERROR;
+	
+	public boolean isGreaterThan(ELogLevel other) {
+		
+		return this.compareTo(other) >= 0;
+	}
 }

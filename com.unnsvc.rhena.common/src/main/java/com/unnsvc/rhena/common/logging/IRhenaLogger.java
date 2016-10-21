@@ -19,16 +19,11 @@ public interface IRhenaLogger {
 
 	/**
 	 * Generic loggers
-	 */
-	
-	
-	
+	 */	
 	public void error(String message);
 
 	public void debug(String message);
 
 	public void info(String message);
-
-
 
 }
