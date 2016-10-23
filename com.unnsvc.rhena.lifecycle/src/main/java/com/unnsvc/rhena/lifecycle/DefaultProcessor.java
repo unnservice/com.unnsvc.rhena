@@ -51,9 +51,9 @@ public class DefaultProcessor implements IProcessor {
 		// System.err.println("Context is " + context + " type is " + type);
 		for (IResource resource : context.getResources(type)) {
 
-			if (resource.getSource().exists() && resource.getSource().listFiles().length > 0) {
-				if (!resource.getTarget().exists()) {
-					resource.getTarget().mkdirs();
+			if (resource.getSourceFile().exists() && resource.getSourceFile().listFiles().length > 0) {
+				if (!resource.getTargetFile().exists()) {
+					resource.getTargetFile().mkdirs();
 				}
 				compile(module, resource, type);
 			} else {
@@ -101,14 +101,14 @@ public class DefaultProcessor implements IProcessor {
 			}
 		}
 
-		File source = resource.getSource();
-		File target = resource.getTarget();
+		File source = resource.getSourceFile();
+		File target = resource.getTargetFile();
 
 		String cmdline = "-1.8 " + toClasspathFlag(deps) + " -d " + target + " " + source;
 
-		log.debug(module.getModuleIdentifier().toTag(type) + " compiling");
+		log.debug(module.getModuleIdentifier(), type, "compiling");
 		for (URL classpath : deps) {
-			log.debug(module.getModuleIdentifier().toTag(type) + " -> " + classpath);
+			log.debug(module.getModuleIdentifier(), type, " -> " + classpath);
 		}
 
 		if (!BatchCompiler.compile(cmdline, new PrintWriter(new LoggingPrintWriter(log, FileDescriptor.OUT)),

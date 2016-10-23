@@ -55,9 +55,15 @@ public class DefaultContext implements IExecutionContext {
 					actual = "main";
 				}
 
-				this.resources.put(type,
-						resourcesAsList(new Resource(new File(location, "src/" + actual + "/java"), new File(location, "target/" + actual + "/classes")),
-								new Resource(new File(location, "src/" + actual + "/resources"), new File(location, "target/" + actual + "/classes"))));
+				String sourcePath = "src/" + actual + "/java";
+				String resourcePath = "src/" + actual + "/resources";
+				String targetPath = "target/" + actual + "/classes";
+
+				IResource srcResource = new Resource(location, sourcePath, targetPath);
+				IResource resResource = new Resource(location, resourcePath, targetPath);
+
+				this.resources.put(type, resourcesAsList(srcResource));
+				this.resources.put(type, resourcesAsList(resResource));
 			}
 		}
 	}

@@ -28,10 +28,10 @@ public class DefaultGenerator implements IGenerator {
 	private IRhenaLogger log;
 
 	public DefaultGenerator(IRhenaContext context) {
-		
+
 		this.log = context.getLogger(getClass());
 	}
-	
+
 	@Override
 	public void configure(IRhenaModule module, Document configuration) {
 
@@ -68,7 +68,7 @@ public class DefaultGenerator implements IGenerator {
 		JarOutputStream jos = new JarOutputStream(new FileOutputStream(outLocation));
 		for (IResource resource : resources) {
 
-			File target = resource.getTarget();
+			File target = resource.getTargetFile();
 			String base = target.toString();
 			if (target.isDirectory()) {
 				for (File contained : target.listFiles()) {

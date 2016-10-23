@@ -52,7 +52,6 @@ public abstract class AbstractResolutionContext implements IRhenaContext {
 
 				return module;
 			}
-
 		}
 
 		return module;

@@ -28,6 +28,7 @@ import com.unnsvc.rhena.common.model.lifecycle.ILifecycleProcessorReference;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 import com.unnsvc.rhena.common.visitors.RhenaDependencyCollectionVisitor;
+import com.unnsvc.rhena.core.events.WorkspaceConfigurationEvent;
 import com.unnsvc.rhena.lifecycle.DefaultContext;
 import com.unnsvc.rhena.lifecycle.DefaultGenerator;
 import com.unnsvc.rhena.lifecycle.DefaultProcessor;
@@ -76,6 +77,8 @@ public class WorkspaceProjectMaterialiser {
 		DefaultContext contextProc = new DefaultContext(context);
 		contextProc.configure(module, Utils.newEmptyDocument());
 		validateContext(RhenaConstants.DEFAULT_LIFECYCLE_NAME, contextProc);
+
+		context.fireEvent(new WorkspaceConfigurationEvent(module.getModuleIdentifier(), contextProc));
 
 		DefaultProcessor procProc = new DefaultProcessor(context);
 		procProc.configure(module, Utils.newEmptyDocument());
@@ -134,7 +137,8 @@ public class WorkspaceProjectMaterialiser {
 
 		List<URL> l = new ArrayList<URL>();
 
-		l.addAll(processor.getModuleEdge().getTarget().visit(new RhenaDependencyCollectionVisitor(context, EExecutionType.FRAMEWORK, TraverseType.SCOPE)).getDependenciesURL());
+		l.addAll(processor.getModuleEdge().getTarget().visit(new RhenaDependencyCollectionVisitor(context, EExecutionType.FRAMEWORK, TraverseType.SCOPE))
+				.getDependenciesURL());
 		URLClassLoader dependenciesLoader = new URLClassLoader(l.toArray(new URL[l.size()]), Thread.currentThread().getContextClassLoader());
 		URLClassLoader mainLoader = new URLClassLoader(
 				new URL[] { context.materialiseExecution(processor.getModuleEdge().getTarget(), EExecutionType.FRAMEWORK).getArtifact().getArtifactUrl() },

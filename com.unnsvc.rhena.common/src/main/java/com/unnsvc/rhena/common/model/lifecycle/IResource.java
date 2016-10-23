@@ -5,10 +5,14 @@ import java.io.File;
 
 public interface IResource {
 
-	public File getSource();
+	public File getProjectBase();
 
-	public File getTarget();
+	public String getSourcePath();
+	
+	public File getSourceFile();
 
-	public boolean isStaged();
+	public String getTargetPath();
+	
+	public File getTargetFile();
 
 }

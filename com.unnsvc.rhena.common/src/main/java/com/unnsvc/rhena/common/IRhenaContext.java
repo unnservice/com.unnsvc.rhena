@@ -4,6 +4,7 @@ package com.unnsvc.rhena.common;
 import java.util.List;
 import java.util.Set;
 
+import com.unnsvc.rhena.common.exceptions.NotExistsException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
@@ -36,5 +37,15 @@ public interface IRhenaContext {
 	public IRhenaLogger getLogger(Class<?> type);
 
 	public void fireEvent(IContextEvent event) throws RhenaException;
+
+	/**
+	 * Convenience method that handles the checking of module descriptor
+	 * 
+	 * @param string
+	 * @return
+	 * @throws NotExistsException
+	 * @throws RhenaException
+	 */
+	public IRhenaModule materialiseWorkspaceModel(String projectName) throws RhenaException;
 
 }

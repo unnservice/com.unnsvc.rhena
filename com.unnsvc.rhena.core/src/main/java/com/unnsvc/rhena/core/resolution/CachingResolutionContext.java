@@ -1,6 +1,7 @@
 
 package com.unnsvc.rhena.core.resolution;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -8,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.unnsvc.rhena.common.IRepository;
+import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.NotExistsException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
@@ -80,10 +83,34 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 
 			log.info(moduleIdentifier, EExecutionType.MODEL, "materialised");
 			models.put(moduleIdentifier, module);
-			fireEvent(new ModuleAddRemoveEvent(moduleIdentifier, EAddRemove.ADDED ));
+			fireEvent(new ModuleAddRemoveEvent(moduleIdentifier, EAddRemove.ADDED));
 		}
 
 		return module;
+	}
+
+	@Override
+	public IRhenaModule materialiseWorkspaceModel(String projectName) throws RhenaException {
+
+		// @todo check for workspace repositories instead
+		if (repositories.isEmpty()) {
+			throw new NotExistsException("No repository in context.");
+		}
+
+		for (IRepository repository : repositories) {
+
+			if (repository instanceof WorkspaceRepository) {
+				WorkspaceRepository repo = (WorkspaceRepository) repository;
+				File workspaceProject = new File(repo.getWorkspaceDirectory(), projectName);
+				if (!workspaceProject.isDirectory()) {
+					continue;
+				}
+				ModuleIdentifier moduleIdentifier = Utils.readModuleIdentifier(workspaceProject);
+				return materialiseModel(moduleIdentifier);
+			}
+		}
+
+		throw new NotExistsException("Project: " + projectName + " was not found in defined workspace repositories.");
 	}
 
 	@Override
@@ -130,4 +157,5 @@ public class CachingResolutionContext extends AbstractResolutionContext {
 
 		return edges;
 	}
+
 }

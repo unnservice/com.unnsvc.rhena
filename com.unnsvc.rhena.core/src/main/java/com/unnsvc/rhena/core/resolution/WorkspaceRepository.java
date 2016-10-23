@@ -1,4 +1,4 @@
-	
+
 package com.unnsvc.rhena.core.resolution;
 
 import java.io.File;
@@ -13,7 +13,6 @@ import com.unnsvc.rhena.common.logging.IRhenaLogger;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.ModuleType;
 import com.unnsvc.rhena.core.execution.WorkspaceProjectMaterialiser;
-import com.unnsvc.rhena.core.model.RhenaModule;
 
 public class WorkspaceRepository extends AbstractRepository {
 
@@ -29,11 +28,11 @@ public class WorkspaceRepository extends AbstractRepository {
 	}
 
 	@Override
-	public RhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
+	public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
 
 		File workspaceProject = new File(workspaceDirectory, moduleIdentifier.getComponentName() + "." + moduleIdentifier.getModuleName());
 
-		if (!workspaceProject.exists()) {
+		if (!workspaceProject.isDirectory()) {
 			return null;
 		}
 
@@ -46,5 +45,10 @@ public class WorkspaceRepository extends AbstractRepository {
 
 		WorkspaceProjectMaterialiser etm = new WorkspaceProjectMaterialiser(getContext());
 		return etm.materialiseExecution(model, type);
+	}
+
+	public File getWorkspaceDirectory() {
+
+		return workspaceDirectory;
 	}
 }

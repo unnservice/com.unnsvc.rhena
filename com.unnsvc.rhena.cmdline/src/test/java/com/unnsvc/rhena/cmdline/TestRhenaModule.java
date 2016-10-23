@@ -4,6 +4,8 @@ package com.unnsvc.rhena.cmdline;
 import java.io.File;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -50,8 +52,27 @@ public class TestRhenaModule {
 			@Override
 			public void onEvent(LogEvent event) throws RhenaException {
 
-				// Logger log = LoggerFactory.getLogger(event.getSource());
-				System.err.println(event);
+				Logger log = LoggerFactory.getLogger(event.getSource());
+
+				String message = "[" + (event.getIdentifier() == null ? "core" : event.getIdentifier()) + "] " + event.getMessage();
+
+				switch (event.getLevel()) {
+					case TRACE:
+						log.trace(message);
+						break;
+					case DEBUG:
+						log.debug(message);
+						break;
+					case INFO:
+						log.info(message);
+						break;
+					case WARN:
+						log.warn(message);
+						break;
+					case ERROR:
+						log.error(message);
+						break;
+				}
 			}
 
 			@Override
@@ -66,7 +87,8 @@ public class TestRhenaModule {
 		context.getRepositories().add(new WorkspaceRepository(context, new File("../../com.unnsvc.erhena/")));
 		context.getRepositories().add(new WorkspaceRepository(context, new File("../../")));
 
-		IRhenaModule model = context.materialiseModel(ModuleIdentifier.valueOf("com.unnsvc.erhena:core:0.0.1"));
+//		IRhenaModule model = context.materialiseModel(ModuleIdentifier.valueOf("com.unnsvc.erhena:core:0.0.1"));
+		IRhenaModule model = context.materialiseWorkspaceModel("com.unnsvc.erhena.core");
 
 		EExecutionType type = EExecutionType.PROTOTYPE;
 		IRhenaEdge entryPointEdge = new RhenaEdge(type, model, TraverseType.SCOPE);

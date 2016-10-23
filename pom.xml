@@ -10,6 +10,7 @@
 		<module>com.unnsvc.rhena.lifecycle</module>
 		<module>com.unnsvc.rhena.common</module>
 		<module>com.unnsvc.rhena.cmdline</module>
+		<module>com.unnsvc.rhena.mvnplugins</module>
 	</modules>
 
 	<build>

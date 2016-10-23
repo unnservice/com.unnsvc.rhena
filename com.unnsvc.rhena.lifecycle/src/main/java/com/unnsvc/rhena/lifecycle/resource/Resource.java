@@ -12,43 +12,54 @@ import com.unnsvc.rhena.common.model.lifecycle.IResource;
  */
 public class Resource implements IResource {
 
-	private File source;
-	private File target;
-	private boolean staged;
+	private File projectBase;
+	private String sourcePath;
+	private String targetPath;
 
-	public Resource(File source, File target) {
+	/**
+	 * @TODO evaluate potential framework support in staging "this.staging"
+	 */
 
-		this(source, target, false);
-	}
+	public Resource(File projectBase, String sourcePath, String targetPath) {
 
-	public Resource(File source, File target, boolean staged) {
-
-		this.source = new File(source.toURI().normalize().getPath());
-		this.target = new File(target.toURI().normalize().getPath());
-		this.staged = true;
-	}
-
-	@Override
-	public File getSource() {
-
-		return source;
+		this.projectBase = new File(projectBase.toURI().normalize().getPath());
+		this.sourcePath = sourcePath;
+		this.targetPath = targetPath;
 	}
 
 	@Override
-	public File getTarget() {
+	public File getProjectBase() {
 
-		return target;
+		return projectBase;
 	}
 
 	@Override
-	public boolean isStaged() {
+	public String getSourcePath() {
 
-		return staged;
+		return sourcePath;
+	}
+
+	@Override
+	public String getTargetPath() {
+
+		return targetPath;
+	}
+
+	@Override
+	public File getSourceFile() {
+
+		return new File(getProjectBase(), getSourcePath());
+	}
+
+	@Override
+	public File getTargetFile() {
+
+		return new File(getProjectBase(), getTargetPath());
 	}
 
 	@Override
 	public String toString() {
 
-		return "Resource [source=" + source + ", target=" + target + ", staged=" + staged + "]";
+		return "Resource [projectBase=" + projectBase + ", sourcePath=" + sourcePath + ", targetPath=" + targetPath + "]";
 	}
 }
