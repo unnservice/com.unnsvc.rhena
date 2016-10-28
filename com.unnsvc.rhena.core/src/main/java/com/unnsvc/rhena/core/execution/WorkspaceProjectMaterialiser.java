@@ -74,17 +74,17 @@ public class WorkspaceProjectMaterialiser {
 
 	private IRhenaExecution processUsingDefaultLifecycle(IRhenaModule module, EExecutionType type) throws RhenaException {
 
-		DefaultContext contextProc = new DefaultContext(context);
+		IExecutionContext contextProc = new DefaultContext(context);
 		contextProc.configure(module, Utils.newEmptyDocument());
 		validateContext(RhenaConstants.DEFAULT_LIFECYCLE_NAME, contextProc);
 
 		context.fireEvent(new WorkspaceConfigurationEvent(module.getModuleIdentifier(), contextProc));
 
-		DefaultProcessor procProc = new DefaultProcessor(context);
+		IProcessor procProc = new DefaultProcessor(context);
 		procProc.configure(module, Utils.newEmptyDocument());
 		procProc.process(contextProc, module, type);
 
-		DefaultGenerator genProc = new DefaultGenerator(context);
+		IGenerator genProc = new DefaultGenerator(context);
 		genProc.configure(module, Utils.newEmptyDocument());
 		File result = genProc.generate(contextProc, module, type);
 
@@ -97,8 +97,7 @@ public class WorkspaceProjectMaterialiser {
 
 			if (contextProc.getResources(type) == null) {
 				if (type != EExecutionType.MODEL) {
-					throw new RhenaException(
-							"Lifecycle context \"" + lifecycleName + "\", is invalid. Missing resources for execution type: " + type.literal());
+					throw new RhenaException("Lifecycle context \"" + lifecycleName + "\", is invalid. Missing resources for execution type: " + type.literal());
 				}
 			}
 		}
@@ -110,6 +109,8 @@ public class WorkspaceProjectMaterialiser {
 		IExecutionContext executionContext = instantiateProcessor(module, contextReference, IExecutionContext.class, type);
 		executionContext.configure(module, contextReference.getConfiguration());
 		validateContext(lifecycleName, executionContext);
+		
+		context.fireEvent(new WorkspaceConfigurationEvent(module.getModuleIdentifier(), executionContext));
 
 		for (IProcessorReference pref : processorReferences) {
 

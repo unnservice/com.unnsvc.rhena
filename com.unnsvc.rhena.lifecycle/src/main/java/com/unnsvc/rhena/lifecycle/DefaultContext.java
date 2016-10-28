@@ -80,6 +80,20 @@ public class DefaultContext implements IExecutionContext {
 	@Override
 	public List<IResource> getResources(EExecutionType execution) {
 
-		return resources.get(execution);
+//		if (resources.containsKey(execution)) {
+
+			System.err.println(getClass().getName() + " Execution " + execution);
+			return resources.get(execution);
+//		} else {
+//
+//			try {
+//				throw new Exception("backtrace");
+//			} catch (Exception ex) {
+//				ex.printStackTrace(System.err);
+//			}
+//
+//			System.err.println(getClass().getName() + " Execution  " + execution + " result is null?..");
+//			return new ArrayList<IResource>();
+//		}
 	}
 }
