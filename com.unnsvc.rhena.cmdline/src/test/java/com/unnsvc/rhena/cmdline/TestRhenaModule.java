@@ -16,7 +16,7 @@ import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.TraverseType;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
-import com.unnsvc.rhena.core.configuration.RhenaConfiguration;
+import com.unnsvc.rhena.core.RhenaConfiguration;
 import com.unnsvc.rhena.core.execution.GraphResolver;
 import com.unnsvc.rhena.core.execution.ParallelGraphProcessor;
 import com.unnsvc.rhena.core.logging.LogEvent;
@@ -41,12 +41,18 @@ public class TestRhenaModule {
 		// Xms)");
 	}
 
+	/**
+	 * @TODO Need some sort of execution context which does the saving and
+	 *       caching during one execution, so every execution ends up with an
+	 *       entirely new model, then drop model
+	 * 
+	 * @throws Exception
+	 */
 	private void execute() throws Exception {
 
 		RhenaConfiguration config = new RhenaConfiguration();
 
 		IRhenaContext context = new CachingResolutionContext(config);
-
 		context.addListener(new IContextListener<LogEvent>() {
 
 			@Override
@@ -87,16 +93,16 @@ public class TestRhenaModule {
 		context.getRepositories().add(new WorkspaceRepository(context, new File("../../com.unnsvc.erhena/")));
 		context.getRepositories().add(new WorkspaceRepository(context, new File("../../")));
 
-//		IRhenaModule model = context.materialiseModel(ModuleIdentifier.valueOf("com.unnsvc.erhena:core:0.0.1"));
+		// IRhenaModule model =
+		// context.materialiseModel(ModuleIdentifier.valueOf("com.unnsvc.erhena:core:0.0.1"));
 		IRhenaModule model = context.materialiseWorkspaceModel("com.unnsvc.erhena.core");
 
-		EExecutionType type = EExecutionType.PROTOTYPE;
-		IRhenaEdge entryPointEdge = new RhenaEdge(type, model, TraverseType.SCOPE);
+		IRhenaEdge entryPointEdge = new RhenaEdge(EExecutionType.PROTOTYPE, model.getModuleIdentifier(), TraverseType.SCOPE);
 
 		GraphResolver graphResovler = new GraphResolver(context);
 		graphResovler.resolveReferences(entryPointEdge);
 
-		debugModel(context, type, model);
+		debugModel(context, EExecutionType.PROTOTYPE, model);
 
 		new ParallelGraphProcessor(context).processEdges(context.getEdges());
 
@@ -106,7 +112,7 @@ public class TestRhenaModule {
 
 		ILifecycleDeclaration decl = model.getLifecycleDeclaration(model.getLifecycleName());
 
-		decl.getGenerator().getModuleEdge().getTarget().visit(new LoggingVisitor(EExecutionType.FRAMEWORK, context));
+		context.materialiseModel(decl.getGenerator().getModuleEdge().getTarget()).visit(new LoggingVisitor(EExecutionType.FRAMEWORK, context));
 
 		model.visit(new LoggingVisitor(type, context));
 	}

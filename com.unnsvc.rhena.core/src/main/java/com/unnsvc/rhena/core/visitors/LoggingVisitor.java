@@ -7,15 +7,14 @@ import java.util.Set;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
-import com.unnsvc.rhena.common.logging.IRhenaLogger;
+import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.ModuleType;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
 public class LoggingVisitor implements IModelVisitor {
 
-	private IRhenaLogger log;
+	private IRhenaLoggingHandler log;
 	private IRhenaContext context;
 	private EExecutionType type;
 	private int indents;
@@ -51,19 +50,17 @@ public class LoggingVisitor implements IModelVisitor {
 			if (!edges.contains(model.getParentModule())) {
 
 				edges.add(model.getParentModule());
-				model.getParentModule().getTarget().visit(new LoggingVisitor(EExecutionType.MODEL, context, indents + 1, "parent"));
+				context.materialiseModel(model.getParentModule().getTarget()).visit(new LoggingVisitor(EExecutionType.MODEL, context, indents + 1, "parent"));
 			}
 		}
 
 		if (!model.getDependencyEdges().isEmpty()) {
 
 			for (IRhenaEdge edge : model.getDependencyEdges()) {
-				if (edge.getTarget().getModuleType() == ModuleType.REFERENCE) {
-					if (type.canTraverse(edge.getExecutionType())) {
-						if (!edges.contains(edge)) {
-							edges.add(edge);
-							edge.getTarget().visit(new LoggingVisitor(type, context, indents + 1, "dependency"));
-						}
+				if (type.canTraverse(edge.getExecutionType())) {
+					if (!edges.contains(edge)) {
+						edges.add(edge);
+						context.materialiseModel(edge.getTarget()).visit(new LoggingVisitor(type, context, indents + 1, "dependency"));
 					}
 				}
 			}

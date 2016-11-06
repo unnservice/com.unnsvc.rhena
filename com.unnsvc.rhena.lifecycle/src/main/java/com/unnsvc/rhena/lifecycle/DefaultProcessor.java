@@ -14,7 +14,7 @@ import org.w3c.dom.Document;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
-import com.unnsvc.rhena.common.logging.IRhenaLogger;
+import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.TraverseType;
@@ -27,7 +27,7 @@ import com.unnsvc.rhena.lifecycle.misc.LoggingPrintWriter.FileDescriptor;
 
 public class DefaultProcessor implements IProcessor {
 
-	private IRhenaLogger log;
+	private IRhenaLoggingHandler log;
 	private IRhenaContext context;
 
 	public DefaultProcessor(IRhenaContext context) {

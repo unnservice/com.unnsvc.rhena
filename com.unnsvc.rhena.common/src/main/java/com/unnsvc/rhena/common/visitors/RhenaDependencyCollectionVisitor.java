@@ -18,12 +18,12 @@ public class RhenaDependencyCollectionVisitor implements IModelVisitor {
 	// private Logger log = LoggerFactory.getLogger(getClass());
 	private List<IRhenaExecution> dependencies;
 	private EExecutionType executionType;
-	private IRhenaContext resolver;
+	private IRhenaContext context;
 	private TraverseType traverseType;
 
-	public RhenaDependencyCollectionVisitor(IRhenaContext resolver, EExecutionType executionType, TraverseType traverseType) {
+	public RhenaDependencyCollectionVisitor(IRhenaContext context, EExecutionType executionType, TraverseType traverseType) {
 
-		this(resolver, executionType, new ArrayList<IRhenaExecution>(), traverseType);
+		this(context, executionType, new ArrayList<IRhenaExecution>(), traverseType);
 	}
 
 	public RhenaDependencyCollectionVisitor(IRhenaContext resolver, EExecutionType executionType, List<IRhenaExecution> dependencies,
@@ -31,14 +31,14 @@ public class RhenaDependencyCollectionVisitor implements IModelVisitor {
 
 		this.executionType = executionType;
 		this.dependencies = dependencies;
-		this.resolver = resolver;
+		this.context = resolver;
 		this.traverseType = traverseType;
 	}
 
 	@Override
 	public void visit(IRhenaModule model) throws RhenaException {
 
-		for (IRhenaEdge edge : model.getDependencyEdges()) {
+		for (IRhenaEdge edge : model.getDependencies()) {
 
 			if (edge.getExecutionType().equals(executionType)) {
 
@@ -49,20 +49,20 @@ public class RhenaDependencyCollectionVisitor implements IModelVisitor {
 					// no-op .... why, oh why
 				} else if (traverseType.equals(TraverseType.COMPONENT)) {
 
-					if (model.getModuleIdentifier().getComponentName().equals(edge.getTarget().getModuleIdentifier().getComponentName())) {
+					if (model.getIdentifier().getComponentName().equals(edge.getTarget().getComponentName())) {
 
-						edge.getTarget().visit(this);
+						context.materialiseModel(edge.getTarget()).visit(this);
 					}
 				} else if (traverseType.equals(TraverseType.SCOPE)) {
 
-					edge.getTarget().visit(this);
+					context.materialiseModel(edge.getTarget()).visit(this);
 				} else if (traverseType.equals(TraverseType.DIRECT)) {
 
-					for (IRhenaEdge depEdge : edge.getTarget().getDependencyEdges()) {
+					for (IRhenaEdge depEdge : context.materialiseModel(edge.getTarget()).getDependencies()) {
 
 						if (depEdge.getExecutionType().equals(executionType)) {
 
-							dependencies.add(resolver.materialiseExecution(depEdge.getTarget(), depEdge.getExecutionType()));
+							dependencies.add(context.materialiseExecution(context.materialiseModel(depEdge.getTarget()), depEdge.getExecutionType()));
 						}
 					}
 				}
@@ -72,7 +72,7 @@ public class RhenaDependencyCollectionVisitor implements IModelVisitor {
 
 	private void addDependency(IRhenaEdge edge) throws RhenaException {
 
-		dependencies.add(resolver.materialiseExecution(edge.getTarget(), edge.getExecutionType()));
+		dependencies.add(context.materialiseExecution(context.materialiseModel(edge.getTarget()), edge.getExecutionType()));
 	}
 
 	public List<IRhenaExecution> getDependencies() {

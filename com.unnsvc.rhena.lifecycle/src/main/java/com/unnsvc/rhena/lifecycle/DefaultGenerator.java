@@ -17,7 +17,7 @@ import org.w3c.dom.Document;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
-import com.unnsvc.rhena.common.logging.IRhenaLogger;
+import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IGenerator;
@@ -25,7 +25,7 @@ import com.unnsvc.rhena.common.model.lifecycle.IResource;
 
 public class DefaultGenerator implements IGenerator {
 
-	private IRhenaLogger log;
+	private IRhenaLoggingHandler log;
 
 	public DefaultGenerator(IRhenaContext context) {
 

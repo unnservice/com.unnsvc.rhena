@@ -4,14 +4,14 @@ package com.unnsvc.rhena.lifecycle.misc;
 import java.io.IOException;
 import java.io.Writer;
 
-import com.unnsvc.rhena.common.logging.IRhenaLogger;
+import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
 
 public class LoggingPrintWriter extends Writer {
 
-	private IRhenaLogger log;
+	private IRhenaLoggingHandler log;
 	private FileDescriptor fd;
 
-	public LoggingPrintWriter(IRhenaLogger logger, FileDescriptor fd) {
+	public LoggingPrintWriter(IRhenaLoggingHandler logger, FileDescriptor fd) {
 
 		this.log = logger;
 		this.fd = fd;

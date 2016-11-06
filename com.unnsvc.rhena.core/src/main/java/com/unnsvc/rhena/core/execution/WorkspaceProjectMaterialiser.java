@@ -15,7 +15,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.logging.IRhenaLogger;
+import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.TraverseType;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
@@ -39,13 +39,13 @@ import com.unnsvc.rhena.lifecycle.DefaultProcessor;
  */
 public class WorkspaceProjectMaterialiser {
 
-	private IRhenaLogger log;
+//	private IRhenaLoggingHandler log;
 	private IRhenaContext context;
 
 	public WorkspaceProjectMaterialiser(IRhenaContext context) {
 
 		this.context = context;
-		this.log = context.getLogger(getClass());
+//		this.log = context.getLogger(getClass());
 	}
 
 	public IRhenaExecution materialiseExecution(IRhenaModule module, EExecutionType type) throws RhenaException {
@@ -138,11 +138,10 @@ public class WorkspaceProjectMaterialiser {
 
 		List<URL> l = new ArrayList<URL>();
 
-		l.addAll(processor.getModuleEdge().getTarget().visit(new RhenaDependencyCollectionVisitor(context, EExecutionType.FRAMEWORK, TraverseType.SCOPE))
-				.getDependenciesURL());
+		l.addAll(context.materialiseModel(processor.getModuleEdge().getTarget()).visit(new RhenaDependencyCollectionVisitor(context, EExecutionType.FRAMEWORK, TraverseType.SCOPE)).getDependenciesURL());
 		URLClassLoader dependenciesLoader = new URLClassLoader(l.toArray(new URL[l.size()]), Thread.currentThread().getContextClassLoader());
 		URLClassLoader mainLoader = new URLClassLoader(
-				new URL[] { context.materialiseExecution(processor.getModuleEdge().getTarget(), EExecutionType.FRAMEWORK).getArtifact().getArtifactUrl() },
+				new URL[] { context.materialiseExecution(context.materialiseModel(processor.getModuleEdge().getTarget()), EExecutionType.FRAMEWORK).getArtifact().getArtifactUrl() },
 				dependenciesLoader);
 
 		// try {
@@ -182,7 +181,7 @@ public class WorkspaceProjectMaterialiser {
 			return (T) o;
 		} catch (Throwable ex) {
 
-			String tag = processor.getModuleEdge().getTarget().getModuleIdentifier().toTag(type);
+			String tag = processor.getModuleEdge().getTarget().toTag(type);
 			debugClassloader(model.getModuleIdentifier(), tag, "dependencies", (URLClassLoader) loader.getParent());
 			debugClassloader(model.getModuleIdentifier(), tag, "lifecycle", loader);
 

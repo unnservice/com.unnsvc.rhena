@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:rhena:module" xmlns:prop="urn:rhena:properties" xmlns:dependency="urn:rhena:dependency"
+	xsi:schemaLocation="urn:rhena:module http://schema.unnsvc.com/rhena/module.xsd" extends="com.unnsvc:rhena:0.0.1">
+
+	<meta component="com.unnsvc.rhena" version="0.0.1" lifecycle="standard">
+
+		<prop:someprop>somevalue</prop:someprop>
+		<prop:anotherprop>anothervalue</prop:anotherprop>
+
+	</meta>
+
+	<!-- when declaring a dependency on another module, what we're actually saying is we are requesting the execution of this type from module -->
+	<!-- <dependency:deliverable module="component2:module1:0.0.1" /> -->
+	<!-- <dependency:test module="component2:module1:0.0.1" traverse="scope" /> -->
+
+</module>
+
+
+
+

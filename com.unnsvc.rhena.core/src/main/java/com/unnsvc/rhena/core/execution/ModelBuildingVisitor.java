@@ -15,11 +15,11 @@ import com.unnsvc.rhena.common.visitors.IModelVisitor;
 public class ModelBuildingVisitor implements IModelVisitor {
 
 	// private Logger log = LoggerFactory.getLogger(getClass());
-	private IRhenaContext resolver;
+	private IRhenaContext context;
 
 	public ModelBuildingVisitor(IRhenaContext resolver) {
 
-		this.resolver = resolver;
+		this.context = resolver;
 	}
 
 	@Override
@@ -27,32 +27,32 @@ public class ModelBuildingVisitor implements IModelVisitor {
 
 		if (model.getParentModule() != null) {
 
-			model.getParentModule().getTarget().visit(this);
+			context.materialiseModel(model.getParentModule().getTarget()).visit(this);
 		}
 
 		for (ILifecycleDeclaration lifecycleDeclaration : model.getLifecycleDeclarations().values()) {
 
 			IExecutionReference configurator = lifecycleDeclaration.getContext();
-			configurator.getModuleEdge().getTarget().visit(this);
-			resolver.materialiseExecution(configurator.getModuleEdge().getTarget(), EExecutionType.FRAMEWORK);
+			context.materialiseModel(configurator.getModuleEdge().getTarget()).visit(this);
+			context.materialiseExecution(context.materialiseModel(configurator.getModuleEdge().getTarget()), EExecutionType.FRAMEWORK);
 
 			for (IProcessorReference processor : lifecycleDeclaration.getProcessors()) {
 
-				IRhenaModule processorModel = processor.getModuleEdge().getTarget();
+				IRhenaModule processorModel = context.materialiseModel(processor.getModuleEdge().getTarget());
 
-				resolver.materialiseExecution(processorModel, EExecutionType.FRAMEWORK);
+				context.materialiseExecution(processorModel, EExecutionType.FRAMEWORK);
 			}
 
-			IRhenaModule generatorModel = lifecycleDeclaration.getGenerator().getModuleEdge().getTarget();
+			IRhenaModule generatorModel = context.materialiseModel(lifecycleDeclaration.getGenerator().getModuleEdge().getTarget());
 			generatorModel.visit(this);
-			resolver.materialiseExecution(generatorModel, EExecutionType.FRAMEWORK);
+			context.materialiseExecution(generatorModel, EExecutionType.FRAMEWORK);
 		}
 
 		for (IRhenaEdge edge : model.getDependencyEdges()) {
 
-			IRhenaModule dependency = edge.getTarget();
+			IRhenaModule dependency = context.materialiseModel(edge.getTarget());
 			dependency.visit(this);
-			resolver.materialiseExecution(dependency, edge.getExecutionType());
+			context.materialiseExecution(dependency, edge.getExecutionType());
 		}
 	}
 }

@@ -1,60 +1,84 @@
 
 package com.unnsvc.rhena.common.model;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Set;
 
 import com.unnsvc.rhena.common.IRepository;
-import com.unnsvc.rhena.common.exceptions.NotExistsException;
-import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 import com.unnsvc.rhena.common.visitors.IVisitableModel;
 
 public interface IRhenaModule extends IVisitableModel {
 
-	public ModuleIdentifier getModuleIdentifier();
-
-	public URI getLocation();
-
-	public ModuleType getModuleType();
-
-	public IRhenaEdge getParentModule();
-
-	public void setParentModule(IRhenaEdge parentModule);
-
-	public String getLifecycleName();
-
-	public List<IRhenaEdge> getDependencyEdges();
-
-	public Properties getProperties();
+	public ModuleIdentifier getIdentifier();
 
 	public IRepository getRepository();
 
-	public Map<String, ILifecycleDeclaration> getLifecycleDeclarations();
+	public void setParent(IRhenaEdge parent);
 
-	public void setLifecycleDeclarations(Map<String, ILifecycleDeclaration> lifecycleDeclarations);
+	public IRhenaEdge getParent();
+	
+	public void setProperty(String name, String value);
 
 	public void setLifecycleName(String lifecycleName);
 
-	public void setDependencyEdges(List<IRhenaEdge> dependencyEdges);
+	public Map<String, ILifecycleDeclaration> getLifecycleDeclarations();
 
-	public void setProperty(String key, String value);
+	public List<IRhenaEdge> getDependencies();
 
-	public void setProperties(Properties properties);
+	public String getLifecycleName();
 
 	/**
-	 * Traverse parents until we find lifecycle
-	 * 
-	 * @param lifecycleName
+	 * Convenience method extracing all of the relationships from the module
 	 * @return
-	 * @throws RhenaException
-	 *             if no lifecycle with that name was found
 	 */
-	public ILifecycleDeclaration getLifecycleDeclaration(String lifecycleName) throws NotExistsException;
+	public List<IRhenaEdge> getRelationships();
 
-	public boolean hasLifecycleDeclaration(String lifecycleName) throws RhenaException;
+	// public ModuleIdentifier getModuleIdentifier();
+	//
+	// public URI getLocation();
+	//
+	// public ModuleType getModuleType();
+	//
+	// public IRhenaEdge getParentModule();
+	//
+	// public void setParentModule(IRhenaEdge parentModule);
+	//
+	// public String getLifecycleName();
+	//
+	// public List<IRhenaEdge> getDependencyEdges();
+	//
+	// public Properties getProperties();
+	//
+	// public IRepository getRepository();
+	//
+	// public Map<String, ILifecycleDeclaration> getLifecycleDeclarations();
+	//
+	// public void setLifecycleDeclarations(Map<String, ILifecycleDeclaration>
+	// lifecycleDeclarations);
+	//
+	// public void setLifecycleName(String lifecycleName);
+	//
+	// public void setDependencyEdges(List<IRhenaEdge> dependencyEdges);
+	//
+	// public void setProperty(String key, String value);
+	//
+	// public void setProperties(Properties properties);
+	//
+	// /**
+	// * Traverse parents until we find lifecycle
+	// *
+	// * @param lifecycleName
+	// * @return
+	// * @throws RhenaException
+	// * if no lifecycle with that name was found
+	// */
+	// public ILifecycleDeclaration getLifecycleDeclaration(String
+	// lifecycleName) throws RhenaException;
+	//
+	// public boolean hasLifecycleDeclaration(String lifecycleName) throws
+	// RhenaException;
 
 }

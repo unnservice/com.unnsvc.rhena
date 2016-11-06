@@ -9,15 +9,16 @@ import java.util.Set;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.NotUniqueException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.logging.IRhenaLogger;
+import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
+import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.ModuleType;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 
 public class GraphResolver {
 
-	private IRhenaLogger log;
+	private IRhenaLoggingHandler log;
 	private Set<ILifecycleDeclaration> lifecycles = new HashSet<ILifecycleDeclaration>();
 	private List<IRhenaEdge> processed = new ArrayList<IRhenaEdge>();
 	private IRhenaContext context;
@@ -42,26 +43,23 @@ public class GraphResolver {
 			while (!edges.isEmpty()) {
 				edgeProcessing: {
 					IRhenaEdge currentEdge = edges.peek();
-					// Always resolve as we visit
-					if (currentEdge.getTarget().getModuleType() == ModuleType.REFERENCE) {
-						currentEdge.setTarget(context.materialiseModel(currentEdge.getTarget().getModuleIdentifier()));
-					}
+					IRhenaModule currentModule = context.materialiseModel(currentEdge.getTarget());
 
 					// First process parent
-					if (currentEdge.getTarget().getParentModule() != null && !processed.contains(currentEdge.getTarget().getParentModule())) {
+					if (currentModule.getParent() != null && !processed.contains(context.materialiseModel(currentModule.getParent().getTarget()))) {
 
-						edges.pushUnique(currentEdge.getTarget().getParentModule());
+						edges.pushUnique(context.materialiseModel(currentEdge.getTarget()).getParent());
 						break edgeProcessing;
 					}
 
-					if (currentEdge.getTarget().getModuleType() == ModuleType.WORKSPACE) {
+					if (currentModule.getModuleType() == ModuleType.WORKSPACE) {
 						/**
 						 * Then process lifecycle if the module is workspace
 						 * 
 						 **/
-						String lifecycleName = currentEdge.getTarget().getLifecycleName();
+						String lifecycleName = currentModule.getLifecycleName();
 						if (lifecycleName != null) {
-							ILifecycleDeclaration lifecycle = currentEdge.getTarget().getLifecycleDeclaration(lifecycleName);
+							ILifecycleDeclaration lifecycle = currentModule.getLifecycleDeclaration(lifecycleName);
 
 							/**
 							 * @TODO It may already contain a lifecycle which
@@ -90,7 +88,7 @@ public class GraphResolver {
 					 * we will want to only enter requested dependency paths
 					 **/
 
-					for (IRhenaEdge dependency : currentEdge.getTarget().getDependencyEdges()) {
+					for (IRhenaEdge dependency : currentModule.getDependencyEdges()) {
 
 						/**
 						 * We only care about dependencies which we can use in
@@ -127,7 +125,7 @@ public class GraphResolver {
 				}
 				if (startlog) {
 					// @TODO
-					log.error("cycle: " + (shift ? "↓" : "↓") + " " + edge.getTarget().getModuleIdentifier().toTag(edge.getExecutionType()));
+					log.error("cycle: " + (shift ? "↓" : "↓") + " " + context.materialiseModel(edge.getTarget()).getModuleIdentifier().toTag(edge.getExecutionType()));
 					shift = !shift;
 				}
 			}

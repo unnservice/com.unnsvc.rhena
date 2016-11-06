@@ -11,7 +11,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.logging.IRhenaLogger;
+import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.ModuleType;
 import com.unnsvc.rhena.core.execution.RhenaExecutionDescriptorParser;
@@ -33,7 +33,7 @@ import com.unnsvc.rhena.core.execution.RhenaExecutionDescriptorParser;
  */
 public class RemoteRepository extends AbstractRepository {
 
-	private IRhenaLogger log;
+	private IRhenaLoggingHandler log;
 	private URI location;
 
 	public RemoteRepository(IRhenaContext context, URI location) {

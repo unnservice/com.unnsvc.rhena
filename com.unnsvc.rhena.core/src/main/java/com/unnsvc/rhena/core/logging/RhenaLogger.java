@@ -6,9 +6,9 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.logging.ELogLevel;
-import com.unnsvc.rhena.common.logging.IRhenaLogger;
+import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
 
-public class RhenaLogger implements IRhenaLogger {
+public class RhenaLogger implements IRhenaLoggingHandler {
 
 	private IRhenaContext context;
 	private String source;

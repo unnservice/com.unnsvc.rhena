@@ -14,7 +14,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 //import com.unnsvc.rhena.common.execution.ExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.logging.IRhenaLogger;
+import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
@@ -28,13 +28,13 @@ import com.unnsvc.rhena.common.visitors.IModelVisitor;
  */
 public class ModelMergeVisitor implements IModelVisitor {
 
-	private IRhenaLogger log;
-	// private IResolutionContext context;
+	private IRhenaLoggingHandler log;
+	private IRhenaContext context;
 	private Set<ModuleIdentifier> entered;
 
 	public ModelMergeVisitor(IRhenaContext context) {
 
-		// this.context = context;
+		this.context = context;
 		this.entered = new HashSet<ModuleIdentifier>();
 		this.log = context.getLogger(getClass());
 	}
@@ -48,12 +48,12 @@ public class ModelMergeVisitor implements IModelVisitor {
 
 		if (module.getParentModule() != null) {
 
-			module.getParentModule().getTarget().visit(this);
+			context.materialiseModel(module.getParentModule().getTarget()).visit(this);
 
 			// merge parent into child
 			if (module.getParentModule() != null) {
 
-				IRhenaModule parent = module.getParentModule().getTarget();
+				IRhenaModule parent = context.materialiseModel(module.getParentModule().getTarget());
 				mergeParent(parent, module);
 				log.debug(module.getModuleIdentifier(), EExecutionType.MODEL, "merged parent " + parent.getModuleIdentifier());
 			}
@@ -61,14 +61,14 @@ public class ModelMergeVisitor implements IModelVisitor {
 
 		for (ILifecycleDeclaration ld : module.getLifecycleDeclarations().values()) {
 
-			ld.getContext().getModuleEdge().getTarget().visit(this);
+			context.materialiseModel(ld.getContext().getModuleEdge().getTarget()).visit(this);
 
 			for (IProcessorReference pr : ld.getProcessors()) {
 
-				pr.getModuleEdge().getTarget().visit(this);
+				context.materialiseModel(pr.getModuleEdge().getTarget()).visit(this);
 			}
 
-			ld.getGenerator().getModuleEdge().getTarget().visit(this);
+			context.materialiseModel(ld.getGenerator().getModuleEdge().getTarget()).visit(this);
 		}
 
 		if (module.getLifecycleName() != null) {
@@ -84,7 +84,7 @@ public class ModelMergeVisitor implements IModelVisitor {
 
 		for (IRhenaEdge edge : module.getDependencyEdges()) {
 
-			edge.getTarget().visit(this);
+			context.materialiseModel(edge.getTarget()).visit(this);
 		}
 
 		this.entered.add(module.getModuleIdentifier());

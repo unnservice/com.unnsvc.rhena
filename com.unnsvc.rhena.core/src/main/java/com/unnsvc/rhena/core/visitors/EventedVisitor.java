@@ -1,6 +1,7 @@
 
 package com.unnsvc.rhena.core.visitors;
 
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
@@ -10,12 +11,14 @@ import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
 public class EventedVisitor implements IModelVisitor {
 
+	private IRhenaContext context;
 	private VisitationHandler handler;
 	private EnterType enter;
 	private boolean enterUnusedLifecycle = false;
 
-	public EventedVisitor(EnterType enter, VisitationHandler handler) {
+	public EventedVisitor(IRhenaContext context, EnterType enter, VisitationHandler handler) {
 
+		this.context = context;
 		this.handler = handler;
 		this.enter = enter;
 	}
@@ -71,7 +74,7 @@ public class EventedVisitor implements IModelVisitor {
 
 		if (handler.canEnter(module, edge)) {
 			if (enter == EnterType.BEFORE) {
-				edge.getTarget().visit(this);
+				context.materialiseModel(edge.getTarget()).visit(this);
 			}
 
 			if (handler instanceof EdgeVisitationHandler) {
@@ -79,7 +82,7 @@ public class EventedVisitor implements IModelVisitor {
 			}
 
 			if (enter == EnterType.AFTER) {
-				edge.getTarget().visit(this);
+				context.materialiseModel(edge.getTarget()).visit(this);
 			}
 		}
 	}

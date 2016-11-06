@@ -96,9 +96,9 @@ public class ModuleIdentifier {
 		return new ModuleIdentifier(parts[0], parts[1], parts[2]);
 	}
 
-	public String toFileName(EExecutionType type) {
-
-		return componentName.toString() + "." + moduleName.toString() + "-" + type.literal() + "-" + version.toString();
-	}
+//	public String toFileName(EExecutionType type) {
+//
+//		return componentName.toString() + "." + moduleName.toString() + "-" + type.literal() + "-" + version.toString();
+//	}
 
 }

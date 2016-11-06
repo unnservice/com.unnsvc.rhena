@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
-import com.unnsvc.rhena.common.logging.IRhenaLogger;
+import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.ModuleType;
@@ -21,7 +21,7 @@ import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 
 public class ParallelGraphProcessor {
 
-	private IRhenaLogger log;
+	private IRhenaLoggingHandler log;
 	private IRhenaContext context;
 	private ExecutorService executor;
 	private CompletionService<ExecutionResult> completionService;
@@ -51,8 +51,8 @@ public class ParallelGraphProcessor {
 				executing.remove(result.getEdge());
 				executed.add(result.getEdge());
 
-				log.debug("Completed " + result.getEdge().getTarget().getModuleIdentifier().toTag(result.getEdge().getExecutionType())
-						+ ", executors remaining in running state: " + executing.size());
+				log.debug("Completed " + result.getEdge().getTarget().toTag(result.getEdge().getExecutionType()) + ", executors remaining in running state: "
+						+ executing.size());
 
 			} catch (InterruptedException | ExecutionException ie) {
 
@@ -88,10 +88,10 @@ public class ParallelGraphProcessor {
 		// check if all edges have been executed
 		// if they have, select the edge
 
-		IRhenaModule target = edge.getTarget();
+		IRhenaModule target = context.materialiseModel(edge.getTarget());
 
 		if (target.getLifecycleName() != null) {
-			ILifecycleDeclaration lifecycle = edge.getTarget().getLifecycleDeclaration(target.getLifecycleName());
+			ILifecycleDeclaration lifecycle = context.materialiseModel(edge.getTarget()).getLifecycleDeclaration(target.getLifecycleName());
 			if (!executed.contains(lifecycle.getContext().getModuleEdge())) {
 				// log.debug(edge.getTarget().getModuleIdentifier().toTag(edge.getExecutionType())
 				// + " waiting on context " +
@@ -113,12 +113,10 @@ public class ParallelGraphProcessor {
 
 		for (IRhenaEdge dependency : target.getDependencyEdges()) {
 
-			if (edge.getTarget().getModuleType() != ModuleType.REFERENCE) {
-				if (edge.getExecutionType().canTraverse(dependency.getExecutionType())) {
-					if (!executed.contains(dependency)) {
-						debugPrintWaitingOn(edge, dependency);
-						return true;
-					}
+			if (edge.getExecutionType().canTraverse(dependency.getExecutionType())) {
+				if (!executed.contains(dependency)) {
+					debugPrintWaitingOn(edge, dependency);
+					return true;
 				}
 			}
 		}
@@ -128,8 +126,8 @@ public class ParallelGraphProcessor {
 
 	private void debugPrintWaitingOn(IRhenaEdge thisEdge, IRhenaEdge waitingOn) {
 
-		String tag = thisEdge.getTarget().getModuleIdentifier().toTag(thisEdge.getExecutionType());
-		String thatTag = thisEdge.getTarget().getModuleIdentifier().toTag(thisEdge.getExecutionType());
+		String tag = thisEdge.getTarget().toTag(thisEdge.getExecutionType());
+		String thatTag = thisEdge.getTarget().toTag(thisEdge.getExecutionType());
 		log.debug(tag + " -> waiting on -> " + thatTag);
 	}
 }

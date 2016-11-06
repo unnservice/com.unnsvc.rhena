@@ -3,52 +3,64 @@ package com.unnsvc.rhena.core.resolution;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URL;
 
+import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.logging.IRhenaLogger;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.ModuleType;
-import com.unnsvc.rhena.core.execution.WorkspaceProjectMaterialiser;
+import com.unnsvc.rhena.core.execution.ArtifactDescriptor;
+import com.unnsvc.rhena.core.execution.RhenaExecution;
 
-public class WorkspaceRepository extends AbstractRepository {
+public class WorkspaceRepository implements IRepository {
 
-	private IRhenaLogger log;
-	private File workspaceDirectory;
+	private File location;
 
-	public WorkspaceRepository(IRhenaContext context, File workspaceDirectory) {
+	public WorkspaceRepository(File location) {
 
-		super(context);
-		this.log = context.getLogger(getClass());
-		this.workspaceDirectory = new File(workspaceDirectory.getAbsoluteFile().toURI().normalize().getPath()).getAbsoluteFile();
-		log.info("Workspace at: " + this.workspaceDirectory);
+		this.location = location.getAbsoluteFile();
 	}
 
 	@Override
-	public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
+	public IRhenaModule materialiseModel(ModuleIdentifier identifier) throws RhenaException {
 
-		File workspaceProject = new File(workspaceDirectory, moduleIdentifier.getComponentName() + "." + moduleIdentifier.getModuleName());
+		File moduleDirectory = new File(location, identifier.getComponentName() + "." + identifier.getModuleName());
+		File moduleDescriptor = new File(moduleDirectory, RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
 
-		if (!workspaceProject.isDirectory()) {
+		if (!moduleDescriptor.isFile()) {
+			System.err.println(getClass().getName() + " " + identifier + " not in location " + location);
 			return null;
 		}
 
-		URI projectLocationUri = workspaceProject.toURI();
-		return resolveModel(ModuleType.WORKSPACE, moduleIdentifier, projectLocationUri);
+		IRhenaModule module = new RhenaModuleParser(this, identifier, moduleDescriptor.toURI()).getModel();
+		return module;
 	}
 
 	@Override
-	public IRhenaExecution materialiseExecution(IRhenaModule model, EExecutionType type) throws RhenaException {
+	public IRhenaExecution materialiseExecution(IRhenaContext context, IRhenaModule module, EExecutionType type) throws RhenaException {
 
-		WorkspaceProjectMaterialiser etm = new WorkspaceProjectMaterialiser(getContext());
-		return etm.materialiseExecution(model, type);
+		// lifecycle dependency chain
+		// create dependency chains
+		// produce classloader
+
+		if (module.getLifecycleName() == null) {
+			throw new RhenaException("Trying to build a module with no lifecycle declaration " + module.getIdentifier());
+		}
+
+		try {
+			return new RhenaExecution(module.getIdentifier(), type, new ArtifactDescriptor("someartifact", new URL("http://some.url.com/"), "not-implemented"));
+		} catch (Exception e) {
+			throw new RhenaException(e);
+		}
 	}
 
-	public File getWorkspaceDirectory() {
+	@Override
+	public URI getLocation() {
 
-		return workspaceDirectory;
+		return location.toURI();
 	}
 }

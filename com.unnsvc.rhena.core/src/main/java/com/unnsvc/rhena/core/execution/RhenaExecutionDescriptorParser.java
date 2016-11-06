@@ -26,11 +26,11 @@ import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.logging.IRhenaLogger;
+import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
 
 public class RhenaExecutionDescriptorParser {
 
-	private IRhenaLogger log;
+	private IRhenaLoggingHandler log;
 	private ModuleIdentifier identifier;
 	private EExecutionType type;
 	private URI baseUri;

@@ -5,7 +5,7 @@ import java.net.URI;
 
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
-import com.unnsvc.rhena.common.logging.IRhenaLogger;
+import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 
 /**
@@ -16,7 +16,7 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
  */
 public class LocalCacheRepository extends RemoteRepository {
 
-	private IRhenaLogger log;
+	private IRhenaLoggingHandler log;
 
 	public LocalCacheRepository(IRhenaContext context, URI location) {
 
