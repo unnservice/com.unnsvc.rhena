@@ -26,13 +26,11 @@ public class CascadingModelResolver {
 
 	private IRhenaConfiguration config;
 	private Map<ModuleIdentifier, IRhenaModule> modules;
-	private List<IRhenaEdge> processed;
 
 	public CascadingModelResolver(IRhenaConfiguration config) {
 
 		this.config = config;
 		this.modules = new HashMap<ModuleIdentifier, IRhenaModule>();
-		this.processed = new ArrayList<IRhenaEdge>();
 	}
 
 	/**
@@ -43,6 +41,7 @@ public class CascadingModelResolver {
 	 */
 	public IRhenaModule resolveEdge(IRhenaEdge entryPoint) throws RhenaException {
 
+		List<IRhenaEdge> processed = new ArrayList<IRhenaEdge>();
 		UniqueStack<IRhenaEdge> tracker = new UniqueStack<IRhenaEdge>();
 		tracker.push(entryPoint);
 
@@ -137,10 +136,5 @@ public class CascadingModelResolver {
 			modules.put(identifier, module);
 		}
 		return module;
-	}
-
-	public List<IRhenaEdge> getAllEdges() {
-
-		return processed;
 	}
 }

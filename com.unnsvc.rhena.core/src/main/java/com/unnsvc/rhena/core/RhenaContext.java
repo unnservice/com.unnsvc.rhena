@@ -29,7 +29,8 @@ public class RhenaContext implements IRhenaContext {
 	@Override
 	public IRhenaModule materialiseModel(ModuleIdentifier identifier) throws RhenaException {
 
-		IRhenaEdge entryPoint = new RhenaEdge(EExecutionType.MODEL, identifier, TraverseType.SCOPE);
+		// We resolve its prototype to ensure we get the maximum coverage in cyclic check
+		IRhenaEdge entryPoint = new RhenaEdge(EExecutionType.PROTOTYPE, identifier, TraverseType.SCOPE);
 		return cascadingResolver.resolveEdge(entryPoint);
 	}
 
