@@ -28,6 +28,7 @@ public class TestRhenaModule2 {
 		config.addRepository(new WorkspaceRepository(new File("../")));
 		config.setRunTest(true);
 		config.setRunItest(true);
+		config.setParallel(true);
 		// Produce packages or use exploded compilation
 		config.setPackageWorkspace(false);
 		config.setInstallLocal(true);
@@ -35,6 +36,7 @@ public class TestRhenaModule2 {
 		// config.getRepositoryConfiguration().addRepository()
 		// config.getRepositoryConfiguration().setProxyXX?
 		// config.getTestConfiguration().setXXX
+		// config.addListener...
 
 		/**
 		 * This portion below can be executed multiple times, make sure there

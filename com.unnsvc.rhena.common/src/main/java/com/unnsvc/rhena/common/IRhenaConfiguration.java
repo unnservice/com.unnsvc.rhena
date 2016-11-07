@@ -11,6 +11,10 @@ public interface IRhenaConfiguration {
 	public void setPackageWorkspace(boolean packageWorkspace);
 
 	public void setInstallLocal(boolean installLocal);
+	
+	public void setParallel(boolean parallel);
+	
+	public boolean isParallel();
 
 	public List<IRepository> getRepositories();
 

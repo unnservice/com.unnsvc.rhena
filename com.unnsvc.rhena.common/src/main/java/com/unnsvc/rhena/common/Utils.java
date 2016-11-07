@@ -9,6 +9,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,6 +27,9 @@ import com.unnsvc.rhena.common.exceptions.NotExistsException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.IRhenaEdge;
+import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 
 public class Utils {
 
@@ -73,6 +78,15 @@ public class Utils {
 
 		try {
 			return file.toURI().toURL();
+		} catch (MalformedURLException mue) {
+			throw new RhenaException(mue.getMessage(), mue);
+		}
+	}
+
+	public static URL toUrl(String url) throws RhenaException {
+
+		try {
+			return new URL(url);
 		} catch (MalformedURLException mue) {
 			throw new RhenaException(mue.getMessage(), mue);
 		}
@@ -175,5 +189,26 @@ public class Utils {
 				versionStr = attributes.getValue("version");
 			}
 		}
+	}
+
+	/**
+	 * @TODO ONLY SELECT THE LIFECYCEL RELATIONSHIP WHICH IS RELEVANT
+	 * @param module
+	 * @return
+	 */
+	public static List<IRhenaEdge> getAllRelationships(IRhenaModule module) {
+
+		List<IRhenaEdge> relationships = new ArrayList<IRhenaEdge>();
+		if (module.getParent() != null) {
+			relationships.add(module.getParent());
+		}
+		if (module.getLifecycleName() != null) {
+			ILifecycleDeclaration lifecycle = module.getLifecycleDeclarations().get(module.getLifecycleName());
+			relationships.add(lifecycle.getContext().getModuleEdge());
+			lifecycle.getProcessors().forEach(proc -> relationships.add(proc.getModuleEdge()));
+			relationships.add(lifecycle.getGenerator().getModuleEdge());
+		}
+		relationships.addAll(module.getDependencies());
+		return relationships;
 	}
 }

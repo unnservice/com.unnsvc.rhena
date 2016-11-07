@@ -26,13 +26,13 @@ import com.unnsvc.rhena.common.visitors.IModelVisitor;
  * @author noname
  *
  */
-public class ModelMergeVisitor implements IModelVisitor {
+public class ModelMergeVisitor2 implements IModelVisitor {
 
 	private IRhenaLoggingHandler log;
 	private IRhenaContext context;
 	private Set<ModuleIdentifier> entered;
 
-	public ModelMergeVisitor(IRhenaContext context) {
+	public ModelMergeVisitor2(IRhenaContext context) {
 
 		this.context = context;
 		this.entered = new HashSet<ModuleIdentifier>();

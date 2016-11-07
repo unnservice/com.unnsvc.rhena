@@ -13,7 +13,6 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
-import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
 public class RhenaModule implements IRhenaModule {
@@ -91,22 +90,32 @@ public class RhenaModule implements IRhenaModule {
 	}
 
 	@Override
+	public void setLifecycleDeclarations(Map<String, ILifecycleDeclaration> lifecycleDeclarations) {
+
+		this.lifecycleDeclarations = lifecycleDeclarations;
+	}
+
+	@Override
 	public List<IRhenaEdge> getDependencies() {
 
 		return dependencies;
 	}
 
 	@Override
-	public List<IRhenaEdge> getRelationships() {
+	public void setDependencies(List<IRhenaEdge> dependencies) {
 
-		List<IRhenaEdge> relationships = new ArrayList<IRhenaEdge>();
-		relationships.add(getParent());
-		for (ILifecycleDeclaration lifecycle : getLifecycleDeclarations().values()) {
-			relationships.add(lifecycle.getContext().getModuleEdge());
-			lifecycle.getProcessors().forEach(proc -> relationships.add(proc.getModuleEdge()));
-			relationships.add(lifecycle.getGenerator().getModuleEdge());
-		}
-		relationships.addAll(getDependencies());
-		return relationships;
+		this.dependencies = dependencies;
+	}
+
+	@Override
+	public Properties getProperties() {
+
+		return properties;
+	}
+
+	@Override
+	public void setProperties(Properties properties) {
+
+		this.properties = properties;
 	}
 }

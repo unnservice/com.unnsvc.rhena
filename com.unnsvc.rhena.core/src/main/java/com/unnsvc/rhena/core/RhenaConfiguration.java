@@ -20,12 +20,12 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	private boolean runItest;
 	private boolean packageWorkspace;
 	private boolean installLocal;
+	private boolean parallel;
 	private List<IRepository> repositories;
 	private IRhenaLoggingHandler logHandler;
-	
-	
+
 	public RhenaConfiguration(IRhenaLoggingHandler logHandler) {
-	
+
 		this.logHandler = logHandler;
 	}
 
@@ -33,7 +33,7 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	 * @TODO this remains from old code
 	 */
 	public RhenaConfiguration() {
-		
+
 		this.repositories = new ArrayList<IRepository>();
 	}
 
@@ -90,5 +90,17 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	public void addRepository(IRepository repository) {
 
 		this.repositories.add(repository);
+	}
+
+	@Override
+	public void setParallel(boolean parallel) {
+
+		this.parallel = parallel;
+	}
+
+	@Override
+	public boolean isParallel() {
+
+		return parallel;
 	}
 }
