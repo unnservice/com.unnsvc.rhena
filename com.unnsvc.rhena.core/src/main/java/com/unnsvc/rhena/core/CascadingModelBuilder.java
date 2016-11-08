@@ -1,13 +1,15 @@
 
 package com.unnsvc.rhena.core;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.Utils;
@@ -25,12 +27,17 @@ public class CascadingModelBuilder {
 	private IRhenaConfiguration config;
 	private Map<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>> executions;
 	private CascadingModelResolver resolver;
+	private CustomThreadPoolExecutor executor;
+	private Set<Future<IRhenaExecution>> executing;
 
 	public CascadingModelBuilder(IRhenaConfiguration config, CascadingModelResolver resolver) {
 
 		this.config = config;
 		this.executions = new HashMap<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>>();
 		this.resolver = resolver;
+
+		this.executor = new CustomThreadPoolExecutor(Runtime.getRuntime().availableProcessors());
+		this.executing = Collections.synchronizedSet(new HashSet<Future<IRhenaExecution>>());
 	}
 
 	public IRhenaExecution buildEdge(IRhenaEdge entryPoint) throws RhenaException {
@@ -42,31 +49,97 @@ public class CascadingModelBuilder {
 			alledges.addAll(Utils.getAllRelationships(module));
 		}
 
-		
 		Set<IRhenaEdge> resolvable = new HashSet<IRhenaEdge>();
-		while (!(resolvable = selectResolved(alledges)).isEmpty()) {
 
-			System.err.println("Selected for simultaneous execution: " + resolvable.size() + ": " + resolvable);
-			
-			for(IRhenaEdge edge : resolvable) {
-				
-				IRhenaExecution execution = materialiseExecution(edge);
-				if(!executions.containsKey(edge.getTarget())) {
-					executions.put(edge.getTarget(), new HashMap<EExecutionType, IRhenaExecution>());
-				}
-				executions.get(edge.getTarget()).put(edge.getExecutionType(), execution);
+		while (loopGuard(alledges)) {
+
+			resolvable = selectResolved(alledges);
+
+			for (final IRhenaEdge edge : resolvable) {
+
+				Future<IRhenaExecution> future = executor.submit(new Callable<IRhenaExecution>() {
+
+					@Override
+					public IRhenaExecution call() throws Exception {
+
+						IRhenaExecution execution = materialiseExecution(edge);
+						synchronized (CascadingModelBuilder.this) {
+							CascadingModelBuilder.this.notifyAll();
+						}
+
+						return execution;
+					}
+				});
 			}
+		}
+
+		try {
+			executor.shutdown();
+			// @TODO as this blocks indefinitely, show some debug info or
+			// something
+			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException e) {
+
+			throw new RhenaException(e.getMessage(), e);
 		}
 
 		return materialiseExecution(entryPoint);
 	}
 
+	/**
+	 * This method does one of 3 things:
+	 * 
+	 * <pre>
+	 *	if alledges not empty, enter loop
+	 *	if executor is running, block
+	 * </pre>
+	 * 
+	 * @param alledges
+	 * @return
+	 * @throws RhenaException
+	 */
+	private boolean loopGuard(Set<IRhenaEdge> alledges) throws RhenaException {
+
+		// If it's already executing, block
+		if (executor.isExecuting()) {
+
+			synchronized (this) {
+				try {
+					this.wait();
+				} catch (InterruptedException e) {
+
+					throw new RhenaException(e.getMessage(), e);
+				}
+			}
+		}
+
+		if (!alledges.isEmpty()) {
+
+			return true;
+		} else {
+
+			return false;
+		}
+	}
+
+	// will be called by multiple threads...
 	private IRhenaExecution materialiseExecution(IRhenaEdge edge) throws RhenaException {
 
 		IRhenaExecution execution = new RhenaExecution(edge.getTarget(), edge.getExecutionType(), new ArtifactDescriptor("somefile", Utils.toUrl("http://some.url"), "sha1"));
+		if (!executions.containsKey(edge.getTarget())) {
+			executions.put(edge.getTarget(), new HashMap<EExecutionType, IRhenaExecution>());
+		}
+		executions.get(edge.getTarget()).put(edge.getExecutionType(), execution);
 		return execution;
 	}
 
+	/**
+	 * This method is performance-sensitive so we don't end up in a thread lock
+	 * 
+	 * @param alledges
+	 * @return
+	 * @throws RhenaException
+	 */
 	private Set<IRhenaEdge> selectResolved(Set<IRhenaEdge> alledges) throws RhenaException {
 
 		Set<IRhenaEdge> selected = new HashSet<IRhenaEdge>();
