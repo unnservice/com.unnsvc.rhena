@@ -55,5 +55,4 @@ public enum EExecutionType implements Comparable<EExecutionType> {
 
 		return toString().toLowerCase();
 	}
-
 }

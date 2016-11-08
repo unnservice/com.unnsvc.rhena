@@ -42,13 +42,7 @@ public class CascadingModelBuilder {
 
 	public IRhenaExecution buildEdge(IRhenaEdge entryPoint) throws RhenaException {
 
-		Set<IRhenaEdge> alledges = new HashSet<IRhenaEdge>();
-		alledges.add(entryPoint);
-		for (IRhenaModule module : resolver.getModules().values()) {
-
-			alledges.addAll(Utils.getAllRelationships(module));
-		}
-
+		EdgeSet alledges = getAllEdges(entryPoint);
 		Set<IRhenaEdge> resolvable = new HashSet<IRhenaEdge>();
 
 		while (loopGuard(alledges)) {
@@ -57,7 +51,7 @@ public class CascadingModelBuilder {
 
 			for (final IRhenaEdge edge : resolvable) {
 
-				Future<IRhenaExecution> future = executor.submit(new Callable<IRhenaExecution>() {
+				executor.submit(new Callable<IRhenaExecution>() {
 
 					@Override
 					public IRhenaExecution call() throws Exception {
@@ -84,6 +78,19 @@ public class CascadingModelBuilder {
 		}
 
 		return materialiseExecution(entryPoint);
+	}
+
+	private EdgeSet getAllEdges(IRhenaEdge entryPoint) {
+
+		EdgeSet alledges = new EdgeSet();
+		alledges.addEdge(entryPoint);
+		for (IRhenaModule module : resolver.getModules().values()) {
+
+			for(IRhenaEdge moduleEdge : Utils.getAllRelationships(module)) {
+				alledges.addEdge(moduleEdge);
+			}
+		}
+		return alledges;
 	}
 
 	/**
@@ -125,11 +132,18 @@ public class CascadingModelBuilder {
 	// will be called by multiple threads...
 	private IRhenaExecution materialiseExecution(IRhenaEdge edge) throws RhenaException {
 
-		IRhenaExecution execution = new RhenaExecution(edge.getTarget(), edge.getExecutionType(), new ArtifactDescriptor("somefile", Utils.toUrl("http://some.url"), "sha1"));
+		IRhenaExecution execution = produceExecution(edge);
 		if (!executions.containsKey(edge.getTarget())) {
 			executions.put(edge.getTarget(), new HashMap<EExecutionType, IRhenaExecution>());
 		}
 		executions.get(edge.getTarget()).put(edge.getExecutionType(), execution);
+		return execution;
+	}
+
+	private IRhenaExecution produceExecution(IRhenaEdge edge) throws RhenaException {
+
+		System.err.println(getClass().getName() + " Building " + edge.toString());
+		IRhenaExecution execution = new RhenaExecution(edge.getTarget(), edge.getExecutionType(), new ArtifactDescriptor("somefile", Utils.toUrl("http://some.url"), "sha1"));
 		return execution;
 	}
 
