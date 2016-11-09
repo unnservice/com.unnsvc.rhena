@@ -10,6 +10,6 @@ public interface IRhenaEdge {
 
 	public ModuleIdentifier getTarget();
 
-	public TraverseType getTraverseType();
+	public ESelectionType getTraverseType();
 
 }

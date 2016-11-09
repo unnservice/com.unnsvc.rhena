@@ -17,7 +17,7 @@ import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.TraverseType;
+import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.model.lifecycle.IResource;
@@ -97,7 +97,7 @@ public class DefaultProcessor implements IProcessor {
 		for (IRhenaEdge edge : module.getDependencyEdges()) {
 
 			if (edge.getExecutionType().equals(type)) {
-				deps.addAll(module.visit(new RhenaDependencyCollectionVisitor(context, EExecutionType.FRAMEWORK, TraverseType.SCOPE)).getDependenciesURL());
+				deps.addAll(module.visit(new RhenaDependencyCollectionVisitor(context, EExecutionType.FRAMEWORK, ESelectionType.SCOPE)).getDependenciesURL());
 			}
 		}
 

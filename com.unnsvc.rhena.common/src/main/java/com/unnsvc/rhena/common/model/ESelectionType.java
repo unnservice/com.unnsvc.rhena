@@ -1,7 +1,7 @@
 
 package com.unnsvc.rhena.common.model;
 
-public enum TraverseType {
+public enum ESelectionType {
 
 	/**
 	 * HIERARCHY is an abstract traversion type used mainly internally, for

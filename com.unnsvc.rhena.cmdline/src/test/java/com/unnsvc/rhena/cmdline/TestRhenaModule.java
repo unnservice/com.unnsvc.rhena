@@ -14,7 +14,7 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.listener.IContextListener;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.TraverseType;
+import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
 import com.unnsvc.rhena.core.RhenaConfiguration;
 import com.unnsvc.rhena.core.execution.GraphResolver;
@@ -97,7 +97,7 @@ public class TestRhenaModule {
 		// context.materialiseModel(ModuleIdentifier.valueOf("com.unnsvc.erhena:core:0.0.1"));
 		IRhenaModule model = context.materialiseWorkspaceModel("com.unnsvc.erhena.core");
 
-		IRhenaEdge entryPointEdge = new RhenaEdge(EExecutionType.PROTOTYPE, model.getModuleIdentifier(), TraverseType.SCOPE);
+		IRhenaEdge entryPointEdge = new RhenaEdge(EExecutionType.PROTOTYPE, model.getModuleIdentifier(), ESelectionType.SCOPE);
 
 		GraphResolver graphResovler = new GraphResolver(context);
 		graphResovler.resolveReferences(entryPointEdge);

@@ -9,7 +9,7 @@ import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.TraverseType;
+import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.core.model.RhenaEdge;
 
 public class RhenaContext implements IRhenaContext {
@@ -27,14 +27,14 @@ public class RhenaContext implements IRhenaContext {
 	public IRhenaModule materialiseModel(ModuleIdentifier identifier) throws RhenaException {
 
 		// We resolve its prototype to ensure we get the maximum coverage in cyclic check
-		IRhenaEdge entryPoint = new RhenaEdge(EExecutionType.PROTOTYPE, identifier, TraverseType.SCOPE);
+		IRhenaEdge entryPoint = new RhenaEdge(EExecutionType.PROTOTYPE, identifier, ESelectionType.SCOPE);
 		return cascadingResolver.resolveEdge(entryPoint);
 	}
 
 	@Override
 	public IRhenaExecution materialiseExecution(IRhenaModule module, EExecutionType type) throws RhenaException {
 
-		IRhenaEdge entryPoint = new RhenaEdge(type, module.getIdentifier(), TraverseType.SCOPE);
+		IRhenaEdge entryPoint = new RhenaEdge(type, module.getIdentifier(), ESelectionType.SCOPE);
 		return cascadingBuilder.buildEdge(entryPoint);
 	}
 }

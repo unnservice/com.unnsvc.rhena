@@ -4,15 +4,15 @@ package com.unnsvc.rhena.core.model;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
-import com.unnsvc.rhena.common.model.TraverseType;
+import com.unnsvc.rhena.common.model.ESelectionType;
 
 public class RhenaEdge implements IRhenaEdge {
 
 	private EExecutionType executionType;
 	private ModuleIdentifier target;
-	private TraverseType traverseType;
+	private ESelectionType traverseType;
 
-	public RhenaEdge(EExecutionType executionType, ModuleIdentifier target, TraverseType traverseType) {
+	public RhenaEdge(EExecutionType executionType, ModuleIdentifier target, ESelectionType traverseType) {
 
 		this.executionType = executionType;
 		this.target = target;
@@ -32,7 +32,7 @@ public class RhenaEdge implements IRhenaEdge {
 	}
 
 	@Override
-	public TraverseType getTraverseType() {
+	public ESelectionType getTraverseType() {
 
 		return traverseType;
 	}

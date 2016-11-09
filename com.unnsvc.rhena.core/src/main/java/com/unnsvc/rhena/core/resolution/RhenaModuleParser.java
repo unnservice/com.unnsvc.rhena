@@ -23,7 +23,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
-import com.unnsvc.rhena.common.model.TraverseType;
+import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.core.lifecycle.ContextReference;
 import com.unnsvc.rhena.core.lifecycle.GeneratorReference;
 import com.unnsvc.rhena.core.lifecycle.LifecycleDeclaration;
@@ -57,7 +57,7 @@ public class RhenaModuleParser {
 			if (extendsAttribute != null) {
 				String extendsModuleIdentifierStr = extendsAttribute.getNodeValue();
 				ModuleIdentifier extendsModuleIdentifier = ModuleIdentifier.valueOf(extendsModuleIdentifierStr);
-				module.setParent(new RhenaEdge(EExecutionType.MODEL, extendsModuleIdentifier, TraverseType.HIERARCHY));
+				module.setParent(new RhenaEdge(EExecutionType.MODEL, extendsModuleIdentifier, ESelectionType.HIERARCHY));
 			}
 		}
 
@@ -154,7 +154,7 @@ public class RhenaModuleParser {
 				Document config = nodeToDocument(child);
 
 				EExecutionType et = EExecutionType.FRAMEWORK;
-				TraverseType tt = TraverseType.SCOPE;
+				ESelectionType tt = ESelectionType.SCOPE;
 
 				if (child.getLocalName().equals("context")) {
 
@@ -197,16 +197,16 @@ public class RhenaModuleParser {
 
 		if (moduleChild.getAttributes().getNamedItem("traverse") != null) {
 
-			TraverseType traverseType = TraverseType.valueOf(moduleChild.getAttributes().getNamedItem("traverse").getNodeValue().toUpperCase());
+			ESelectionType traverseType = ESelectionType.valueOf(moduleChild.getAttributes().getNamedItem("traverse").getNodeValue().toUpperCase());
 			edge = new RhenaEdge(dependencyType, moduleIdentifier, traverseType);
 		} else {
 
 			/**
 			 * Default to scope traversal for deliverables
 			 */
-			TraverseType traverseType = TraverseType.NONE;
+			ESelectionType traverseType = ESelectionType.NONE;
 			if (dependencyType.equals(EExecutionType.DELIVERABLE)) {
-				traverseType = TraverseType.SCOPE;
+				traverseType = ESelectionType.SCOPE;
 			}
 			edge = new RhenaEdge(dependencyType, moduleIdentifier, traverseType);
 		}

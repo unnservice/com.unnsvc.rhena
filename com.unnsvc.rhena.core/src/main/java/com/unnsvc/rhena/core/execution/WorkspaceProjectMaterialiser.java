@@ -17,7 +17,7 @@ import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.TraverseType;
+import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionReference;
 import com.unnsvc.rhena.common.model.lifecycle.IGenerator;
@@ -138,7 +138,7 @@ public class WorkspaceProjectMaterialiser {
 
 		List<URL> l = new ArrayList<URL>();
 
-		l.addAll(context.materialiseModel(processor.getModuleEdge().getTarget()).visit(new RhenaDependencyCollectionVisitor(context, EExecutionType.FRAMEWORK, TraverseType.SCOPE)).getDependenciesURL());
+		l.addAll(context.materialiseModel(processor.getModuleEdge().getTarget()).visit(new RhenaDependencyCollectionVisitor(context, EExecutionType.FRAMEWORK, ESelectionType.SCOPE)).getDependenciesURL());
 		URLClassLoader dependenciesLoader = new URLClassLoader(l.toArray(new URL[l.size()]), Thread.currentThread().getContextClassLoader());
 		URLClassLoader mainLoader = new URLClassLoader(
 				new URL[] { context.materialiseExecution(context.materialiseModel(processor.getModuleEdge().getTarget()), EExecutionType.FRAMEWORK).getArtifact().getArtifactUrl() },

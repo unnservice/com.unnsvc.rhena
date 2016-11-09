@@ -11,7 +11,7 @@ import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.TraverseType;
+import com.unnsvc.rhena.common.model.ESelectionType;
 
 public class RhenaDependencyCollectionVisitor implements IModelVisitor {
 
@@ -19,15 +19,15 @@ public class RhenaDependencyCollectionVisitor implements IModelVisitor {
 	private List<IRhenaExecution> dependencies;
 	private EExecutionType executionType;
 	private IRhenaContext context;
-	private TraverseType traverseType;
+	private ESelectionType traverseType;
 
-	public RhenaDependencyCollectionVisitor(IRhenaContext context, EExecutionType executionType, TraverseType traverseType) {
+	public RhenaDependencyCollectionVisitor(IRhenaContext context, EExecutionType executionType, ESelectionType traverseType) {
 
 		this(context, executionType, new ArrayList<IRhenaExecution>(), traverseType);
 	}
 
 	public RhenaDependencyCollectionVisitor(IRhenaContext resolver, EExecutionType executionType, List<IRhenaExecution> dependencies,
-			TraverseType traverseType) {
+			ESelectionType traverseType) {
 
 		this.executionType = executionType;
 		this.dependencies = dependencies;
@@ -44,19 +44,19 @@ public class RhenaDependencyCollectionVisitor implements IModelVisitor {
 
 				addDependency(edge);
 
-				if (traverseType.equals(TraverseType.NONE)) {
+				if (traverseType.equals(ESelectionType.NONE)) {
 
 					// no-op .... why, oh why
-				} else if (traverseType.equals(TraverseType.COMPONENT)) {
+				} else if (traverseType.equals(ESelectionType.COMPONENT)) {
 
 					if (model.getIdentifier().getComponentName().equals(edge.getTarget().getComponentName())) {
 
 						context.materialiseModel(edge.getTarget()).visit(this);
 					}
-				} else if (traverseType.equals(TraverseType.SCOPE)) {
+				} else if (traverseType.equals(ESelectionType.SCOPE)) {
 
 					context.materialiseModel(edge.getTarget()).visit(this);
-				} else if (traverseType.equals(TraverseType.DIRECT)) {
+				} else if (traverseType.equals(ESelectionType.DIRECT)) {
 
 					for (IRhenaEdge depEdge : context.materialiseModel(edge.getTarget()).getDependencies()) {
 

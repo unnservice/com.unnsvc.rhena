@@ -13,7 +13,7 @@ import com.unnsvc.rhena.common.model.IRhenaEdge;
  * @author noname
  *
  */
-public class EdgeSet extends HashSet<IRhenaEdge> {
+public class ExecutionMergeEdgeSet extends HashSet<IRhenaEdge> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -29,7 +29,7 @@ public class EdgeSet extends HashSet<IRhenaEdge> {
 					if (existing.getExecutionType().equals(edge.getExecutionType())) {
 						
 						return false;
-					} else if (edge.getExecutionType().canTraverse(existing.getExecutionType())) {
+					} else if (edge.getExecutionType().isParentOf(existing.getExecutionType())) {
 
 						iter.remove();
 						return add(edge);

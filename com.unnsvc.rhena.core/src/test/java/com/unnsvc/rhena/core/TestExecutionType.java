@@ -9,7 +9,7 @@ import com.unnsvc.rhena.common.execution.EExecutionType;
 public class TestExecutionType {
 
 	@Test
-	public void testExecutionTypes() {
+	public void testTraversable() {
 
 		// Don't think it will be necessary to test all combination
 		Assert.assertTrue(EExecutionType.PROTOTYPE.canTraverse(EExecutionType.MODEL));
@@ -17,7 +17,13 @@ public class TestExecutionType {
 		Assert.assertTrue(EExecutionType.INTEGRATION.canTraverse(EExecutionType.INTEGRATION));
 		Assert.assertTrue(EExecutionType.PROTOTYPE.canTraverse(EExecutionType.TEST));
 		Assert.assertFalse(EExecutionType.TEST.canTraverse(EExecutionType.PROTOTYPE));
-		
-		System.err.println("test matches");
+	}
+
+	@Test
+	public void testIsParnet() {
+
+		Assert.assertTrue(EExecutionType.PROTOTYPE.isParentOf(EExecutionType.MODEL));
+		Assert.assertFalse(EExecutionType.PROTOTYPE.isParentOf(EExecutionType.INTEGRATION));
+		Assert.assertFalse(EExecutionType.PROTOTYPE.isParentOf(EExecutionType.PROTOTYPE));
 	}
 }
