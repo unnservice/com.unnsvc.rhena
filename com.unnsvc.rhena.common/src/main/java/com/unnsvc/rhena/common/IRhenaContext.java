@@ -14,6 +14,14 @@ public interface IRhenaContext {
 
 	public IRhenaModule materialiseModel(ModuleIdentifier valueOf) throws RhenaException;
 
+	/**
+	 * We require a processed model to produce an execution.
+	 * 
+	 * @param entryPointModule
+	 * @param prototype
+	 * @return
+	 * @throws RhenaException
+	 */
 	public IRhenaExecution materialiseExecution(IRhenaModule entryPointModule, EExecutionType prototype) throws RhenaException;
 
 }

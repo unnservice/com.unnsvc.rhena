@@ -15,6 +15,7 @@ import com.unnsvc.rhena.common.exceptions.NotExistsException;
 import com.unnsvc.rhena.common.exceptions.NotUniqueException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
@@ -47,38 +48,37 @@ public class CascadingModelResolver {
 	 * @param entryPoint
 	 * @throws RhenaException
 	 */
-	public IRhenaModule resolveEdge(IRhenaEdge entryPoint) throws RhenaException {
+	public IRhenaModule resolveEdge(IEntryPoint entryPoint) throws RhenaException {
 
-		List<IRhenaEdge> processed = new ArrayList<IRhenaEdge>();
-		UniqueStack<IRhenaEdge> tracker = new UniqueStack<IRhenaEdge>();
+		List<IEntryPoint> processed = new ArrayList<IEntryPoint>();
+		UniqueStack<IEntryPoint> tracker = new UniqueStack<IEntryPoint>();
 		tracker.push(entryPoint);
 
 		try {
 			while (!tracker.isEmpty()) {
 				edgeProcessing: {
-					IRhenaEdge currentEdge = tracker.peek();
-					IRhenaModule currentModule = materialiseModel(currentEdge.getTarget());
+					IEntryPoint currentEntryPoint = tracker.peek();
+					IRhenaModule currentModule = materialiseModel(currentEntryPoint.getTarget());
 
 					// if has parent and parent isn't already processed
-					if (currentModule.getParent() != null && !processed.contains(currentModule.getParent())) {
+					if (currentModule.getParent() != null && !processed.contains(currentModule.getParent().getEntryPoint())) {
 
-						tracker.pushUnique(currentModule.getParent());
+						tracker.pushUnique(currentModule.getParent().getEntryPoint());
 						break edgeProcessing;
-					} else {
-						/**
-						 * @TODO evaluate impact. We don't want to merge a third
-						 *       child before a second if they both end up in
-						 *       the tracker. Can this even occur?
-						 * @TODO really shouldn't perform model merge right in
-						 *       the middle of the model resolution cascade, but
-						 *       necessary at present to make this work.
-						 */
+					}
 
-						if (currentModule.getParent() != null && !merged.contains(currentModule.getIdentifier())) {
-							IRhenaModule parentModule = materialiseModel(currentModule.getParent().getTarget());
-							merge(currentModule, parentModule);
-							merged.add(currentModule.getIdentifier());
-						}
+					/**
+					 * @TODO evaluate impact. We don't want to merge a third
+					 *       child before a second if they both end up in the
+					 *       tracker. Can this even occur?
+					 * @TODO really shouldn't perform model merge right in the
+					 *       middle of the model resolution cascade, but
+					 *       necessary at present to make this work.
+					 */
+					if (currentModule.getParent() != null && !merged.contains(currentModule.getIdentifier())) {
+						IRhenaModule parentModule = materialiseModel(currentModule.getParent().getEntryPoint().getTarget());
+						merge(currentModule, parentModule);
+						merged.add(currentModule.getIdentifier());
 					}
 
 					/**
@@ -86,21 +86,21 @@ public class CascadingModelResolver {
 					 */
 					if (currentModule.getLifecycleName() != null) {
 						ILifecycleDeclaration lifecycle = currentModule.getLifecycleDeclarations().get(currentModule.getLifecycleName());
-						if(lifecycle == null) {
-							throw new RhenaException("Could not find lifecycle " + currentModule.getLifecycleName()	+ " in " + currentModule.getIdentifier());
+						if (lifecycle == null) {
+							throw new RhenaException("Could not find lifecycle " + currentModule.getLifecycleName() + " in " + currentModule.getIdentifier());
 						}
-						if(!processed.contains(lifecycle.getContext().getModuleEdge())) {
-							tracker.pushUnique(lifecycle.getContext().getModuleEdge());
+						if (!processed.contains(lifecycle.getContext().getModuleEdge().getEntryPoint())) {
+							tracker.pushUnique(lifecycle.getContext().getModuleEdge().getEntryPoint());
 							break edgeProcessing;
 						}
-						for(IProcessorReference processor : lifecycle.getProcessors()) {
-							if(!processed.contains(processor.getModuleEdge())) {
-								tracker.pushUnique(processor.getModuleEdge());
+						for (IProcessorReference processor : lifecycle.getProcessors()) {
+							if (!processed.contains(processor.getModuleEdge().getEntryPoint())) {
+								tracker.pushUnique(processor.getModuleEdge().getEntryPoint());
 								break edgeProcessing;
 							}
 						}
-						if(!processed.contains(lifecycle.getGenerator().getModuleEdge())) {
-							tracker.pushUnique(lifecycle.getGenerator().getModuleEdge());
+						if (!processed.contains(lifecycle.getGenerator().getModuleEdge().getEntryPoint())) {
+							tracker.pushUnique(lifecycle.getGenerator().getModuleEdge().getEntryPoint());
 							break edgeProcessing;
 						}
 					}
@@ -115,10 +115,10 @@ public class CascadingModelResolver {
 						 * We only care about dependencies which we can use in
 						 * the requested scope
 						 */
-						if (currentEdge.getExecutionType().canTraverse(dependency.getExecutionType())) {
+						if (currentEntryPoint.getExecutionType().canTraverse(dependency.getEntryPoint().getExecutionType())) {
 
-							if (!processed.contains(dependency)) {
-								tracker.pushUnique(dependency);
+							if (!processed.contains(dependency.getEntryPoint())) {
+								tracker.pushUnique(dependency.getEntryPoint());
 								break edgeProcessing;
 							}
 						}
@@ -137,9 +137,9 @@ public class CascadingModelResolver {
 			/**
 			 * Print something coherent so we can resolve the cycle
 			 */
-			IRhenaEdge ofInterest = tracker.peek();
+			IEntryPoint ofInterest = tracker.peek();
 			boolean startlog = false;
-			for (IRhenaEdge edge : tracker) {
+			for (IEntryPoint edge : tracker) {
 				if (edge.equals(ofInterest)) {
 					startlog = true;
 				}

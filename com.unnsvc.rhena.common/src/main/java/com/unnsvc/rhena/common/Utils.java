@@ -27,6 +27,7 @@ import com.unnsvc.rhena.common.exceptions.NotExistsException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
@@ -196,19 +197,38 @@ public class Utils {
 	 * @param module
 	 * @return
 	 */
-	public static List<IRhenaEdge> getAllRelationships(IRhenaModule module) {
+	// public static List<IRhenaEdge> getAllRelationships(IRhenaModule module) {
+	//
+	// List<IRhenaEdge> relationships = new ArrayList<IRhenaEdge>();
+	// if (module.getParent() != null) {
+	// relationships.add(module.getParent());
+	// }
+	// if (module.getLifecycleName() != null) {
+	// ILifecycleDeclaration lifecycle =
+	// module.getLifecycleDeclarations().get(module.getLifecycleName());
+	// relationships.add(lifecycle.getContext().getModuleEdge());
+	// lifecycle.getProcessors().forEach(proc ->
+	// relationships.add(proc.getModuleEdge()));
+	// relationships.add(lifecycle.getGenerator().getModuleEdge());
+	// }
+	// relationships.addAll(module.getDependencies());
+	// return relationships;
+	// }
 
-		List<IRhenaEdge> relationships = new ArrayList<IRhenaEdge>();
+	public static List<IEntryPoint> getAllEntryPoints(IRhenaModule module) {
+
+		List<IEntryPoint> eps = new ArrayList<IEntryPoint>();
 		if (module.getParent() != null) {
-			relationships.add(module.getParent());
+			eps.add(module.getParent().getEntryPoint());
 		}
 		if (module.getLifecycleName() != null) {
 			ILifecycleDeclaration lifecycle = module.getLifecycleDeclarations().get(module.getLifecycleName());
-			relationships.add(lifecycle.getContext().getModuleEdge());
-			lifecycle.getProcessors().forEach(proc -> relationships.add(proc.getModuleEdge()));
-			relationships.add(lifecycle.getGenerator().getModuleEdge());
+			eps.add(lifecycle.getContext().getModuleEdge().getEntryPoint());
+			lifecycle.getProcessors().forEach(proc -> eps.add(proc.getModuleEdge().getEntryPoint()));
+			eps.add(lifecycle.getGenerator().getModuleEdge().getEntryPoint());
 		}
-		relationships.addAll(module.getDependencies());
-		return relationships;
+		module.getDependencies().forEach(dep -> eps.add(dep.getEntryPoint()));
+
+		return eps;
 	}
 }

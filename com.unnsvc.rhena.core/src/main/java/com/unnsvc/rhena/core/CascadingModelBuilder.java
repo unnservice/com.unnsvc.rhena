@@ -16,11 +16,11 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.IRhenaEdge;
+import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.execution.ArtifactDescriptor;
 import com.unnsvc.rhena.core.execution.RhenaExecution;
-import com.unnsvc.rhena.core.model.RhenaEdge;
+import com.unnsvc.rhena.core.model.EntryPoint;
 
 public class CascadingModelBuilder {
 
@@ -38,27 +38,27 @@ public class CascadingModelBuilder {
 		this.executor = new CustomThreadPoolExecutor(Runtime.getRuntime().availableProcessors());
 	}
 
-	public IRhenaExecution buildEdge(IRhenaEdge entryPoint) throws RhenaException {
+	public IRhenaExecution buildEdge(IEntryPoint entryPoint) throws RhenaException {
 
 		ExecutionMergeEdgeSet alledges = getAllEdges(entryPoint);
 		prefillExecutions(alledges);
-		Set<IRhenaEdge> resolvable = new HashSet<IRhenaEdge>();
+		Set<IEntryPoint> resolvable = new HashSet<IEntryPoint>();
 
 		while (loopGuard(alledges)) {
 
 			resolvable = selectResolved(alledges);
 
-			for (final IRhenaEdge edge : resolvable) {
+			for (final IEntryPoint edge : resolvable) {
 
 				executor.submit(new Callable<IRhenaExecution>() {
 
 					@Override
 					public IRhenaExecution call() throws Exception {
-
+						
 						// perform execution of parent scopes
 						for (EExecutionType type : edge.getExecutionType().getTraversables()) {
 
-							materialiseExecution(new RhenaEdge(type, edge.getTarget(), edge.getTraverseType()));
+							materialiseExecution(new EntryPoint(type, edge.getTarget()));
 						}
 
 						IRhenaExecution execution = materialiseExecution(edge);
@@ -86,13 +86,13 @@ public class CascadingModelBuilder {
 		return materialiseExecution(entryPoint);
 	}
 
-	private ExecutionMergeEdgeSet getAllEdges(IRhenaEdge entryPoint) {
+	private ExecutionMergeEdgeSet getAllEdges(IEntryPoint entryPoint) {
 
 		ExecutionMergeEdgeSet alledges = new ExecutionMergeEdgeSet();
 		alledges.addEdge(entryPoint);
 		for (IRhenaModule module : resolver.getModules().values()) {
 
-			for (IRhenaEdge moduleEdge : Utils.getAllRelationships(module)) {
+			for (IEntryPoint moduleEdge : Utils.getAllEntryPoints(module)) {
 				alledges.addEdge(moduleEdge);
 			}
 		}
@@ -105,7 +105,7 @@ public class CascadingModelBuilder {
 	 * @return
 	 * @throws RhenaException
 	 */
-	private boolean loopGuard(Set<IRhenaEdge> alledges) throws RhenaException {
+	private boolean loopGuard(Set<IEntryPoint> alledges) throws RhenaException {
 
 		// If it's already executing, block
 		if (executor.isExecuting()) {
@@ -136,25 +136,28 @@ public class CascadingModelBuilder {
 	 * @return
 	 * @throws RhenaException
 	 */
-	private IRhenaExecution materialiseExecution(IRhenaEdge edge) throws RhenaException {
+	private IRhenaExecution materialiseExecution(IEntryPoint entryPoint) throws RhenaException {
+		
+		
+		
 
 		// check cache
 		IRhenaExecution execution = null;
 
-		if (executions.get(edge.getTarget()).containsKey(edge.getExecutionType())) {
+		if (executions.get(entryPoint.getTarget()).containsKey(entryPoint.getExecutionType())) {
 
-			return executions.get(edge.getTarget()).get(edge.getExecutionType());
+			return executions.get(entryPoint.getTarget()).get(entryPoint.getExecutionType());
 		}
 
-		execution = produceExecution(edge);
-		executions.get(edge.getTarget()).put(edge.getExecutionType(), execution);
+		execution = produceExecution(entryPoint);
+		executions.get(entryPoint.getTarget()).put(entryPoint.getExecutionType(), execution);
 		return execution;
 	}
 
-	private IRhenaExecution produceExecution(IRhenaEdge edge) throws RhenaException {
+	private IRhenaExecution produceExecution(IEntryPoint entryPoint) throws RhenaException {
 
-		System.err.println(Thread.currentThread().getName() + " - " + getClass().getName() + " Building " + edge.toString());
-		IRhenaExecution execution = new RhenaExecution(edge.getTarget(), edge.getExecutionType(), new ArtifactDescriptor("somefile", Utils.toUrl("http://some.url"), "sha1"));
+		System.err.println(Thread.currentThread().getName() + " - " + getClass().getName() + " Building " + entryPoint.toString());
+		IRhenaExecution execution = new RhenaExecution(entryPoint.getTarget(), entryPoint.getExecutionType(), new ArtifactDescriptor("somefile", Utils.toUrl("http://some.url"), "sha1"));
 		return execution;
 	}
 
@@ -165,11 +168,11 @@ public class CascadingModelBuilder {
 	 * @return
 	 * @throws RhenaException
 	 */
-	private Set<IRhenaEdge> selectResolved(Set<IRhenaEdge> alledges) throws RhenaException {
+	private Set<IEntryPoint> selectResolved(Set<IEntryPoint> alledges) throws RhenaException {
 
-		Set<IRhenaEdge> selected = new HashSet<IRhenaEdge>();
-		for (Iterator<IRhenaEdge> iter = alledges.iterator(); iter.hasNext();) {
-			IRhenaEdge edge = iter.next();
+		Set<IEntryPoint> selected = new HashSet<IEntryPoint>();
+		for (Iterator<IEntryPoint> iter = alledges.iterator(); iter.hasNext();) {
+			IEntryPoint edge = iter.next();
 			IRhenaModule module = resolver.materialiseModel(edge.getTarget());
 			if (isBuildable(module)) {
 				selected.add(edge);
@@ -181,11 +184,11 @@ public class CascadingModelBuilder {
 
 	private boolean isBuildable(IRhenaModule module) throws RhenaException {
 
-		for (IRhenaEdge edge : Utils.getAllRelationships(module)) {
-			boolean containsKey = executions.containsKey(edge.getTarget());
+		for (IEntryPoint entryPoint : Utils.getAllEntryPoints(module)) {
+			boolean containsKey = executions.containsKey(entryPoint.getTarget());
 			if (!containsKey) {
 				return false;
-			} else if (containsKey && !executions.get(edge.getTarget()).containsKey(edge.getExecutionType())) {
+			} else if (containsKey && !executions.get(entryPoint.getTarget()).containsKey(entryPoint.getExecutionType())) {
 				return false;
 			}
 		}
@@ -196,9 +199,9 @@ public class CascadingModelBuilder {
 	private void prefillExecutions(ExecutionMergeEdgeSet alledges) {
 
 		// prefill
-		for (IRhenaEdge edge : alledges) {
-			if (!executions.containsKey(edge.getTarget())) {
-				executions.put(edge.getTarget(), new EnumMap<EExecutionType, IRhenaExecution>(EExecutionType.class));
+		for (IEntryPoint entryPoint : alledges) {
+			if (!executions.containsKey(entryPoint.getTarget())) {
+				executions.put(entryPoint.getTarget(), new EnumMap<EExecutionType, IRhenaExecution>(EExecutionType.class));
 			}
 		}
 	}

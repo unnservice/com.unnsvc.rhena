@@ -7,10 +7,9 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.IRhenaEdge;
+import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.ESelectionType;
-import com.unnsvc.rhena.core.model.RhenaEdge;
+import com.unnsvc.rhena.core.model.EntryPoint;
 
 public class RhenaContext implements IRhenaContext {
 
@@ -26,15 +25,17 @@ public class RhenaContext implements IRhenaContext {
 	@Override
 	public IRhenaModule materialiseModel(ModuleIdentifier identifier) throws RhenaException {
 
-		// We resolve its prototype to ensure we get the maximum coverage in cyclic check
-		IRhenaEdge entryPoint = new RhenaEdge(EExecutionType.PROTOTYPE, identifier, ESelectionType.SCOPE);
+		// We resolve its prototype to ensure we get the maximum coverage in
+		// cyclic check
+		IEntryPoint entryPoint = new EntryPoint(EExecutionType.PROTOTYPE, identifier);
 		return cascadingResolver.resolveEdge(entryPoint);
 	}
 
 	@Override
 	public IRhenaExecution materialiseExecution(IRhenaModule module, EExecutionType type) throws RhenaException {
 
-		IRhenaEdge entryPoint = new RhenaEdge(type, module.getIdentifier(), ESelectionType.SCOPE);
+//		IRhenaEdge entryPoint = new RhenaEdge(type, module.getIdentifier(), ESelectionType.SCOPE);
+		IEntryPoint entryPoint = new EntryPoint(type, module.getIdentifier());
 		return cascadingBuilder.buildEdge(entryPoint);
 	}
 }
