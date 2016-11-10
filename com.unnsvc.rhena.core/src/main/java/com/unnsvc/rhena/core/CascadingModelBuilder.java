@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import com.unnsvc.rhena.common.IRhenaConfiguration;
@@ -20,14 +22,13 @@ import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.execution.ArtifactDescriptor;
 import com.unnsvc.rhena.core.execution.RhenaExecution;
-import com.unnsvc.rhena.core.model.EntryPoint;
 
 public class CascadingModelBuilder {
 
 	private IRhenaConfiguration config;
 	private Map<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>> executions;
 	private CascadingModelResolver resolver;
-	private CustomThreadPoolExecutor executor;
+	// private CustomThreadPoolExecutor executor;
 
 	public CascadingModelBuilder(IRhenaConfiguration config, CascadingModelResolver resolver) {
 
@@ -35,18 +36,32 @@ public class CascadingModelBuilder {
 		this.resolver = resolver;
 
 		this.executions = new HashMap<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>>();
-		this.executor = new CustomThreadPoolExecutor(Runtime.getRuntime().availableProcessors());
+		// this.executor = new
+		// CustomThreadPoolExecutor(Runtime.getRuntime().availableProcessors());
 	}
 
 	public IRhenaExecution buildEdge(IEntryPoint entryPoint) throws RhenaException {
 
-		ExecutionMergeEdgeSet alledges = getAllEdges(entryPoint);
-		prefillExecutions(alledges);
+		ExecutionMergeEdgeSet allEdges = getAllEntryPoints(entryPoint);
+		prefillExecutions(allEdges);
 		Set<IEntryPoint> resolvable = new HashSet<IEntryPoint>();
 
-		while (loopGuard(alledges)) {
+		/**
+		 * @TODO we want more efficient threading, instead of waiting for each n
+		 *       number of threads to complete, release the thread block after
+		 *       each thread completion so we can feed the thread pool
+		 *       continuously
+		 */
+		while (loopGuard(allEdges)) {
 
-			resolvable = selectResolved(alledges);
+			resolvable = selectResolved(allEdges);
+
+			Runtime runtime = Runtime.getRuntime();
+			int threads = resolvable.size() > runtime.availableProcessors() ? runtime.availableProcessors() : resolvable.size();
+			if (!config.isParallel()) {
+				threads = 1;
+			}
+			ExecutorService executor = Executors.newFixedThreadPool(threads);
 
 			for (final IEntryPoint edge : resolvable) {
 
@@ -54,73 +69,59 @@ public class CascadingModelBuilder {
 
 					@Override
 					public IRhenaExecution call() throws Exception {
-						
-						// perform execution of parent scopes
-						for (EExecutionType type : edge.getExecutionType().getTraversables()) {
-
-							materialiseExecution(new EntryPoint(type, edge.getTarget()));
-						}
 
 						IRhenaExecution execution = materialiseExecution(edge);
-
-						synchronized (CascadingModelBuilder.this) {
-							CascadingModelBuilder.this.notifyAll();
-						}
-
 						return execution;
 					}
 				});
 			}
-		}
 
-		try {
-			executor.shutdown();
-			// @TODO as this blocks indefinitely, show some debug info or
-			// something
-			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
-		} catch (InterruptedException e) {
+			/**
+			 * Theory is that this can't wait indefinitely because the model is
+			 * checked for cycles so it can resolve.
+			 */
+			try {
+				executor.shutdown();
+				executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+			} catch (InterruptedException e) {
 
-			throw new RhenaException(e.getMessage(), e);
+				throw new RhenaException(e.getMessage(), e);
+			}
+
 		}
 
 		return materialiseExecution(entryPoint);
 	}
 
-	private ExecutionMergeEdgeSet getAllEdges(IEntryPoint entryPoint) {
+	/**
+	 * 
+	 * @param entryPoint
+	 * @return
+	 */
+	private ExecutionMergeEdgeSet getAllEntryPoints(IEntryPoint entryPoint) {
 
-		ExecutionMergeEdgeSet alledges = new ExecutionMergeEdgeSet();
-		alledges.addEdge(entryPoint);
+		ExecutionMergeEdgeSet allEntryPoints = new ExecutionMergeEdgeSet();
+		allEntryPoints.addEntryPoint(entryPoint);
+
 		for (IRhenaModule module : resolver.getModules().values()) {
 
-			for (IEntryPoint moduleEdge : Utils.getAllEntryPoints(module)) {
-				alledges.addEdge(moduleEdge);
+			for (IEntryPoint relationshipEntryPoint : Utils.getAllEntryPoints(module)) {
+
+				allEntryPoints.addEntryPoint(relationshipEntryPoint);
 			}
 		}
-		return alledges;
+		return allEntryPoints;
 	}
 
 	/**
 	 * 
-	 * @param alledges
+	 * @param allEntryPoints
 	 * @return
 	 * @throws RhenaException
 	 */
-	private boolean loopGuard(Set<IEntryPoint> alledges) throws RhenaException {
+	private boolean loopGuard(Set<IEntryPoint> allEntryPoints) throws RhenaException {
 
-		// If it's already executing, block
-		if (executor.isExecuting()) {
-
-			synchronized (this) {
-				try {
-					this.wait();
-				} catch (InterruptedException e) {
-
-					throw new RhenaException(e.getMessage(), e);
-				}
-			}
-		}
-
-		if (!alledges.isEmpty()) {
+		if (!allEntryPoints.isEmpty()) {
 
 			return true;
 		} else {
@@ -137,9 +138,8 @@ public class CascadingModelBuilder {
 	 * @throws RhenaException
 	 */
 	private IRhenaExecution materialiseExecution(IEntryPoint entryPoint) throws RhenaException {
-		
-		
-		
+
+		System.err.println(getClass().getName() + " Building: " + entryPoint.getTarget() + ":" + entryPoint.getExecutionType());
 
 		// check cache
 		IRhenaExecution execution = null;
@@ -156,8 +156,8 @@ public class CascadingModelBuilder {
 
 	private IRhenaExecution produceExecution(IEntryPoint entryPoint) throws RhenaException {
 
-		System.err.println(Thread.currentThread().getName() + " - " + getClass().getName() + " Building " + entryPoint.toString());
-		IRhenaExecution execution = new RhenaExecution(entryPoint.getTarget(), entryPoint.getExecutionType(), new ArtifactDescriptor("somefile", Utils.toUrl("http://some.url"), "sha1"));
+		IRhenaExecution execution = new RhenaExecution(entryPoint.getTarget(), entryPoint.getExecutionType(),
+				new ArtifactDescriptor("somefile", Utils.toUrl("http://some.url"), "sha1"));
 		return execution;
 	}
 
@@ -172,23 +172,33 @@ public class CascadingModelBuilder {
 
 		Set<IEntryPoint> selected = new HashSet<IEntryPoint>();
 		for (Iterator<IEntryPoint> iter = alledges.iterator(); iter.hasNext();) {
-			IEntryPoint edge = iter.next();
-			IRhenaModule module = resolver.materialiseModel(edge.getTarget());
-			if (isBuildable(module)) {
-				selected.add(edge);
+			IEntryPoint entryPoint = iter.next();
+			IRhenaModule module = resolver.materialiseModel(entryPoint.getTarget());
+			if (isBuildable(entryPoint, module)) {
+				selected.add(entryPoint);
 				iter.remove();
 			}
 		}
 		return selected;
 	}
 
-	private boolean isBuildable(IRhenaModule module) throws RhenaException {
+	private boolean isBuildable(IEntryPoint entryPoint, IRhenaModule module) throws RhenaException {
 
-		for (IEntryPoint entryPoint : Utils.getAllEntryPoints(module)) {
-			boolean containsKey = executions.containsKey(entryPoint.getTarget());
-			if (!containsKey) {
+		// check whether parent execution types have been executed
+		for (EExecutionType et : entryPoint.getExecutionType().getTraversables()) {
+
+			if (!executions.get(entryPoint.getTarget()).containsKey(et)) {
 				return false;
-			} else if (containsKey && !executions.get(entryPoint.getTarget()).containsKey(entryPoint.getExecutionType())) {
+			}
+		}
+
+		// check whether all relationships have been executed
+		for (IEntryPoint relationshipEntryPoint : Utils.getAllEntryPoints(module)) {
+
+			boolean containsModule = executions.containsKey(relationshipEntryPoint.getTarget());
+			if (!containsModule) {
+				return false;
+			} else if (containsModule && !executions.get(relationshipEntryPoint.getTarget()).containsKey(relationshipEntryPoint.getExecutionType())) {
 				return false;
 			}
 		}
@@ -196,7 +206,7 @@ public class CascadingModelBuilder {
 		return true;
 	}
 
-	private void prefillExecutions(ExecutionMergeEdgeSet alledges) {
+	private void prefillExecutions(Set<IEntryPoint> alledges) {
 
 		// prefill
 		for (IEntryPoint entryPoint : alledges) {
