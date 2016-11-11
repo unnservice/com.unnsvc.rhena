@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import com.unnsvc.rhena.common.IModelResolver;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -20,17 +21,15 @@ import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.core.execution.ArtifactDescriptor;
-import com.unnsvc.rhena.core.execution.RhenaExecution;
 
 public class CascadingModelBuilder {
 
 	private IRhenaConfiguration config;
 	private Map<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>> executions;
-	private CascadingModelResolver resolver;
+	private IModelResolver resolver;
 	// private CustomThreadPoolExecutor executor;
 
-	public CascadingModelBuilder(IRhenaConfiguration config, CascadingModelResolver resolver) {
+	public CascadingModelBuilder(IRhenaConfiguration config, IModelResolver resolver) {
 
 		this.config = config;
 		this.resolver = resolver;
@@ -139,8 +138,6 @@ public class CascadingModelBuilder {
 	 */
 	private IRhenaExecution materialiseExecution(IEntryPoint entryPoint) throws RhenaException {
 
-		System.err.println(getClass().getName() + " Building: " + entryPoint.getTarget() + ":" + entryPoint.getExecutionType());
-
 		// check cache
 		IRhenaExecution execution = null;
 
@@ -155,9 +152,12 @@ public class CascadingModelBuilder {
 	}
 
 	private IRhenaExecution produceExecution(IEntryPoint entryPoint) throws RhenaException {
+		
+		System.err.println(Thread.currentThread().getName() + ":" + getClass().getName() + " Building: " + entryPoint.getTarget() + ":" + entryPoint.getExecutionType());
+		
+		IRhenaModule module = resolver.materialiseModel(entryPoint.getTarget());
+		IRhenaExecution execution = module.getRepository().materialiseExecution(resolver, entryPoint);
 
-		IRhenaExecution execution = new RhenaExecution(entryPoint.getTarget(), entryPoint.getExecutionType(),
-				new ArtifactDescriptor("somefile", Utils.toUrl("http://some.url"), "sha1"));
 		return execution;
 	}
 

@@ -25,8 +25,9 @@ public class RhenaContext implements IRhenaContext {
 	@Override
 	public IRhenaModule materialiseModel(ModuleIdentifier identifier) throws RhenaException {
 
-		// We resolve its prototype to ensure we get the maximum coverage in
-		// cyclic check
+		/**
+		 * We resolve its prototype to ensure we get the maximum coverage in cyclic check
+		 */
 		IEntryPoint entryPoint = new EntryPoint(EExecutionType.PROTOTYPE, identifier);
 		return cascadingResolver.resolveEdge(entryPoint);
 	}
@@ -34,7 +35,6 @@ public class RhenaContext implements IRhenaContext {
 	@Override
 	public IRhenaExecution materialiseExecution(IRhenaModule module, EExecutionType type) throws RhenaException {
 
-//		IRhenaEdge entryPoint = new RhenaEdge(type, module.getIdentifier(), ESelectionType.SCOPE);
 		IEntryPoint entryPoint = new EntryPoint(type, module.getIdentifier());
 		return cascadingBuilder.buildEdge(entryPoint);
 	}
