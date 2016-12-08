@@ -12,7 +12,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
 public class RhenaModule implements IRhenaModule {
@@ -22,7 +22,7 @@ public class RhenaModule implements IRhenaModule {
 	private IRhenaEdge parent;
 	private Properties properties;
 	private String lifecycleName;
-	private Map<String, ILifecycleDeclaration> lifecycleDeclarations;
+	private Map<String, ILifecycleReference> lifecycleDeclarations;
 	private List<IRhenaEdge> dependencies;
 
 	public RhenaModule(ModuleIdentifier identifier, IRepository repository) {
@@ -30,7 +30,7 @@ public class RhenaModule implements IRhenaModule {
 		this.identifier = identifier;
 		this.repository = repository;
 		this.properties = new Properties();
-		this.lifecycleDeclarations = new HashMap<String, ILifecycleDeclaration>();
+		this.lifecycleDeclarations = new HashMap<String, ILifecycleReference>();
 		this.dependencies = new ArrayList<IRhenaEdge>();
 	}
 
@@ -84,13 +84,13 @@ public class RhenaModule implements IRhenaModule {
 	}
 
 	@Override
-	public Map<String, ILifecycleDeclaration> getLifecycleDeclarations() {
+	public Map<String, ILifecycleReference> getLifecycleDeclarations() {
 
 		return lifecycleDeclarations;
 	}
 
 	@Override
-	public void setLifecycleDeclarations(Map<String, ILifecycleDeclaration> lifecycleDeclarations) {
+	public void setLifecycleDeclarations(Map<String, ILifecycleReference> lifecycleDeclarations) {
 
 		this.lifecycleDeclarations = lifecycleDeclarations;
 	}

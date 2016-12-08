@@ -15,15 +15,11 @@ import com.unnsvc.rhena.common.listener.IContextListener;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.ESelectionType;
-import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.core.RhenaConfiguration;
-import com.unnsvc.rhena.core.execution.GraphResolver;
-import com.unnsvc.rhena.core.execution.ParallelGraphProcessor;
-import com.unnsvc.rhena.core.logging.LogEvent;
 import com.unnsvc.rhena.core.model.RhenaEdge;
 import com.unnsvc.rhena.core.resolution.CachingResolutionContext;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
-import com.unnsvc.rhena.core.visitors.LoggingVisitor;
 
 public class TestRhenaModule {
 
@@ -110,7 +106,7 @@ public class TestRhenaModule {
 
 	private void debugModel(IRhenaContext context, EExecutionType type, IRhenaModule model) throws Exception {
 
-		ILifecycleDeclaration decl = model.getLifecycleDeclaration(model.getLifecycleName());
+		ILifecycleReference decl = model.getLifecycleDeclaration(model.getLifecycleName());
 
 		context.materialiseModel(decl.getGenerator().getModuleEdge().getTarget()).visit(new LoggingVisitor(EExecutionType.FRAMEWORK, context));
 

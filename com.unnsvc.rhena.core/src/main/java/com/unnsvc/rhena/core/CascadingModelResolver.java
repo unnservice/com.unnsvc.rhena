@@ -19,7 +19,7 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 import com.unnsvc.rhena.core.execution.UniqueStack;
 
@@ -86,7 +86,7 @@ public class CascadingModelResolver implements IModelResolver {
 					 * Resolve lifecycle from here after we've merged parents
 					 */
 					if (currentModule.getLifecycleName() != null) {
-						ILifecycleDeclaration lifecycle = currentModule.getLifecycleDeclarations().get(currentModule.getLifecycleName());
+						ILifecycleReference lifecycle = currentModule.getLifecycleDeclarations().get(currentModule.getLifecycleName());
 						if (lifecycle == null) {
 							throw new RhenaException("Could not find lifecycle " + currentModule.getLifecycleName() + " in " + currentModule.getIdentifier());
 						}
@@ -132,7 +132,7 @@ public class CascadingModelResolver implements IModelResolver {
 				}
 			}
 		} catch (NotUniqueException nue) {
-			System.err.println(getClass().getName() + " Cyclic dependency path detected:");
+			config.getLogger(getClass()).error(entryPoint.getTarget(), "Cyclic dependency path detected:");
 			boolean shift = false;
 
 			/**
@@ -146,8 +146,7 @@ public class CascadingModelResolver implements IModelResolver {
 				}
 				if (startlog) {
 					// @TODO
-					System.err.println(getClass() + " - cycle: " + (shift ? "↓" : "↓") + " "
-							+ materialiseModel(edge.getTarget()).getIdentifier().toTag(edge.getExecutionType()));
+					config.getLogger(getClass()).error(entryPoint.getTarget(), "Cycle: " + (shift ? "↓" : "↓") + " " + materialiseModel(edge.getTarget()).getIdentifier().toTag(edge.getExecutionType()));
 					shift = !shift;
 				}
 			}
@@ -170,7 +169,7 @@ public class CascadingModelResolver implements IModelResolver {
 		properties.putAll(currentModule.getProperties());
 		currentModule.setProperties(properties);
 		// merge lifecycles
-		Map<String, ILifecycleDeclaration> lifecycles = new HashMap<String, ILifecycleDeclaration>();
+		Map<String, ILifecycleReference> lifecycles = new HashMap<String, ILifecycleReference>();
 		lifecycles.putAll(parentModule.getLifecycleDeclarations());
 		lifecycles.putAll(currentModule.getLifecycleDeclarations());
 		currentModule.setLifecycleDeclarations(lifecycles);
@@ -200,6 +199,7 @@ public class CascadingModelResolver implements IModelResolver {
 			}
 
 			modules.put(identifier, module);
+			config.getLogger(getClass()).info(identifier, "Materialised model");
 		}
 		return module;
 	}

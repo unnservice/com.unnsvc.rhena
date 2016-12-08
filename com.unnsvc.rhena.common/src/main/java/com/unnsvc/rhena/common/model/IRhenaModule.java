@@ -7,7 +7,7 @@ import java.util.Properties;
 
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.common.visitors.IVisitableModel;
 
 public interface IRhenaModule extends IVisitableModel {
@@ -26,9 +26,9 @@ public interface IRhenaModule extends IVisitableModel {
 	
 	public String getLifecycleName();
 
-	public Map<String, ILifecycleDeclaration> getLifecycleDeclarations();
+	public Map<String, ILifecycleReference> getLifecycleDeclarations();
 
-	public void setLifecycleDeclarations(Map<String, ILifecycleDeclaration> lifecycleDeclarations);
+	public void setLifecycleDeclarations(Map<String, ILifecycleReference> lifecycleDeclarations);
 
 	public List<IRhenaEdge> getDependencies();
 

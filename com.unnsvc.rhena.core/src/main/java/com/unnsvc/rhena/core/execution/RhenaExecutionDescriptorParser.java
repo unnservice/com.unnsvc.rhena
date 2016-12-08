@@ -26,11 +26,9 @@ import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
 
 public class RhenaExecutionDescriptorParser {
 
-	private IRhenaLoggingHandler log;
 	private ModuleIdentifier identifier;
 	private EExecutionType type;
 	private URI baseUri;
@@ -47,7 +45,6 @@ public class RhenaExecutionDescriptorParser {
 		this.identifier = identifier;
 		this.type = type;
 		this.baseUri = baseUri;
-		this.log = context.getLogger(getClass());
 		try {
 
 			URI descriptor = new URI(baseUri.toString() + "/" + RhenaConstants.EXECUTION_DESCRIPTOR_FILENAME).normalize();
@@ -103,7 +100,6 @@ public class RhenaExecutionDescriptorParser {
 			Validator validator = schema.newValidator();
 			validator.validate(new DOMSource(document));
 		} catch (Exception ex) {
-			log.error(identifier, type, "Schema validation failed for : " + uri);
 			throw new RhenaException("Schema validation error for: " + uri.toString(), ex);
 		}
 

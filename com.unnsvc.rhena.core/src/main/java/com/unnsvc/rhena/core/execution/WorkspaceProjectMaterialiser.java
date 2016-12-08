@@ -22,7 +22,7 @@ import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionReference;
 import com.unnsvc.rhena.common.model.lifecycle.IGenerator;
 import com.unnsvc.rhena.common.model.lifecycle.IGeneratorReference;
-import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleProcessor;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleProcessorReference;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
@@ -61,7 +61,7 @@ public class WorkspaceProjectMaterialiser {
 		 */
 
 		if (module.getLifecycleName() != null) {
-			ILifecycleDeclaration declaration = module.getLifecycleDeclaration(lifecycleName);
+			ILifecycleReference declaration = module.getLifecycleDeclaration(lifecycleName);
 			IExecutionReference executionContextReference = declaration.getContext();
 			List<IProcessorReference> processorReferences = declaration.getProcessors();
 			IGeneratorReference generatorReference = declaration.getGenerator();

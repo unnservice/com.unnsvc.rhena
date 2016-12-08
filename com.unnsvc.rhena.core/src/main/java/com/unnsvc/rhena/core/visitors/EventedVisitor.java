@@ -5,7 +5,7 @@ import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
@@ -25,40 +25,40 @@ public class EventedVisitor implements IModelVisitor {
 
 	@Override
 	public void visit(IRhenaModule module) throws RhenaException {
-
-		if (module.getParentModule() != null) {
-
-			onEdge(module, module.getParentModule());
-		}
-
-		// after parent so we can call getLifecycleDecalartion on model, which
-		// chains up to parent
-		if (handler instanceof ModuleVisitationHandler) {
-			((ModuleVisitationHandler) handler).startModule(module);
-		}
-
-		if (enterUnusedLifecycle) {
-
-			for (String lifecycleName : module.getLifecycleDeclarations().keySet()) {
-				processLifecycle(module, module.getLifecycleDeclaration(lifecycleName));
-			}
-		} else {
-			if (module.getLifecycleName() != null) {
-				processLifecycle(module, module.getLifecycleDeclaration(module.getLifecycleName()));
-			}
-		}
-
-		for (IRhenaEdge edge : module.getDependencyEdges()) {
-
-			onEdge(module, edge);
-		}
-
-		if (handler instanceof ModuleVisitationHandler) {
-			((ModuleVisitationHandler) handler).endModule(module);
-		}
+//
+//		if (module.getParentModule() != null) {
+//
+//			onEdge(module, module.getParentModule());
+//		}
+//
+//		// after parent so we can call getLifecycleDecalartion on model, which
+//		// chains up to parent
+//		if (handler instanceof ModuleVisitationHandler) {
+//			((ModuleVisitationHandler) handler).startModule(module);
+//		}
+//
+//		if (enterUnusedLifecycle) {
+//
+//			for (String lifecycleName : module.getLifecycleDeclarations().keySet()) {
+//				processLifecycle(module, module.getLifecycleDeclaration(lifecycleName));
+//			}
+//		} else {
+//			if (module.getLifecycleName() != null) {
+//				processLifecycle(module, module.getLifecycleDeclaration(module.getLifecycleName()));
+//			}
+//		}
+//
+//		for (IRhenaEdge edge : module.getDependencyEdges()) {
+//
+//			onEdge(module, edge);
+//		}
+//
+//		if (handler instanceof ModuleVisitationHandler) {
+//			((ModuleVisitationHandler) handler).endModule(module);
+//		}
 	}
 
-	private void processLifecycle(IRhenaModule module, ILifecycleDeclaration lifecycle) throws RhenaException {
+	private void processLifecycle(IRhenaModule module, ILifecycleReference lifecycle) throws RhenaException {
 
 		onEdge(module, lifecycle.getContext().getModuleEdge());
 
@@ -72,19 +72,19 @@ public class EventedVisitor implements IModelVisitor {
 
 	private void onEdge(IRhenaModule module, IRhenaEdge edge) throws RhenaException {
 
-		if (handler.canEnter(module, edge)) {
-			if (enter == EnterType.BEFORE) {
-				context.materialiseModel(edge.getTarget()).visit(this);
-			}
-
-			if (handler instanceof EdgeVisitationHandler) {
-				((EdgeVisitationHandler) handler).handleEdge(module, edge);
-			}
-
-			if (enter == EnterType.AFTER) {
-				context.materialiseModel(edge.getTarget()).visit(this);
-			}
-		}
+//		if (handler.canEnter(module, edge)) {
+//			if (enter == EnterType.BEFORE) {
+//				context.materialiseModel(edge.getTarget()).visit(this);
+//			}
+//
+//			if (handler instanceof EdgeVisitationHandler) {
+//				((EdgeVisitationHandler) handler).handleEdge(module, edge);
+//			}
+//
+//			if (enter == EnterType.AFTER) {
+//				context.materialiseModel(edge.getTarget()).visit(this);
+//			}
+//		}
 	}
 
 	public enum EnterType {

@@ -1,8 +1,10 @@
 
 package com.unnsvc.rhena.core.execution;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
+import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 
 public class ArtifactDescriptor implements IArtifactDescriptor {
@@ -15,6 +17,17 @@ public class ArtifactDescriptor implements IArtifactDescriptor {
 
 		this.name = name;
 		this.artifactUrl = artifactUrl;
+		this.sha1 = sha1;
+	}
+
+	public ArtifactDescriptor(String name, String artifactUrl, String sha1) throws RhenaException {
+
+		this.name = name;
+		try {
+			this.artifactUrl = new URL(artifactUrl);
+		} catch (MalformedURLException mue) {
+			throw new RhenaException(mue.getMessage(), mue);
+		}
 		this.sha1 = sha1;
 	}
 

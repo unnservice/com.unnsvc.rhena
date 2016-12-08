@@ -1,8 +1,6 @@
 
 package com.unnsvc.rhena.core.resolution;
 
-import java.net.URI;
-
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
@@ -16,12 +14,17 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
  */
 public class LocalCacheRepository extends RemoteRepository {
 
+	public LocalCacheRepository(IRhenaContext context) {
+
+		super(context);
+	}
+
 	private IRhenaLoggingHandler log;
 
-	public LocalCacheRepository(IRhenaContext context, URI location) {
-
-		super(context, location);
-	}
+	// public LocalCacheRepository(IRhenaContext context, URI location) {
+	//
+	// super(context, location);
+	// }
 
 	/**
 	 * 

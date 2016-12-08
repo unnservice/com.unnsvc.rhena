@@ -26,7 +26,7 @@ import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.core.lifecycle.ContextReference;
 import com.unnsvc.rhena.core.lifecycle.GeneratorReference;
-import com.unnsvc.rhena.core.lifecycle.LifecycleDeclaration;
+import com.unnsvc.rhena.core.lifecycle.LifecycleReference;
 import com.unnsvc.rhena.core.lifecycle.ProcessorReference;
 import com.unnsvc.rhena.core.model.EntryPoint;
 import com.unnsvc.rhena.core.model.RhenaEdge;
@@ -136,7 +136,7 @@ public class RhenaModuleParser {
 
 	private void processLifecycleNode(Node lifecycleNode) throws RhenaException {
 
-		LifecycleDeclaration ld = new LifecycleDeclaration(lifecycleNode.getAttributes().getNamedItem("name").getNodeValue());
+		LifecycleReference ld = new LifecycleReference(lifecycleNode.getAttributes().getNamedItem("name").getNodeValue());
 
 		NodeList children = lifecycleNode.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {

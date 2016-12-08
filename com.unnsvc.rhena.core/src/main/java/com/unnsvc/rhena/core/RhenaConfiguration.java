@@ -1,13 +1,13 @@
 
 package com.unnsvc.rhena.core;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
-import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
+import com.unnsvc.rhena.common.logging.ILogAdapter;
+import com.unnsvc.rhena.common.logging.ILogFactory;
 
 /**
  * @TODO different locations for RHENA_HOME for windows and unix etc?
@@ -22,19 +22,15 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	private boolean installLocal;
 	private boolean parallel;
 	private List<IRepository> repositories;
-	private IRhenaLoggingHandler logHandler;
-
-	public RhenaConfiguration(IRhenaLoggingHandler logHandler) {
-
-		this.logHandler = logHandler;
-	}
+	private ILogFactory logFactory;
 
 	/**
 	 * @TODO this remains from old code
 	 */
-	public RhenaConfiguration() {
+	public RhenaConfiguration(ILogFactory logFactory) {
 
 		this.repositories = new ArrayList<IRepository>();
+		this.logFactory = logFactory;
 	}
 
 	@Override
@@ -102,5 +98,11 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	public boolean isParallel() {
 
 		return parallel;
+	}
+
+	@Override
+	public ILogAdapter getLogger(Class<?> clazz) {
+
+		return this.logFactory.createLog(clazz);
 	}
 }

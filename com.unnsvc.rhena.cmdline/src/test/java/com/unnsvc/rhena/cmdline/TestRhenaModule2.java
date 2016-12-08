@@ -12,20 +12,22 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.logging.SystemOutLogFactory;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.RhenaConfiguration;
 import com.unnsvc.rhena.core.RhenaContext;
 import com.unnsvc.rhena.core.execution.WorkspaceExecution;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
+import com.unnsvc.rhena.core.visitors.DebugModelVisitor;
 
 public class TestRhenaModule2 {
 
 	@Test
 	public void testModule() throws Exception {
 
-		IRhenaConfiguration config = new RhenaConfiguration();
-		config.addRepository(new WorkspaceRepository(new File("../../")));
-		config.addRepository(new WorkspaceRepository(new File("../")));
+		IRhenaConfiguration config = new RhenaConfiguration(new SystemOutLogFactory());
+		config.addRepository(new WorkspaceRepository(config, new File("../../")));
+		config.addRepository(new WorkspaceRepository(config, new File("../")));
 		config.setRunTest(true);
 		config.setRunItest(true);
 		config.setParallel(true);
@@ -43,12 +45,14 @@ public class TestRhenaModule2 {
 		 * are no resource leaks in the lifecycles
 		 */
 		try {
-			
+
 			IRhenaContext context = new RhenaContext(config);
-			
+
 			IRhenaModule entryPointModule = context.materialiseModel(ModuleIdentifier.valueOf("com.unnsvc.rhena:core:0.0.1"));
 			Assert.assertNotNull(entryPointModule);
-			
+
+			debugContext(config, context);
+
 			IRhenaExecution execution = context.materialiseExecution(entryPointModule, EExecutionType.PROTOTYPE);
 			Assert.assertNotNull(execution);
 
@@ -57,8 +61,20 @@ public class TestRhenaModule2 {
 
 			// introspect model?
 		} catch (RhenaException ex) {
-			
+
 			throw new Exception(ex);
 		}
+	}
+
+	private void debugContext(IRhenaConfiguration config, IRhenaContext context) throws RhenaException {
+
+		context.getModules().forEach((identifier, module) -> {
+			try {
+				module.visit(new DebugModelVisitor(config, 0, context));
+			} catch (RhenaException e) {
+
+				e.printStackTrace();
+			}
+		});
 	}
 }

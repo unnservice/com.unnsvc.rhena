@@ -3,7 +3,7 @@ package com.unnsvc.rhena.common.model.lifecycle;
 
 import java.util.List;
 
-public interface ILifecycleDeclaration {
+public interface ILifecycleReference {
 
 	public String getName();
 

@@ -27,16 +27,15 @@ public class CascadingModelBuilder {
 	private IRhenaConfiguration config;
 	private Map<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>> executions;
 	private IModelResolver resolver;
-	// private CustomThreadPoolExecutor executor;
 
 	public CascadingModelBuilder(IRhenaConfiguration config, IModelResolver resolver) {
 
 		this.config = config;
 		this.resolver = resolver;
 
+		// @TODO evaluate if we can use CompletionService and some .take().get()
+		// trickery for efficient execution loop
 		this.executions = new HashMap<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>>();
-		// this.executor = new
-		// CustomThreadPoolExecutor(Runtime.getRuntime().availableProcessors());
 	}
 
 	public IRhenaExecution buildEdge(IEntryPoint entryPoint) throws RhenaException {
@@ -56,10 +55,7 @@ public class CascadingModelBuilder {
 			resolvable = selectResolved(allEdges);
 
 			Runtime runtime = Runtime.getRuntime();
-			int threads = resolvable.size() > runtime.availableProcessors() ? runtime.availableProcessors() : resolvable.size();
-			if (!config.isParallel()) {
-				threads = 1;
-			}
+			int threads = config.isParallel() ? runtime.availableProcessors() : 1;
 			ExecutorService executor = Executors.newFixedThreadPool(threads);
 
 			for (final IEntryPoint edge : resolvable) {
@@ -152,9 +148,9 @@ public class CascadingModelBuilder {
 	}
 
 	private IRhenaExecution produceExecution(IEntryPoint entryPoint) throws RhenaException {
-		
-		System.err.println(Thread.currentThread().getName() + ":" + getClass().getName() + " Building: " + entryPoint.getTarget() + ":" + entryPoint.getExecutionType());
-		
+
+		config.getLogger(getClass()).info(entryPoint.getTarget(), "Building: " + entryPoint.getTarget() + ":" + entryPoint.getExecutionType());
+
 		IRhenaModule module = resolver.materialiseModel(entryPoint.getTarget());
 		IRhenaExecution execution = module.getRepository().materialiseExecution(resolver, entryPoint);
 

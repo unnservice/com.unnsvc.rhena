@@ -10,11 +10,10 @@ import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 
 public interface IRepository {
-	
+
 	public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException;
 
 	public IRhenaExecution materialiseExecution(IModelResolver resolver, IEntryPoint entryPoint) throws RhenaException;
-	
+
 	public URI getLocation();
-	
 }

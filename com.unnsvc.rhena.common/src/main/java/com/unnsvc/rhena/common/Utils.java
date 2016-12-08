@@ -30,7 +30,7 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
 
 public class Utils {
 
@@ -222,7 +222,7 @@ public class Utils {
 			eps.add(module.getParent().getEntryPoint());
 		}
 		if (module.getLifecycleName() != null) {
-			ILifecycleDeclaration lifecycle = module.getLifecycleDeclarations().get(module.getLifecycleName());
+			ILifecycleReference lifecycle = module.getLifecycleDeclarations().get(module.getLifecycleName());
 			eps.add(lifecycle.getContext().getModuleEdge().getEntryPoint());
 			lifecycle.getProcessors().forEach(proc -> eps.add(proc.getModuleEdge().getEntryPoint()));
 			eps.add(lifecycle.getGenerator().getModuleEdge().getEntryPoint());

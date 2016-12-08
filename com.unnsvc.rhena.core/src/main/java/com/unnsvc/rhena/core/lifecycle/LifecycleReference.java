@@ -6,17 +6,17 @@ import java.util.List;
 
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionReference;
 import com.unnsvc.rhena.common.model.lifecycle.IGeneratorReference;
-import com.unnsvc.rhena.common.model.lifecycle.ILifecycleDeclaration;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 
-public class LifecycleDeclaration implements ILifecycleDeclaration {
+public class LifecycleReference implements ILifecycleReference {
 
 	private String name;
 	private IExecutionReference context;
 	private List<IProcessorReference> processors;
 	private IGeneratorReference generator;
 
-	public LifecycleDeclaration(String name) {
+	public LifecycleReference(String name) {
 
 		this.name = name;
 		this.processors = new ArrayList<IProcessorReference>();
