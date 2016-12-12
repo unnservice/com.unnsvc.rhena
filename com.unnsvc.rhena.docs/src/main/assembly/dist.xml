@@ -1,0 +1,32 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+
+	<id>dist</id>
+
+	<formats>
+		<format>tar.gz</format>
+	</formats>
+
+	<dependencySets>
+
+		<dependencySet>
+
+			<!-- Place the contents of this in the docs directory of our tarball. -->
+			<outputDirectory>/docs</outputDirectory>
+
+			<!-- This gives us access to the jar file we generated in the pom. -->
+			<useProjectArtifact>true</useProjectArtifact>
+
+			<!-- But rather than include the jar, we unpack it. -->
+			<unpack>true</unpack>
+
+			<!-- When we unpack it, exclude the META-INF directory. -->
+			<unpackOptions>
+				<excludes>
+					<exclude>META-INF/</exclude>
+				</excludes>
+			</unpackOptions>
+		</dependencySet>
+	</dependencySets>
+
+</assembly>

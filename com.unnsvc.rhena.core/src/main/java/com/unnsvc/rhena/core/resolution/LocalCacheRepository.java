@@ -16,7 +16,7 @@ public class LocalCacheRepository extends RemoteRepository {
 
 	public LocalCacheRepository(IRhenaContext context) {
 
-		super(context);
+//		super(context);
 	}
 
 	private IRhenaLoggingHandler log;

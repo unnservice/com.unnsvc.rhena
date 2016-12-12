@@ -11,7 +11,7 @@
 		<module>com.unnsvc.rhena.common</module>
 		<module>com.unnsvc.rhena.cmdline</module>
 		<module>com.unnsvc.rhena.mvnplugins</module>
-		<module>com.unnsvc.rhena:core</module>
+		<module>com.unnsvc.rhena.docs</module>
 	</modules>
 
 	<build>

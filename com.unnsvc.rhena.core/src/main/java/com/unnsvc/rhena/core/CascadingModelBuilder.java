@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import com.unnsvc.rhena.common.IExecutionCache;
 import com.unnsvc.rhena.common.IModelResolver;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.Utils;
@@ -22,7 +23,7 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 
-public class CascadingModelBuilder {
+public class CascadingModelBuilder implements IExecutionCache {
 
 	private IRhenaConfiguration config;
 	private Map<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>> executions;
@@ -134,7 +135,6 @@ public class CascadingModelBuilder {
 	 */
 	private IRhenaExecution materialiseExecution(IEntryPoint entryPoint) throws RhenaException {
 
-		// check cache
 		IRhenaExecution execution = null;
 
 		if (executions.get(entryPoint.getTarget()).containsKey(entryPoint.getExecutionType())) {
@@ -152,7 +152,7 @@ public class CascadingModelBuilder {
 		config.getLogger(getClass()).info(entryPoint.getTarget(), "Building: " + entryPoint.getTarget() + ":" + entryPoint.getExecutionType());
 
 		IRhenaModule module = resolver.materialiseModel(entryPoint.getTarget());
-		IRhenaExecution execution = module.getRepository().materialiseExecution(resolver, entryPoint);
+		IRhenaExecution execution = module.getRepository().materialiseExecution(this, resolver, entryPoint);
 
 		return execution;
 	}

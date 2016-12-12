@@ -26,33 +26,34 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
  * @author noname
  *
  */
-public class RemoteRepository extends AbstractRepository {
-
-	public RemoteRepository(IRhenaContext context) {
-		
-		super(context);
-	}
-
-	@Override
-	public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
-
-		
-		return null;
-	}
-
-	@Override
-	public IRhenaExecution materialiseExecution(IModelResolver resolver, IEntryPoint entryPoint) throws RhenaException {
-
-		
-		return null;
-	}
-
-	@Override
-	public URI getLocation() {
-
-		
-		return null;
-	}
+public class RemoteRepository  {
+// extends AbstractRepository {
+//
+//	public RemoteRepository(IRhenaContext context) {
+//		
+//		super(context);
+//	}
+//
+//	@Override
+//	public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
+//
+//		
+//		return null;
+//	}
+//
+//	@Override
+//	public IRhenaExecution materialiseExecution(IModelResolver resolver, IEntryPoint entryPoint) throws RhenaException {
+//
+//		
+//		return null;
+//	}
+//
+//	@Override
+//	public URI getLocation() {
+//
+//		
+//		return null;
+//	}
 
 //	private IRhenaLoggingHandler log;
 //	private URI location;
