@@ -1,8 +1,7 @@
 
 package com.unnsvc.rhena.core;
 
-import java.util.Map;
-
+import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -21,15 +20,17 @@ import com.unnsvc.rhena.core.model.EntryPoint;
  */
 public class RhenaContext implements IRhenaContext {
 
+	private IRhenaCache cache;
 	private IRhenaConfiguration config;
 	private CascadingModelResolver cascadingResolver;
 	private CascadingModelBuilder cascadingBuilder;
 
 	public RhenaContext(IRhenaConfiguration config) {
 
+		cache = new RhenaCache(config);
 		this.config = config;
-		this.cascadingResolver = new CascadingModelResolver(config);
-		this.cascadingBuilder = new CascadingModelBuilder(config, cascadingResolver);
+		this.cascadingResolver = new CascadingModelResolver(config, cache);
+		this.cascadingBuilder = new CascadingModelBuilder(config, cache, cascadingResolver);
 	}
 
 	@Override
@@ -51,9 +52,9 @@ public class RhenaContext implements IRhenaContext {
 	}
 
 	@Override
-	public Map<ModuleIdentifier, IRhenaModule> getModules() {
+	public IRhenaCache getCache() {
 
-		return cascadingResolver.getModules();
+		return cache;
 	}
 
 	@Override

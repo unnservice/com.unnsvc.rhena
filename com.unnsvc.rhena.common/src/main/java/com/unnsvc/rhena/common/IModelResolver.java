@@ -8,7 +8,6 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 
 public interface IModelResolver {
 
-	public Map<ModuleIdentifier, IRhenaModule> getModules();
 
 	public IRhenaModule materialiseModel(ModuleIdentifier identifier) throws RhenaException;
 

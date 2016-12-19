@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.unnsvc.rhena.common.IExecutionCache;
 import com.unnsvc.rhena.common.IModelResolver;
+import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -26,17 +27,14 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 public class CascadingModelBuilder implements IExecutionCache {
 
 	private IRhenaConfiguration config;
-	private Map<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>> executions;
 	private IModelResolver resolver;
+	private IRhenaCache cache;
 
-	public CascadingModelBuilder(IRhenaConfiguration config, IModelResolver resolver) {
+	public CascadingModelBuilder(IRhenaConfiguration config, IRhenaCache cache, IModelResolver resolver) {
 
+		this.cache = cache;
 		this.config = config;
 		this.resolver = resolver;
-
-		// @TODO evaluate if we can use CompletionService and some .take().get()
-		// trickery for efficient execution loop
-		this.executions = new HashMap<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>>();
 	}
 
 	public IRhenaExecution buildEdge(IEntryPoint entryPoint) throws RhenaException {
@@ -99,7 +97,7 @@ public class CascadingModelBuilder implements IExecutionCache {
 		ExecutionMergeEdgeSet allEntryPoints = new ExecutionMergeEdgeSet();
 		allEntryPoints.addEntryPoint(entryPoint);
 
-		for (IRhenaModule module : resolver.getModules().values()) {
+		for (IRhenaModule module : cache.getModules().values()) {
 
 			for (IEntryPoint relationshipEntryPoint : Utils.getAllEntryPoints(module)) {
 
@@ -137,13 +135,13 @@ public class CascadingModelBuilder implements IExecutionCache {
 
 		IRhenaExecution execution = null;
 
-		if (executions.get(entryPoint.getTarget()).containsKey(entryPoint.getExecutionType())) {
+		if (cache.getExecution(entryPoint.getTarget()).containsKey(entryPoint.getExecutionType())) {
 
-			return executions.get(entryPoint.getTarget()).get(entryPoint.getExecutionType());
+			return cache.getExecution(entryPoint.getTarget()).get(entryPoint.getExecutionType());
 		}
 
 		execution = produceExecution(entryPoint);
-		executions.get(entryPoint.getTarget()).put(entryPoint.getExecutionType(), execution);
+		cache.getExecution(entryPoint.getTarget()).put(entryPoint.getExecutionType(), execution);
 		return execution;
 	}
 
@@ -183,7 +181,7 @@ public class CascadingModelBuilder implements IExecutionCache {
 		// check whether parent execution types have been executed
 		for (EExecutionType et : entryPoint.getExecutionType().getTraversables()) {
 
-			if (!executions.get(entryPoint.getTarget()).containsKey(et)) {
+			if (!cache.getExecution(entryPoint.getTarget()).containsKey(et)) {
 				return false;
 			}
 		}
@@ -191,10 +189,10 @@ public class CascadingModelBuilder implements IExecutionCache {
 		// check whether all relationships have been executed
 		for (IEntryPoint relationshipEntryPoint : Utils.getAllEntryPoints(module)) {
 
-			boolean containsModule = executions.containsKey(relationshipEntryPoint.getTarget());
+			boolean containsModule = cache.getExecutions().containsKey(relationshipEntryPoint.getTarget());
 			if (!containsModule) {
 				return false;
-			} else if (containsModule && !executions.get(relationshipEntryPoint.getTarget()).containsKey(relationshipEntryPoint.getExecutionType())) {
+			} else if (containsModule && !cache.getExecution(relationshipEntryPoint.getTarget()).containsKey(relationshipEntryPoint.getExecutionType())) {
 				return false;
 			}
 		}
@@ -206,8 +204,8 @@ public class CascadingModelBuilder implements IExecutionCache {
 
 		// prefill
 		for (IEntryPoint entryPoint : alledges) {
-			if (!executions.containsKey(entryPoint.getTarget())) {
-				executions.put(entryPoint.getTarget(), new EnumMap<EExecutionType, IRhenaExecution>(EExecutionType.class));
+			if (!cache.getExecutions().containsKey(entryPoint.getTarget())) {
+				cache.getExecutions().put(entryPoint.getTarget(), new EnumMap<EExecutionType, IRhenaExecution>(EExecutionType.class));
 			}
 		}
 	}

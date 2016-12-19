@@ -1,8 +1,6 @@
 
 package com.unnsvc.rhena.common;
 
-import java.util.Map;
-
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
@@ -26,8 +24,8 @@ public interface IRhenaContext {
 	 */
 	public IRhenaExecution materialiseExecution(IRhenaModule entryPointModule, EExecutionType prototype) throws RhenaException;
 
-	public Map<ModuleIdentifier, IRhenaModule> getModules();
-
 	public IRhenaConfiguration getConfiguration();
+
+	public IRhenaCache getCache();
 
 }

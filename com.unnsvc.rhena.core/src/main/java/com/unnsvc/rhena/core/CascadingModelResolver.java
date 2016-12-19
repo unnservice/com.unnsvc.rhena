@@ -11,6 +11,7 @@ import java.util.Set;
 
 import com.unnsvc.rhena.common.IModelResolver;
 import com.unnsvc.rhena.common.IRepository;
+import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.NotExistsException;
 import com.unnsvc.rhena.common.exceptions.NotUniqueException;
@@ -32,14 +33,14 @@ import com.unnsvc.rhena.core.execution.UniqueStack;
 public class CascadingModelResolver implements IModelResolver {
 
 	private IRhenaConfiguration config;
-	private Map<ModuleIdentifier, IRhenaModule> modules;
 	private Set<ModuleIdentifier> merged;
+	private IRhenaCache cache;
 
-	public CascadingModelResolver(IRhenaConfiguration config) {
+	public CascadingModelResolver(IRhenaConfiguration config, IRhenaCache cache) {
 
 		this.config = config;
-		this.modules = new HashMap<ModuleIdentifier, IRhenaModule>();
 		this.merged = new HashSet<ModuleIdentifier>();
+		this.cache = cache;
 	}
 
 	/**
@@ -146,7 +147,8 @@ public class CascadingModelResolver implements IModelResolver {
 				}
 				if (startlog) {
 					// @TODO
-					config.getLogger(getClass()).error(entryPoint.getTarget(), "Cycle: " + (shift ? "↓" : "↓") + " " + materialiseModel(edge.getTarget()).getIdentifier().toTag(edge.getExecutionType()));
+					config.getLogger(getClass()).error(entryPoint.getTarget(),
+							"Cycle: " + (shift ? "↓" : "↓") + " " + materialiseModel(edge.getTarget()).getIdentifier().toTag(edge.getExecutionType()));
 					shift = !shift;
 				}
 			}
@@ -178,7 +180,7 @@ public class CascadingModelResolver implements IModelResolver {
 	@Override
 	public IRhenaModule materialiseModel(ModuleIdentifier identifier) throws RhenaException {
 
-		IRhenaModule module = modules.get(identifier);
+		IRhenaModule module = cache.getModule(identifier);
 		if (module == null) {
 
 			// initial module resolve
@@ -198,15 +200,9 @@ public class CascadingModelResolver implements IModelResolver {
 				throw new RhenaException(identifier.toString() + " not found");
 			}
 
-			modules.put(identifier, module);
+			cache.addModule(identifier, module);
 			config.getLogger(getClass()).info(identifier, "Materialised model");
 		}
 		return module;
-	}
-
-	@Override
-	public Map<ModuleIdentifier, IRhenaModule> getModules() {
-
-		return modules;
 	}
 }
