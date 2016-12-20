@@ -30,7 +30,7 @@ public class RhenaContext implements IRhenaContext {
 		cache = new RhenaCache();
 		this.config = config;
 		this.cascadingResolver = new CascadingModelResolver(config, cache);
-		this.cascadingBuilder = new CascadingModelBuilder(config, cache, cascadingResolver);
+		this.cascadingBuilder = new CascadingModelBuilder(config, cache);
 	}
 
 	@Override

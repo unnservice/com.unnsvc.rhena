@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import com.unnsvc.rhena.common.IModelResolver;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
@@ -30,7 +29,7 @@ import com.unnsvc.rhena.core.execution.UniqueStack;
  * @author noname
  *
  */
-public class CascadingModelResolver implements IModelResolver {
+public class CascadingModelResolver {
 
 	private IRhenaConfiguration config;
 	private Set<ModuleIdentifier> merged;
@@ -177,7 +176,6 @@ public class CascadingModelResolver implements IModelResolver {
 		currentModule.setLifecycleDeclarations(lifecycles);
 	}
 
-	@Override
 	public IRhenaModule materialiseModel(ModuleIdentifier identifier) throws RhenaException {
 
 		IRhenaModule module = cache.getModule(identifier);

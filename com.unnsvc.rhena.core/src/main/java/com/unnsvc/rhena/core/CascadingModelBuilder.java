@@ -10,7 +10,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import com.unnsvc.rhena.common.IModelResolver;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.Utils;
@@ -23,14 +22,12 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 public class CascadingModelBuilder {
 
 	private IRhenaConfiguration config;
-	private IModelResolver resolver;
 	private IRhenaCache cache;
 
-	public CascadingModelBuilder(IRhenaConfiguration config, IRhenaCache cache, IModelResolver resolver) {
+	public CascadingModelBuilder(IRhenaConfiguration config, IRhenaCache cache) {
 
 		this.cache = cache;
 		this.config = config;
-		this.resolver = resolver;
 	}
 
 	public IRhenaExecution buildEdge(IEntryPoint entryPoint) throws RhenaException {
@@ -145,8 +142,8 @@ public class CascadingModelBuilder {
 
 		config.getLogger(getClass()).info(entryPoint.getTarget(), "Building: " + entryPoint.getTarget() + ":" + entryPoint.getExecutionType());
 
-		IRhenaModule module = resolver.materialiseModel(entryPoint.getTarget());
-		IRhenaExecution execution = module.getRepository().materialiseExecution(cache, resolver, entryPoint);
+		IRhenaModule module = cache.getModule(entryPoint.getTarget());
+		IRhenaExecution execution = module.getRepository().materialiseExecution(cache, entryPoint);
 
 		return execution;
 	}
@@ -163,7 +160,7 @@ public class CascadingModelBuilder {
 		Set<IEntryPoint> selected = new HashSet<IEntryPoint>();
 		for (Iterator<IEntryPoint> iter = alledges.iterator(); iter.hasNext();) {
 			IEntryPoint entryPoint = iter.next();
-			IRhenaModule module = resolver.materialiseModel(entryPoint.getTarget());
+			IRhenaModule module = cache.getModule(entryPoint.getTarget());
 			if (isBuildable(entryPoint, module)) {
 				selected.add(entryPoint);
 				iter.remove();

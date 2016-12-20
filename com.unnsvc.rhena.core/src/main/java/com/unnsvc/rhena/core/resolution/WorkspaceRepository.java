@@ -5,7 +5,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.unnsvc.rhena.common.IModelResolver;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -26,18 +25,18 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 	}
 
 	@Override
-	public IRhenaExecution materialiseExecution(IRhenaCache cache, IModelResolver resolver, IEntryPoint entryPoint) throws RhenaException {
+	public IRhenaExecution materialiseExecution(IRhenaCache cache, IEntryPoint entryPoint) throws RhenaException {
 
 		List<IArtifactDescriptor> deps = new ArrayList<IArtifactDescriptor>();
-		IRhenaModule module = resolver.materialiseModel(entryPoint.getTarget());
+		IRhenaModule module = cache.getModule(entryPoint.getTarget());
 
 		EExecutionType et = entryPoint.getExecutionType();
 		// save deps of deps scopes
 		for (EExecutionType dep : et.getTraversables()) {
-			deps.addAll(getDepchain(cache, resolver, module, dep));
+			deps.addAll(getDepchain(cache, module, dep));
 		}
 		// requested scope deps
-		deps.addAll(getDepchain(cache, resolver, module, et));
+		deps.addAll(getDepchain(cache, module, et));
 
 		// resolve lifecycle here and execute it
 		// ILifecycleReference lifecycleRef =
@@ -47,11 +46,11 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 		// entryPoint.getExecutionType()));
 
 		ModuleIdentifier identifier = entryPoint.getTarget();
-		return new RhenaExecution(identifier, entryPoint.getExecutionType(), new ArtifactDescriptor(identifier.toString(), "http://not.implemented", "not-implemented"));
+		return new RhenaExecution(identifier, entryPoint.getExecutionType(),
+				new ArtifactDescriptor(identifier.toString(), "http://not.implemented", "not-implemented"));
 	}
 
-	private List<IArtifactDescriptor> getDepchain(IRhenaCache cache, IModelResolver resolver, IRhenaModule module, EExecutionType et)
-			throws RhenaException {
+	private List<IArtifactDescriptor> getDepchain(IRhenaCache cache, IRhenaModule module, EExecutionType et) throws RhenaException {
 
 		List<IArtifactDescriptor> deps = new ArrayList<IArtifactDescriptor>();
 

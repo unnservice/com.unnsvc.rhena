@@ -1,16 +1,6 @@
 
 package com.unnsvc.rhena.core.resolution;
 
-import java.net.URI;
-
-import com.unnsvc.rhena.common.IModelResolver;
-import com.unnsvc.rhena.common.IRhenaContext;
-import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.IRhenaExecution;
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.IEntryPoint;
-import com.unnsvc.rhena.common.model.IRhenaModule;
-
 /**
  * 
  * 

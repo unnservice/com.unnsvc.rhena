@@ -13,7 +13,7 @@ public interface IRepository {
 
 	public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException;
 
-	public IRhenaExecution materialiseExecution(IRhenaCache cache, IModelResolver resolver, IEntryPoint entryPoint) throws RhenaException;
+	public IRhenaExecution materialiseExecution(IRhenaCache cache, IEntryPoint entryPoint) throws RhenaException;
 
 	public URI getLocation();
 }
