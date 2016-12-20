@@ -2,17 +2,14 @@
 package com.unnsvc.rhena.core;
 
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import com.unnsvc.rhena.common.IExecutionCache;
 import com.unnsvc.rhena.common.IModelResolver;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
@@ -20,11 +17,10 @@ import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 
-public class CascadingModelBuilder implements IExecutionCache {
+public class CascadingModelBuilder {
 
 	private IRhenaConfiguration config;
 	private IModelResolver resolver;
@@ -150,7 +146,7 @@ public class CascadingModelBuilder implements IExecutionCache {
 		config.getLogger(getClass()).info(entryPoint.getTarget(), "Building: " + entryPoint.getTarget() + ":" + entryPoint.getExecutionType());
 
 		IRhenaModule module = resolver.materialiseModel(entryPoint.getTarget());
-		IRhenaExecution execution = module.getRepository().materialiseExecution(this, resolver, entryPoint);
+		IRhenaExecution execution = module.getRepository().materialiseExecution(cache, resolver, entryPoint);
 
 		return execution;
 	}

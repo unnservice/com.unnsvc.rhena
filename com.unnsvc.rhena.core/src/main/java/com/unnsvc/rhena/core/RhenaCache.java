@@ -16,7 +16,7 @@ public class RhenaCache implements IRhenaCache {
 	private Map<ModuleIdentifier, IRhenaModule> modules;
 	private Map<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>> executions;
 
-	public RhenaCache(IRhenaConfiguration config) {
+	public RhenaCache() {
 
 		this.modules = new HashMap<ModuleIdentifier, IRhenaModule>();
 		// @TODO evaluate if we can use CompletionService and some .take().get()

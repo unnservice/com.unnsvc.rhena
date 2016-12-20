@@ -27,7 +27,7 @@ public class RhenaContext implements IRhenaContext {
 
 	public RhenaContext(IRhenaConfiguration config) {
 
-		cache = new RhenaCache(config);
+		cache = new RhenaCache();
 		this.config = config;
 		this.cascadingResolver = new CascadingModelResolver(config, cache);
 		this.cascadingBuilder = new CascadingModelBuilder(config, cache, cascadingResolver);

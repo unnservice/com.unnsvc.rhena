@@ -46,7 +46,7 @@ public class CascadingModelResolver implements IModelResolver {
 	/**
 	 * Cascading resolver which performs cyclic checking.
 	 * 
-	 * @TODO make bolognese out of this pasta
+	 * @TODO make bolognese out of this pasta, factor out the breaks into method returns
 	 * @param entryPoint
 	 * @throws RhenaException
 	 */
