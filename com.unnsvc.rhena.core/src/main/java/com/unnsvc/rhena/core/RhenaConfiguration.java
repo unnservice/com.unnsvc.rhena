@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.unnsvc.rhena.common.IRepository;
+import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.logging.ILogAdapter;
 import com.unnsvc.rhena.common.logging.ILogFactory;
+import com.unnsvc.rhena.common.logging.SystemOutLogFactory;
 
 /**
  * @TODO different locations for RHENA_HOME for windows and unix etc?
@@ -23,14 +25,14 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	private boolean parallel;
 	private List<IRepository> repositories;
 	private ILogFactory logFactory;
-
+	
 	/**
 	 * @TODO this remains from old code
 	 */
-	public RhenaConfiguration(ILogFactory logFactory) {
+	public RhenaConfiguration() {
 
 		this.repositories = new ArrayList<IRepository>();
-		this.logFactory = logFactory;
+		this.logFactory = new SystemOutLogFactory();
 	}
 
 	@Override

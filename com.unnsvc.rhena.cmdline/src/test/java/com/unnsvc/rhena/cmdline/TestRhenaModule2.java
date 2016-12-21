@@ -25,7 +25,7 @@ public class TestRhenaModule2 {
 	@Test
 	public void testModule() throws Exception {
 
-		IRhenaConfiguration config = new RhenaConfiguration(new SystemOutLogFactory());
+		IRhenaConfiguration config = new RhenaConfiguration();
 		config.addRepository(new WorkspaceRepository(config, new File("../../")));
 		config.addRepository(new WorkspaceRepository(config, new File("../")));
 		config.setRunTest(true);
@@ -51,7 +51,7 @@ public class TestRhenaModule2 {
 			IRhenaModule entryPointModule = context.materialiseModel(ModuleIdentifier.valueOf("com.unnsvc.rhena:core:0.0.1"));
 			Assert.assertNotNull(entryPointModule);
 
-			debugContext(config, context);
+			debugContext(context);
 
 			IRhenaExecution execution = context.materialiseExecution(entryPointModule, EExecutionType.PROTOTYPE);
 			Assert.assertNotNull(execution);
@@ -66,11 +66,11 @@ public class TestRhenaModule2 {
 		}
 	}
 
-	private void debugContext(IRhenaConfiguration config, IRhenaContext context) throws RhenaException {
+	private void debugContext(IRhenaContext context) throws RhenaException {
 
 		context.getCache().getModules().forEach((identifier, module) -> {
 			try {
-				module.visit(new DebugModelVisitor(config, 0, context));
+				module.visit(new DebugModelVisitor(context.getConfiguration(), 0, context));
 			} catch (RhenaException e) {
 
 				e.printStackTrace();

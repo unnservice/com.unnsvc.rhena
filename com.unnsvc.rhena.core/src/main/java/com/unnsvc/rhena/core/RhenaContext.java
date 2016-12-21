@@ -20,15 +20,15 @@ import com.unnsvc.rhena.core.model.EntryPoint;
  */
 public class RhenaContext implements IRhenaContext {
 
-	private IRhenaCache cache;
 	private IRhenaConfiguration config;
 	private CascadingModelResolver cascadingResolver;
 	private CascadingModelBuilder cascadingBuilder;
+	private IRhenaCache cache;
 
 	public RhenaContext(IRhenaConfiguration config) {
 
-		cache = new RhenaCache();
 		this.config = config;
+		this.cache = new RhenaCache();
 		this.cascadingResolver = new CascadingModelResolver(config, cache);
 		this.cascadingBuilder = new CascadingModelBuilder(config, cache);
 	}
@@ -50,16 +50,16 @@ public class RhenaContext implements IRhenaContext {
 		IEntryPoint entryPoint = new EntryPoint(type, module.getIdentifier());
 		return cascadingBuilder.buildEdge(entryPoint);
 	}
-
-	@Override
-	public IRhenaCache getCache() {
-
-		return cache;
-	}
-
+	
 	@Override
 	public IRhenaConfiguration getConfiguration() {
 
 		return config;
+	}
+	
+	@Override
+	public IRhenaCache getCache() {
+
+		return cache;
 	}
 }
