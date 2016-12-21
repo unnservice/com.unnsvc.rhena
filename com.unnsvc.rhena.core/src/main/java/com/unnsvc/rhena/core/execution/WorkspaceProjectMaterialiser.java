@@ -8,7 +8,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -40,9 +40,9 @@ import com.unnsvc.rhena.lifecycle.DefaultProcessor;
 public class WorkspaceProjectMaterialiser {
 
 //	private IRhenaLoggingHandler log;
-	private IRhenaContext context;
+	private IRhenaEngine context;
 
-	public WorkspaceProjectMaterialiser(IRhenaContext context) {
+	public WorkspaceProjectMaterialiser(IRhenaEngine context) {
 
 		this.context = context;
 //		this.log = context.getLogger(getClass());
@@ -176,7 +176,7 @@ public class WorkspaceProjectMaterialiser {
 			// @TODO enable constructor selection so we can pass in model if
 			// such a constructor exists??? Do injection instead???
 
-			Constructor<?> constr = c.getConstructor(IRhenaContext.class);
+			Constructor<?> constr = c.getConstructor(IRhenaEngine.class);
 			Object o = constr.newInstance(context);
 			return (T) o;
 		} catch (Throwable ex) {

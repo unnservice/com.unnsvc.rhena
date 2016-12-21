@@ -10,7 +10,7 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 /**
  * This context will perform caching
  */
-public interface IRhenaContext {
+public interface IRhenaEngine {
 
 	public IRhenaModule materialiseModel(ModuleIdentifier valueOf) throws RhenaException;
 

@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
@@ -40,7 +40,7 @@ public class RhenaExecutionDescriptorParser {
 	 * @param executionDescriptor
 	 * @throws RhenaException
 	 */
-	public RhenaExecutionDescriptorParser(IRhenaContext context, ModuleIdentifier identifier, EExecutionType type, URI baseUri) throws RhenaException {
+	public RhenaExecutionDescriptorParser(IRhenaEngine context, ModuleIdentifier identifier, EExecutionType type, URI baseUri) throws RhenaException {
 
 		this.identifier = identifier;
 		this.type = type;

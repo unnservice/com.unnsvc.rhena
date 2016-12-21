@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.NotExistsException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;

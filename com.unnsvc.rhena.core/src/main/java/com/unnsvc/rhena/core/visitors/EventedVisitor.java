@@ -1,7 +1,7 @@
 
 package com.unnsvc.rhena.core.visitors;
 
-import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
@@ -11,12 +11,12 @@ import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
 public class EventedVisitor implements IModelVisitor {
 
-	private IRhenaContext context;
+	private IRhenaEngine context;
 	private VisitationHandler handler;
 	private EnterType enter;
 	private boolean enterUnusedLifecycle = false;
 
-	public EventedVisitor(IRhenaContext context, EnterType enter, VisitationHandler handler) {
+	public EventedVisitor(IRhenaEngine context, EnterType enter, VisitationHandler handler) {
 
 		this.context = context;
 		this.handler = handler;

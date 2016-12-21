@@ -1,7 +1,7 @@
 
 package com.unnsvc.rhena.core.resolution;
 
-import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
 import com.unnsvc.rhena.common.model.IRhenaModule;
@@ -14,7 +14,7 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
  */
 public class LocalCacheRepository extends RemoteRepository {
 
-	public LocalCacheRepository(IRhenaContext context) {
+	public LocalCacheRepository(IRhenaEngine context) {
 
 //		super(context);
 	}

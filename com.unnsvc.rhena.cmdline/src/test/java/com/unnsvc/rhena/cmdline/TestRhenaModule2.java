@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.unnsvc.rhena.common.IRhenaConfiguration;
-import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
@@ -15,7 +15,7 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.logging.SystemOutLogFactory;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.RhenaConfiguration;
-import com.unnsvc.rhena.core.RhenaContext;
+import com.unnsvc.rhena.core.RhenaEngine;
 import com.unnsvc.rhena.core.execution.WorkspaceExecution;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
 import com.unnsvc.rhena.core.visitors.DebugModelVisitor;
@@ -46,14 +46,14 @@ public class TestRhenaModule2 {
 		 */
 		try {
 
-			IRhenaContext context = new RhenaContext(config);
+			IRhenaEngine engine = new RhenaEngine(config);
 
-			IRhenaModule entryPointModule = context.materialiseModel(ModuleIdentifier.valueOf("com.unnsvc.rhena:core:0.0.1"));
+			IRhenaModule entryPointModule = engine.materialiseModel(ModuleIdentifier.valueOf("com.unnsvc.rhena:core:0.0.1"));
 			Assert.assertNotNull(entryPointModule);
 
-			debugContext(context);
+			debugContext(engine);
 
-			IRhenaExecution execution = context.materialiseExecution(entryPointModule, EExecutionType.PROTOTYPE);
+			IRhenaExecution execution = engine.materialiseExecution(entryPointModule, EExecutionType.PROTOTYPE);
 			Assert.assertNotNull(execution);
 
 			// because we want to configure eclipse with it
@@ -66,11 +66,11 @@ public class TestRhenaModule2 {
 		}
 	}
 
-	private void debugContext(IRhenaContext context) throws RhenaException {
+	private void debugContext(IRhenaEngine engine) throws RhenaException {
 
-		context.getCache().getModules().forEach((identifier, module) -> {
+		engine.getCache().getModules().forEach((identifier, module) -> {
 			try {
-				module.visit(new DebugModelVisitor(context.getConfiguration(), 0, context));
+				module.visit(new DebugModelVisitor(engine.getConfiguration(), 0, engine));
 			} catch (RhenaException e) {
 
 				e.printStackTrace();

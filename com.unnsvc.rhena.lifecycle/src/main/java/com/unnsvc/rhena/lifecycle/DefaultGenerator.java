@@ -14,7 +14,7 @@ import java.util.jar.JarOutputStream;
 
 import org.w3c.dom.Document;
 
-import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
@@ -27,7 +27,7 @@ public class DefaultGenerator implements IGenerator {
 
 	private IRhenaLoggingHandler log;
 
-	public DefaultGenerator(IRhenaContext context) {
+	public DefaultGenerator(IRhenaEngine context) {
 
 		this.log = context.getLogger(getClass());
 	}

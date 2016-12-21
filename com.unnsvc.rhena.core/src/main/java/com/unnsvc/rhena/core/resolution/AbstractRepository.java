@@ -2,14 +2,14 @@
 package com.unnsvc.rhena.core.resolution;
 
 import com.unnsvc.rhena.common.IRepository;
-import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.IRhenaEngine;
 
 public abstract class AbstractRepository implements IRepository {
 
 	// private Logger log = LoggerFactory.getLogger(getClass());
-	private IRhenaContext context;
+	private IRhenaEngine context;
 
-	public AbstractRepository(IRhenaContext context) {
+	public AbstractRepository(IRhenaEngine context) {
 
 		this.context = context;
 	}
@@ -20,7 +20,7 @@ public abstract class AbstractRepository implements IRepository {
 //		return model;
 //	}
 
-	public IRhenaContext getContext() {
+	public IRhenaEngine getContext() {
 
 		return context;
 	}

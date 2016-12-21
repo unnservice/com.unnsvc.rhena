@@ -11,7 +11,7 @@ import org.eclipse.jdt.core.compiler.CompilationProgress;
 import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
 import org.w3c.dom.Document;
 
-import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
@@ -28,9 +28,9 @@ import com.unnsvc.rhena.lifecycle.misc.LoggingPrintWriter.FileDescriptor;
 public class DefaultProcessor implements IProcessor {
 
 	private IRhenaLoggingHandler log;
-	private IRhenaContext context;
+	private IRhenaEngine context;
 
-	public DefaultProcessor(IRhenaContext context) {
+	public DefaultProcessor(IRhenaEngine context) {
 
 		this.context = context;
 		this.log = context.getLogger(getClass());
