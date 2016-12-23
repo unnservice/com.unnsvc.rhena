@@ -30,7 +30,7 @@ public class TestRhenaModule2 {
 		config.addRepository(new WorkspaceRepository(config, new File("../")));
 		config.setRunTest(true);
 		config.setRunItest(true);
-		config.setParallel(true);
+		config.setParallel(false);
 		// Produce packages or use exploded compilation
 		config.setPackageWorkspace(false);
 		config.setInstallLocal(true);
