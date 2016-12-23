@@ -55,6 +55,7 @@ public class RhenaExecution implements IRhenaExecution {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((artifact == null) ? 0 : artifact.hashCode());
+		result = prime * result + ((executionDate == null) ? 0 : executionDate.hashCode());
 		result = prime * result + ((executionType == null) ? 0 : executionType.hashCode());
 		result = prime * result + ((moduleIdentifier == null) ? 0 : moduleIdentifier.hashCode());
 		return result;
@@ -74,6 +75,11 @@ public class RhenaExecution implements IRhenaExecution {
 			if (other.artifact != null)
 				return false;
 		} else if (!artifact.equals(other.artifact))
+			return false;
+		if (executionDate == null) {
+			if (other.executionDate != null)
+				return false;
+		} else if (!executionDate.equals(other.executionDate))
 			return false;
 		if (executionType != other.executionType)
 			return false;
