@@ -21,7 +21,7 @@ import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.model.lifecycle.IResource;
-import com.unnsvc.rhena.common.visitors.RhenaDependencyCollectionVisitor;
+import com.unnsvc.rhena.core.visitors.RhenaDependencyCollectionVisitor;
 import com.unnsvc.rhena.lifecycle.misc.LoggingPrintWriter;
 import com.unnsvc.rhena.lifecycle.misc.LoggingPrintWriter.FileDescriptor;
 
