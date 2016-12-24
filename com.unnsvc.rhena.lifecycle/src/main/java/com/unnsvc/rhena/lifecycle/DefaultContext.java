@@ -9,7 +9,7 @@ import java.util.Map;
 
 import org.w3c.dom.Document;
 
-import com.unnsvc.rhena.common.IRhenaEngine;
+import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
@@ -32,7 +32,7 @@ public class DefaultContext implements IExecutionContext {
 	private Map<EExecutionType, List<IResource>> resources;
 	// private Map<Class<? extends ILifecycleProcessor>, Object>
 
-	public DefaultContext(IRhenaEngine context) {
+	public DefaultContext(IRhenaCache cache) {
 
 		this.resources = new HashMap<EExecutionType, List<IResource>>();
 	}

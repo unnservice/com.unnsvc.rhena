@@ -37,9 +37,11 @@ public class RhenaModuleParser {
 	private RhenaModule module;
 
 	public RhenaModuleParser(IRepository repository, ModuleIdentifier identifier, URI descriptorLocation) throws RhenaException {
-
-		this.module = new RhenaModule(identifier, repository);
+		
 		try {
+			URI location = new URI(descriptorLocation.getPath().substring(0, descriptorLocation.getPath().lastIndexOf("/")));
+			this.module = new RhenaModule(identifier, location, repository);
+			
 			parse(descriptorLocation);
 		} catch (Exception re) {
 			throw new RhenaException(re.getMessage(), re);

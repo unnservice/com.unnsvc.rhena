@@ -57,8 +57,14 @@ public class CascadingModelBuilder {
 					@Override
 					public IRhenaExecution call() throws Exception {
 
-						IRhenaExecution execution = materialiseExecution(edge);
-						return execution;
+						try {
+							IRhenaExecution execution = materialiseExecution(edge);
+							return execution;
+						} catch (Throwable t) {
+							config.getLogger(getClass()).error(edge.getTarget(), "Exception in execution materialisation: " + t.getMessage());
+							t.printStackTrace();
+							throw new RhenaException(t.getMessage(), t);
+						}
 					}
 				});
 			}

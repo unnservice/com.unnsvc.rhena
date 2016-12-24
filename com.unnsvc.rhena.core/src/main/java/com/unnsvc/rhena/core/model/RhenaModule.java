@@ -1,6 +1,7 @@
 
 package com.unnsvc.rhena.core.model;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import com.unnsvc.rhena.common.visitors.IModelVisitor;
 public class RhenaModule implements IRhenaModule {
 
 	private ModuleIdentifier identifier;
+	private URI location;
 	private IRepository repository;
 	private IRhenaEdge parent;
 	private Properties properties;
@@ -25,9 +27,10 @@ public class RhenaModule implements IRhenaModule {
 	private Map<String, ILifecycleReference> lifecycleDeclarations;
 	private List<IRhenaEdge> dependencies;
 
-	public RhenaModule(ModuleIdentifier identifier, IRepository repository) {
+	public RhenaModule(ModuleIdentifier identifier, URI location, IRepository repository) {
 
 		this.identifier = identifier;
+		this.location = location;
 		this.repository = repository;
 		this.properties = new Properties();
 		this.lifecycleDeclarations = new HashMap<String, ILifecycleReference>();
@@ -38,6 +41,12 @@ public class RhenaModule implements IRhenaModule {
 	public ModuleIdentifier getIdentifier() {
 
 		return identifier;
+	}
+
+	@Override
+	public URI getLocation() {
+
+		return location;
 	}
 
 	@Override

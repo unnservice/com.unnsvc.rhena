@@ -1,6 +1,7 @@
 
 package com.unnsvc.rhena.common.model;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -14,6 +15,8 @@ public interface IRhenaModule extends IVisitableModel {
 
 	public ModuleIdentifier getIdentifier();
 
+	public URI getLocation();
+
 	public IRepository getRepository();
 
 	public void setParent(IRhenaEdge parent);
@@ -23,7 +26,7 @@ public interface IRhenaModule extends IVisitableModel {
 	public void setProperty(String name, String value);
 
 	public void setLifecycleName(String lifecycleName);
-	
+
 	public String getLifecycleName();
 
 	public Map<String, ILifecycleReference> getLifecycleDeclarations();
@@ -37,4 +40,5 @@ public interface IRhenaModule extends IVisitableModel {
 	public Properties getProperties();
 
 	public void setProperties(Properties properties);
+
 }
