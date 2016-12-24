@@ -1,39 +1,23 @@
 
 package com.unnsvc.rhena.lifecycle;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.jdt.core.compiler.CompilationProgress;
-import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
 import org.w3c.dom.Document;
 
-import com.unnsvc.rhena.common.IRhenaEngine;
+import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
-import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
-import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.model.lifecycle.IResource;
-import com.unnsvc.rhena.core.visitors.RhenaDependencyCollectionVisitor;
-import com.unnsvc.rhena.lifecycle.misc.LoggingPrintWriter;
-import com.unnsvc.rhena.lifecycle.misc.LoggingPrintWriter.FileDescriptor;
 
 public class DefaultProcessor implements IProcessor {
 
-	private IRhenaLoggingHandler log;
-	private IRhenaEngine context;
+	private IRhenaCache cache;
 
-	public DefaultProcessor(IRhenaEngine context) {
+	public DefaultProcessor(IRhenaCache cache, IExecutionContext context) {
 
-		this.context = context;
-		this.log = context.getLogger(getClass());
+		this.cache = cache;
 	}
 
 	@Override
@@ -57,78 +41,78 @@ public class DefaultProcessor implements IProcessor {
 				}
 				compile(module, resource, type);
 			} else {
-				log.debug(module.getModuleIdentifier(), type, "skipping empty resource: " + resource);
+//				log.debug(module.getIdentifier(), type, "skipping empty resource: " + resource);
 			}
 		}
 	}
 
 	private void compile(IRhenaModule module, IResource resource, EExecutionType type) throws RhenaException {
 
-		CompilationProgress progress = new CompilationProgress() {
-
-			@Override
-			public void begin(int remainingWork) {
-
-			}
-
-			@Override
-			public void done() {
-
-			}
-
-			@Override
-			public boolean isCanceled() {
-
-				return false;
-			}
-
-			@Override
-			public void setTaskName(String name) {
-
-			}
-
-			@Override
-			public void worked(int workIncrement, int remainingWork) {
-
-			}
-		};
-
-		List<URL> deps = new ArrayList<URL>();
-		for (IRhenaEdge edge : module.getDependencyEdges()) {
-
-			if (edge.getExecutionType().equals(type)) {
-				deps.addAll(module.visit(new RhenaDependencyCollectionVisitor(context, EExecutionType.FRAMEWORK, ESelectionType.SCOPE)).getDependenciesURL());
-			}
-		}
-
-		File source = resource.getSourceFile();
-		File target = resource.getTargetFile();
-
-		String cmdline = "-1.8 " + toClasspathFlag(deps) + " -d " + target + " " + source;
-
-		log.debug(module.getModuleIdentifier(), type, "compiling");
-		for (URL classpath : deps) {
-			log.debug(module.getModuleIdentifier(), type, " -> " + classpath);
-		}
-
-		if (!BatchCompiler.compile(cmdline, new PrintWriter(new LoggingPrintWriter(log, FileDescriptor.OUT)),
-				new PrintWriter(new LoggingPrintWriter(log, FileDescriptor.ERR)), progress)) {
-			throw new RhenaException("Compilation did not finish successfully");
-		}
+//		CompilationProgress progress = new CompilationProgress() {
+//
+//			@Override
+//			public void begin(int remainingWork) {
+//
+//			}
+//
+//			@Override
+//			public void done() {
+//
+//			}
+//
+//			@Override
+//			public boolean isCanceled() {
+//
+//				return false;
+//			}
+//
+//			@Override
+//			public void setTaskName(String name) {
+//
+//			}
+//
+//			@Override
+//			public void worked(int workIncrement, int remainingWork) {
+//
+//			}
+//		};
+//
+//		List<URL> deps = new ArrayList<URL>();
+//		for (IRhenaEdge edge : module.getDependencyEdges()) {
+//
+//			if (edge.getExecutionType().equals(type)) {
+//				deps.addAll(module.visit(new RhenaDependencyCollectionVisitor(context, EExecutionType.FRAMEWORK, ESelectionType.SCOPE)).getDependenciesURL());
+//			}
+//		}
+//
+//		File source = resource.getSourceFile();
+//		File target = resource.getTargetFile();
+//
+//		String cmdline = "-1.8 " + toClasspathFlag(deps) + " -d " + target + " " + source;
+//
+//		log.debug(module.getModuleIdentifier(), type, "compiling");
+//		for (URL classpath : deps) {
+//			log.debug(module.getModuleIdentifier(), type, " -> " + classpath);
+//		}
+//
+//		if (!BatchCompiler.compile(cmdline, new PrintWriter(new LoggingPrintWriter(log, FileDescriptor.OUT)),
+//				new PrintWriter(new LoggingPrintWriter(log, FileDescriptor.ERR)), progress)) {
+//			throw new RhenaException("Compilation did not finish successfully");
+//		}
 	}
 
-	private String toClasspathFlag(List<URL> deps) {
-
-		if (deps.isEmpty()) {
-			return "";
-		}
-
-		StringBuilder sb = new StringBuilder();
-		for (URL url : deps) {
-			sb.append(url.getPath()).append(File.pathSeparatorChar);
-		}
-
-		return "-classpath " + sb.toString().substring(0, sb.toString().length() - 1);
-	}
+//	private String toClasspathFlag(List<URL> deps) {
+//
+//		if (deps.isEmpty()) {
+//			return "";
+//		}
+//
+//		StringBuilder sb = new StringBuilder();
+//		for (URL url : deps) {
+//			sb.append(url.getPath()).append(File.pathSeparatorChar);
+//		}
+//
+//		return "-classpath " + sb.toString().substring(0, sb.toString().length() - 1);
+//	}
 
 }

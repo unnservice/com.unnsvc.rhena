@@ -14,22 +14,26 @@ import java.util.jar.JarOutputStream;
 
 import org.w3c.dom.Document;
 
-import com.unnsvc.rhena.common.IRhenaEngine;
+import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
-import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IGenerator;
 import com.unnsvc.rhena.common.model.lifecycle.IResource;
 
+/**
+ * @author noname
+ *
+ */
 public class DefaultGenerator implements IGenerator {
 
-	private IRhenaLoggingHandler log;
+	private IExecutionContext context;
 
-	public DefaultGenerator(IRhenaEngine context) {
+	public DefaultGenerator(IRhenaCache cache, IExecutionContext context) {
 
-		this.log = context.getLogger(getClass());
+		this.context = context;
 	}
 
 	@Override
@@ -42,18 +46,24 @@ public class DefaultGenerator implements IGenerator {
 
 		List<IResource> resources = context.getResources(type);
 
-		String fileName = module.getModuleIdentifier().toFileName(type);
+		String fileName = toFileName(module.getIdentifier(), type);
 		File targetLocation = new File(module.getLocation().getPath(), "target");
 		File outLocation = new File(targetLocation, fileName + ".jar");
 
 		try {
 			generateJar(resources, outLocation);
-			log.debug(module.getModuleIdentifier(), type, "Generated: " + outLocation.getAbsolutePath());
+			// log.debug(module.get(), type, "Generated: " +
+			// outLocation.getAbsolutePath());
 		} catch (Exception ex) {
 			throw new RhenaException(ex.getMessage(), ex);
 		}
 
 		return outLocation;
+	}
+
+	private String toFileName(ModuleIdentifier identifier, EExecutionType type) {
+
+		return identifier.getComponentName().toString() + "." + identifier.getModuleName().toString() + "-" + type.toString().toLowerCase() + "-" + identifier.getVersion().toString();
 	}
 
 	private void generateJar(List<IResource> resources, File outLocation) throws FileNotFoundException, IOException {
