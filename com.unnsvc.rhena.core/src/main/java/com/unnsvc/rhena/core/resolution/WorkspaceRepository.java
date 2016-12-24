@@ -2,24 +2,19 @@
 package com.unnsvc.rhena.core.resolution;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
-
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.RhenaConstants;
+import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
@@ -35,12 +30,12 @@ import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 import com.unnsvc.rhena.core.execution.ArtifactDescriptor;
-import com.unnsvc.rhena.core.execution.RhenaExecution;
+import com.unnsvc.rhena.core.execution.RemoteExecution;
 import com.unnsvc.rhena.core.execution.WorkspaceExecution;
 import com.unnsvc.rhena.core.visitors.DependencyCollector;
 
 /**
- * @TODO cache lifecycle over multiple execution generation?
+ * @TODO cache lifecycle over multiple executions?
  * @author noname
  *
  */
@@ -90,7 +85,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 
 	private IRhenaExecution runInDefaultExecutableLifecycle(IRhenaCache cache, IEntryPoint entryPoint, IRhenaModule module) throws RhenaException {
 
-		return new RhenaExecution(entryPoint.getTarget(), entryPoint.getExecutionType(),
+		return new RemoteExecution(entryPoint.getTarget(), entryPoint.getExecutionType(),
 				new ArtifactDescriptor(entryPoint.getTarget().toString(), "http://not.implemented", "not-implemented"));
 	}
 
@@ -106,8 +101,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 
 		ILifecycleReference lifecycleRef = module.getLifecycleDeclarations().get(module.getLifecycleName());
 
-		IExecutionContext context = constructLifecycleProcessor(cache, lifecycleRef.getContext(), IExecutionContext.class, new Class[] { IRhenaCache.class },
-				cache);
+		IExecutionContext context = constructLifecycleProcessor(cache, lifecycleRef.getContext(), IExecutionContext.class, new Class[] { IRhenaCache.class }, cache);
 		context.configure(module, lifecycleRef.getContext().getConfiguration());
 
 		for (IProcessorReference proc : lifecycleRef.getProcessors()) {
@@ -119,8 +113,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 		}
 
 		// and finally, execute the generator
-		IGenerator generator = constructLifecycleProcessor(cache, lifecycleRef.getGenerator(), IGenerator.class,
-				new Class[] { IRhenaCache.class, IExecutionContext.class }, cache, context);
+		IGenerator generator = constructLifecycleProcessor(cache, lifecycleRef.getGenerator(), IGenerator.class, new Class[] { IRhenaCache.class, IExecutionContext.class }, cache, context);
 		generator.configure(module, lifecycleRef.getGenerator().getConfiguration());
 		// and execute it to produce final artifact...
 
@@ -133,40 +126,13 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 		 */
 
 		try {
-			return new WorkspaceExecution(entryPoint.getTarget(), entryPoint.getExecutionType(), new ArtifactDescriptor(entryPoint.getTarget().toString(), generated.getCanonicalFile().toURI().toURL(), generateSha1(generated)));
+			return new WorkspaceExecution(entryPoint.getTarget(), entryPoint.getExecutionType(), new ArtifactDescriptor(entryPoint.getTarget().toString(), generated.getCanonicalFile().toURI().toURL(), Utils.generateSha1(generated)));
 		} catch (IOException mue) {
 			throw new RhenaException(mue.getMessage(), mue);
 		}
 	}
 
-	private String generateSha1(File generated) throws RhenaException {
 
-		MessageDigest digest = null;
-		try {
-			digest = MessageDigest.getInstance("SHA-1");
-			try (InputStream input = new FileInputStream(generated)) {
-				byte[] buffer = new byte[8192];
-				int len = input.read(buffer);
-
-				while (len != -1) {
-					digest.update(buffer, 0, len);
-					len = input.read(buffer);
-				}
-				return new HexBinaryAdapter().marshal(digest.digest());
-			}
-		} catch (NoSuchAlgorithmException | IOException nsae) {
-			throw new RhenaException(nsae.getMessage(), nsae);
-		} finally {
-			if (digest != null) {
-				try {
-					digest.clone();
-				} catch (CloneNotSupportedException e) {
-
-					throw new RhenaException(e.getMessage(), e);
-				}
-			}
-		}
-	}
 
 	/**
 	 * @TODO checks for constructor validity and type conformance, gc

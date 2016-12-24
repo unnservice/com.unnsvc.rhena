@@ -2,6 +2,7 @@
 package com.unnsvc.rhena.common;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -9,9 +10,12 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -230,5 +234,34 @@ public class Utils {
 		module.getDependencies().forEach(dep -> eps.add(dep.getEntryPoint()));
 
 		return eps;
+	}
+	
+	public static String generateSha1(File generated) throws RhenaException {
+
+		MessageDigest digest = null;
+		try {
+			digest = MessageDigest.getInstance("SHA-1");
+			try (InputStream input = new FileInputStream(generated)) {
+				byte[] buffer = new byte[8192];
+				int len = input.read(buffer);
+
+				while (len != -1) {
+					digest.update(buffer, 0, len);
+					len = input.read(buffer);
+				}
+				return new HexBinaryAdapter().marshal(digest.digest());
+			}
+		} catch (NoSuchAlgorithmException | IOException nsae) {
+			throw new RhenaException(nsae.getMessage(), nsae);
+		} finally {
+			if (digest != null) {
+				try {
+					digest.clone();
+				} catch (CloneNotSupportedException e) {
+
+					throw new RhenaException(e.getMessage(), e);
+				}
+			}
+		}
 	}
 }

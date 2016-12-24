@@ -88,7 +88,7 @@ public class WorkspaceProjectMaterialiser {
 		genProc.configure(module, Utils.newEmptyDocument());
 		File result = genProc.generate(contextProc, module, type);
 
-		return new RhenaExecution(module.getModuleIdentifier(), type, new ArtifactDescriptor(result.getName(), Utils.toUrl(result), "not-implemented"));
+		return new RemoteExecution(module.getModuleIdentifier(), type, new ArtifactDescriptor(result.getName(), Utils.toUrl(result), "not-implemented"));
 	}
 
 	private void validateContext(String lifecycleName, IExecutionContext contextProc) throws RhenaException {
@@ -131,7 +131,7 @@ public class WorkspaceProjectMaterialiser {
 		}
 
 		ArtifactDescriptor descriptor = new ArtifactDescriptor(artifact.getName(), Utils.toUrl(artifact), "sha1-not-implemented");
-		return new RhenaExecution(module.getModuleIdentifier(), type, descriptor);
+		return new RemoteExecution(module.getModuleIdentifier(), type, descriptor);
 	}
 
 	private URLClassLoader createClassloader(ILifecycleProcessorReference processor) throws RhenaException {

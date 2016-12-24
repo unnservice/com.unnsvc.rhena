@@ -8,14 +8,14 @@ import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 
-public class RhenaExecution implements IRhenaExecution {
+public class RemoteExecution implements IRhenaExecution {
 
 	private ModuleIdentifier moduleIdentifier;
 	private EExecutionType executionType;
 	private IArtifactDescriptor artifact;
 	private Calendar executionDate;
 
-	public RhenaExecution(ModuleIdentifier moduleIdentifier, EExecutionType executionType, IArtifactDescriptor artifact, Calendar executionDate) {
+	public RemoteExecution(ModuleIdentifier moduleIdentifier, EExecutionType executionType, IArtifactDescriptor artifact, Calendar executionDate) {
 
 		this.moduleIdentifier = moduleIdentifier;
 		this.executionType = executionType;
@@ -23,7 +23,7 @@ public class RhenaExecution implements IRhenaExecution {
 		this.executionDate = executionDate;
 	}
 
-	public RhenaExecution(ModuleIdentifier moduleIdentifier, EExecutionType executionType, IArtifactDescriptor artifact) {
+	public RemoteExecution(ModuleIdentifier moduleIdentifier, EExecutionType executionType, IArtifactDescriptor artifact) {
 
 		this(moduleIdentifier, executionType, artifact, Calendar.getInstance());
 	}
@@ -70,7 +70,7 @@ public class RhenaExecution implements IRhenaExecution {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		RhenaExecution other = (RhenaExecution) obj;
+		RemoteExecution other = (RemoteExecution) obj;
 		if (artifact == null) {
 			if (other.artifact != null)
 				return false;

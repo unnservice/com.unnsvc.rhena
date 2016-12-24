@@ -108,7 +108,7 @@ public class RhenaExecutionDescriptorParser {
 
 	public IRhenaExecution getExecution() {
 
-		return new RhenaExecution(identifier, type, artifacts.get(0), date);
+		return new RemoteExecution(identifier, type, artifacts.get(0), date);
 	}
 
 }
