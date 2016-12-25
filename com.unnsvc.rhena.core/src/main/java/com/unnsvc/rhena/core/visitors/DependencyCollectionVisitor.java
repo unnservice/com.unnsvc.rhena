@@ -15,7 +15,7 @@ import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
-public class DependencyCollector implements IModelVisitor {
+public class DependencyCollectionVisitor implements IModelVisitor {
 
 	// private Logger log = LoggerFactory.getLogger(getClass());
 	private List<IRhenaExecution> dependencies;
@@ -23,12 +23,12 @@ public class DependencyCollector implements IModelVisitor {
 	private IRhenaCache cache;
 	private ESelectionType traverseType;
 
-	public DependencyCollector(IRhenaCache cache, IRhenaEdge edge) {
+	public DependencyCollectionVisitor(IRhenaCache cache, IRhenaEdge edge) {
 
 		this(cache, new ArrayList<IRhenaExecution>(), edge);
 	}
 
-	public DependencyCollector(IRhenaCache cache, List<IRhenaExecution> dependencies, IRhenaEdge edge) {
+	public DependencyCollectionVisitor(IRhenaCache cache, List<IRhenaExecution> dependencies, IRhenaEdge edge) {
 
 		this.cache = cache;
 		this.dependencies = dependencies;

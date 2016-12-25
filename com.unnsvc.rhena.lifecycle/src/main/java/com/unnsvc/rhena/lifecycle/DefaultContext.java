@@ -18,19 +18,14 @@ import com.unnsvc.rhena.lifecycle.resource.Resource;
 
 public class DefaultContext implements IExecutionContext {
 
-	// // inject these later so we don't get constructor injection complexities
+	// // inject these later
 	// later
-	// @ExecutionContext
+	// @ProcessorContext
 	// private IRhenaModule module;
-	// @ExecutionContext
+	// @ProcessorContext
 	// private ExecutionType type;
-	// @ExecutionContext // this will require more complex checks on lifecycle
-	// phase to know whether the configurator is ready and has executed...
-	// private Document configuration
 
-	// private Logger log = LoggerFactory.getLogger(getClass());
 	private Map<EExecutionType, List<IResource>> resources;
-	// private Map<Class<? extends ILifecycleProcessor>, Object>
 
 	public DefaultContext(IRhenaCache cache) {
 
@@ -39,8 +34,7 @@ public class DefaultContext implements IExecutionContext {
 
 	/**
 	 * @param type
-	 * @TODO the idea is to part some sort of configuration and if values are
-	 *       not set then use framework defaults
+	 * @TODO Better separation between sources and resources?
 	 */
 	@Override
 	public void configure(IRhenaModule module, Document configuration) {
@@ -56,14 +50,15 @@ public class DefaultContext implements IExecutionContext {
 				}
 
 				String sourcePath = "src/" + actual + "/java";
-				String resourcePath = "src/" + actual + "/resources";
+//				String resourcePath = "src/" + actual + "/resources";
 				String targetPath = "target/" + actual + "/classes";
 
 				IResource srcResource = new Resource(location, sourcePath, targetPath);
-				IResource resResource = new Resource(location, resourcePath, targetPath);
+				// IResource resResource = new Resource(location, resourcePath,
+				// targetPath);
 
 				this.resources.put(type, resourcesAsList(srcResource));
-				this.resources.put(type, resourcesAsList(resResource));
+				// this.resources.put(type, resourcesAsList(resResource));
 			}
 		}
 	}
@@ -82,17 +77,19 @@ public class DefaultContext implements IExecutionContext {
 
 		if (resources.containsKey(execution)) {
 
-//			System.err.println(getClass().getName() + " Execution " + execution);
+			// System.err.println(getClass().getName() + " Execution " +
+			// execution);
 			return resources.get(execution);
 		} else {
 
-//			try {
-//				throw new Exception("backtrace");
-//			} catch (Exception ex) {
-//				ex.printStackTrace(System.err);
-//			}
+			// try {
+			// throw new Exception("backtrace");
+			// } catch (Exception ex) {
+			// ex.printStackTrace(System.err);
+			// }
 
-//			System.err.println(getClass().getName() + " Execution  " + execution + " result is null?..");
+			// System.err.println(getClass().getName() + " Execution " +
+			// execution + " result is null?..");
 			return new ArrayList<IResource>();
 		}
 	}

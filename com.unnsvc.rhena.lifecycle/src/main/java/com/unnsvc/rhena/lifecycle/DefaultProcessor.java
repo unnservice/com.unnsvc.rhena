@@ -1,6 +1,13 @@
 
 package com.unnsvc.rhena.lifecycle;
 
+import java.io.File;
+import java.io.PrintWriter;
+
+import javax.tools.ToolProvider;
+
+import org.eclipse.jdt.core.compiler.CompilationProgress;
+import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
 import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.IRhenaCache;
@@ -10,6 +17,7 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.model.lifecycle.IResource;
+import com.unnsvc.rhena.common.visitors.IDependencies;
 
 public class DefaultProcessor implements IProcessor {
 
@@ -30,7 +38,7 @@ public class DefaultProcessor implements IProcessor {
 	 * @TODO batch instead of running for each resource
 	 */
 	@Override
-	public void process(IExecutionContext context, IRhenaModule module, EExecutionType type) throws RhenaException {
+	public void process(IExecutionContext context, IRhenaModule module, EExecutionType type, IDependencies dependencies) throws RhenaException {
 
 		// System.err.println("Context is " + context + " type is " + type);
 		for (IResource resource : context.getResources(type)) {
@@ -39,80 +47,57 @@ public class DefaultProcessor implements IProcessor {
 				if (!resource.getTargetFile().exists()) {
 					resource.getTargetFile().mkdirs();
 				}
-				compile(module, resource, type);
+				compile(module, resource, type, dependencies);
 			} else {
 //				log.debug(module.getIdentifier(), type, "skipping empty resource: " + resource);
 			}
 		}
 	}
 
-	private void compile(IRhenaModule module, IResource resource, EExecutionType type) throws RhenaException {
+	private void compile(IRhenaModule module, IResource resource, EExecutionType type, IDependencies dependencies) throws RhenaException {
 
-//		CompilationProgress progress = new CompilationProgress() {
-//
-//			@Override
-//			public void begin(int remainingWork) {
-//
-//			}
-//
-//			@Override
-//			public void done() {
-//
-//			}
-//
-//			@Override
-//			public boolean isCanceled() {
-//
-//				return false;
-//			}
-//
-//			@Override
-//			public void setTaskName(String name) {
-//
-//			}
-//
-//			@Override
-//			public void worked(int workIncrement, int remainingWork) {
-//
-//			}
-//		};
-//
-//		List<URL> deps = new ArrayList<URL>();
-//		for (IRhenaEdge edge : module.getDependencyEdges()) {
-//
-//			if (edge.getExecutionType().equals(type)) {
-//				deps.addAll(module.visit(new RhenaDependencyCollectionVisitor(context, EExecutionType.FRAMEWORK, ESelectionType.SCOPE)).getDependenciesURL());
-//			}
-//		}
-//
-//		File source = resource.getSourceFile();
-//		File target = resource.getTargetFile();
-//
-//		String cmdline = "-1.8 " + toClasspathFlag(deps) + " -d " + target + " " + source;
-//
-//		log.debug(module.getModuleIdentifier(), type, "compiling");
-//		for (URL classpath : deps) {
-//			log.debug(module.getModuleIdentifier(), type, " -> " + classpath);
-//		}
-//
-//		if (!BatchCompiler.compile(cmdline, new PrintWriter(new LoggingPrintWriter(log, FileDescriptor.OUT)),
-//				new PrintWriter(new LoggingPrintWriter(log, FileDescriptor.ERR)), progress)) {
-//			throw new RhenaException("Compilation did not finish successfully");
-//		}
+		CompilationProgress progress = new CompilationProgress() {
+
+			@Override
+			public void begin(int remainingWork) {
+
+			}
+
+			@Override
+			public void done() {
+
+			}
+
+			@Override
+			public boolean isCanceled() {
+
+				return false;
+			}
+
+			@Override
+			public void setTaskName(String name) {
+
+			}
+
+			@Override
+			public void worked(int workIncrement, int remainingWork) {
+
+			}
+		};
+
+		File source = resource.getSourceFile();
+		File target = resource.getTargetFile();
+
+//		System.err.println("Compiling path " + source);
+//		System.err.println("Compiling with classpath: " + dependencies.getAsClasspath());
+		String cmdline = "-1.8 -classpath " + dependencies.getAsClasspath() + " -d " + target + " " + source;
+//		System.err.println("Compiling with cmdline: " + cmdline);
+		
+		if(!BatchCompiler.compile(cmdline, new PrintWriter(System.out), new PrintWriter(System.err), progress)) {
+			throw new RhenaException("Compilation did not finish successfully..");
+		}
 	}
 
-//	private String toClasspathFlag(List<URL> deps) {
-//
-//		if (deps.isEmpty()) {
-//			return "";
-//		}
-//
-//		StringBuilder sb = new StringBuilder();
-//		for (URL url : deps) {
-//			sb.append(url.getPath()).append(File.pathSeparatorChar);
-//		}
-//
-//		return "-classpath " + sb.toString().substring(0, sb.toString().length() - 1);
-//	}
+
 
 }

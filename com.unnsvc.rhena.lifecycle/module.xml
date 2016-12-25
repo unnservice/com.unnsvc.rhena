@@ -13,6 +13,8 @@
 	<!-- <dependency:deliverable module="component2:module1:0.0.1" /> -->
 	<!-- <dependency:test module="component2:module1:0.0.1" traverse="scope" /> -->
 
+	<dependency:deliverable module="org.eclipse.jdt.core.compiler:ecj:4.6.1" />
+
 </module>
 
 

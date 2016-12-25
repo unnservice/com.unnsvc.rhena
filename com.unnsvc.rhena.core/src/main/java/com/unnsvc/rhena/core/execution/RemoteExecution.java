@@ -8,6 +8,11 @@ import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 
+/**
+ * @TODO Implement file content type so we know the generated artifact type
+ * @author noname
+ *
+ */
 public class RemoteExecution implements IRhenaExecution {
 
 	private ModuleIdentifier moduleIdentifier;

@@ -7,9 +7,7 @@ import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
@@ -30,12 +28,16 @@ import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 import com.unnsvc.rhena.core.execution.ArtifactDescriptor;
-import com.unnsvc.rhena.core.execution.RemoteExecution;
 import com.unnsvc.rhena.core.execution.WorkspaceExecution;
-import com.unnsvc.rhena.core.visitors.DependencyCollector;
+import com.unnsvc.rhena.core.visitors.Dependencies;
+import com.unnsvc.rhena.core.visitors.DependencyCollectionVisitor;
+import com.unnsvc.rhena.lifecycle.DefaultContext;
+import com.unnsvc.rhena.lifecycle.DefaultGenerator;
+import com.unnsvc.rhena.lifecycle.DefaultProcessor;
 
 /**
  * @TODO cache lifecycle over multiple executions?
+ * @TODO MODEL gets generated here in the workspace repository?
  * @author noname
  *
  */
@@ -49,11 +51,8 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 	@Override
 	public IRhenaExecution materialiseExecution(IRhenaCache cache, IEntryPoint entryPoint) throws RhenaException {
 
-		Map<EExecutionType, List<IRhenaExecution>> deps = new EnumMap<EExecutionType, List<IRhenaExecution>>(EExecutionType.class);
-		for (EExecutionType et : EExecutionType.values()) {
-			deps.put(et, new ArrayList<IRhenaExecution>());
-		}
-
+		Dependencies deps = new Dependencies(entryPoint.getExecutionType());
+		
 		// get dependency chains of dependencies
 		getDepchain(deps, cache, entryPoint.getTarget(), entryPoint.getExecutionType());
 
@@ -61,14 +60,12 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 		for (EExecutionType depEt : entryPoint.getExecutionType().getTraversables()) {
 
 			IRhenaExecution exec = cache.getExecution(entryPoint.getTarget()).get(depEt);
-			if (deps.get(depEt).contains(exec)) {
-				deps.get(depEt).remove(exec);
-			}
-			deps.get(depEt).add(exec);
+
+			deps.addDependency(depEt, exec);
 		}
 
 		// debug dependency chains
-		deps.forEach((key, val) -> val.forEach(exec -> config.getLogger(getClass()).debug(key + ": " + exec)));
+		deps.getDependencies().forEach((key, val) -> val.forEach(exec -> config.getLogger(getClass()).debug(key + ": " + exec)));
 
 		/**
 		 * @TODO we only want a certain execution type for each execution
@@ -76,17 +73,33 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 		IRhenaModule module = cache.getModule(entryPoint.getTarget());
 		if (module.getLifecycleName() != null && module.getLifecycleName() != RhenaConstants.DEFAULT_LIFECYCLE_NAME) {
 
-			return runInExecutableLifecycle(cache, entryPoint, module);
+			return runInExecutableLifecycle(cache, entryPoint, module, deps);
 		} else {
 
-			return runInDefaultExecutableLifecycle(cache, entryPoint, module);
+			return runInDefaultExecutableLifecycle(cache, entryPoint, module, deps);
 		}
 	}
 
-	private IRhenaExecution runInDefaultExecutableLifecycle(IRhenaCache cache, IEntryPoint entryPoint, IRhenaModule module) throws RhenaException {
+	private IRhenaExecution runInDefaultExecutableLifecycle(IRhenaCache cache, IEntryPoint entryPoint, IRhenaModule module, Dependencies deps) throws RhenaException {
 
-		return new RemoteExecution(entryPoint.getTarget(), entryPoint.getExecutionType(),
-				new ArtifactDescriptor(entryPoint.getTarget().toString(), "http://not.implemented", "not-implemented"));
+		IExecutionContext context = new DefaultContext(cache);
+		context.configure(module, Utils.newEmptyDocument());
+
+		IProcessor processor = new DefaultProcessor(cache, context);
+		processor.configure(module, Utils.newEmptyDocument());
+		processor.process(context, module, entryPoint.getExecutionType(), deps);
+
+		IGenerator generator = new DefaultGenerator(cache, context);
+		generator.configure(module, Utils.newEmptyDocument());
+
+		File generated = generator.generate(context, module, entryPoint.getExecutionType());
+
+		try {
+			return new WorkspaceExecution(entryPoint.getTarget(), entryPoint.getExecutionType(),
+					new ArtifactDescriptor(entryPoint.getTarget().toString(), generated.getCanonicalFile().toURI().toURL(), Utils.generateSha1(generated)));
+		} catch (IOException mue) {
+			throw new RhenaException(mue.getMessage(), mue);
+		}
 	}
 
 	/**
@@ -94,10 +107,11 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 	 * @param cache
 	 * @param entryPoint
 	 * @param module
+	 * @param deps 
 	 * @return
 	 * @throws RhenaException
 	 */
-	private IRhenaExecution runInExecutableLifecycle(IRhenaCache cache, IEntryPoint entryPoint, IRhenaModule module) throws RhenaException {
+	private IRhenaExecution runInExecutableLifecycle(IRhenaCache cache, IEntryPoint entryPoint, IRhenaModule module, Dependencies deps) throws RhenaException {
 
 		ILifecycleReference lifecycleRef = module.getLifecycleDeclarations().get(module.getLifecycleName());
 
@@ -106,10 +120,10 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 
 		for (IProcessorReference proc : lifecycleRef.getProcessors()) {
 
-			IProcessor processor = constructLifecycleProcessor(cache, proc, IProcessor.class, new Class[] { IRhenaCache.class, IExecutionContext.class }, cache,
-					context);
+			IProcessor processor = constructLifecycleProcessor(cache, proc, IProcessor.class, new Class[] { IRhenaCache.class, IExecutionContext.class }, cache, context);
 			processor.configure(module, proc.getConfiguration());
 			// and execute it...
+			processor.process(context, module, entryPoint.getExecutionType(), deps);
 		}
 
 		// and finally, execute the generator
@@ -118,7 +132,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 		// and execute it to produce final artifact...
 
 		File generated = generator.generate(context, module, entryPoint.getExecutionType());
-		
+
 		/**
 		 * @TODO validate filename so it conforms to the spec, so it can be used
 		 *       as a dependency, or have a remote artifact descriptor which
@@ -126,13 +140,12 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 		 */
 
 		try {
-			return new WorkspaceExecution(entryPoint.getTarget(), entryPoint.getExecutionType(), new ArtifactDescriptor(entryPoint.getTarget().toString(), generated.getCanonicalFile().toURI().toURL(), Utils.generateSha1(generated)));
+			return new WorkspaceExecution(entryPoint.getTarget(), entryPoint.getExecutionType(),
+					new ArtifactDescriptor(entryPoint.getTarget().toString(), generated.getCanonicalFile().toURI().toURL(), Utils.generateSha1(generated)));
 		} catch (IOException mue) {
 			throw new RhenaException(mue.getMessage(), mue);
 		}
 	}
-
-
 
 	/**
 	 * @TODO checks for constructor validity and type conformance, gc
@@ -147,7 +160,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 	private <T extends ILifecycleProcessor> T constructLifecycleProcessor(IRhenaCache cache, ILifecycleProcessorReference processor, Class<T> type,
 			Class<?>[] argTypes, Object... args) throws RhenaException {
 
-		DependencyCollector coll = new DependencyCollector(cache, processor.getModuleEdge());
+		DependencyCollectionVisitor coll = new DependencyCollectionVisitor(cache, processor.getModuleEdge());
 		List<URL> deps = new ArrayList<URL>();
 		for (IRhenaExecution exec : coll.getDependencies()) {
 			deps.add(exec.getArtifact().getArtifactUrl());
@@ -168,7 +181,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 		}
 	}
 
-	private void getDepchain(Map<EExecutionType, List<IRhenaExecution>> deps, IRhenaCache cache, ModuleIdentifier identifier, EExecutionType et)
+	private void getDepchain(Dependencies deps, IRhenaCache cache, ModuleIdentifier identifier, EExecutionType et)
 			throws RhenaException {
 
 		IRhenaModule module = cache.getModule(identifier);
@@ -178,14 +191,12 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 		 */
 		for (IRhenaEdge edge : module.getDependencies()) {
 			IRhenaModule depmod = cache.getModule(identifier);
-			DependencyCollector coll = new DependencyCollector(cache, edge);
+			DependencyCollectionVisitor coll = new DependencyCollectionVisitor(cache, edge);
 			depmod.visit(coll);
 
 			for (IRhenaExecution exec : coll.getDependencies()) {
-				if (deps.get(edge.getEntryPoint().getExecutionType()).contains(exec)) {
-					deps.get(edge.getEntryPoint().getExecutionType()).remove(exec);
-				}
-				deps.get(edge.getEntryPoint().getExecutionType()).add(exec);
+
+				deps.addDependency(edge.getEntryPoint().getExecutionType(), exec);
 			}
 		}
 	}
