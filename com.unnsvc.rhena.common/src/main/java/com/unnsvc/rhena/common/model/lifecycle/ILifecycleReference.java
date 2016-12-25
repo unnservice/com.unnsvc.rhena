@@ -13,4 +13,10 @@ public interface ILifecycleReference {
 
 	public IExecutionReference getContext();
 
+	/**
+	 * Convenienc method to get all references
+	 * @return
+	 */
+	public List<ILifecycleProcessorReference> getAllReferences();
+
 }

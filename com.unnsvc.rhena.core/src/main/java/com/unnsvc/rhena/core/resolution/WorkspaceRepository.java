@@ -28,6 +28,7 @@ import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 import com.unnsvc.rhena.core.execution.ArtifactDescriptor;
+import com.unnsvc.rhena.core.execution.LocalExecution;
 import com.unnsvc.rhena.core.execution.WorkspaceExecution;
 import com.unnsvc.rhena.core.visitors.Dependencies;
 import com.unnsvc.rhena.core.visitors.DependencyCollectionVisitor;
@@ -51,32 +52,46 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 	@Override
 	public IRhenaExecution materialiseExecution(IRhenaCache cache, IEntryPoint entryPoint) throws RhenaException {
 
-		Dependencies deps = new Dependencies(entryPoint.getExecutionType());
-		
-		// get dependency chains of dependencies
-		getDepchain(deps, cache, entryPoint.getTarget(), entryPoint.getExecutionType());
-
-		// get the other executions of this module into the dependencies
-		for (EExecutionType depEt : entryPoint.getExecutionType().getTraversables()) {
-
-			IRhenaExecution exec = cache.getExecution(entryPoint.getTarget()).get(depEt);
-
-			deps.addDependency(depEt, exec);
-		}
-
-		// debug dependency chains
-		deps.getDependencies().forEach((key, val) -> val.forEach(exec -> config.getLogger(getClass()).debug(key + ": " + exec)));
-
-		/**
-		 * @TODO we only want a certain execution type for each execution
-		 */
 		IRhenaModule module = cache.getModule(entryPoint.getTarget());
-		if (module.getLifecycleName() != null && module.getLifecycleName() != RhenaConstants.DEFAULT_LIFECYCLE_NAME) {
 
-			return runInExecutableLifecycle(cache, entryPoint, module, deps);
+		if (entryPoint.getExecutionType().equals(EExecutionType.MODEL)) {
+
+			File workspaceDirectory = new File(module.getLocation().getPath());
+			File moduleDescriptor = new File(workspaceDirectory, RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
+			try {
+				return new WorkspaceExecution(entryPoint.getTarget(), entryPoint.getExecutionType(), new ArtifactDescriptor(entryPoint.getTarget().toString(),
+						moduleDescriptor.getCanonicalFile().toURI().toURL(), Utils.generateSha1(moduleDescriptor)));
+			} catch (IOException mue) {
+				throw new RhenaException(mue.getMessage(), mue);
+			}
 		} else {
 
-			return runInDefaultExecutableLifecycle(cache, entryPoint, module, deps);
+			Dependencies deps = new Dependencies(entryPoint.getExecutionType());
+
+			// get dependency chains of dependencies
+			getDepchain(deps, cache, entryPoint.getTarget(), entryPoint.getExecutionType());
+
+			// get the other executions of this module into the dependencies
+			for (EExecutionType depEt : entryPoint.getExecutionType().getTraversables()) {
+
+				IRhenaExecution exec = cache.getExecution(entryPoint.getTarget()).get(depEt);
+
+				deps.addDependency(depEt, exec);
+			}
+
+			// debug dependency chains
+			deps.getDependencies().forEach((key, val) -> val.forEach(exec -> config.getLogger(getClass()).debug(key + ": " + exec)));
+
+			/**
+			 * @TODO we only want a certain execution type for each execution
+			 */
+			if (module.getLifecycleName() != null && module.getLifecycleName() != RhenaConstants.DEFAULT_LIFECYCLE_NAME) {
+
+				return runInExecutableLifecycle(cache, entryPoint, module, deps);
+			} else {
+
+				return runInDefaultExecutableLifecycle(cache, entryPoint, module, deps);
+			}
 		}
 	}
 
@@ -107,7 +122,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 	 * @param cache
 	 * @param entryPoint
 	 * @param module
-	 * @param deps 
+	 * @param deps
 	 * @return
 	 * @throws RhenaException
 	 */
@@ -115,19 +130,22 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 
 		ILifecycleReference lifecycleRef = module.getLifecycleDeclarations().get(module.getLifecycleName());
 
-		IExecutionContext context = constructLifecycleProcessor(cache, lifecycleRef.getContext(), IExecutionContext.class, new Class[] { IRhenaCache.class }, cache);
+		IExecutionContext context = constructLifecycleProcessor(cache, lifecycleRef.getContext(), IExecutionContext.class, new Class[] { IRhenaCache.class },
+				cache);
 		context.configure(module, lifecycleRef.getContext().getConfiguration());
 
 		for (IProcessorReference proc : lifecycleRef.getProcessors()) {
 
-			IProcessor processor = constructLifecycleProcessor(cache, proc, IProcessor.class, new Class[] { IRhenaCache.class, IExecutionContext.class }, cache, context);
+			IProcessor processor = constructLifecycleProcessor(cache, proc, IProcessor.class, new Class[] { IRhenaCache.class, IExecutionContext.class }, cache,
+					context);
 			processor.configure(module, proc.getConfiguration());
 			// and execute it...
 			processor.process(context, module, entryPoint.getExecutionType(), deps);
 		}
 
 		// and finally, execute the generator
-		IGenerator generator = constructLifecycleProcessor(cache, lifecycleRef.getGenerator(), IGenerator.class, new Class[] { IRhenaCache.class, IExecutionContext.class }, cache, context);
+		IGenerator generator = constructLifecycleProcessor(cache, lifecycleRef.getGenerator(), IGenerator.class,
+				new Class[] { IRhenaCache.class, IExecutionContext.class }, cache, context);
 		generator.configure(module, lifecycleRef.getGenerator().getConfiguration());
 		// and execute it to produce final artifact...
 
@@ -181,8 +199,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 		}
 	}
 
-	private void getDepchain(Dependencies deps, IRhenaCache cache, ModuleIdentifier identifier, EExecutionType et)
-			throws RhenaException {
+	private void getDepchain(Dependencies deps, IRhenaCache cache, ModuleIdentifier identifier, EExecutionType et) throws RhenaException {
 
 		IRhenaModule module = cache.getModule(identifier);
 

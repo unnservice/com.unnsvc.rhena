@@ -17,8 +17,9 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.model.IEntryPoint;
-import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleProcessorReference;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
 
 public class CascadingModelBuilder {
 
@@ -189,11 +190,22 @@ public class CascadingModelBuilder {
 
 	private boolean isBuildable(IEntryPoint entryPoint, IRhenaModule module) throws RhenaException {
 
+		if (module.getLifecycleName() != null) {
+			for (ILifecycleProcessorReference ref : module.getLifecycleDeclarations().get(module.getLifecycleName()).getAllReferences()) {
+				IEntryPoint lifecycleEntryPoint = ref.getModuleEdge().getEntryPoint();
+				if (!cache.getExecutions().containsKey(lifecycleEntryPoint)) {
+					return false;
+				} else if (!cache.getExecution(lifecycleEntryPoint.getTarget()).containsKey(lifecycleEntryPoint.getExecutionType())) {
+					return false;
+				}
+			}
+		}
+
 		// check whether parent execution types have been executed
 		for (EExecutionType et : entryPoint.getExecutionType().getTraversables()) {
 
 			if (!cache.getExecution(entryPoint.getTarget()).containsKey(et)) {
-				config.getLogger(getClass()).debug(entryPoint.getTarget() + ":" + entryPoint.getExecutionType().literal() + " waiting on its execution type " + et.literal());
+//				config.getLogger(getClass()).debug(entryPoint.getTarget() + ":" + entryPoint.getExecutionType().literal() + " waiting on its execution type " + et.literal());
 				return false;
 			}
 		}

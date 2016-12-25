@@ -49,7 +49,7 @@ public class DebugModelVisitor implements IModelVisitor {
 
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < indent; i++) {
-			sb.append("\t");
+			sb.append("    ");
 		}
 		return sb.toString();
 	}
@@ -87,7 +87,7 @@ public class DebugModelVisitor implements IModelVisitor {
 		if (module.getLifecycleName() != null && module.getLifecycleName() != RhenaConstants.DEFAULT_LIFECYCLE_NAME) {
 
 			String l = module.getLifecycleName();
-			sb.append(" lifecycle=\"" + l + ":" + (module.getLifecycleDeclarations().containsKey(l)) + "\"");
+			sb.append(" lifecycle=\"" + l + "\"");
 		}
 		
 		return sb;

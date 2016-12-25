@@ -97,7 +97,7 @@ public abstract class AbstractExecution implements IRhenaExecution {
 	@Override
 	public String toString() {
 
-		return getClass().getName() + " [moduleIdentifier=" + moduleIdentifier + ", executionType=" + executionType + ", artifact=" + artifact
+		return getClass().getSimpleName() + " [moduleIdentifier=" + moduleIdentifier + ", executionType=" + executionType + ", artifact=" + artifact
 				+ ", executionDate=" + executionDate.getTime() + "]";
 	}
 }

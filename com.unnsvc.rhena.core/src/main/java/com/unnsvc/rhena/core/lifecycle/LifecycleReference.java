@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionReference;
 import com.unnsvc.rhena.common.model.lifecycle.IGeneratorReference;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleProcessorReference;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 
@@ -59,5 +60,15 @@ public class LifecycleReference implements ILifecycleReference {
 	public IExecutionReference getContext() {
 
 		return context;
+	}
+
+	@Override
+	public List<ILifecycleProcessorReference> getAllReferences() {
+
+		List<ILifecycleProcessorReference> allrefs = new ArrayList<ILifecycleProcessorReference>();
+		allrefs.add(getContext());
+		getProcessors().forEach(proc -> allrefs.add(proc));
+		allrefs.add(getGenerator());
+		return allrefs;
 	}
 }
