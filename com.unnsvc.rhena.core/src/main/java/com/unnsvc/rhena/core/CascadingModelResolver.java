@@ -181,8 +181,8 @@ public class CascadingModelResolver {
 		IRhenaModule module = cache.getModule(identifier);
 		if (module == null) {
 
-			// initial module resolve
-			for (IRepository repository : config.getRepositories()) {
+			// initial module resolve			
+			for (IRepository repository : config.getWorkspaceRepositories()) {
 
 				try {
 					module = repository.materialiseModel(identifier);
@@ -193,6 +193,15 @@ public class CascadingModelResolver {
 					// no-op
 				}
 			}
+			
+			if(module == null) {
+				IRepository localRepo = config.getLocalCacheRepository();
+				module = localRepo.materialiseModel(identifier);
+			}
+			
+			/**
+			 * @TODO check in remote repositories too here
+			 */
 
 			if (module == null) {
 				throw new RhenaException(identifier.toString() + " not found");

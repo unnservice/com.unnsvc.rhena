@@ -22,8 +22,8 @@ public class TestDependencyCollection {
 	public void testDeps() throws Exception {
 		
 		IRhenaConfiguration config = new RhenaConfiguration();
-		config.addRepository(new WorkspaceRepository(config, new File("../../")));
-		config.addRepository(new WorkspaceRepository(config, new File("../")));
+		config.addWorkspaceRepository(new WorkspaceRepository(config, new File("../../")));
+		config.addWorkspaceRepository(new WorkspaceRepository(config, new File("../")));
 		config.setRunTest(true);
 		config.setRunItest(true);
 		config.setParallel(true);

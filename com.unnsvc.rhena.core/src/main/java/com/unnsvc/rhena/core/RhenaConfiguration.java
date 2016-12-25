@@ -1,11 +1,11 @@
 
 package com.unnsvc.rhena.core;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.unnsvc.rhena.common.IRepository;
-import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.logging.ILogAdapter;
 import com.unnsvc.rhena.common.logging.ILogFactory;
@@ -25,7 +25,9 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	private boolean parallel;
 	private List<IRepository> repositories;
 	private ILogFactory logFactory;
-	
+	private IRepository localCacheRepository;
+	private File rhenaHome;
+
 	/**
 	 * @TODO this remains from old code
 	 */
@@ -80,12 +82,12 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	}
 
 	@Override
-	public List<IRepository> getRepositories() {
+	public List<IRepository> getWorkspaceRepositories() {
 
 		return repositories;
 	}
 
-	public void addRepository(IRepository repository) {
+	public void addWorkspaceRepository(IRepository repository) {
 
 		this.repositories.add(repository);
 	}
@@ -106,5 +108,29 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	public ILogAdapter getLogger(Class<?> clazz) {
 
 		return this.logFactory.createLog(clazz);
+	}
+
+	@Override
+	public void setLocalRepository(IRepository localCacheRepository) {
+
+		this.localCacheRepository = localCacheRepository;
+	}
+
+	@Override
+	public IRepository getLocalCacheRepository() {
+
+		return localCacheRepository;
+	}
+
+	@Override
+	public void setRhenaHome(File rhenaHome) {
+
+		this.rhenaHome = rhenaHome;
+	}
+
+	@Override
+	public File getRhenaHome() {
+
+		return rhenaHome;
 	}
 }

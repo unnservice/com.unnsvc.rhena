@@ -16,6 +16,7 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.RhenaConfiguration;
 import com.unnsvc.rhena.core.RhenaEngine;
 import com.unnsvc.rhena.core.execution.WorkspaceExecution;
+import com.unnsvc.rhena.core.resolution.LocalCacheRepository;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
 import com.unnsvc.rhena.core.visitors.DebugModelVisitor;
 
@@ -25,8 +26,10 @@ public class TestRhenaModule2 {
 	public void testModule() throws Exception {
 
 		IRhenaConfiguration config = new RhenaConfiguration();
-		config.addRepository(new WorkspaceRepository(config, new File("../../")));
-		config.addRepository(new WorkspaceRepository(config, new File("../")));
+		config.setRhenaHome(new File(System.getProperty("user.home"), ".rhena"));
+		config.addWorkspaceRepository(new WorkspaceRepository(config, new File("../../")));
+		config.addWorkspaceRepository(new WorkspaceRepository(config, new File("../")));
+		config.setLocalRepository(new LocalCacheRepository(config));
 		config.setRunTest(true);
 		config.setRunItest(true);
 		config.setParallel(false);

@@ -17,6 +17,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.model.IEntryPoint;
+import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 
 public class CascadingModelBuilder {
@@ -32,8 +33,8 @@ public class CascadingModelBuilder {
 
 	public IRhenaExecution buildEdge(IEntryPoint entryPoint) throws RhenaException {
 
-		ExecutionMergeEdgeSet allEdges = getAllEntryPoints(entryPoint);
-		prefillExecutions(allEdges);
+		ExecutionMergeEdgeSet allEntryPoints = getAllEntryPoints(entryPoint);
+		prefillExecutions(allEntryPoints);
 		Set<IEntryPoint> resolvable = new HashSet<IEntryPoint>();
 
 		/**
@@ -42,9 +43,20 @@ public class CascadingModelBuilder {
 		 *       each thread completion so we can feed the thread pool
 		 *       continuously
 		 */
-		while (loopGuard(allEdges)) {
+		while (loopGuard(allEntryPoints)) {
 
-			resolvable = selectResolved(allEdges);
+			resolvable = selectResolved(allEntryPoints);
+
+			// Second loop guard to check whether any where selected, if not
+			// then we have an error because the selectResolved should always
+			// select
+			// @TODO move into loopGuard?
+			if (resolvable.isEmpty()) {
+				for (IEntryPoint edge : allEntryPoints) {
+					config.getLogger(getClass()).debug("Nonresolvable in queue (bug): " + edge);
+				}
+				throw new RhenaException("Nonresolvable edges in queue, this is a bug: " + allEntryPoints);
+			}
 
 			Runtime runtime = Runtime.getRuntime();
 			int threads = config.isParallel() ? runtime.availableProcessors() : 1;
@@ -181,6 +193,7 @@ public class CascadingModelBuilder {
 		for (EExecutionType et : entryPoint.getExecutionType().getTraversables()) {
 
 			if (!cache.getExecution(entryPoint.getTarget()).containsKey(et)) {
+				config.getLogger(getClass()).debug(entryPoint.getTarget() + ":" + entryPoint.getExecutionType().literal() + " waiting on its execution type " + et.literal());
 				return false;
 			}
 		}

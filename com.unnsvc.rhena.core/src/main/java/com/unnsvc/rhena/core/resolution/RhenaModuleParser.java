@@ -116,9 +116,10 @@ public class RhenaModuleParser {
 			module.setLifecycleName(lifecycleName);
 		}
 
-		if (!module.getIdentifier().getComponentName().toString().equals(componentNameStr)
-				|| !module.getIdentifier().getVersion().toString().equals(versionStr)) {
-			throw new RhenaException("Not correct version in workspace for: " + module.getIdentifier());
+		if (!module.getIdentifier().getComponentName().toString().equals(componentNameStr)) {
+			throw new RhenaException("Component mismatch between: " + module.getIdentifier().getComponentName() + " and declared: " + componentNameStr);
+		} else if (!module.getIdentifier().getVersion().toString().equals(versionStr)) {
+			throw new RhenaException("Version mismatch between: " + module.getIdentifier().getVersion() + " and declared: " + versionStr);
 		}
 
 		NodeList metaNodeChildren = moduleChild.getChildNodes();

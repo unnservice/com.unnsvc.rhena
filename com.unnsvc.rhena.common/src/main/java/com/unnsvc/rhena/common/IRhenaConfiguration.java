@@ -1,6 +1,7 @@
 
 package com.unnsvc.rhena.common;
 
+import java.io.File;
 import java.util.List;
 
 import com.unnsvc.rhena.common.logging.ILogAdapter;
@@ -19,9 +20,17 @@ public interface IRhenaConfiguration {
 
 	public boolean isParallel();
 
-	public List<IRepository> getRepositories();
+	public List<IRepository> getWorkspaceRepositories();
 
-	public void addRepository(IRepository repository);
+	public void addWorkspaceRepository(IRepository repository);
 
 	public ILogAdapter getLogger(Class<?> clazz);
+
+	public void setLocalRepository(IRepository localCacheRepository);
+
+	public IRepository getLocalCacheRepository();
+
+	public void setRhenaHome(File rhenaHome);
+
+	public File getRhenaHome();
 }
