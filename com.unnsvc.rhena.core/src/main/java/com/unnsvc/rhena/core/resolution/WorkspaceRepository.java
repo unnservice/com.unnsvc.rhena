@@ -130,22 +130,19 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 
 		ILifecycleReference lifecycleRef = module.getLifecycleDeclarations().get(module.getLifecycleName());
 
-		IExecutionContext context = constructLifecycleProcessor(cache, lifecycleRef.getContext(), IExecutionContext.class, new Class[] { IRhenaCache.class },
-				cache);
+		IExecutionContext context = constructLifecycleProcessor(cache, lifecycleRef.getContext(), IExecutionContext.class, new Class[] { IRhenaCache.class }, cache);
 		context.configure(module, lifecycleRef.getContext().getConfiguration());
 
 		for (IProcessorReference proc : lifecycleRef.getProcessors()) {
 
-			IProcessor processor = constructLifecycleProcessor(cache, proc, IProcessor.class, new Class[] { IRhenaCache.class, IExecutionContext.class }, cache,
-					context);
+			IProcessor processor = constructLifecycleProcessor(cache, proc, IProcessor.class, new Class[] { IRhenaCache.class, IExecutionContext.class }, cache, context);
 			processor.configure(module, proc.getConfiguration());
 			// and execute it...
 			processor.process(context, module, entryPoint.getExecutionType(), deps);
 		}
 
 		// and finally, execute the generator
-		IGenerator generator = constructLifecycleProcessor(cache, lifecycleRef.getGenerator(), IGenerator.class,
-				new Class[] { IRhenaCache.class, IExecutionContext.class }, cache, context);
+		IGenerator generator = constructLifecycleProcessor(cache, lifecycleRef.getGenerator(), IGenerator.class, new Class[] { IRhenaCache.class, IExecutionContext.class }, cache, context);
 		generator.configure(module, lifecycleRef.getGenerator().getConfiguration());
 		// and execute it to produce final artifact...
 
