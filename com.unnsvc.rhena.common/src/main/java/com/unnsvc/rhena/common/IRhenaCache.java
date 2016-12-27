@@ -19,4 +19,6 @@ public interface IRhenaCache {
 	public Map<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>> getExecutions();
 
 	public Map<EExecutionType, IRhenaExecution> getExecution(ModuleIdentifier target);
+
+	public boolean containsExecution(ModuleIdentifier moduleIdentifier, EExecutionType eExecutionType);
 }

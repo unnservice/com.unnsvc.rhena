@@ -6,4 +6,6 @@
 
 	</meta>
 
+	<dependency:deliverable module="com.unnsvc.rhena:lifecycle:0.0.1" />
+
 </module>

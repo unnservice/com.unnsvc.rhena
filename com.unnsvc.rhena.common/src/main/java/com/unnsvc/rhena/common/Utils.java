@@ -32,7 +32,6 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IEntryPoint;
-import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
 
@@ -112,23 +111,35 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * Throws checked exception if it can't convert to enum
+	 * 
+	 * @param executionType
+	 * @return
+	 * @throws RhenaException
+	 */
 	public static EExecutionType valueOf(String executionType) throws RhenaException {
 
-		switch (executionType) {
-			case "model":
-				return EExecutionType.MODEL;
-			case "framework":
-				return EExecutionType.FRAMEWORK;
-			case "deliverable":
-				return EExecutionType.DELIVERABLE;
-			case "test":
-				return EExecutionType.TEST;
-			case "integration":
-				return EExecutionType.INTEGRATION;
-			case "prototype":
-				return EExecutionType.PROTOTYPE;
-			default:
-				throw new RhenaException("Unknown execution type: " + executionType);
+		// switch (executionType) {
+		// case "model":
+		// return EExecutionType.MODEL;
+		// case "framework":
+		// return EExecutionType.FRAMEWORK;
+		// case "deliverable":
+		// return EExecutionType.DELIVERABLE;
+		// case "test":
+		// return EExecutionType.TEST;
+		// case "integration":
+		// return EExecutionType.INTEGRATION;
+		// case "prototype":
+		// return EExecutionType.PROTOTYPE;
+		// default:
+		// throw new RhenaException("Unknown execution type: " + executionType);
+		// }
+		try {
+			return EExecutionType.valueOf(executionType.toUpperCase());
+		} catch (Throwable t) {
+			throw new RhenaException("Unknown execution type: " + executionType);
 		}
 	}
 
@@ -196,11 +207,10 @@ public class Utils {
 		}
 	}
 
-	/**
-	 * @TODO ONLY SELECT THE LIFECYCEL RELATIONSHIP WHICH IS RELEVANT
-	 * @param module
-	 * @return
-	 */
+	// /**
+	// * @param module
+	// * @return
+	// */
 	// public static List<IRhenaEdge> getAllRelationships(IRhenaModule module) {
 	//
 	// List<IRhenaEdge> relationships = new ArrayList<IRhenaEdge>();
@@ -219,23 +229,25 @@ public class Utils {
 	// return relationships;
 	// }
 
-	public static List<IEntryPoint> getAllEntryPoints(IRhenaModule module) {
+	public static List<IEntryPoint> getAllEntryPoints(IRhenaModule module, boolean lifecycles) {
 
 		List<IEntryPoint> eps = new ArrayList<IEntryPoint>();
 		if (module.getParent() != null) {
 			eps.add(module.getParent().getEntryPoint());
 		}
-		if (module.getLifecycleName() != null) {
-			ILifecycleReference lifecycle = module.getLifecycleDeclarations().get(module.getLifecycleName());
-			eps.add(lifecycle.getContext().getModuleEdge().getEntryPoint());
-			lifecycle.getProcessors().forEach(proc -> eps.add(proc.getModuleEdge().getEntryPoint()));
-			eps.add(lifecycle.getGenerator().getModuleEdge().getEntryPoint());
+		if (lifecycles) {
+			if (module.getLifecycleName() != null) {
+				ILifecycleReference lifecycle = module.getLifecycleDeclarations().get(module.getLifecycleName());
+				eps.add(lifecycle.getContext().getModuleEdge().getEntryPoint());
+				lifecycle.getProcessors().forEach(proc -> eps.add(proc.getModuleEdge().getEntryPoint()));
+				eps.add(lifecycle.getGenerator().getModuleEdge().getEntryPoint());
+			}
 		}
 		module.getDependencies().forEach(dep -> eps.add(dep.getEntryPoint()));
 
 		return eps;
 	}
-	
+
 	public static String generateSha1(File generated) throws RhenaException {
 
 		MessageDigest digest = null;

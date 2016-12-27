@@ -54,4 +54,17 @@ public class RhenaCache implements IRhenaCache {
 		return existing == null ? new HashMap<EExecutionType, IRhenaExecution>() : existing;
 	}
 
+	/**
+	 * Atmic operation
+	 */
+	@Override
+	public boolean containsExecution(ModuleIdentifier moduleIdentifier, EExecutionType eExecutionType) {
+
+		if (executions.containsKey(moduleIdentifier)) {
+			if (executions.get(moduleIdentifier).containsKey(eExecutionType)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

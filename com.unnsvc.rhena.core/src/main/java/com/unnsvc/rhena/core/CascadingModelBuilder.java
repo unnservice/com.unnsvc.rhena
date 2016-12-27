@@ -4,6 +4,7 @@ package com.unnsvc.rhena.core;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -12,14 +13,15 @@ import java.util.concurrent.TimeUnit;
 
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
+import com.unnsvc.rhena.common.UniqueList;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.model.IEntryPoint;
+import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleProcessorReference;
-import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
 
 public class CascadingModelBuilder {
 
@@ -34,8 +36,8 @@ public class CascadingModelBuilder {
 
 	public IRhenaExecution buildEdge(IEntryPoint entryPoint) throws RhenaException {
 
-		ExecutionMergeEdgeSet allEntryPoints = getAllEntryPoints(entryPoint);
-		prefillExecutions(allEntryPoints);
+		ExecutionMergeEdgeSet allEdges = getAllEntryPoints(entryPoint);
+		prefillExecutions(allEdges);
 		Set<IEntryPoint> resolvable = new HashSet<IEntryPoint>();
 
 		/**
@@ -44,19 +46,21 @@ public class CascadingModelBuilder {
 		 *       each thread completion so we can feed the thread pool
 		 *       continuously
 		 */
-		while (loopGuard(allEntryPoints)) {
+		while (loopGuard(allEdges)) {
 
-			resolvable = selectResolved(allEntryPoints);
+			resolvable = selectResolved(allEdges);
 
 			// Second loop guard to check whether any where selected, if not
 			// then we have an error because the selectResolved should always
 			// select
 			// @TODO move into loopGuard?
 			if (resolvable.isEmpty()) {
-				for (IEntryPoint edge : allEntryPoints) {
-					config.getLogger(getClass()).debug("Nonresolvable in queue (bug): " + edge);
+				for (IEntryPoint edge : allEdges) {
+					config.getLogger(getClass()).debug("Nonresolvable in queue (framework bug): " + edge);
+					IRhenaModule module = cache.getModule(edge.getTarget());
+					isBuildable(edge, module, true);
 				}
-				throw new RhenaException("Nonresolvable edges in queue, this is a bug: " + allEntryPoints);
+				throw new RhenaException("Nonresolvable edges in queue, this is a bug: " + allEdges);
 			}
 
 			Runtime runtime = Runtime.getRuntime();
@@ -111,7 +115,7 @@ public class CascadingModelBuilder {
 
 		for (IRhenaModule module : cache.getModules().values()) {
 
-			for (IEntryPoint relationshipEntryPoint : Utils.getAllEntryPoints(module)) {
+			for (IEntryPoint relationshipEntryPoint : Utils.getAllEntryPoints(module, true)) {
 
 				allEntryPoints.addEntryPoint(relationshipEntryPoint);
 			}
@@ -168,7 +172,6 @@ public class CascadingModelBuilder {
 	}
 
 	/**
-	 * This method is performance-sensitive so we don't end up in a thread lock
 	 * 
 	 * @param alledges
 	 * @return
@@ -180,7 +183,7 @@ public class CascadingModelBuilder {
 		for (Iterator<IEntryPoint> iter = alledges.iterator(); iter.hasNext();) {
 			IEntryPoint entryPoint = iter.next();
 			IRhenaModule module = cache.getModule(entryPoint.getTarget());
-			if (isBuildable(entryPoint, module)) {
+			if (isBuildable(entryPoint, module, false)) {
 				selected.add(entryPoint);
 				iter.remove();
 			}
@@ -188,15 +191,22 @@ public class CascadingModelBuilder {
 		return selected;
 	}
 
-	private boolean isBuildable(IEntryPoint entryPoint, IRhenaModule module) throws RhenaException {
+	private boolean isBuildable(IEntryPoint entryPoint, IRhenaModule module, boolean debug) throws RhenaException {
+
+		boolean buildable = true;
+		List<String> waitingOn = new UniqueList<String>();
 
 		if (module.getLifecycleName() != null) {
 			for (ILifecycleProcessorReference ref : module.getLifecycleDeclarations().get(module.getLifecycleName()).getAllReferences()) {
 				IEntryPoint lifecycleEntryPoint = ref.getModuleEdge().getEntryPoint();
-				if (!cache.getExecutions().containsKey(lifecycleEntryPoint)) {
-					return false;
-				} else if (!cache.getExecution(lifecycleEntryPoint.getTarget()).containsKey(lifecycleEntryPoint.getExecutionType())) {
-					return false;
+
+				if (!cache.containsExecution(lifecycleEntryPoint.getTarget(), lifecycleEntryPoint.getExecutionType())) {
+					if (debug) {
+						waitingOn.add("↳ lifecycle: " + lifecycleEntryPoint.getTarget() + ":" + lifecycleEntryPoint.getExecutionType().literal());
+						buildable = false;
+					} else {
+						return false;
+					}
 				}
 			}
 		}
@@ -204,24 +214,35 @@ public class CascadingModelBuilder {
 		// check whether parent execution types have been executed
 		for (EExecutionType et : entryPoint.getExecutionType().getTraversables()) {
 
-			if (!cache.getExecution(entryPoint.getTarget()).containsKey(et)) {
-//				config.getLogger(getClass()).debug(entryPoint.getTarget() + ":" + entryPoint.getExecutionType().literal() + " waiting on its execution type " + et.literal());
-				return false;
+			if (!cache.containsExecution(entryPoint.getTarget(), et)) {
+				if (debug) {
+					waitingOn.add("↳ self: " + entryPoint.getTarget() + ":" + et.literal());
+					buildable = false;
+				} else {
+					return false;
+				}
 			}
 		}
 
 		// check whether all relationships have been executed
-		for (IEntryPoint relationshipEntryPoint : Utils.getAllEntryPoints(module)) {
+		for (IRhenaEdge edge : module.getDependencies()) {
 
-			boolean containsModule = cache.getExecutions().containsKey(relationshipEntryPoint.getTarget());
-			if (!containsModule) {
-				return false;
-			} else if (containsModule && !cache.getExecution(relationshipEntryPoint.getTarget()).containsKey(relationshipEntryPoint.getExecutionType())) {
-				return false;
+			IEntryPoint relEntryPoint = edge.getEntryPoint();
+			if (!cache.containsExecution(relEntryPoint.getTarget(), relEntryPoint.getExecutionType())) {
+				if (debug) {
+					waitingOn.add("↳ dependency: " + relEntryPoint.getTarget() + ":" + relEntryPoint.getExecutionType().literal());
+					buildable = false;
+				} else {
+					return false;
+				}
 			}
 		}
 
-		return true;
+		if (debug) {
+			waitingOn.forEach(line -> config.getLogger(getClass()).debug("    " + line));
+		}
+
+		return buildable;
 	}
 
 	private void prefillExecutions(Set<IEntryPoint> alledges) {
