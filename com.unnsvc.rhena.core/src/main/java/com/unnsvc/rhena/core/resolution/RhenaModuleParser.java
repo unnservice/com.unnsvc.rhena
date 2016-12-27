@@ -157,7 +157,7 @@ public class RhenaModuleParser {
 				// Make a document out of the entire processor node
 				Document config = nodeToDocument(child);
 
-				EExecutionType et = EExecutionType.FRAMEWORK;
+				EExecutionType et = EExecutionType.DELIVERABLE;
 				ESelectionType tt = ESelectionType.SCOPE;
 
 				if (child.getLocalName().equals("context")) {

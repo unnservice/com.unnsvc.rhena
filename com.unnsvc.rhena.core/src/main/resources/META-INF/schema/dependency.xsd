@@ -53,13 +53,6 @@
 					</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="framework" type="tns:dependencyType" minOccurs="0" maxOccurs="unbounded">
-				<xs:annotation>
-					<xs:documentation>
-						The framework scope pulls in the deliverable from the framework execution
-					</xs:documentation>
-				</xs:annotation>
-			</xs:element>
 			<xs:element name="test" type="tns:dependencyType" minOccurs="0" maxOccurs="unbounded">
 				<xs:annotation>
 					<xs:documentation>
