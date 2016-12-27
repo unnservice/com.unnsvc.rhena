@@ -15,11 +15,10 @@ public class UniqueStack<T> extends Stack<T> {
 		if (e == null) {
 			throw new NotUniqueException("Attempted to push null value into UniqueStack.");
 		}
+
 		if (contains(e)) {
 
-			// Still push it so we can debug trace
 			super.push(e);
-
 			throw new NotUniqueException("Pushing an non-unique object");
 		}
 		super.push(e);
