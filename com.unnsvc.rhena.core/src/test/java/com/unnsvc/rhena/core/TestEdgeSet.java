@@ -1,12 +1,6 @@
 
 package com.unnsvc.rhena.core;
 
-import org.junit.Assert;
-import org.junit.Test;
-
-import com.unnsvc.rhena.common.execution.EExecutionType;
-import com.unnsvc.rhena.common.model.ESelectionType;
-
 public class TestEdgeSet {
 
 //	@Test

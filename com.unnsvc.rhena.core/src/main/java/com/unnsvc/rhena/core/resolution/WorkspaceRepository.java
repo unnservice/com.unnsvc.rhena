@@ -28,7 +28,6 @@ import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 import com.unnsvc.rhena.core.execution.ArtifactDescriptor;
-import com.unnsvc.rhena.core.execution.LocalExecution;
 import com.unnsvc.rhena.core.execution.WorkspaceExecution;
 import com.unnsvc.rhena.core.visitors.Dependencies;
 import com.unnsvc.rhena.core.visitors.DependencyCollectionVisitor;
@@ -80,7 +79,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 			}
 
 			// debug dependency chains
-			deps.getDependencies().forEach((key, val) -> val.forEach(exec -> config.getLogger(getClass()).debug(key + ": " + exec)));
+//			deps.getDependencies().forEach((key, val) -> val.forEach(exec -> config.getLogger(getClass()).debug(key + ": " + exec)));
 
 			/**
 			 * @TODO we only want a certain execution type for each execution
@@ -185,7 +184,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 		 * @TODO Resource leak, refactor code to close the classloader
 		 *       eventually...
 		 */
-		URLClassLoader urlc = new URLClassLoader(deps.toArray(new URL[deps.size()]));
+		URLClassLoader urlc = new URLClassLoader(deps.toArray(new URL[deps.size()]), Thread.currentThread().getContextClassLoader());
 
 		try {
 			Class<T> clazz = (Class<T>) urlc.loadClass(processor.getClazz());
@@ -193,6 +192,13 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 			return constr.newInstance(args);
 		} catch (Exception ex) {
 			throw new RhenaException(ex.getMessage(), ex);
+		} finally {
+			try {
+				urlc.close();
+			} catch (IOException e) {
+				
+				throw new RhenaException(e.getMessage(), e);
+			}
 		}
 	}
 

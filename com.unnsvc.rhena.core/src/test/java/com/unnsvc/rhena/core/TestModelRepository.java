@@ -1,21 +1,6 @@
 
 package com.unnsvc.rhena.core;
 
-import java.io.File;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.unnsvc.rhena.common.IRhenaEngine;
-import com.unnsvc.rhena.common.RhenaConstants;
-import com.unnsvc.rhena.common.exceptions.NotExistsException;
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.core.resolution.CachingResolutionContext;
-import com.unnsvc.rhena.core.resolution.RemoteRepository;
-import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
-
 public class TestModelRepository {
 
 //	private IRhenaContext context;

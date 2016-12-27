@@ -4,8 +4,6 @@ package com.unnsvc.rhena.lifecycle;
 import java.io.File;
 import java.io.PrintWriter;
 
-import javax.tools.ToolProvider;
-
 import org.eclipse.jdt.core.compiler.CompilationProgress;
 import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
 import org.w3c.dom.Document;
@@ -21,11 +19,11 @@ import com.unnsvc.rhena.common.visitors.IDependencies;
 
 public class DefaultProcessor implements IProcessor {
 
-	private IRhenaCache cache;
+//	private IRhenaCache cache;
 
 	public DefaultProcessor(IRhenaCache cache, IExecutionContext context) {
 
-		this.cache = cache;
+//		this.cache = cache;
 	}
 
 	@Override

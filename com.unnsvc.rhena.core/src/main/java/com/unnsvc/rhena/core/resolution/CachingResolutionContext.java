@@ -1,28 +1,6 @@
 
 package com.unnsvc.rhena.core.resolution;
 
-import java.io.File;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
-import com.unnsvc.rhena.common.IRepository;
-import com.unnsvc.rhena.common.Utils;
-import com.unnsvc.rhena.common.exceptions.NotExistsException;
-import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.EExecutionType;
-import com.unnsvc.rhena.common.execution.IRhenaExecution;
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.logging.IRhenaLoggingHandler;
-import com.unnsvc.rhena.common.model.IRhenaEdge;
-import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.core.RhenaConfiguration;
-import com.unnsvc.rhena.core.events.ModuleAddRemoveEvent;
-import com.unnsvc.rhena.core.events.ModuleAddRemoveEvent.EAddRemove;
-
 /**
  * This resolution context will first attempt to resolve the artifact form the
  * local cache repository. If it doesn't exist there then try with all other

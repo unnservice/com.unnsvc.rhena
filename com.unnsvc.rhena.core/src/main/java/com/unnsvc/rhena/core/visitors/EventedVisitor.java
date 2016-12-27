@@ -1,27 +1,23 @@
 
 package com.unnsvc.rhena.core.visitors;
 
-import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
-import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
 public class EventedVisitor implements IModelVisitor {
 
-	private IRhenaEngine context;
-	private VisitationHandler handler;
-	private EnterType enter;
-	private boolean enterUnusedLifecycle = false;
+//	private IRhenaEngine context;
+//	private VisitationHandler handler;
+//	private EnterType enter;
+//	private boolean enterUnusedLifecycle = false;
 
-	public EventedVisitor(IRhenaEngine context, EnterType enter, VisitationHandler handler) {
+//	public EventedVisitor(IRhenaEngine context, EnterType enter, VisitationHandler handler) {
 
-		this.context = context;
-		this.handler = handler;
-		this.enter = enter;
-	}
+//		this.context = context;
+//		this.handler = handler;
+//		this.enter = enter;
+//	}
 
 	@Override
 	public void visit(IRhenaModule module) throws RhenaException {
@@ -58,19 +54,19 @@ public class EventedVisitor implements IModelVisitor {
 //		}
 	}
 
-	private void processLifecycle(IRhenaModule module, ILifecycleReference lifecycle) throws RhenaException {
+//	private void processLifecycle(IRhenaModule module, ILifecycleReference lifecycle) throws RhenaException {
+//
+//		onEdge(module, lifecycle.getContext().getModuleEdge());
+//
+//		for (IProcessorReference proc : lifecycle.getProcessors()) {
+//
+//			onEdge(module, proc.getModuleEdge());
+//		}
+//
+//		onEdge(module, lifecycle.getGenerator().getModuleEdge());
+//	}
 
-		onEdge(module, lifecycle.getContext().getModuleEdge());
-
-		for (IProcessorReference proc : lifecycle.getProcessors()) {
-
-			onEdge(module, proc.getModuleEdge());
-		}
-
-		onEdge(module, lifecycle.getGenerator().getModuleEdge());
-	}
-
-	private void onEdge(IRhenaModule module, IRhenaEdge edge) throws RhenaException {
+//	private void onEdge(IRhenaModule module, IRhenaEdge edge) throws RhenaException {
 
 //		if (handler.canEnter(module, edge)) {
 //			if (enter == EnterType.BEFORE) {
@@ -85,16 +81,16 @@ public class EventedVisitor implements IModelVisitor {
 //				context.materialiseModel(edge.getTarget()).visit(this);
 //			}
 //		}
-	}
+//	}
+//
+//	public enum EnterType {
+//
+//		BEFORE, AFTER, NOENTER
+//	}
 
-	public enum EnterType {
-
-		BEFORE, AFTER, NOENTER
-	}
-
-	public EventedVisitor setEnterUnusedLifecycle(boolean enterUnusedLifecycle) {
-
-		this.enterUnusedLifecycle = enterUnusedLifecycle;
-		return this;
-	}
+//	public EventedVisitor setEnterUnusedLifecycle(boolean enterUnusedLifecycle) {
+//
+//		this.enterUnusedLifecycle = enterUnusedLifecycle;
+//		return this;
+//	}
 }

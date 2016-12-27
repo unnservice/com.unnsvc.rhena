@@ -29,7 +29,7 @@ public class DebugModelVisitor implements IModelVisitor {
 
 	private IRhenaConfiguration config;
 	private int indents;
-	private String prefix;
+//	private String prefix;
 	private IRhenaEngine context;
 
 	public DebugModelVisitor(IRhenaConfiguration config, int indents, IRhenaEngine context) {
@@ -41,7 +41,7 @@ public class DebugModelVisitor implements IModelVisitor {
 
 		this.config = config;
 		this.indents = indents;
-		this.prefix = prefix;
+//		this.prefix = prefix;
 		this.context = context;
 	}
 

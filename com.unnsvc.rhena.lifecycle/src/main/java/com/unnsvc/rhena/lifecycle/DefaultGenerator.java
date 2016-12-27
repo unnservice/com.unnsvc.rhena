@@ -29,11 +29,11 @@ import com.unnsvc.rhena.common.model.lifecycle.IResource;
  */
 public class DefaultGenerator implements IGenerator {
 
-	private IExecutionContext context;
+//	private IExecutionContext context;
 
 	public DefaultGenerator(IRhenaCache cache, IExecutionContext context) {
 
-		this.context = context;
+//		this.context = context;
 	}
 
 	@Override

@@ -19,8 +19,8 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycleProcessorReference;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
-import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 import com.unnsvc.rhena.core.execution.UniqueStack;
 
 /**
@@ -45,7 +45,8 @@ public class CascadingModelResolver {
 	/**
 	 * Cascading resolver which performs cyclic checking.
 	 * 
-	 * @TODO make bolognese out of this pasta, factor out the breaks into method returns
+	 * @TODO make bolognese out of this pasta, factor out the breaks into method
+	 *       returns
 	 * @param entryPoint
 	 * @throws RhenaException
 	 */
@@ -90,19 +91,12 @@ public class CascadingModelResolver {
 						if (lifecycle == null) {
 							throw new RhenaException("Could not find lifecycle " + currentModule.getLifecycleName() + " in " + currentModule.getIdentifier());
 						}
-						if (!processed.contains(lifecycle.getContext().getModuleEdge().getEntryPoint())) {
-							tracker.pushUnique(lifecycle.getContext().getModuleEdge().getEntryPoint());
-							break edgeProcessing;
-						}
-						for (IProcessorReference processor : lifecycle.getProcessors()) {
-							if (!processed.contains(processor.getModuleEdge().getEntryPoint())) {
-								tracker.pushUnique(processor.getModuleEdge().getEntryPoint());
+
+						for (ILifecycleProcessorReference ref : lifecycle.getAllReferences()) {
+							if (!processed.contains(ref.getModuleEdge().getEntryPoint())) {
+								tracker.pushUnique(ref.getModuleEdge().getEntryPoint());
 								break edgeProcessing;
 							}
-						}
-						if (!processed.contains(lifecycle.getGenerator().getModuleEdge().getEntryPoint())) {
-							tracker.pushUnique(lifecycle.getGenerator().getModuleEdge().getEntryPoint());
-							break edgeProcessing;
 						}
 					}
 
@@ -131,6 +125,14 @@ public class CascadingModelResolver {
 					processed.add(tracker.pop());
 				}
 			}
+
+			// debug. This shouldn't be needed but might useful for evaluating
+			// bugs in the cyclic check
+			// System.err.println("Processing: " + processed.size());
+			// for(IEntryPoint ep : processed) {
+			// System.err.println(" ep " + ep);
+			// }
+
 		} catch (NotUniqueException nue) {
 			config.getLogger(getClass()).error(entryPoint.getTarget(), "Cyclic dependency path detected:");
 			boolean shift = false;
@@ -181,7 +183,7 @@ public class CascadingModelResolver {
 		IRhenaModule module = cache.getModule(identifier);
 		if (module == null) {
 
-			// initial module resolve			
+			// initial module resolve
 			for (IRepository repository : config.getWorkspaceRepositories()) {
 
 				try {
@@ -193,12 +195,12 @@ public class CascadingModelResolver {
 					// no-op
 				}
 			}
-			
-			if(module == null) {
+
+			if (module == null) {
 				IRepository localRepo = config.getLocalCacheRepository();
 				module = localRepo.materialiseModel(identifier);
 			}
-			
+
 			/**
 			 * @TODO check in remote repositories too here
 			 */
