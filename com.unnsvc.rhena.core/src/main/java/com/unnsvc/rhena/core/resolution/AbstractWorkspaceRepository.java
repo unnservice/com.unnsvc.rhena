@@ -30,7 +30,7 @@ public abstract class AbstractWorkspaceRepository implements IRepository {
 
 		if (!moduleDescriptor.isFile()) {
 
-			config.getLogger(getClass()).debug(identifier, "Not found in repository location: " + location);
+			config.getLogger().debug(getClass(), identifier, "Not found in repository location: " + location);
 			return null;
 		}
 

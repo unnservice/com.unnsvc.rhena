@@ -134,7 +134,7 @@ public class CascadingModelResolver {
 			// }
 
 		} catch (NotUniqueException nue) {
-			config.getLogger(getClass()).error(entryPoint.getTarget(), "Cyclic dependency path detected:");
+			config.getLogger().error(getClass(), entryPoint.getTarget(), "Cyclic dependency path detected:");
 			boolean shift = false;
 
 			/**
@@ -148,7 +148,7 @@ public class CascadingModelResolver {
 				}
 				if (startlog) {
 					// @TODO
-					config.getLogger(getClass()).error(entryPoint.getTarget(),
+					config.getLogger().error(getClass(), entryPoint.getTarget(),
 							"Cycle: " + (shift ? "↓" : "↓") + " " + materialiseModel(edge.getTarget()).getIdentifier().toTag(edge.getExecutionType()));
 					shift = !shift;
 				}
@@ -210,7 +210,7 @@ public class CascadingModelResolver {
 			}
 
 			cache.addModule(identifier, module);
-			config.getLogger(getClass()).info(identifier, "Materialised model");
+			config.getLogger().info(getClass(), identifier, "Materialised model");
 		}
 		return module;
 	}

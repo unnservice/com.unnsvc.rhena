@@ -45,7 +45,7 @@ public class LocalCacheRepository implements IRepository {
 
 		if (!moduleDescriptor.isFile()) {
 
-			config.getLogger(getClass()).debug(identifier, "Not found in repository location: " + location);
+			config.getLogger().debug(getClass(), identifier, "Not found in repository location: " + location);
 			return null;
 		}
 
@@ -74,8 +74,9 @@ public class LocalCacheRepository implements IRepository {
 				return null;
 			}
 
-			RhenaExecutionDescriptorParser execParser = new RhenaExecutionDescriptorParser(entryPoint.getTarget(), entryPoint.getExecutionType(), executionDirectory.toURI());
-			config.getLogger(getClass()).debug(entryPoint.getTarget(), "Created execution: " + execParser.getExecution());
+			RhenaExecutionDescriptorParser execParser = new RhenaExecutionDescriptorParser(entryPoint.getTarget(), entryPoint.getExecutionType(),
+					executionDirectory.toURI());
+			config.getLogger().debug(getClass(), entryPoint.getTarget(), "Created execution: " + execParser.getExecution());
 			return execParser.getExecution();
 		}
 		// throw new UnsupportedOperationException("Not implemented for

@@ -29,7 +29,7 @@ public class DebugModelVisitor implements IModelVisitor {
 
 	private IRhenaConfiguration config;
 	private int indents;
-//	private String prefix;
+	// private String prefix;
 	private IRhenaEngine context;
 
 	public DebugModelVisitor(IRhenaConfiguration config, int indents, IRhenaEngine context) {
@@ -41,7 +41,7 @@ public class DebugModelVisitor implements IModelVisitor {
 
 		this.config = config;
 		this.indents = indents;
-//		this.prefix = prefix;
+		// this.prefix = prefix;
 		this.context = context;
 	}
 
@@ -59,10 +59,10 @@ public class DebugModelVisitor implements IModelVisitor {
 
 		if (module.getDependencies().isEmpty()) {
 
-			config.getLogger(getClass()).debug(getLeading(module).append(" />").toString());
+			config.getLogger().debug(getClass(), getLeading(module).append(" />").toString());
 		} else {
 
-			config.getLogger(getClass()).debug(getLeading(module).append(">").toString());
+			config.getLogger().debug(getClass(), getLeading(module).append(">").toString());
 
 			for (IRhenaEdge edge : module.getDependencies()) {
 
@@ -70,7 +70,7 @@ public class DebugModelVisitor implements IModelVisitor {
 				dep.visit(new DebugModelVisitor(config, indents + 1, context, edge.getEntryPoint().getExecutionType().toString()));
 			}
 
-			config.getLogger(getClass()).debug(i(indents) + "</" + module.getIdentifier() + ">");
+			config.getLogger().debug(getClass(), i(indents) + "</" + module.getIdentifier() + ">");
 		}
 	}
 
@@ -89,7 +89,7 @@ public class DebugModelVisitor implements IModelVisitor {
 			String l = module.getLifecycleName();
 			sb.append(" lifecycle=\"" + l + "\"");
 		}
-		
+
 		return sb;
 	}
 

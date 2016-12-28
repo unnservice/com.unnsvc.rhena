@@ -4,7 +4,7 @@ package com.unnsvc.rhena.common;
 import java.io.File;
 import java.util.List;
 
-import com.unnsvc.rhena.common.logging.ILogAdapter;
+import com.unnsvc.rhena.common.logging.ILogger;
 
 public interface IRhenaConfiguration {
 
@@ -24,7 +24,7 @@ public interface IRhenaConfiguration {
 
 	public void addWorkspaceRepository(IRepository repository);
 
-	public ILogAdapter getLogger(Class<?> clazz);
+	public ILogger getLogger();
 
 	public void setLocalRepository(IRepository localCacheRepository);
 
@@ -33,4 +33,6 @@ public interface IRhenaConfiguration {
 	public void setRhenaHome(File rhenaHome);
 
 	public File getRhenaHome();
+
+	public IListenerConfiguration getListenerConfig();
 }

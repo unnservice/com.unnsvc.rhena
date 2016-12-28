@@ -5,11 +5,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.unnsvc.rhena.common.IListenerConfiguration;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
-import com.unnsvc.rhena.common.logging.ILogAdapter;
-import com.unnsvc.rhena.common.logging.ILogFactory;
-import com.unnsvc.rhena.common.logging.SystemOutLogFactory;
+import com.unnsvc.rhena.common.logging.ILogger;
+import com.unnsvc.rhena.core.logging.LogFacade;
 
 /**
  * @TODO different locations for RHENA_HOME for windows and unix etc?
@@ -24,9 +24,10 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	private boolean installLocal;
 	private boolean parallel;
 	private List<IRepository> repositories;
-	private ILogFactory logFactory;
 	private IRepository localCacheRepository;
 	private File rhenaHome;
+	private IListenerConfiguration listenerConfig;
+	private LogFacade logFacade;
 
 	/**
 	 * @TODO this remains from old code
@@ -34,7 +35,14 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	public RhenaConfiguration() {
 
 		this.repositories = new ArrayList<IRepository>();
-		this.logFactory = new SystemOutLogFactory();
+		this.listenerConfig = new ListenerConfiguration();
+		this.logFacade = new LogFacade(listenerConfig);
+	}
+
+	@Override
+	public IListenerConfiguration getListenerConfig() {
+
+		return listenerConfig;
 	}
 
 	@Override
@@ -105,9 +113,9 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	}
 
 	@Override
-	public ILogAdapter getLogger(Class<?> clazz) {
+	public ILogger getLogger() {
 
-		return this.logFactory.createLog(clazz);
+		return this.logFacade;
 	}
 
 	@Override
