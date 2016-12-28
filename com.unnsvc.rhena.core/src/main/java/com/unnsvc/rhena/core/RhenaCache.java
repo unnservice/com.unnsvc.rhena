@@ -5,18 +5,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.unnsvc.rhena.common.IRhenaCache;
+import com.unnsvc.rhena.common.IRhenaConfiguration;
+import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.core.events.ModuleAddRemoveEvent;
+import com.unnsvc.rhena.core.events.ModuleAddRemoveEvent.EAddRemove;
 
 public class RhenaCache implements IRhenaCache {
 
+	private IRhenaConfiguration config;
 	private Map<ModuleIdentifier, IRhenaModule> modules;
 	private Map<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>> executions;
 
-	public RhenaCache() {
+	public RhenaCache(IRhenaConfiguration config) {
 
+		this.config = config;
 		this.modules = new HashMap<ModuleIdentifier, IRhenaModule>();
 		// @TODO evaluate if we can use CompletionService and some .take().get()
 		// trickery for efficient execution loop
@@ -30,8 +36,9 @@ public class RhenaCache implements IRhenaCache {
 	}
 
 	@Override
-	public void addModule(ModuleIdentifier identifier, IRhenaModule module) {
+	public void addModule(ModuleIdentifier identifier, IRhenaModule module) throws RhenaException {
 
+		config.getListenerConfig().fireListener(new ModuleAddRemoveEvent(identifier, EAddRemove.ADDED));
 		this.modules.put(identifier, module);
 	}
 

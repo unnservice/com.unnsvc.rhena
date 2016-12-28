@@ -28,7 +28,7 @@ public class RhenaEngine implements IRhenaEngine {
 	public RhenaEngine(IRhenaConfiguration config) {
 
 		this.config = config;
-		this.cache = new RhenaCache();
+		this.cache = new RhenaCache(config);
 		this.cascadingResolver = new CascadingModelResolver(config, cache);
 		this.cascadingBuilder = new CascadingModelBuilder(config, cache);
 	}

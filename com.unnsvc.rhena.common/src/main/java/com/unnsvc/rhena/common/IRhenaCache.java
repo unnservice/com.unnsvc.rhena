@@ -3,6 +3,7 @@ package com.unnsvc.rhena.common;
 
 import java.util.Map;
 
+import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
@@ -12,7 +13,7 @@ public interface IRhenaCache {
 
 	public IRhenaModule getModule(ModuleIdentifier identifier);
 
-	public void addModule(ModuleIdentifier identifier, IRhenaModule module);
+	public void addModule(ModuleIdentifier identifier, IRhenaModule module) throws RhenaException;
 
 	public Map<ModuleIdentifier, IRhenaModule> getModules();
 
