@@ -19,6 +19,7 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.execution.ArtifactDescriptor;
 import com.unnsvc.rhena.core.execution.LocalExecution;
 import com.unnsvc.rhena.core.execution.RhenaExecutionDescriptorParser;
+import com.unnsvc.rhena.core.model.RhenaModuleParser;
 
 /**
  * @TODO Should also allow for installation..

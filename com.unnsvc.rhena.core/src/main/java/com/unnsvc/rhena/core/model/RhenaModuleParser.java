@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.core.resolution;
+package com.unnsvc.rhena.core.model;
 
 import java.net.URI;
 
@@ -28,9 +28,6 @@ import com.unnsvc.rhena.core.lifecycle.ContextReference;
 import com.unnsvc.rhena.core.lifecycle.GeneratorReference;
 import com.unnsvc.rhena.core.lifecycle.LifecycleReference;
 import com.unnsvc.rhena.core.lifecycle.ProcessorReference;
-import com.unnsvc.rhena.core.model.EntryPoint;
-import com.unnsvc.rhena.core.model.RhenaEdge;
-import com.unnsvc.rhena.core.model.RhenaModule;
 
 public class RhenaModuleParser {
 
