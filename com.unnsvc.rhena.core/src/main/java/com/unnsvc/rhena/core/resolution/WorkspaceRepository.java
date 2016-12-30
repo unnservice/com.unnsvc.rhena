@@ -71,15 +71,31 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 			getDepchain(deps, cache, entryPoint.getTarget(), entryPoint.getExecutionType());
 
 			// get the other executions of this module into the dependencies
-			for (EExecutionType depEt : entryPoint.getExecutionType().getTraversables()) {
-
-				IRhenaExecution exec = cache.getExecution(entryPoint.getTarget()).get(depEt);
-
-				deps.addDependency(depEt, exec);
+//			for (EExecutionType depEt : entryPoint.getExecutionType().getTraversables()) {
+//
+//				IRhenaExecution exec = cache.getExecution(entryPoint.getTarget()).get(depEt);
+//
+//				deps.addDependency(depEt, exec);
+//			}
+			
+			/**
+			 * Up to, but not with, the ordinal
+			 */
+			for(int i = 0; i < entryPoint.getExecutionType().ordinal(); i++) {
+				
+				IRhenaExecution exec = cache.getExecution(entryPoint.getTarget()).get(EExecutionType.values()[i]);
+				deps.addDependency(EExecutionType.values()[i], exec);
 			}
 
 			// debug dependency chains
-//			deps.getDependencies().forEach((key, val) -> val.forEach(exec -> config.getLogger(getClass()).debug(key + ": " + exec)));
+//			deps.getDependencies().forEach((key, val) -> val.forEach(exec -> {
+//				try {
+//					config.getLogger().debug(getClass(), key + ": " + exec);
+//				} catch (RhenaException e) {
+//					
+//					e.printStackTrace();
+//				}
+//			}));
 
 			/**
 			 * @TODO we only want a certain execution type for each execution

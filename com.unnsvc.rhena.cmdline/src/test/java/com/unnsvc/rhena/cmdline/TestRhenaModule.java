@@ -71,7 +71,7 @@ public class TestRhenaModule {
 
 			debugContext(engine);
 
-			IRhenaExecution execution = engine.materialiseExecution(entryPointModule, EExecutionType.PROTOTYPE);
+			IRhenaExecution execution = engine.materialiseExecution(entryPointModule, EExecutionType.TEST);
 			Assert.assertNotNull(execution);
 
 			// because we want to configure eclipse with it

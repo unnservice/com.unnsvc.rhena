@@ -45,9 +45,6 @@ public class DefaultContext implements IExecutionContext {
 
 			if (type != EExecutionType.MODEL) {
 				String actual = type.literal();
-				if (type == EExecutionType.DELIVERABLE) {
-					actual = "main";
-				}
 
 				String sourcePath = "src/" + actual + "/java";
 //				String resourcePath = "src/" + actual + "/resources";

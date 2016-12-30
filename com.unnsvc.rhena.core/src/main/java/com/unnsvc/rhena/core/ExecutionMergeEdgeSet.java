@@ -3,7 +3,6 @@ package com.unnsvc.rhena.core;
 
 import java.util.HashSet;
 
-import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.core.model.EntryPoint;
 
@@ -20,8 +19,8 @@ public class ExecutionMergeEdgeSet extends HashSet<IEntryPoint> {
 
 	public boolean addEntryPoint(IEntryPoint entryPoint) {
 
-		for (EExecutionType et : entryPoint.getExecutionType().getTraversables()) {
-			addEntryPoint(new EntryPoint(et, entryPoint.getTarget()));
+		if (entryPoint.getExecutionType().hasParent()) {
+			addEntryPoint(new EntryPoint(entryPoint.getExecutionType().getParent(), entryPoint.getTarget()));
 		}
 
 		return add(entryPoint);

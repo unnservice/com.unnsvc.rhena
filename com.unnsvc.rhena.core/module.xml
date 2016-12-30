@@ -13,8 +13,8 @@
 	<!-- <dependency:deliverable module="component2:module1:0.0.1" /> -->
 	<!-- <dependency:test module="component2:module1:0.0.1" traverse="scope" /> -->
 
-	<dependency:deliverable module="com.unnsvc.rhena:common:0.0.1" />
-	<dependency:deliverable module="com.unnsvc.rhena:lifecycle:0.0.1" />
+	<dependency:main module="com.unnsvc.rhena:common:0.0.1" />
+	<dependency:main module="com.unnsvc.rhena:lifecycle:0.0.1" />
 
 </module>
 

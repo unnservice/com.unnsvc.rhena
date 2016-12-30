@@ -154,7 +154,7 @@ public class RhenaModuleParser {
 				// Make a document out of the entire processor node
 				Document config = nodeToDocument(child);
 
-				EExecutionType et = EExecutionType.DELIVERABLE;
+				EExecutionType et = EExecutionType.MAIN;
 				ESelectionType tt = ESelectionType.SCOPE;
 
 				if (child.getLocalName().equals("context")) {
@@ -206,7 +206,7 @@ public class RhenaModuleParser {
 			 * Default to scope traversal for deliverables
 			 */
 			ESelectionType traverseType = ESelectionType.NONE;
-			if (dependencyType.equals(EExecutionType.DELIVERABLE)) {
+			if (dependencyType.equals(EExecutionType.MAIN)) {
 				traverseType = ESelectionType.SCOPE;
 			}
 			edge = new RhenaEdge(new EntryPoint(dependencyType, moduleIdentifier), traverseType);

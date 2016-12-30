@@ -110,13 +110,19 @@ public class CascadingModelResolver {
 						 * We only care about dependencies which we can use in
 						 * the requested scope
 						 */
-						if (currentEntryPoint.getExecutionType().canTraverse(dependency.getEntryPoint().getExecutionType())) {
-
+						if(currentEntryPoint.getExecutionType().compareTo(dependency.getEntryPoint().getExecutionType()) >= 0) {
 							if (!processed.contains(dependency.getEntryPoint())) {
 								tracker.pushUnique(dependency.getEntryPoint());
 								break edgeProcessing;
 							}
 						}
+//						if (currentEntryPoint.getExecutionType().canTraverse(dependency.getEntryPoint().getExecutionType())) {
+//
+//							if (!processed.contains(dependency.getEntryPoint())) {
+//								tracker.pushUnique(dependency.getEntryPoint());
+//								break edgeProcessing;
+//							}
+//						}
 					}
 
 					/**

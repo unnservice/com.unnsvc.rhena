@@ -45,10 +45,17 @@ public class Dependencies implements IDependencies {
 	public String getAsClasspath() {
 
 		StringBuilder sb = new StringBuilder();
-		for(EExecutionType deptype : executionType.getTraversables() ) {
-			sb.append(getAsClasspath(deptype));
+		
+//		for(EExecutionType deptype : executionType.getTraversables() ) {
+//			sb.append(getAsClasspath(deptype));
+//		}
+//		sb.append(getAsClasspath(executionType));
+		
+		for(int i = 0; i <= executionType.ordinal(); i++) {
+			sb.append(getAsClasspath(EExecutionType.values()[i]));
 		}
-		sb.append(getAsClasspath(executionType));
+		
+		
 		return sb.toString().substring(0, sb.toString().length() - 1);
 	}
 
@@ -57,24 +64,12 @@ public class Dependencies implements IDependencies {
 		StringBuffer sb = new StringBuffer();
 		
 		for(IRhenaExecution exec : dependencies.get(deptype)) {
-			sb.append(exec.getArtifact().getArtifactUrl().getPath());
-			sb.append(File.pathSeparator);
+			if(exec != null) {
+				sb.append(exec.getArtifact().getArtifactUrl().getPath());
+				sb.append(File.pathSeparator);
+			}
 		}
 		
 		return sb.toString();
 	}
-	
-//	private String toClasspathFlag(List<URL> deps) {
-//
-//		if (deps.isEmpty()) {
-//			return "";
-//		}
-//
-//		StringBuilder sb = new StringBuilder();
-//		for (URL url : deps) {
-//			sb.append(url.getPath()).append(File.pathSeparatorChar);
-//		}
-//
-//		return "-classpath " + sb.toString().substring(0, sb.toString().length() - 1);
-//	}
 }

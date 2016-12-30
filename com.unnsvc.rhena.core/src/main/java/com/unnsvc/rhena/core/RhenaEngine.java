@@ -40,7 +40,7 @@ public class RhenaEngine implements IRhenaEngine {
 		 * We resolve its prototype to ensure we get the maximum coverage in
 		 * cyclic check
 		 */
-		IEntryPoint entryPoint = new EntryPoint(EExecutionType.PROTOTYPE, identifier);
+		IEntryPoint entryPoint = new EntryPoint(EExecutionType.TEST, identifier);
 		return cascadingResolver.resolveEdge(entryPoint);
 	}
 

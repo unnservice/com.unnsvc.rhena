@@ -46,10 +46,17 @@
 
 	<xs:group name="dependencyTypes">
 		<xs:sequence>
-			<xs:element name="deliverable" type="tns:dependencyType" minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="main" type="tns:dependencyType" minOccurs="0" maxOccurs="unbounded">
 				<xs:annotation>
 					<xs:documentation>
 						The deliverable scope is for artifacts belonging to the final product of the project. The deliverable scope is transitive by default
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="main_source" type="tns:dependencyType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>
+						The main source
 					</xs:documentation>
 				</xs:annotation>
 			</xs:element>
@@ -60,17 +67,10 @@
 					</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="integration" type="tns:dependencyType" minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="test_source" type="tns:dependencyType" minOccurs="0" maxOccurs="unbounded">
 				<xs:annotation>
 					<xs:documentation>
-						The integration scope is for integration testing
-					</xs:documentation>
-				</xs:annotation>
-			</xs:element>
-			<xs:element name="prototype" type="tns:dependencyType" minOccurs="0" maxOccurs="unbounded">
-				<xs:annotation>
-					<xs:documentation>
-						The prototype scope is for artifacts which are using during prototyping but not for other executions
+						The test source
 					</xs:documentation>
 				</xs:annotation>
 			</xs:element>

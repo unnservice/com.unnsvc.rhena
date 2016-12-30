@@ -1,51 +1,25 @@
 
 package com.unnsvc.rhena.common.execution;
 
-public enum EExecutionType implements Comparable<EExecutionType> {
+public enum EExecutionType {
 
 	/**
 	 * Keep it simple in a flat model without hierarchies
 	 */
-	MODEL, 
-	DELIVERABLE(MODEL), 
-	TEST(MODEL, DELIVERABLE), 
-	INTEGRATION(MODEL, DELIVERABLE, TEST), 
-	PROTOTYPE(MODEL, DELIVERABLE, TEST);
-
-	private EExecutionType[] traversables;
-
-	EExecutionType(EExecutionType... traversables) {
-
-		this.traversables = traversables;
-	}
+	MODEL, MAIN_SOURCE, MAIN, TEST_SOURCE, TEST;
 
 	EExecutionType() {
 
-		this.traversables = new EExecutionType[] {};
 	}
 
-	public boolean canTraverse(EExecutionType that) {
-
-		if (that == null) {
-			return false;
-		}
-
-		if (this == that) {
-			return true;
-		}
-
-		for (EExecutionType supertype : traversables) {
-			if (that == supertype) {
-				return true;
-			}
-		}
-
-		return false;
+	public boolean hasParent() {
+		
+		return ordinal() != 0;
 	}
 
-	public EExecutionType[] getTraversables() {
+	public EExecutionType getParent() {
 
-		return traversables;
+		return EExecutionType.values()[ordinal() - 1];
 	}
 
 	/**
@@ -56,22 +30,5 @@ public enum EExecutionType implements Comparable<EExecutionType> {
 	public String literal() {
 
 		return toString().toLowerCase();
-	}
-
-	/**
-	 * If this is a parent execution type of that. This method is different from
-	 * canTraverse in that it performs a forward check
-	 * 
-	 * @param executionType
-	 * @return
-	 */
-	public boolean isParentOf(EExecutionType that) {
-
-		for (EExecutionType traversable : traversables) {
-			if (traversable.equals(that)) {
-				return true;
-			}
-		}
-		return false;
 	}
 }
