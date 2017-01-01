@@ -11,4 +11,6 @@ public interface IExecutionContext extends ILifecycleProcessor {
 
 	public List<File> selectResources(EExecutionType type, String pattern) throws RhenaException;
 
+	public List<IResource> getResources();
+
 }

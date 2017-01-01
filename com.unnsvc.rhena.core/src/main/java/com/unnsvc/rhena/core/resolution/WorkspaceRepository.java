@@ -77,35 +77,15 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 			// get dependency chains of dependencies
 			getDepchain(deps, cache, entryPoint.getTarget(), entryPoint.getExecutionType());
 
-			// get the other executions of this module into the dependencies
-			// for (EExecutionType depEt :
-			// entryPoint.getExecutionType().getTraversables()) {
-			//
-			// IRhenaExecution exec =
-			// cache.getExecution(entryPoint.getTarget()).get(depEt);
-			//
-			// deps.addDependency(depEt, exec);
-			// }
-
 			/**
-			 * Up to, but not with, the ordinal
+			 * Up to, but not with, the ordinal, becauuse that's the one we will
+			 * create next with a lifecycle
 			 */
 			for (int i = 0; i < entryPoint.getExecutionType().ordinal(); i++) {
 
 				IRhenaExecution exec = cache.getExecution(entryPoint.getTarget()).get(EExecutionType.values()[i]);
 				deps.addDependency(EExecutionType.values()[i], exec);
 			}
-
-			// debug dependency chains
-			// deps.getDependencies().forEach((key, val) -> val.forEach(exec ->
-			// {
-			// try {
-			// config.getLogger().debug(getClass(), key + ": " + exec);
-			// } catch (RhenaException e) {
-			//
-			// e.printStackTrace();
-			// }
-			// }));
 
 			/**
 			 * @TODO we only want a certain execution type for each execution
@@ -124,13 +104,11 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 			throws RhenaException {
 
 		IExecutionContext context = new DefaultContext(cache);
-		context.configure(module, createDefaultConfiguration());
+		context.configure(module, createDefaultContextConfiguration());
 
-		if (entryPoint.getExecutionType().equals(EExecutionType.MAIN) || entryPoint.getExecutionType().equals(EExecutionType.TEST)) {
-			IProcessor processor = new DefaultProcessor(cache, context);
-			processor.configure(module, Utils.newEmptyDocument());
-			processor.process(context, module, entryPoint.getExecutionType(), deps);
-		}
+		IProcessor processor = new DefaultProcessor(cache, context);
+		processor.configure(module, Utils.newEmptyDocument());
+		processor.process(context, module, entryPoint.getExecutionType(), deps);
 
 		IGenerator generator = new DefaultGenerator(cache, context);
 		generator.configure(module, Utils.newEmptyDocument());
@@ -145,7 +123,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 		}
 	}
 
-	private Document createDefaultConfiguration() throws RhenaException {
+	private Document createDefaultContextConfiguration() throws RhenaException {
 
 		Document doc = null;
 		try {
@@ -183,16 +161,13 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 				cache);
 		context.configure(module, lifecycleRef.getContext().getConfiguration());
 
-		if (entryPoint.getExecutionType().equals(EExecutionType.MAIN) || entryPoint.getExecutionType().equals(EExecutionType.TEST)) {
+		for (IProcessorReference proc : lifecycleRef.getProcessors()) {
 
-			for (IProcessorReference proc : lifecycleRef.getProcessors()) {
-
-				IProcessor processor = constructLifecycleProcessor(cache, proc, IProcessor.class, new Class[] { IRhenaCache.class, IExecutionContext.class },
-						cache, context);
-				processor.configure(module, proc.getConfiguration());
-				// and execute it...
-				processor.process(context, module, entryPoint.getExecutionType(), deps);
-			}
+			IProcessor processor = constructLifecycleProcessor(cache, proc, IProcessor.class, new Class[] { IRhenaCache.class, IExecutionContext.class }, cache,
+					context);
+			processor.configure(module, proc.getConfiguration());
+			// and execute it...
+			processor.process(context, module, entryPoint.getExecutionType(), deps);
 		}
 
 		// and finally, execute the generator

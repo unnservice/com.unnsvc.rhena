@@ -17,9 +17,10 @@ import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.lifecycle.EResourceType;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
-import com.unnsvc.rhena.lifecycle.paths.EResourceType;
-import com.unnsvc.rhena.lifecycle.paths.Resource;
+import com.unnsvc.rhena.common.model.lifecycle.IResource;
+import com.unnsvc.rhena.common.model.lifecycle.Resource;
 
 public class DefaultContext implements IExecutionContext {
 
@@ -29,11 +30,11 @@ public class DefaultContext implements IExecutionContext {
 	// @ProcessorContext
 	// private ExecutionType type;
 
-	private List<Resource> resources;
+	private List<IResource> resources;
 
 	public DefaultContext(IRhenaCache cache) {
 
-		resources = new ArrayList<Resource>();
+		resources = new ArrayList<IResource>();
 	}
 
 	/**
@@ -66,6 +67,12 @@ public class DefaultContext implements IExecutionContext {
 	}
 
 	@Override
+	public List<IResource> getResources() {
+
+		return resources;
+	}
+
+	@Override
 	public List<File> selectResources(EExecutionType type, String pattern) throws RhenaException {
 
 		Pattern p = Pattern.compile(pattern);
@@ -78,8 +85,8 @@ public class DefaultContext implements IExecutionContext {
 			restype = EResourceType.TEST;
 		}
 
-		for (Resource res : resources) {
-			if (res.getType().equals(restype)) {
+		for (IResource res : resources) {
+			if (res.getResourceType().equals(restype)) {
 				try {
 					selectRecursive(res.getSrcPath(), p, selected);
 				} catch (IOException ioe) {
@@ -107,5 +114,4 @@ public class DefaultContext implements IExecutionContext {
 			}
 		}
 	}
-
 }

@@ -1,9 +1,9 @@
 
-package com.unnsvc.rhena.lifecycle.paths;
+package com.unnsvc.rhena.common.model.lifecycle;
 
 import java.io.File;
 
-public class Resource {
+public class Resource implements IResource {
 
 	private EResourceType type;
 	private File srcPath;
@@ -14,11 +14,13 @@ public class Resource {
 		this.srcPath = srcPath;
 	}
 
-	public EResourceType getType() {
+	@Override
+	public EResourceType getResourceType() {
 
 		return type;
 	}
 
+	@Override
 	public File getSrcPath() {
 
 		return srcPath;

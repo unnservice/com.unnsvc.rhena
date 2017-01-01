@@ -6,14 +6,14 @@ public enum EExecutionType {
 	/**
 	 * Keep it simple in a flat model without hierarchies
 	 */
-	MODEL, MAIN_SOURCE, MAIN, TEST_SOURCE, TEST;
+	MODEL, MAIN, TEST;
 
 	EExecutionType() {
 
 	}
 
 	public boolean hasParent() {
-		
+
 		return ordinal() != 0;
 	}
 
