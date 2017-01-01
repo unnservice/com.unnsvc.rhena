@@ -29,9 +29,21 @@ public class LogFacade implements ILogger {
 	}
 
 	@Override
+	public void info(Class<?> clazz, String message) throws RhenaException {
+
+		fireLogEvent(ELogLevel.INFO, clazz, null, message);
+	}
+
+	@Override
 	public void error(Class<?> clazz, ModuleIdentifier identifier, String message) throws RhenaException {
 
 		fireLogEvent(ELogLevel.ERROR, clazz, identifier, message);
+	}
+
+	@Override
+	public void error(Class<?> clazz, String message) throws RhenaException {
+
+		fireLogEvent(ELogLevel.ERROR, clazz, null, message);
 	}
 
 	@Override
@@ -44,6 +56,30 @@ public class LogFacade implements ILogger {
 	public void debug(Class<?> clazz, ModuleIdentifier identifier, String message) throws RhenaException {
 
 		fireLogEvent(ELogLevel.DEBUG, clazz, identifier, message);
+	}
+
+	@Override
+	public void warn(Class<?> clazz, String message) throws RhenaException {
+
+		fireLogEvent(ELogLevel.WARN, clazz, null, message);
+	}
+
+	@Override
+	public void warn(Class<?> clazz, ModuleIdentifier identifier, String message) throws RhenaException {
+
+		fireLogEvent(ELogLevel.WARN, clazz, identifier, message);
+	}
+
+	@Override
+	public void trace(Class<?> clazz, String message) throws RhenaException {
+
+		fireLogEvent(ELogLevel.TRACE, clazz, null, message);
+	}
+
+	@Override
+	public void trace(Class<?> clazz, ModuleIdentifier identifier, String message) throws RhenaException {
+
+		fireLogEvent(ELogLevel.TRACE, clazz, identifier, message);
 	}
 
 	private void fireLogEvent(ELogLevel level, Class<?> clazz, ModuleIdentifier identifier, String message) throws RhenaException {
