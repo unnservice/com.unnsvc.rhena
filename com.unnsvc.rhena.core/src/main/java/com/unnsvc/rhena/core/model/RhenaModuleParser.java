@@ -34,11 +34,11 @@ public class RhenaModuleParser {
 	private RhenaModule module;
 
 	public RhenaModuleParser(IRepository repository, ModuleIdentifier identifier, URI descriptorLocation) throws RhenaException {
-		
+
 		try {
 			URI location = new URI(descriptorLocation.getPath().substring(0, descriptorLocation.getPath().lastIndexOf("/")));
 			this.module = new RhenaModule(identifier, location, repository);
-			
+
 			parse(descriptorLocation);
 		} catch (Exception re) {
 			throw new RhenaException(re.getMessage(), re);
@@ -136,7 +136,7 @@ public class RhenaModuleParser {
 
 	private void processLifecycleNode(Node lifecycleNode) throws RhenaException {
 
-		LifecycleReference ld = new LifecycleReference(lifecycleNode.getAttributes().getNamedItem("name").getNodeValue());
+		LifecycleReference lifecycleReference = new LifecycleReference(lifecycleNode.getAttributes().getNamedItem("name").getNodeValue());
 
 		NodeList children = lifecycleNode.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
@@ -161,23 +161,22 @@ public class RhenaModuleParser {
 
 					IRhenaEdge edge = new RhenaEdge(new EntryPoint(et, ModuleIdentifier.valueOf(module)), tt);
 					ContextReference configurator = new ContextReference(edge, clazz, schema, config);
-					ld.setContext(configurator);
+					lifecycleReference.setContext(configurator);
 				} else if (child.getLocalName().equals("processor")) {
 
 					IRhenaEdge edge = new RhenaEdge(new EntryPoint(et, ModuleIdentifier.valueOf(module)), tt);
 					ProcessorReference processor = new ProcessorReference(edge, clazz, schema, config);
-					ld.addProcessor(processor);
+					lifecycleReference.addProcessor(processor);
 				} else if (child.getLocalName().equals("generator")) {
 
 					IRhenaEdge edge = new RhenaEdge(new EntryPoint(et, ModuleIdentifier.valueOf(module)), tt);
 					GeneratorReference generator = new GeneratorReference(edge, clazz, schema, config);
-					ld.setGenerator(generator);
+					lifecycleReference.setGenerator(generator);
 				}
 			}
 		}
 
-		module.getLifecycleDeclarations().put(ld.getName(), ld);
-
+		module.getLifecycleDeclarations().put(lifecycleReference.getName(), lifecycleReference);
 	}
 
 	private Document nodeToDocument(Node child) throws RhenaException {

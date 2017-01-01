@@ -21,6 +21,7 @@ public class RhenaConstants {
 	public static final ModuleIdentifier DEFAULT_LIFECYCLE_MODULE = createDefault();
 	
 	public static final File LOCAL_REPOSITORY_PATH = new File(System.getProperty("user.home"), ".rhena/repository");
+	public static final String DEFAULT_OUTPUT_DIRECTORY_NAME = "target";
 
 	private static ModuleIdentifier createDefault() {
 

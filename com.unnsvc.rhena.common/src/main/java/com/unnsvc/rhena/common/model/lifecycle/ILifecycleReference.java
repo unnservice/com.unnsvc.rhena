@@ -15,6 +15,7 @@ public interface ILifecycleReference {
 
 	/**
 	 * Convenienc method to get all references
+	 * 
 	 * @return
 	 */
 	public List<ILifecycleProcessorReference> getAllReferences();

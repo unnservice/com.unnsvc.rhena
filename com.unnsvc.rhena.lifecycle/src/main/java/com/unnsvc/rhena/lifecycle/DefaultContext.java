@@ -2,34 +2,38 @@
 package com.unnsvc.rhena.lifecycle;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import com.unnsvc.rhena.common.IRhenaCache;
+import com.unnsvc.rhena.common.Utils;
+import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
-import com.unnsvc.rhena.common.model.lifecycle.IResource;
-import com.unnsvc.rhena.lifecycle.resource.Resource;
+import com.unnsvc.rhena.lifecycle.paths.EResourceType;
+import com.unnsvc.rhena.lifecycle.paths.Resource;
 
 public class DefaultContext implements IExecutionContext {
 
-	// // inject these later
-	// later
+	// @TODO injection mechanism
 	// @ProcessorContext
 	// private IRhenaModule module;
 	// @ProcessorContext
 	// private ExecutionType type;
 
-	private Map<EExecutionType, List<IResource>> resources;
+	private List<Resource> resources;
 
 	public DefaultContext(IRhenaCache cache) {
 
-		this.resources = new HashMap<EExecutionType, List<IResource>>();
+		resources = new ArrayList<Resource>();
 	}
 
 	/**
@@ -39,55 +43,69 @@ public class DefaultContext implements IExecutionContext {
 	@Override
 	public void configure(IRhenaModule module, Document configuration) {
 
-		File location = new File(module.getLocation().getPath()).getAbsoluteFile();
+		File moduleBasedir = new File(module.getLocation().getPath());
 
-		for (EExecutionType type : EExecutionType.values()) {
+		Node context = Utils.getChildNode(configuration, "context");
+		if (context != null) {
+			Node resourcesNode = Utils.getChildNode(context, "resources");
+			if (resourcesNode != null) {
+				NodeList resourcesChildren = resourcesNode.getChildNodes();
+				for (int j = 0; j < resourcesChildren.getLength(); j++) {
 
-			if (type != EExecutionType.MODEL) {
-				String actual = type.literal();
-
-				String sourcePath = "src/" + actual + "/java";
-//				String resourcePath = "src/" + actual + "/resources";
-				String targetPath = "target/" + actual + "/classes";
-
-				IResource srcResource = new Resource(location, sourcePath, targetPath);
-				// IResource resResource = new Resource(location, resourcePath,
-				// targetPath);
-
-				this.resources.put(type, resourcesAsList(srcResource));
-				// this.resources.put(type, resourcesAsList(resResource));
+					Node resource = resourcesChildren.item(j);
+					if (resource.getNodeType() == Node.ELEMENT_NODE) {
+						String path = resource.getAttributes().getNamedItem("path").getNodeValue();
+						File srcPath = new File(moduleBasedir, path);
+						if (srcPath.isDirectory()) {
+							resources.add(new Resource(EResourceType.valueOf(resource.getLocalName().toUpperCase()), srcPath));
+						}
+					}
+				}
 			}
 		}
 	}
 
-	protected List<IResource> resourcesAsList(IResource... resources) {
-
-		List<IResource> reslist = new ArrayList<IResource>();
-		for (IResource res : resources) {
-			reslist.add(res);
-		}
-		return reslist;
-	}
-
 	@Override
-	public List<IResource> getResources(EExecutionType execution) {
+	public List<File> selectResources(EExecutionType type, String pattern) throws RhenaException {
 
-		if (resources.containsKey(execution)) {
+		Pattern p = Pattern.compile(pattern);
+		List<File> selected = new ArrayList<File>();
+		EResourceType restype = null;
 
-			// System.err.println(getClass().getName() + " Execution " +
-			// execution);
-			return resources.get(execution);
-		} else {
+		if (type.equals(EExecutionType.MAIN)) {
+			restype = EResourceType.MAIN;
+		} else if (type.equals(EExecutionType.TEST)) {
+			restype = EResourceType.TEST;
+		}
 
-			// try {
-			// throw new Exception("backtrace");
-			// } catch (Exception ex) {
-			// ex.printStackTrace(System.err);
-			// }
+		for (Resource res : resources) {
+			if (res.getType().equals(restype)) {
+				try {
+					selectRecursive(res.getSrcPath(), p, selected);
+				} catch (IOException ioe) {
+					throw new RhenaException(ioe.getMessage(), ioe);
+				}
+			}
+		}
 
-			// System.err.println(getClass().getName() + " Execution " +
-			// execution + " result is null?..");
-			return new ArrayList<IResource>();
+		return selected;
+	}
+
+	protected void selectRecursive(File srcPath, Pattern p, List<File> selected) throws IOException {
+
+		if (srcPath.isFile()) {
+
+			String pathStr = srcPath.getAbsoluteFile().getCanonicalPath();
+			Matcher m = p.matcher(pathStr);
+			if (m.find()) {
+				selected.add(srcPath);
+			}
+		} else if (srcPath.isDirectory()) {
+
+			for (File contained : srcPath.listFiles()) {
+				selectRecursive(contained, p, selected);
+			}
 		}
 	}
+
 }

@@ -3,11 +3,18 @@ package com.unnsvc.rhena.core.resolution;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
@@ -71,31 +78,34 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 			getDepchain(deps, cache, entryPoint.getTarget(), entryPoint.getExecutionType());
 
 			// get the other executions of this module into the dependencies
-//			for (EExecutionType depEt : entryPoint.getExecutionType().getTraversables()) {
-//
-//				IRhenaExecution exec = cache.getExecution(entryPoint.getTarget()).get(depEt);
-//
-//				deps.addDependency(depEt, exec);
-//			}
-			
+			// for (EExecutionType depEt :
+			// entryPoint.getExecutionType().getTraversables()) {
+			//
+			// IRhenaExecution exec =
+			// cache.getExecution(entryPoint.getTarget()).get(depEt);
+			//
+			// deps.addDependency(depEt, exec);
+			// }
+
 			/**
 			 * Up to, but not with, the ordinal
 			 */
-			for(int i = 0; i < entryPoint.getExecutionType().ordinal(); i++) {
-				
+			for (int i = 0; i < entryPoint.getExecutionType().ordinal(); i++) {
+
 				IRhenaExecution exec = cache.getExecution(entryPoint.getTarget()).get(EExecutionType.values()[i]);
 				deps.addDependency(EExecutionType.values()[i], exec);
 			}
 
 			// debug dependency chains
-//			deps.getDependencies().forEach((key, val) -> val.forEach(exec -> {
-//				try {
-//					config.getLogger().debug(getClass(), key + ": " + exec);
-//				} catch (RhenaException e) {
-//					
-//					e.printStackTrace();
-//				}
-//			}));
+			// deps.getDependencies().forEach((key, val) -> val.forEach(exec ->
+			// {
+			// try {
+			// config.getLogger().debug(getClass(), key + ": " + exec);
+			// } catch (RhenaException e) {
+			//
+			// e.printStackTrace();
+			// }
+			// }));
 
 			/**
 			 * @TODO we only want a certain execution type for each execution
@@ -110,14 +120,17 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 		}
 	}
 
-	private IRhenaExecution runInDefaultExecutableLifecycle(IRhenaCache cache, IEntryPoint entryPoint, IRhenaModule module, Dependencies deps) throws RhenaException {
+	private IRhenaExecution runInDefaultExecutableLifecycle(IRhenaCache cache, IEntryPoint entryPoint, IRhenaModule module, Dependencies deps)
+			throws RhenaException {
 
 		IExecutionContext context = new DefaultContext(cache);
-		context.configure(module, Utils.newEmptyDocument());
+		context.configure(module, createDefaultConfiguration());
 
-		IProcessor processor = new DefaultProcessor(cache, context);
-		processor.configure(module, Utils.newEmptyDocument());
-		processor.process(context, module, entryPoint.getExecutionType(), deps);
+		if (entryPoint.getExecutionType().equals(EExecutionType.MAIN) || entryPoint.getExecutionType().equals(EExecutionType.TEST)) {
+			IProcessor processor = new DefaultProcessor(cache, context);
+			processor.configure(module, Utils.newEmptyDocument());
+			processor.process(context, module, entryPoint.getExecutionType(), deps);
+		}
 
 		IGenerator generator = new DefaultGenerator(cache, context);
 		generator.configure(module, Utils.newEmptyDocument());
@@ -130,6 +143,27 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 		} catch (IOException mue) {
 			throw new RhenaException(mue.getMessage(), mue);
 		}
+	}
+
+	private Document createDefaultConfiguration() throws RhenaException {
+
+		Document doc = null;
+		try {
+			DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
+			fact.setNamespaceAware(true);
+			DocumentBuilder db = fact.newDocumentBuilder();
+			InputSource is = new InputSource();
+			is.setCharacterStream(new StringReader(""
+					+ "			<context module=\"com.unnsvc.rhena:lifecycle:0.0.1\" class=\"com.unnsvc.rhena.lifecycle.DefaultContext\">\n"
+					+ "				<resources>\n" + "					<main path=\"src/main/java\" />\n"
+					+ "					<main path=\"src/main/resources\" filter=\"true\" />\n" + "					<test path=\"src/test/java\" />\n"
+					+ "					<test path=\"src/test/resources\" filter=\"true\" />\n" + "				</resources>\n" + "			</context>"));
+
+			doc = db.parse(is);
+		} catch (Exception ex) {
+			throw new RhenaException(ex.getMessage(), ex);
+		}
+		return doc;
 	}
 
 	/**
@@ -145,19 +179,25 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 
 		ILifecycleReference lifecycleRef = module.getLifecycleDeclarations().get(module.getLifecycleName());
 
-		IExecutionContext context = constructLifecycleProcessor(cache, lifecycleRef.getContext(), IExecutionContext.class, new Class[] { IRhenaCache.class }, cache);
+		IExecutionContext context = constructLifecycleProcessor(cache, lifecycleRef.getContext(), IExecutionContext.class, new Class[] { IRhenaCache.class },
+				cache);
 		context.configure(module, lifecycleRef.getContext().getConfiguration());
 
-		for (IProcessorReference proc : lifecycleRef.getProcessors()) {
+		if (entryPoint.getExecutionType().equals(EExecutionType.MAIN) || entryPoint.getExecutionType().equals(EExecutionType.TEST)) {
 
-			IProcessor processor = constructLifecycleProcessor(cache, proc, IProcessor.class, new Class[] { IRhenaCache.class, IExecutionContext.class }, cache, context);
-			processor.configure(module, proc.getConfiguration());
-			// and execute it...
-			processor.process(context, module, entryPoint.getExecutionType(), deps);
+			for (IProcessorReference proc : lifecycleRef.getProcessors()) {
+
+				IProcessor processor = constructLifecycleProcessor(cache, proc, IProcessor.class, new Class[] { IRhenaCache.class, IExecutionContext.class },
+						cache, context);
+				processor.configure(module, proc.getConfiguration());
+				// and execute it...
+				processor.process(context, module, entryPoint.getExecutionType(), deps);
+			}
 		}
 
 		// and finally, execute the generator
-		IGenerator generator = constructLifecycleProcessor(cache, lifecycleRef.getGenerator(), IGenerator.class, new Class[] { IRhenaCache.class, IExecutionContext.class }, cache, context);
+		IGenerator generator = constructLifecycleProcessor(cache, lifecycleRef.getGenerator(), IGenerator.class,
+				new Class[] { IRhenaCache.class, IExecutionContext.class }, cache, context);
 		generator.configure(module, lifecycleRef.getGenerator().getConfiguration());
 		// and execute it to produce final artifact...
 
@@ -212,7 +252,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 			try {
 				urlc.close();
 			} catch (IOException e) {
-				
+
 				throw new RhenaException(e.getMessage(), e);
 			}
 		}

@@ -23,6 +23,8 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -275,5 +277,31 @@ public class Utils {
 				}
 			}
 		}
+	}
+
+	public static Node getChildNode(Document document, String nodeName) {
+
+		NodeList nl = document.getChildNodes();
+		for (int i = 0; i < nl.getLength(); i++) {
+
+			Node child = nl.item(i);
+			if (child.getNodeType() == Node.ELEMENT_NODE && child.getLocalName().equals(nodeName)) {
+				return child;
+			}
+		}
+		return null;
+	}
+
+	public static Node getChildNode(Node node, String nodeName) {
+
+		NodeList nl = node.getChildNodes();
+		for (int i = 0; i < nl.getLength(); i++) {
+
+			Node child = nl.item(i);
+			if (child.getNodeType() == Node.ELEMENT_NODE && child.getLocalName().equals(nodeName)) {
+				return child;
+			}
+		}
+		return null;
 	}
 }

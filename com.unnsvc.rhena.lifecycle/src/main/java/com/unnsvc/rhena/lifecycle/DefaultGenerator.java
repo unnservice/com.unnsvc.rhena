@@ -15,13 +15,13 @@ import java.util.jar.JarOutputStream;
 import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.IRhenaCache;
+import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IGenerator;
-import com.unnsvc.rhena.common.model.lifecycle.IResource;
 
 /**
  * @author noname
@@ -29,11 +29,11 @@ import com.unnsvc.rhena.common.model.lifecycle.IResource;
  */
 public class DefaultGenerator implements IGenerator {
 
-//	private IExecutionContext context;
+	private IExecutionContext context;
 
 	public DefaultGenerator(IRhenaCache cache, IExecutionContext context) {
 
-//		this.context = context;
+		this.context = context;
 	}
 
 	@Override
@@ -44,14 +44,19 @@ public class DefaultGenerator implements IGenerator {
 	@Override
 	public File generate(IExecutionContext context, IRhenaModule module, EExecutionType type) throws RhenaException {
 
-		List<IResource> resources = context.getResources(type);
+		File inputDirectory = new File(module.getLocation().getPath(), RhenaConstants.DEFAULT_OUTPUT_DIRECTORY_NAME + "/" + type.literal().toLowerCase());
+		if (!inputDirectory.isDirectory()) {
+			inputDirectory.mkdirs();
+		}
+
+		// List<IResource> res = context.getResources(type);
 
 		String fileName = toFileName(module.getIdentifier(), type);
 		File targetLocation = new File(module.getLocation().getPath(), "target");
 		File outLocation = new File(targetLocation, fileName + ".jar");
 
 		try {
-			generateJar(resources, outLocation);
+			generateJar(inputDirectory, outLocation);
 			// log.debug(module.get(), type, "Generated: " +
 			// outLocation.getAbsolutePath());
 		} catch (Exception ex) {
@@ -63,10 +68,11 @@ public class DefaultGenerator implements IGenerator {
 
 	private String toFileName(ModuleIdentifier identifier, EExecutionType type) {
 
-		return identifier.getComponentName().toString() + "." + identifier.getModuleName().toString() + "-" + type.toString().toLowerCase() + "-" + identifier.getVersion().toString();
+		return identifier.getComponentName().toString() + "." + identifier.getModuleName().toString() + "-" + type.toString().toLowerCase() + "-"
+				+ identifier.getVersion().toString();
 	}
 
-	private void generateJar(List<IResource> resources, File outLocation) throws FileNotFoundException, IOException {
+	private void generateJar(File inputDirectory, File outLocation) throws FileNotFoundException, IOException {
 
 		File outDir = outLocation.getParentFile();
 		if (!outDir.exists()) {
@@ -76,16 +82,13 @@ public class DefaultGenerator implements IGenerator {
 		List<File> added = new ArrayList<File>();
 
 		JarOutputStream jos = new JarOutputStream(new FileOutputStream(outLocation));
-		for (IResource resource : resources) {
 
-			File target = resource.getTargetFile();
-			String base = target.toString();
-			if (target.isDirectory()) {
-				for (File contained : target.listFiles()) {
-					if (!added.contains(target)) {
-						addToJar(base, contained, jos);
-						added.add(target);
-					}
+		String base = inputDirectory.toString();
+		if (inputDirectory.isDirectory()) {
+			for (File contained : inputDirectory.listFiles()) {
+				if (!added.contains(inputDirectory)) {
+					addToJar(base, contained, jos);
+					added.add(inputDirectory);
 				}
 			}
 		}
