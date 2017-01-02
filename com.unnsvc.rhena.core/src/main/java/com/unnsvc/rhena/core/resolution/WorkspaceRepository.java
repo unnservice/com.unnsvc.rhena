@@ -29,6 +29,7 @@ import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IGenerator;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycle;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleProcessor;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleProcessorReference;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
@@ -36,6 +37,7 @@ import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 import com.unnsvc.rhena.core.execution.ArtifactDescriptor;
 import com.unnsvc.rhena.core.execution.WorkspaceExecution;
+import com.unnsvc.rhena.core.lifecycle.Lifecycle;
 import com.unnsvc.rhena.core.visitors.Dependencies;
 import com.unnsvc.rhena.core.visitors.DependencyCollectionVisitor;
 import com.unnsvc.rhena.lifecycle.DefaultContext;
@@ -103,17 +105,28 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 	private IRhenaExecution runInDefaultExecutableLifecycle(IRhenaCache cache, IEntryPoint entryPoint, IRhenaModule module, Dependencies deps)
 			throws RhenaException {
 
-		IExecutionContext context = new DefaultContext(cache);
-		context.configure(module, createDefaultContextConfiguration());
+		ILifecycle lifecycle = cache.getLifecycles().get(entryPoint.getTarget());
+		/**
+		 * Build and configure lifecycle
+		 */
+		if(lifecycle == null) {
+			IExecutionContext context = new DefaultContext(cache);
+			context.configure(module, createDefaultContextConfiguration());
+			
+			IProcessor processor = new DefaultProcessor(cache, context);
+			processor.configure(module, Utils.newEmptyDocument());
+			List<IProcessor> processors = new ArrayList<IProcessor>();
+			processors.add(processor);
+			
+			IGenerator generator = new DefaultGenerator(cache, context);
+			generator.configure(module, Utils.newEmptyDocument());
 
-		IProcessor processor = new DefaultProcessor(cache, context);
-		processor.configure(module, Utils.newEmptyDocument());
-		processor.process(context, module, entryPoint.getExecutionType(), deps);
+			lifecycle = new Lifecycle(context, generator, processors);
+			cache.getLifecycles().put(entryPoint.getTarget(), lifecycle);
+		}
 
-		IGenerator generator = new DefaultGenerator(cache, context);
-		generator.configure(module, Utils.newEmptyDocument());
-
-		File generated = generator.generate(context, module, entryPoint.getExecutionType());
+		
+		File generated = lifecycle.executeLifecycle(module, entryPoint.getExecutionType(), deps);
 
 		try {
 			return new WorkspaceExecution(entryPoint.getTarget(), entryPoint.getExecutionType(),
@@ -153,30 +166,34 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 	 * @return
 	 * @throws RhenaException
 	 */
-	private IRhenaExecution runInExecutableLifecycle(IRhenaCache cache, IEntryPoint entryPoint, IRhenaModule module, Dependencies deps) throws RhenaException {
+	private IRhenaExecution runInExecutableLifecycle(IRhenaCache cache, IEntryPoint entryPoint, IRhenaModule module, Dependencies dependencies) throws RhenaException {
 
 		ILifecycleReference lifecycleRef = module.getLifecycleDeclarations().get(module.getLifecycleName());
 
-		IExecutionContext context = constructLifecycleProcessor(cache, lifecycleRef.getContext(), IExecutionContext.class, new Class[] { IRhenaCache.class },
-				cache);
-		context.configure(module, lifecycleRef.getContext().getConfiguration());
+		ILifecycle lifecycle = cache.getLifecycles().get(entryPoint.getTarget());
+		if(lifecycle == null) {
+			IExecutionContext context = constructLifecycleProcessor(cache, lifecycleRef.getContext(), IExecutionContext.class, new Class[] { IRhenaCache.class }, cache);
+			context.configure(module, lifecycleRef.getContext().getConfiguration());
+			
+			List<IProcessor> processors = new ArrayList<IProcessor>();
+			for (IProcessorReference proc : lifecycleRef.getProcessors()) {
 
-		for (IProcessorReference proc : lifecycleRef.getProcessors()) {
-
-			IProcessor processor = constructLifecycleProcessor(cache, proc, IProcessor.class, new Class[] { IRhenaCache.class, IExecutionContext.class }, cache,
-					context);
-			processor.configure(module, proc.getConfiguration());
-			// and execute it...
-			processor.process(context, module, entryPoint.getExecutionType(), deps);
+				IProcessor processor = constructLifecycleProcessor(cache, proc, IProcessor.class, new Class[] { IRhenaCache.class, IExecutionContext.class }, cache, context);
+				processor.configure(module, proc.getConfiguration());
+				processors.add(processor);
+			}
+			
+			// and finally, execute the generator
+			IGenerator generator = constructLifecycleProcessor(cache, lifecycleRef.getGenerator(), IGenerator.class, new Class[] { IRhenaCache.class, IExecutionContext.class }, cache, context);
+			generator.configure(module, lifecycleRef.getGenerator().getConfiguration());
+			
+			lifecycle = new Lifecycle(context, generator, processors);
+			cache.getLifecycles().put(entryPoint.getTarget(), lifecycle);
 		}
 
-		// and finally, execute the generator
-		IGenerator generator = constructLifecycleProcessor(cache, lifecycleRef.getGenerator(), IGenerator.class,
-				new Class[] { IRhenaCache.class, IExecutionContext.class }, cache, context);
-		generator.configure(module, lifecycleRef.getGenerator().getConfiguration());
 		// and execute it to produce final artifact...
 
-		File generated = generator.generate(context, module, entryPoint.getExecutionType());
+		File generated = lifecycle.executeLifecycle(module, entryPoint.getExecutionType(), dependencies);
 
 		/**
 		 * @TODO validate filename so it conforms to the spec, so it can be used
@@ -212,8 +229,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 		}
 
 		/**
-		 * @TODO Resource leak, refactor code to close the classloader
-		 *       eventually...
+		 * @TODO Determine strategy for closing the classloader later in the lifecycle?
 		 */
 		URLClassLoader urlc = new URLClassLoader(deps.toArray(new URL[deps.size()]), Thread.currentThread().getContextClassLoader());
 
@@ -223,13 +239,6 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 			return constr.newInstance(args);
 		} catch (Exception ex) {
 			throw new RhenaException(ex.getMessage(), ex);
-		} finally {
-			try {
-				urlc.close();
-			} catch (IOException e) {
-
-				throw new RhenaException(e.getMessage(), e);
-			}
 		}
 	}
 

@@ -11,6 +11,7 @@ import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycle;
 import com.unnsvc.rhena.core.events.ModuleAddRemoveEvent;
 import com.unnsvc.rhena.core.events.ModuleAddRemoveEvent.EAddRemove;
 
@@ -19,6 +20,7 @@ public class RhenaCache implements IRhenaCache {
 	private IRhenaConfiguration config;
 	private Map<ModuleIdentifier, IRhenaModule> modules;
 	private Map<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>> executions;
+	private Map<ModuleIdentifier, ILifecycle> lifecycles;
 
 	public RhenaCache(IRhenaConfiguration config) {
 
@@ -27,6 +29,7 @@ public class RhenaCache implements IRhenaCache {
 		// @TODO evaluate if we can use CompletionService and some .take().get()
 		// trickery for efficient execution loop
 		this.executions = new HashMap<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>>();
+		this.lifecycles = new HashMap<ModuleIdentifier, ILifecycle>();
 	}
 
 	@Override
@@ -73,5 +76,11 @@ public class RhenaCache implements IRhenaCache {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public Map<ModuleIdentifier, ILifecycle> getLifecycles() {
+
+		return lifecycles;
 	}
 }

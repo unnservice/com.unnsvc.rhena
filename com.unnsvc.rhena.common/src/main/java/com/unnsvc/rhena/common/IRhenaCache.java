@@ -8,6 +8,7 @@ import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.lifecycle.ILifecycle;
 
 public interface IRhenaCache {
 
@@ -22,4 +23,6 @@ public interface IRhenaCache {
 	public Map<EExecutionType, IRhenaExecution> getExecution(ModuleIdentifier target);
 
 	public boolean containsExecution(ModuleIdentifier moduleIdentifier, EExecutionType eExecutionType);
+
+	public Map<ModuleIdentifier, ILifecycle> getLifecycles();
 }
