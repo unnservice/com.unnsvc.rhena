@@ -53,24 +53,10 @@
 					</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="main_source" type="tns:dependencyType" minOccurs="0" maxOccurs="unbounded">
-				<xs:annotation>
-					<xs:documentation>
-						The main source
-					</xs:documentation>
-				</xs:annotation>
-			</xs:element>
 			<xs:element name="test" type="tns:dependencyType" minOccurs="0" maxOccurs="unbounded">
 				<xs:annotation>
 					<xs:documentation>
 						The test scope is for unit testing
-					</xs:documentation>
-				</xs:annotation>
-			</xs:element>
-			<xs:element name="test_source" type="tns:dependencyType" minOccurs="0" maxOccurs="unbounded">
-				<xs:annotation>
-					<xs:documentation>
-						The test source
 					</xs:documentation>
 				</xs:annotation>
 			</xs:element>
