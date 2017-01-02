@@ -14,14 +14,21 @@ public class LogEvent implements IContextEvent {
 	private Class<?> clazz;
 	private ModuleIdentifier identifier;
 	private String message;
+	private Throwable throwable;
 
-	public LogEvent(ELogLevel level, Class<?> clazz, ModuleIdentifier identifier, String message) {
+	public LogEvent(ELogLevel level, Class<?> clazz, ModuleIdentifier identifier, String message, Throwable throwable) {
 
 		this.timestamp = new Date();
 		this.level = level;
 		this.clazz = clazz;
 		this.identifier = identifier;
 		this.message = message;
+		this.throwable = throwable;
+	}
+
+	public LogEvent(ELogLevel level, Class<?> clazz, ModuleIdentifier identifier, String message) {
+
+		this(level, clazz, identifier, message, null);
 	}
 
 	public Date getTimestamp() {
@@ -47,6 +54,11 @@ public class LogEvent implements IContextEvent {
 	public String getMessage() {
 
 		return message;
+	}
+
+	public Throwable getThrowable() {
+
+		return throwable;
 	}
 
 	@Override

@@ -2,7 +2,6 @@
 package com.unnsvc.rhena.core.logging;
 
 import com.unnsvc.rhena.common.IListenerConfiguration;
-import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.logging.ELogLevel;
 import com.unnsvc.rhena.common.logging.ILogger;
@@ -23,67 +22,77 @@ public class LogFacade implements ILogger {
 	}
 
 	@Override
-	public void info(Class<?> clazz, ModuleIdentifier identifier, String message) throws RhenaException {
+	public void info(Class<?> clazz, ModuleIdentifier identifier, String message) {
 
 		fireLogEvent(ELogLevel.INFO, clazz, identifier, message);
 	}
 
 	@Override
-	public void info(Class<?> clazz, String message) throws RhenaException {
+	public void info(Class<?> clazz, String message) {
 
 		fireLogEvent(ELogLevel.INFO, clazz, null, message);
 	}
 
 	@Override
-	public void error(Class<?> clazz, ModuleIdentifier identifier, String message) throws RhenaException {
+	public void error(Class<?> clazz, ModuleIdentifier identifier, String message) {
 
 		fireLogEvent(ELogLevel.ERROR, clazz, identifier, message);
 	}
 
 	@Override
-	public void error(Class<?> clazz, String message) throws RhenaException {
+	public void error(Class<?> clazz, String message) {
 
 		fireLogEvent(ELogLevel.ERROR, clazz, null, message);
 	}
 
 	@Override
-	public void debug(Class<?> clazz, String message) throws RhenaException {
+	public void debug(Class<?> clazz, String message) {
 
 		fireLogEvent(ELogLevel.DEBUG, clazz, null, message);
 	}
 
 	@Override
-	public void debug(Class<?> clazz, ModuleIdentifier identifier, String message) throws RhenaException {
+	public void debug(Class<?> clazz, ModuleIdentifier identifier, String message) {
 
 		fireLogEvent(ELogLevel.DEBUG, clazz, identifier, message);
 	}
 
 	@Override
-	public void warn(Class<?> clazz, String message) throws RhenaException {
+	public void warn(Class<?> clazz, String message) {
 
 		fireLogEvent(ELogLevel.WARN, clazz, null, message);
 	}
 
 	@Override
-	public void warn(Class<?> clazz, ModuleIdentifier identifier, String message) throws RhenaException {
+	public void warn(Class<?> clazz, ModuleIdentifier identifier, String message) {
 
 		fireLogEvent(ELogLevel.WARN, clazz, identifier, message);
 	}
 
 	@Override
-	public void trace(Class<?> clazz, String message) throws RhenaException {
+	public void trace(Class<?> clazz, String message) {
 
 		fireLogEvent(ELogLevel.TRACE, clazz, null, message);
 	}
 
 	@Override
-	public void trace(Class<?> clazz, ModuleIdentifier identifier, String message) throws RhenaException {
+	public void trace(Class<?> clazz, ModuleIdentifier identifier, String message) {
 
 		fireLogEvent(ELogLevel.TRACE, clazz, identifier, message);
 	}
 
-	private void fireLogEvent(ELogLevel level, Class<?> clazz, ModuleIdentifier identifier, String message) throws RhenaException {
+	@Override
+	public void fireLogEvent(ELogLevel level, Class<?> clazz, ModuleIdentifier identifier, String message, Throwable throwable) {
 
-		listenerConfig.fireListener(new LogEvent(level, clazz, identifier, message));
+		try {
+			listenerConfig.fireListener(new LogEvent(level, clazz, identifier, message, throwable));
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+	}
+
+	private void fireLogEvent(ELogLevel level, Class<?> clazz, ModuleIdentifier identifier, String message) {
+
+		fireLogEvent(level, clazz, identifier, message, null);
 	}
 }
