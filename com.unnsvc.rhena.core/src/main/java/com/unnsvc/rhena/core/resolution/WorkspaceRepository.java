@@ -42,7 +42,8 @@ import com.unnsvc.rhena.core.visitors.Dependencies;
 import com.unnsvc.rhena.core.visitors.DependencyCollectionVisitor;
 import com.unnsvc.rhena.lifecycle.DefaultContext;
 import com.unnsvc.rhena.lifecycle.DefaultGenerator;
-import com.unnsvc.rhena.lifecycle.DefaultProcessor;
+import com.unnsvc.rhena.lifecycle.DefaultJavaProcessor;
+import com.unnsvc.rhena.lifecycle.DefaultManifestProcessor;
 
 /**
  * @TODO cache lifecycle over multiple executions?
@@ -113,8 +114,10 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 			IExecutionContext context = new DefaultContext(cache);
 			context.configure(module, createDefaultContextConfiguration());
 			
-			IProcessor processor = new DefaultProcessor(cache, context);
+			IProcessor processor = new DefaultJavaProcessor(cache, context);
 			processor.configure(module, Utils.newEmptyDocument());
+			IProcessor manifestProcessor = new DefaultManifestProcessor(cache, context);
+			manifestProcessor.configure(module, Utils.newEmptyDocument());
 			List<IProcessor> processors = new ArrayList<IProcessor>();
 			processors.add(processor);
 			

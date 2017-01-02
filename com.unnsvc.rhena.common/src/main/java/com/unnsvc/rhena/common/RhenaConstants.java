@@ -22,6 +22,7 @@ public class RhenaConstants {
 	
 	public static final File LOCAL_REPOSITORY_PATH = new File(System.getProperty("user.home"), ".rhena/repository");
 	public static final String DEFAULT_OUTPUT_DIRECTORY_NAME = "target";
+	public static final Object RHENA_VERSION = "1.0";
 
 	private static ModuleIdentifier createDefault() {
 

@@ -23,12 +23,12 @@ import com.unnsvc.rhena.common.model.lifecycle.IJavaProcessor;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.visitors.IDependencies;
 
-public class DefaultProcessor implements IProcessor, IJavaProcessor {
+public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 
 	private IExecutionContext context;
 	private IRhenaCache cache;
 
-	public DefaultProcessor(IRhenaCache cache, IExecutionContext context) {
+	public DefaultJavaProcessor(IRhenaCache cache, IExecutionContext context) {
 
 		this.context = context;
 		this.cache = cache;

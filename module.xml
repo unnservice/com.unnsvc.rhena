@@ -8,6 +8,8 @@
 		<prop:anotherprop>anothervalue</prop:anotherprop>
 
 		<lifecycle name="library">
+			<!-- @TODO allow custom properties to be declared in the lifecycles -->
+			
 			<context module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.DefaultContext">
 				<resources>
 					<main path="src/main/java" />
@@ -16,7 +18,10 @@
 					<test path="src/test/resources" filter="true" />
 				</resources>
 			</context>
-			<processor module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.DefaultProcessor" />
+			
+			<processor module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.DefaultJavaProcessor" />
+			<processor module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.DefaultManifestProcessor" />
+			
 			<generator module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.DefaultGenerator" />
 		</lifecycle>
 
