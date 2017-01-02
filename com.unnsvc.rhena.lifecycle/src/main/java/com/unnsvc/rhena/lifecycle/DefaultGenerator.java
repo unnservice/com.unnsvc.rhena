@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
 
 import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.IRhenaCache;
-import com.unnsvc.rhena.common.RhenaConstants;
+import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IGenerator;
@@ -44,19 +44,16 @@ public class DefaultGenerator implements IGenerator {
 	@Override
 	public File generate(IExecutionContext context, IRhenaModule module, EExecutionType type) throws RhenaException {
 
-		File inputDirectory = new File(module.getLocation().getPath(), RhenaConstants.DEFAULT_OUTPUT_DIRECTORY_NAME + "/" + type.literal().toLowerCase());
-		if (!inputDirectory.isDirectory()) {
-			inputDirectory.mkdirs();
-		}
+		File outputDirectory = context.getOutputDirectory(module);
 
 		// List<IResource> res = context.getResources(type);
 
-		String fileName = toFileName(module.getIdentifier(), type);
-		File targetLocation = new File(module.getLocation().getPath(), "target");
-		File outLocation = new File(targetLocation, fileName + ".jar");
+		String fileName = Utils.toFileName(module.getIdentifier(), type);
+		File outLocation = new File(outputDirectory, fileName + ".jar");
 
 		try {
-			generateJar(inputDirectory, outLocation);
+			File inputLocation = new File(outputDirectory, type.literal().toLowerCase());
+			generateJar(inputLocation, outLocation);
 			// log.debug(module.get(), type, "Generated: " +
 			// outLocation.getAbsolutePath());
 		} catch (Exception ex) {
@@ -66,26 +63,26 @@ public class DefaultGenerator implements IGenerator {
 		return outLocation;
 	}
 
-	private String toFileName(ModuleIdentifier identifier, EExecutionType type) {
-
-		return identifier.getComponentName().toString() + "." + identifier.getModuleName().toString() + "-" + type.toString().toLowerCase() + "-"
-				+ identifier.getVersion().toString();
-	}
-
 	private void generateJar(File inputDirectory, File outLocation) throws FileNotFoundException, IOException {
 
-		File outDir = outLocation.getParentFile();
-		if (!outDir.exists()) {
-			outDir.mkdirs();
-		}
-
 		List<File> added = new ArrayList<File>();
+		JarOutputStream jos = null;
 
-		JarOutputStream jos = new JarOutputStream(new FileOutputStream(outLocation));
+		File manifestFile = new File(inputDirectory, "META-INF/MANIFEST.MF");
+		if (manifestFile.isFile()) {
+
+			try (FileInputStream manifestIs = new FileInputStream(manifestFile)) {
+				jos = new JarOutputStream(new FileOutputStream(outLocation), new Manifest(manifestIs));
+			}
+		} else {
+			jos = new JarOutputStream(new FileOutputStream(outLocation));
+		}
 
 		String base = inputDirectory.toString();
 		if (inputDirectory.isDirectory()) {
 			for (File contained : inputDirectory.listFiles()) {
+				// @TODO why "added" check? Seems to go into an infinite loop
+				// otherwise
 				if (!added.contains(inputDirectory)) {
 					addToJar(base, contained, jos);
 					added.add(inputDirectory);
@@ -109,8 +106,10 @@ public class DefaultGenerator implements IGenerator {
 					target.putNextEntry(entry);
 					target.closeEntry();
 				}
-				for (File nestedFile : source.listFiles())
+				for (File nestedFile : source.listFiles()) {
+
 					addToJar(base, nestedFile, target);
+				}
 				return;
 			}
 

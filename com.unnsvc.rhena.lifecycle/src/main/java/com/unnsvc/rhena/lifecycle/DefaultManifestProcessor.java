@@ -38,7 +38,9 @@ public class DefaultManifestProcessor implements IProcessor {
 	@Override
 	public void process(IExecutionContext context, IRhenaModule module, EExecutionType type, IDependencies dependencies) throws RhenaException {
 
-		File outputDirectory = new File(module.getLocation().getPath(), RhenaConstants.DEFAULT_OUTPUT_DIRECTORY_NAME + "/" + type.literal().toLowerCase());
+		File outputDirectory = new File(context.getOutputDirectory(module), type.literal().toLowerCase());
+		outputDirectory.mkdirs();
+
 		File metainfDirectory = new File(outputDirectory, "META-INF");
 		if (!metainfDirectory.isDirectory()) {
 			metainfDirectory.mkdirs();
@@ -49,6 +51,7 @@ public class DefaultManifestProcessor implements IProcessor {
 		manifest.getMainAttributes().put(new Attributes.Name("Rhena-Version"), RhenaConstants.RHENA_VERSION);
 		try (FileOutputStream fos = new FileOutputStream(manifestFile)) {
 			manifest.write(fos);
+			fos.flush();
 		} catch (IOException ioe) {
 			throw new RhenaException(ioe.getMessage(), ioe);
 		}

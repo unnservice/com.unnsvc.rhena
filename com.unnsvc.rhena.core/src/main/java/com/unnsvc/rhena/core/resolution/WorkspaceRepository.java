@@ -118,8 +118,10 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 			processor.configure(module, Utils.newEmptyDocument());
 			IProcessor manifestProcessor = new DefaultManifestProcessor(cache, context);
 			manifestProcessor.configure(module, Utils.newEmptyDocument());
+			
 			List<IProcessor> processors = new ArrayList<IProcessor>();
 			processors.add(processor);
+			processors.add(manifestProcessor);
 			
 			IGenerator generator = new DefaultGenerator(cache, context);
 			generator.configure(module, Utils.newEmptyDocument());

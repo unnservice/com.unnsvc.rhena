@@ -13,6 +13,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.unnsvc.rhena.common.IRhenaCache;
+import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
@@ -113,5 +114,15 @@ public class DefaultContext implements IExecutionContext {
 				selectRecursive(contained, p, selected);
 			}
 		}
+	}
+
+	@Override
+	public File getOutputDirectory(IRhenaModule module) {
+
+		File outputDirectory = new File(module.getLocation().getPath(), RhenaConstants.DEFAULT_OUTPUT_DIRECTORY_NAME);
+		if (!outputDirectory.isDirectory()) {
+			outputDirectory.mkdirs();
+		}
+		return outputDirectory;
 	}
 }

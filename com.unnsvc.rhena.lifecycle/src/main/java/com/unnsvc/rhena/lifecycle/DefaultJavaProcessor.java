@@ -46,10 +46,8 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 	@Override
 	public void process(IExecutionContext context, IRhenaModule module, EExecutionType type, IDependencies dependencies) throws RhenaException {
 
-		File outputDirectory = new File(module.getLocation().getPath(), RhenaConstants.DEFAULT_OUTPUT_DIRECTORY_NAME + "/" + type.literal().toLowerCase());
-		if (!outputDirectory.isDirectory()) {
-			outputDirectory.mkdirs();
-		}
+		File outputDirectory = new File(context.getOutputDirectory(module), type.literal().toLowerCase());
+		outputDirectory.mkdirs();
 
 		List<String> options = new ArrayList<String>();
 		options.add("-d");
