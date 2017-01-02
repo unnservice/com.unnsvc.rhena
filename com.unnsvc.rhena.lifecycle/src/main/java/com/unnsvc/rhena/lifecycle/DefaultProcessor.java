@@ -19,10 +19,11 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
+import com.unnsvc.rhena.common.model.lifecycle.IJavaProcessor;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.visitors.IDependencies;
 
-public class DefaultProcessor implements IProcessor {
+public class DefaultProcessor implements IProcessor, IJavaProcessor {
 
 	private IExecutionContext context;
 	private IRhenaCache cache;
