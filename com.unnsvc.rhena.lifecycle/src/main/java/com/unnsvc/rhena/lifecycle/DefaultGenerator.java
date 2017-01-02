@@ -69,14 +69,14 @@ public class DefaultGenerator implements IGenerator {
 		JarOutputStream jos = null;
 
 		File manifestFile = new File(inputDirectory, "META-INF/MANIFEST.MF");
-		if (manifestFile.isFile()) {
-
-			try (FileInputStream manifestIs = new FileInputStream(manifestFile)) {
-				jos = new JarOutputStream(new FileOutputStream(outLocation), new Manifest(manifestIs));
-			}
-		} else {
+//		if (manifestFile.isFile()) {
+//
+//			try (FileInputStream manifestIs = new FileInputStream(manifestFile)) {
+//				jos = new JarOutputStream(new FileOutputStream(outLocation), new Manifest(manifestIs));
+//			}
+//		} else {
 			jos = new JarOutputStream(new FileOutputStream(outLocation));
-		}
+//		}
 
 		String base = inputDirectory.toString();
 		if (inputDirectory.isDirectory()) {
