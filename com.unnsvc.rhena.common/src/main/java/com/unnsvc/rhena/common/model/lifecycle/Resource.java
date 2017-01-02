@@ -6,12 +6,14 @@ import java.io.File;
 public class Resource implements IResource {
 
 	private EResourceType type;
-	private File srcPath;
+	private String relativePath;
+	private File absolutePath;
 
-	public Resource(EResourceType type, File srcPath) {
+	public Resource(EResourceType type, String relativePath, File absolutePath) {
 
 		this.type = type;
-		this.srcPath = srcPath;
+		this.relativePath = relativePath;
+		this.absolutePath = absolutePath;
 	}
 
 	@Override
@@ -21,8 +23,14 @@ public class Resource implements IResource {
 	}
 
 	@Override
-	public File getSrcPath() {
+	public String getRelativePath() {
 
-		return srcPath;
+		return relativePath;
+	}
+
+	@Override
+	public File getAbsolutePath() {
+
+		return absolutePath;
 	}
 }

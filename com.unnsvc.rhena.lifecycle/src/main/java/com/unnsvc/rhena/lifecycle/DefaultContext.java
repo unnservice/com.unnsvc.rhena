@@ -57,9 +57,9 @@ public class DefaultContext implements IExecutionContext {
 					Node resource = resourcesChildren.item(j);
 					if (resource.getNodeType() == Node.ELEMENT_NODE) {
 						String path = resource.getAttributes().getNamedItem("path").getNodeValue();
-						File srcPath = new File(moduleBasedir, path);
+						File srcPath = new File(moduleBasedir, path).getAbsoluteFile();
 						if (srcPath.isDirectory()) {
-							resources.add(new Resource(EResourceType.valueOf(resource.getLocalName().toUpperCase()), srcPath));
+							resources.add(new Resource(EResourceType.valueOf(resource.getLocalName().toUpperCase()), path, srcPath));
 						}
 					}
 				}
@@ -89,7 +89,7 @@ public class DefaultContext implements IExecutionContext {
 		for (IResource res : resources) {
 			if (res.getResourceType().equals(restype)) {
 				try {
-					selectRecursive(res.getSrcPath(), p, selected);
+					selectRecursive(res.getAbsolutePath(), p, selected);
 				} catch (IOException ioe) {
 					throw new RhenaException(ioe.getMessage(), ioe);
 				}

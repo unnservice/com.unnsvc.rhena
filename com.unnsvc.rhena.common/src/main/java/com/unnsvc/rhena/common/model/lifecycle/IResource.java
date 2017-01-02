@@ -7,6 +7,8 @@ public interface IResource {
 
 	public EResourceType getResourceType();
 
-	public File getSrcPath();
+	public String getRelativePath();
+
+	public File getAbsolutePath();
 
 }
