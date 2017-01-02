@@ -5,7 +5,7 @@ public enum ELogLevel {
 
 	TRACE, DEBUG, INFO, WARN, ERROR;
 	
-	public boolean isGreaterThan(ELogLevel other) {
+	public boolean isGreaterOrEquals(ELogLevel other) {
 		
 		return this.compareTo(other) >= 0;
 	}
