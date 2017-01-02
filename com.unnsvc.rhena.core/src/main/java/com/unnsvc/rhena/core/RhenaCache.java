@@ -83,4 +83,10 @@ public class RhenaCache implements IRhenaCache {
 
 		return lifecycles;
 	}
+
+	@Override
+	public ILifecycle getLifecycle(ModuleIdentifier identifier) {
+
+		return lifecycles.get(identifier);
+	}
 }

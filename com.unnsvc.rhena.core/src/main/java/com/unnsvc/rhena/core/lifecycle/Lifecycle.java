@@ -37,4 +37,22 @@ public class Lifecycle implements ILifecycle {
 		return generated;
 	}
 
+	@Override
+	public IExecutionContext getContext() {
+
+		return context;
+	}
+
+	@Override
+	public List<IProcessor> getProcessors() {
+
+		return processors;
+	}
+
+	@Override
+	public IGenerator getGenerator() {
+
+		return generator;
+	}
+
 }

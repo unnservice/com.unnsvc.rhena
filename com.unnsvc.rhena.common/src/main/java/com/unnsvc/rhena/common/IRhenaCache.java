@@ -25,4 +25,6 @@ public interface IRhenaCache {
 	public boolean containsExecution(ModuleIdentifier moduleIdentifier, EExecutionType eExecutionType);
 
 	public Map<ModuleIdentifier, ILifecycle> getLifecycles();
+
+	public ILifecycle getLifecycle(ModuleIdentifier identifier);
 }
