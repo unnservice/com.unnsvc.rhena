@@ -5,7 +5,7 @@ import java.io.File;
 import java.net.URI;
 
 import com.unnsvc.rhena.common.IRepository;
-import com.unnsvc.rhena.common.IRhenaConfiguration;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
@@ -14,12 +14,12 @@ import com.unnsvc.rhena.core.model.RhenaModuleParser;
 
 public abstract class AbstractWorkspaceRepository implements IRepository {
 
-	protected IRhenaConfiguration config;
+	protected IRhenaContext context;
 	private File location;
 
-	public AbstractWorkspaceRepository(IRhenaConfiguration config, File location) {
+	public AbstractWorkspaceRepository(IRhenaContext context, File location) {
 
-		this.config = config;
+		this.context = context;
 		this.location = location.getAbsoluteFile();
 	}
 
@@ -31,11 +31,11 @@ public abstract class AbstractWorkspaceRepository implements IRepository {
 
 		if (!moduleDescriptor.isFile()) {
 
-			config.getLogger().debug(getClass(), identifier, "Not found in repository location: " + location);
+			context.getLogger().debug(getClass(), identifier, "Not found in repository location: " + location);
 			return null;
 		}
 
-		IRhenaModule module = new RhenaModuleParser(config, this, identifier, moduleDescriptor.toURI()).getModel();
+		IRhenaModule module = new RhenaModuleParser(context, this, identifier, moduleDescriptor.toURI()).getModel();
 		return module;
 	}
 

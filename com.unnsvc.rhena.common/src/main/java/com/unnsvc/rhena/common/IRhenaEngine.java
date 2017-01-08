@@ -24,7 +24,7 @@ public interface IRhenaEngine {
 	 */
 	public IRhenaExecution materialiseExecution(IRhenaModule entryPointModule, EExecutionType prototype) throws RhenaException;
 
-	public IRhenaConfiguration getConfiguration();
+	public IRhenaContext getContext();
 
 	public IRhenaCache getCache();
 

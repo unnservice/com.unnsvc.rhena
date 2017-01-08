@@ -17,7 +17,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.unnsvc.rhena.common.IRepository;
-import com.unnsvc.rhena.common.IRhenaConfiguration;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -35,7 +35,7 @@ public class RhenaModuleParser {
 	private RhenaModule module;
 	// private IRhenaConfiguration config;
 
-	public RhenaModuleParser(IRhenaConfiguration config, IRepository repository, ModuleIdentifier identifier, URI descriptorLocation) throws RhenaException {
+	public RhenaModuleParser(IRhenaContext config, IRepository repository, ModuleIdentifier identifier, URI descriptorLocation) throws RhenaException {
 
 		try {
 			// this.config = config;

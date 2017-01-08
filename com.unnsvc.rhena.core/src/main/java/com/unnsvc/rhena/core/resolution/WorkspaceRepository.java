@@ -17,7 +17,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 import com.unnsvc.rhena.common.IRhenaCache;
-import com.unnsvc.rhena.common.IRhenaConfiguration;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -53,9 +53,9 @@ import com.unnsvc.rhena.lifecycle.DefaultManifestProcessor;
  */
 public class WorkspaceRepository extends AbstractWorkspaceRepository {
 
-	public WorkspaceRepository(IRhenaConfiguration config, File location) {
+	public WorkspaceRepository(IRhenaContext context, File location) {
 
-		super(config, location);
+		super(context, location);
 	}
 
 	@Override

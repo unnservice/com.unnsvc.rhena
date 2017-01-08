@@ -2,7 +2,7 @@
 package com.unnsvc.rhena.core;
 
 import com.unnsvc.rhena.common.IRhenaCache;
-import com.unnsvc.rhena.common.IRhenaConfiguration;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
@@ -20,17 +20,17 @@ import com.unnsvc.rhena.core.model.EntryPoint;
  */
 public class RhenaEngine implements IRhenaEngine {
 
-	private IRhenaConfiguration config;
+	private IRhenaContext context;
 	private CascadingModelResolver cascadingResolver;
 	private CascadingModelBuilder cascadingBuilder;
 	private IRhenaCache cache;
 
-	public RhenaEngine(IRhenaConfiguration config) {
+	public RhenaEngine(IRhenaContext context) {
 
-		this.config = config;
-		this.cache = new RhenaCache(config);
-		this.cascadingResolver = new CascadingModelResolver(config, cache);
-		this.cascadingBuilder = new CascadingModelBuilder(config, cache);
+		this.context = context;
+		this.cache = new RhenaCache(context);
+		this.cascadingResolver = new CascadingModelResolver(context, cache);
+		this.cascadingBuilder = new CascadingModelBuilder(context, cache);
 	}
 
 	@Override
@@ -52,9 +52,9 @@ public class RhenaEngine implements IRhenaEngine {
 	}
 	
 	@Override
-	public IRhenaConfiguration getConfiguration() {
+	public IRhenaContext getContext() {
 
-		return config;
+		return context;
 	}
 	
 	@Override

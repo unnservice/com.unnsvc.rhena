@@ -11,7 +11,7 @@ import java.util.Set;
 
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
-import com.unnsvc.rhena.common.IRhenaConfiguration;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.NotExistsException;
 import com.unnsvc.rhena.common.exceptions.NotUniqueException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -31,13 +31,13 @@ import com.unnsvc.rhena.core.execution.UniqueStack;
  */
 public class CascadingModelResolver {
 
-	private IRhenaConfiguration config;
+	private IRhenaContext context;
 	private Set<ModuleIdentifier> merged;
 	private IRhenaCache cache;
 
-	public CascadingModelResolver(IRhenaConfiguration config, IRhenaCache cache) {
+	public CascadingModelResolver(IRhenaContext context, IRhenaCache cache) {
 
-		this.config = config;
+		this.context = context;
 		this.merged = new HashSet<ModuleIdentifier>();
 		this.cache = cache;
 	}
@@ -140,7 +140,7 @@ public class CascadingModelResolver {
 			// }
 
 		} catch (NotUniqueException nue) {
-			config.getLogger().error(getClass(), entryPoint.getTarget(), "Cyclic dependency path detected:");
+			context.getLogger().error(getClass(), entryPoint.getTarget(), "Cyclic dependency path detected:");
 			boolean shift = false;
 
 			/**
@@ -154,7 +154,7 @@ public class CascadingModelResolver {
 				}
 				if (startlog) {
 					// @TODO
-					config.getLogger().error(getClass(), entryPoint.getTarget(),
+					context.getLogger().error(getClass(), entryPoint.getTarget(),
 							"Cycle: " + (shift ? "↓" : "↓") + " " + materialiseModel(edge.getTarget()).getIdentifier().toTag(edge.getExecutionType()));
 					shift = !shift;
 				}
@@ -190,7 +190,7 @@ public class CascadingModelResolver {
 		if (module == null) {
 
 			// initial module resolve
-			for (IRepository repository : config.getWorkspaceRepositories()) {
+			for (IRepository repository : context.getWorkspaceRepositories()) {
 
 				try {
 					module = repository.materialiseModel(identifier);
@@ -203,7 +203,7 @@ public class CascadingModelResolver {
 			}
 
 			if (module == null) {
-				IRepository localRepo = config.getLocalCacheRepository();
+				IRepository localRepo = context.getLocalCacheRepository();
 				module = localRepo.materialiseModel(identifier);
 			}
 
@@ -216,7 +216,7 @@ public class CascadingModelResolver {
 			}
 
 			cache.addModule(identifier, module);
-			config.getLogger().info(getClass(), identifier, "Materialised model");
+			context.getLogger().info(getClass(), identifier, "Materialised model");
 		}
 		return module;
 	}

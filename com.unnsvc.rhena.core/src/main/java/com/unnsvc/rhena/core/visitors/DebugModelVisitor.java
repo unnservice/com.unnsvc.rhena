@@ -1,7 +1,7 @@
 
 package com.unnsvc.rhena.core.visitors;
 
-import com.unnsvc.rhena.common.IRhenaConfiguration;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -27,17 +27,17 @@ import com.unnsvc.rhena.common.visitors.IModelVisitor;
  */
 public class DebugModelVisitor implements IModelVisitor {
 
-	private IRhenaConfiguration config;
+	private IRhenaContext config;
 	private int indents;
 	// private String prefix;
 	private IRhenaEngine context;
 
-	public DebugModelVisitor(IRhenaConfiguration config, int indents, IRhenaEngine context) {
+	public DebugModelVisitor(IRhenaContext config, int indents, IRhenaEngine context) {
 
 		this(config, indents, context, "");
 	}
 
-	public DebugModelVisitor(IRhenaConfiguration config, int indents, IRhenaEngine context, String prefix) {
+	public DebugModelVisitor(IRhenaContext config, int indents, IRhenaEngine context, String prefix) {
 
 		this.config = config;
 		this.indents = indents;

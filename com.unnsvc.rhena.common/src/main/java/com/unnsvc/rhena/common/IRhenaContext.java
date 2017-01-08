@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.unnsvc.rhena.common.logging.ILogger;
 
-public interface IRhenaConfiguration {
+public interface IRhenaContext {
 
 	public void setRunTest(boolean runTest);
 

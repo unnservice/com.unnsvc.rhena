@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.unnsvc.rhena.common.IListenerConfiguration;
 import com.unnsvc.rhena.common.IRepository;
-import com.unnsvc.rhena.common.IRhenaConfiguration;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.logging.ILogger;
 import com.unnsvc.rhena.core.logging.LogFacade;
 
@@ -16,7 +16,7 @@ import com.unnsvc.rhena.core.logging.LogFacade;
  * @author noname
  *
  */
-public class RhenaConfiguration implements IRhenaConfiguration {
+public class RhenaContext implements IRhenaContext {
 
 	private boolean runTest;
 	private boolean runItest;
@@ -32,7 +32,7 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	/**
 	 * @TODO this remains from old code
 	 */
-	public RhenaConfiguration() {
+	public RhenaContext() {
 
 		this.repositories = new ArrayList<IRepository>();
 		this.listenerConfig = new ListenerConfiguration();

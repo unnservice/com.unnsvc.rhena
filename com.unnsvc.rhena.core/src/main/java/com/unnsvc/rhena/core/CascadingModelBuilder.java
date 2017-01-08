@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import com.unnsvc.rhena.common.IRhenaCache;
-import com.unnsvc.rhena.common.IRhenaConfiguration;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.UniqueList;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -25,13 +25,13 @@ import com.unnsvc.rhena.common.model.lifecycle.ILifecycleProcessorReference;
 
 public class CascadingModelBuilder {
 
-	private IRhenaConfiguration config;
+	private IRhenaContext context;
 	private IRhenaCache cache;
 
-	public CascadingModelBuilder(IRhenaConfiguration config, IRhenaCache cache) {
+	public CascadingModelBuilder(IRhenaContext context, IRhenaCache cache) {
 
 		this.cache = cache;
-		this.config = config;
+		this.context = context;
 	}
 
 	public IRhenaExecution buildEdge(IEntryPoint entryPoint) throws RhenaException {
@@ -56,7 +56,7 @@ public class CascadingModelBuilder {
 			// @TODO move into loopGuard?
 			if (resolvable.isEmpty()) {
 				for (IEntryPoint edge : allEdges) {
-					config.getLogger().debug(getClass(), "Nonresolvable in queue (framework bug): " + edge);
+					context.getLogger().debug(getClass(), "Nonresolvable in queue (framework bug): " + edge);
 					IRhenaModule module = cache.getModule(edge.getTarget());
 					isBuildable(edge, module, true);
 				}
@@ -64,7 +64,7 @@ public class CascadingModelBuilder {
 			}
 
 			Runtime runtime = Runtime.getRuntime();
-			int threads = config.isParallel() ? runtime.availableProcessors() : 1;
+			int threads = context.isParallel() ? runtime.availableProcessors() : 1;
 			ExecutorService executor = Executors.newFixedThreadPool(threads);
 
 			for (final IEntryPoint edge : resolvable) {
@@ -78,7 +78,7 @@ public class CascadingModelBuilder {
 							IRhenaExecution execution = materialiseExecution(edge);
 							return execution;
 						} catch (Throwable t) {
-							config.getLogger().error(getClass(), edge.getTarget(), "Exception in execution materialisation: " + t.getMessage());
+							context.getLogger().error(getClass(), edge.getTarget(), "Exception in execution materialisation: " + t.getMessage());
 							t.printStackTrace();
 							throw new RhenaException(t.getMessage(), t);
 						}
@@ -163,7 +163,7 @@ public class CascadingModelBuilder {
 
 	private IRhenaExecution produceExecution(IEntryPoint entryPoint) throws RhenaException {
 
-		config.getLogger().info(getClass(), entryPoint.getTarget(), "Building: " + entryPoint.getTarget() + ":" + entryPoint.getExecutionType());
+		context.getLogger().info(getClass(), entryPoint.getTarget(), "Building: " + entryPoint.getTarget() + ":" + entryPoint.getExecutionType());
 
 		IRhenaModule module = cache.getModule(entryPoint.getTarget());
 		IRhenaExecution execution = module.getRepository().materialiseExecution(cache, entryPoint);
@@ -253,7 +253,7 @@ public class CascadingModelBuilder {
 
 		if (debug) {
 			for (String line : waitingOn) {
-				config.getLogger().debug(getClass(), "    " + line);
+				context.getLogger().debug(getClass(), "    " + line);
 			}
 		}
 

@@ -7,7 +7,7 @@ import java.net.URI;
 
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
-import com.unnsvc.rhena.common.IRhenaConfiguration;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -29,13 +29,13 @@ import com.unnsvc.rhena.core.model.RhenaModuleParser;
  */
 public class LocalCacheRepository implements IRepository {
 
-	private IRhenaConfiguration config;
+	private IRhenaContext context;
 	private File location;
 
-	public LocalCacheRepository(IRhenaConfiguration config) {
+	public LocalCacheRepository(IRhenaContext context) {
 
-		this.config = config;
-		this.location = new File(config.getRhenaHome(), "repository");
+		this.context = context;
+		this.location = new File(context.getRhenaHome(), "repository");
 	}
 
 	@Override
@@ -46,11 +46,11 @@ public class LocalCacheRepository implements IRepository {
 
 		if (!moduleDescriptor.isFile()) {
 
-			config.getLogger().debug(getClass(), identifier, "Not found in repository location: " + location);
+			context.getLogger().debug(getClass(), identifier, "Not found in repository location: " + location);
 			return null;
 		}
 
-		IRhenaModule module = new RhenaModuleParser(config, this, identifier, moduleDescriptor.toURI()).getModel();
+		IRhenaModule module = new RhenaModuleParser(context, this, identifier, moduleDescriptor.toURI()).getModel();
 		return module;
 	}
 
@@ -77,7 +77,7 @@ public class LocalCacheRepository implements IRepository {
 
 			RhenaExecutionDescriptorParser execParser = new RhenaExecutionDescriptorParser(entryPoint.getTarget(), entryPoint.getExecutionType(),
 					executionDirectory.toURI());
-			config.getLogger().debug(getClass(), entryPoint.getTarget(), "Created execution: " + execParser.getExecution());
+			context.getLogger().debug(getClass(), entryPoint.getTarget(), "Created execution: " + execParser.getExecution());
 			return execParser.getExecution();
 		}
 		// throw new UnsupportedOperationException("Not implemented for

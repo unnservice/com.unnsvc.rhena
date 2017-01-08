@@ -5,7 +5,7 @@ import java.io.File;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.unnsvc.rhena.common.IRhenaConfiguration;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
@@ -21,7 +21,7 @@ public class TestDependencyCollection {
 	@Test
 	public void testDeps() throws Exception {
 		
-		IRhenaConfiguration config = new RhenaConfiguration();
+		IRhenaContext config = new RhenaContext();
 		config.addWorkspaceRepository(new WorkspaceRepository(config, new File("../../")));
 		config.addWorkspaceRepository(new WorkspaceRepository(config, new File("../")));
 		config.setRunTest(true);
@@ -66,7 +66,7 @@ public class TestDependencyCollection {
 
 		engine.getCache().getModules().forEach((identifier, module) -> {
 			try {
-				module.visit(new DebugModelVisitor(engine.getConfiguration(), 0, engine));
+				module.visit(new DebugModelVisitor(engine.getContext(), 0, engine));
 			} catch (RhenaException e) {
 
 				e.printStackTrace();
