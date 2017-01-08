@@ -50,7 +50,7 @@ public class LocalCacheRepository implements IRepository {
 			return null;
 		}
 
-		IRhenaModule module = new RhenaModuleParser(this, identifier, moduleDescriptor.toURI()).getModel();
+		IRhenaModule module = new RhenaModuleParser(config, this, identifier, moduleDescriptor.toURI()).getModel();
 		return module;
 	}
 

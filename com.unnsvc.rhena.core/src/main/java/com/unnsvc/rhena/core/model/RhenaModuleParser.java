@@ -17,6 +17,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.unnsvc.rhena.common.IRepository;
+import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -32,10 +33,12 @@ import com.unnsvc.rhena.core.lifecycle.ProcessorReference;
 public class RhenaModuleParser {
 
 	private RhenaModule module;
+	// private IRhenaConfiguration config;
 
-	public RhenaModuleParser(IRepository repository, ModuleIdentifier identifier, URI descriptorLocation) throws RhenaException {
+	public RhenaModuleParser(IRhenaConfiguration config, IRepository repository, ModuleIdentifier identifier, URI descriptorLocation) throws RhenaException {
 
 		try {
+			// this.config = config;
 			URI location = new URI(descriptorLocation.getPath().substring(0, descriptorLocation.getPath().lastIndexOf("/")));
 			this.module = new RhenaModule(identifier, location, repository);
 
@@ -57,7 +60,8 @@ public class RhenaModuleParser {
 			if (extendsAttribute != null) {
 				String extendsModuleIdentifierStr = extendsAttribute.getNodeValue();
 				ModuleIdentifier extendsModuleIdentifier = ModuleIdentifier.valueOf(extendsModuleIdentifierStr);
-				module.setParent(new RhenaEdge(new EntryPoint(EExecutionType.MODEL, extendsModuleIdentifier), ESelectionType.HIERARCHY));
+				module.setParent(
+						new RhenaEdge(module.getIdentifier(), new EntryPoint(EExecutionType.MODEL, extendsModuleIdentifier), ESelectionType.HIERARCHY));
 			}
 		}
 
@@ -144,11 +148,11 @@ public class RhenaModuleParser {
 			Node child = children.item(i);
 			if (child.getNodeType() == Node.ELEMENT_NODE) {
 
-				String module = child.getAttributes().getNamedItem("module").getNodeValue();
-				String clazz = child.getAttributes().getNamedItem("class").getNodeValue();
-				String schema = null;
+				String moduleAttrStr = child.getAttributes().getNamedItem("module").getNodeValue();
+				String clazzAttrStr = child.getAttributes().getNamedItem("class").getNodeValue();
+				String schemaAttrStr = null;
 				if (child.getAttributes().getNamedItem("schema") != null) {
-					schema = child.getAttributes().getNamedItem("schema").getNodeValue();
+					schemaAttrStr = child.getAttributes().getNamedItem("schema").getNodeValue();
 				}
 
 				// Make a document out of the entire processor node
@@ -159,18 +163,18 @@ public class RhenaModuleParser {
 
 				if (child.getLocalName().equals("context")) {
 
-					IRhenaEdge edge = new RhenaEdge(new EntryPoint(et, ModuleIdentifier.valueOf(module)), tt);
-					ContextReference configurator = new ContextReference(edge, clazz, schema, config);
+					IRhenaEdge edge = new RhenaEdge(module.getIdentifier(), new EntryPoint(et, ModuleIdentifier.valueOf(moduleAttrStr)), tt);
+					ContextReference configurator = new ContextReference(edge, clazzAttrStr, schemaAttrStr, config);
 					lifecycleReference.setContext(configurator);
 				} else if (child.getLocalName().equals("processor")) {
 
-					IRhenaEdge edge = new RhenaEdge(new EntryPoint(et, ModuleIdentifier.valueOf(module)), tt);
-					ProcessorReference processor = new ProcessorReference(edge, clazz, schema, config);
+					IRhenaEdge edge = new RhenaEdge(module.getIdentifier(), new EntryPoint(et, ModuleIdentifier.valueOf(moduleAttrStr)), tt);
+					ProcessorReference processor = new ProcessorReference(edge, clazzAttrStr, schemaAttrStr, config);
 					lifecycleReference.addProcessor(processor);
 				} else if (child.getLocalName().equals("generator")) {
 
-					IRhenaEdge edge = new RhenaEdge(new EntryPoint(et, ModuleIdentifier.valueOf(module)), tt);
-					GeneratorReference generator = new GeneratorReference(edge, clazz, schema, config);
+					IRhenaEdge edge = new RhenaEdge(module.getIdentifier(), new EntryPoint(et, ModuleIdentifier.valueOf(moduleAttrStr)), tt);
+					GeneratorReference generator = new GeneratorReference(edge, clazzAttrStr, schemaAttrStr, config);
 					lifecycleReference.setGenerator(generator);
 				}
 			}
@@ -198,7 +202,7 @@ public class RhenaModuleParser {
 		if (moduleChild.getAttributes().getNamedItem("traverse") != null) {
 
 			ESelectionType traverseType = ESelectionType.valueOf(moduleChild.getAttributes().getNamedItem("traverse").getNodeValue().toUpperCase());
-			edge = new RhenaEdge(new EntryPoint(dependencyType, moduleIdentifier), traverseType);
+			edge = new RhenaEdge(module.getIdentifier(), new EntryPoint(dependencyType, moduleIdentifier), traverseType);
 		} else {
 
 			/**
@@ -208,7 +212,7 @@ public class RhenaModuleParser {
 			if (dependencyType.equals(EExecutionType.MAIN)) {
 				traverseType = ESelectionType.SCOPE;
 			}
-			edge = new RhenaEdge(new EntryPoint(dependencyType, moduleIdentifier), traverseType);
+			edge = new RhenaEdge(module.getIdentifier(), new EntryPoint(dependencyType, moduleIdentifier), traverseType);
 		}
 
 		if (!module.getDependencies().contains(edge)) {

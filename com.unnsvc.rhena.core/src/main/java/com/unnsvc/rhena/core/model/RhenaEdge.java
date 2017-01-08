@@ -1,19 +1,28 @@
 
 package com.unnsvc.rhena.core.model;
 
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 
 public class RhenaEdge implements IRhenaEdge {
 
+	private ModuleIdentifier source;
 	private IEntryPoint entryPoint;
 	private ESelectionType traverseType;
 
-	public RhenaEdge(IEntryPoint entryPoint, ESelectionType traverseType) {
+	public RhenaEdge(ModuleIdentifier source, IEntryPoint entryPoint, ESelectionType traverseType) {
 
+		this.source = source;
 		this.entryPoint = entryPoint;
 		this.traverseType = traverseType;
+	}
+
+	@Override
+	public ModuleIdentifier getSource() {
+
+		return source;
 	}
 
 	@Override
