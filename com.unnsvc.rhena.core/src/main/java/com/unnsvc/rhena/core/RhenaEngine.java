@@ -1,7 +1,6 @@
 
 package com.unnsvc.rhena.core;
 
-import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -39,14 +38,14 @@ public class RhenaEngine implements IRhenaEngine {
 		 * cyclic check
 		 */
 		IEntryPoint entryPoint = new EntryPoint(EExecutionType.TEST, identifier);
-		return cascadingResolver.resolveEdge(entryPoint);
+		return cascadingResolver.resolveEntryPoint(entryPoint);
 	}
 
 	@Override
 	public IRhenaExecution materialiseExecution(IRhenaModule module, EExecutionType type) throws RhenaException {
 
 		IEntryPoint entryPoint = new EntryPoint(type, module.getIdentifier());
-		return cascadingBuilder.buildEdge(entryPoint);
+		return cascadingBuilder.buildEntryPoint(entryPoint);
 	}
 	
 	@Override

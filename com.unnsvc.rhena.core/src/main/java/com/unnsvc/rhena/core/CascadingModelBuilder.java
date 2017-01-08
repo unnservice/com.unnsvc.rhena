@@ -34,7 +34,7 @@ public class CascadingModelBuilder {
 		this.context = context;
 	}
 
-	public IRhenaExecution buildEdge(IEntryPoint entryPoint) throws RhenaException {
+	public IRhenaExecution buildEntryPoint(IEntryPoint entryPoint) throws RhenaException {
 
 		ExecutionMergeEdgeSet allEdges = getAllEntryPoints(entryPoint);
 		prefillExecutions(allEdges);

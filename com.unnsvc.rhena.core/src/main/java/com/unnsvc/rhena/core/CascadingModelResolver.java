@@ -50,7 +50,7 @@ public class CascadingModelResolver {
 	 * @param entryPoint
 	 * @throws RhenaException
 	 */
-	public IRhenaModule resolveEdge(IEntryPoint entryPoint) throws RhenaException {
+	public IRhenaModule resolveEntryPoint(IEntryPoint entryPoint) throws RhenaException {
 
 		List<IEntryPoint> processed = new ArrayList<IEntryPoint>();
 		UniqueStack<IEntryPoint> tracker = new UniqueStack<IEntryPoint>();
