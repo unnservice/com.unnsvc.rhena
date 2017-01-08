@@ -2,7 +2,9 @@
 package com.unnsvc.rhena.core;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
@@ -10,6 +12,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycle;
 import com.unnsvc.rhena.core.events.ModuleAddRemoveEvent;
@@ -21,10 +24,12 @@ public class RhenaCache implements IRhenaCache {
 	private Map<ModuleIdentifier, IRhenaModule> modules;
 	private Map<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>> executions;
 	private Map<ModuleIdentifier, ILifecycle> lifecycles;
+	private Set<IRhenaEdge> edges;
 
 	public RhenaCache(IRhenaContext context) {
 
 		this.context = context;
+		this.edges = new HashSet<IRhenaEdge>();
 		this.modules = new HashMap<ModuleIdentifier, IRhenaModule>();
 		// @TODO evaluate if we can use CompletionService and some .take().get()
 		// trickery for efficient execution loop
@@ -88,5 +93,17 @@ public class RhenaCache implements IRhenaCache {
 	public ILifecycle getLifecycle(ModuleIdentifier identifier) {
 
 		return lifecycles.get(identifier);
+	}
+
+	@Override
+	public void addEdge(IRhenaEdge edge) {
+
+		edges.add(edge);
+	}
+
+	@Override
+	public Set<IRhenaEdge> getEdges() {
+
+		return edges;
 	}
 }

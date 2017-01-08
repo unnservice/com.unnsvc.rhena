@@ -88,7 +88,7 @@ public class TestRhenaModule {
 
 	private void debugContext(IRhenaEngine engine) throws RhenaException {
 
-		engine.getCache().getModules().forEach((identifier, module) -> {
+		engine.getContext().getCache().getModules().forEach((identifier, module) -> {
 			try {
 				module.visit(new DebugModelVisitor(engine.getContext(), 0, engine));
 			} catch (RhenaException e) {

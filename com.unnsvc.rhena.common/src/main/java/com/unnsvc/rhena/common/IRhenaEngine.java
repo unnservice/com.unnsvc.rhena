@@ -26,6 +26,4 @@ public interface IRhenaEngine {
 
 	public IRhenaContext getContext();
 
-	public IRhenaCache getCache();
-
 }

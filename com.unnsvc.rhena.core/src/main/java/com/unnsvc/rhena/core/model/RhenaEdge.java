@@ -43,6 +43,7 @@ public class RhenaEdge implements IRhenaEdge {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((entryPoint == null) ? 0 : entryPoint.hashCode());
+		result = prime * result + ((source == null) ? 0 : source.hashCode());
 		result = prime * result + ((traverseType == null) ? 0 : traverseType.hashCode());
 		return result;
 	}
@@ -62,6 +63,11 @@ public class RhenaEdge implements IRhenaEdge {
 				return false;
 		} else if (!entryPoint.equals(other.entryPoint))
 			return false;
+		if (source == null) {
+			if (other.source != null)
+				return false;
+		} else if (!source.equals(other.source))
+			return false;
 		if (traverseType != other.traverseType)
 			return false;
 		return true;
@@ -70,7 +76,6 @@ public class RhenaEdge implements IRhenaEdge {
 	@Override
 	public String toString() {
 
-		return "RhenaEdge [entryPoint=" + entryPoint + ", traverseType=" + traverseType + "]";
+		return "RhenaEdge [source=" + source + ", entryPoint=" + entryPoint + ", traverseType=" + traverseType + "]";
 	}
-
 }

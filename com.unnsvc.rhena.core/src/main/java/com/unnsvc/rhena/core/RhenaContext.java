@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.unnsvc.rhena.common.IListenerConfiguration;
 import com.unnsvc.rhena.common.IRepository;
+import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.logging.ILogger;
@@ -19,7 +20,7 @@ import com.unnsvc.rhena.core.logging.LogFacade;
 public class RhenaContext implements IRhenaContext {
 
 	private IRhenaConfiguration config;
-
+	private IRhenaCache cache;
 	private List<IRepository> repositories;
 	private IRepository localCacheRepository;
 	private IListenerConfiguration listenerConfig;
@@ -31,6 +32,7 @@ public class RhenaContext implements IRhenaContext {
 	public RhenaContext(IRhenaConfiguration config) {
 
 		this.config = config;
+		this.cache = new RhenaCache(this);
 		this.repositories = new ArrayList<IRepository>();
 		this.listenerConfig = new ListenerConfiguration();
 		this.logFacade = new LogFacade(listenerConfig);
@@ -40,6 +42,12 @@ public class RhenaContext implements IRhenaContext {
 	public IRhenaConfiguration getConfig() {
 
 		return config;
+	}
+
+	@Override
+	public IRhenaCache getCache() {
+
+		return cache;
 	}
 
 	@Override
@@ -83,6 +91,5 @@ public class RhenaContext implements IRhenaContext {
 	@Override
 	public void close() throws Exception {
 
-		
 	}
 }

@@ -23,14 +23,12 @@ public class RhenaEngine implements IRhenaEngine {
 	private IRhenaContext context;
 	private CascadingModelResolver cascadingResolver;
 	private CascadingModelBuilder cascadingBuilder;
-	private IRhenaCache cache;
-
+	
 	public RhenaEngine(IRhenaContext context) {
 
 		this.context = context;
-		this.cache = new RhenaCache(context);
-		this.cascadingResolver = new CascadingModelResolver(context, cache);
-		this.cascadingBuilder = new CascadingModelBuilder(context, cache);
+		this.cascadingResolver = new CascadingModelResolver(context, context.getCache());
+		this.cascadingBuilder = new CascadingModelBuilder(context, context.getCache());
 	}
 
 	@Override
@@ -55,11 +53,5 @@ public class RhenaEngine implements IRhenaEngine {
 	public IRhenaContext getContext() {
 
 		return context;
-	}
-	
-	@Override
-	public IRhenaCache getCache() {
-
-		return cache;
 	}
 }

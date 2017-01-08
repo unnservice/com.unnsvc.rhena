@@ -9,6 +9,8 @@ public interface IRhenaContext extends AutoCloseable {
 
 	public IRhenaConfiguration getConfig();
 
+	public IRhenaCache getCache();
+
 	public List<IRepository> getWorkspaceRepositories();
 
 	public void addWorkspaceRepository(IRepository repository);
