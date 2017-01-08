@@ -64,7 +64,7 @@ public class CascadingModelBuilder {
 			}
 
 			Runtime runtime = Runtime.getRuntime();
-			int threads = context.isParallel() ? runtime.availableProcessors() : 1;
+			int threads = context.getConfig().isParallel() ? runtime.availableProcessors() : 1;
 			ExecutorService executor = Executors.newFixedThreadPool(threads);
 
 			for (final IEntryPoint edge : resolvable) {
@@ -212,20 +212,22 @@ public class CascadingModelBuilder {
 		}
 
 		// check whether parent execution types have been executed
-//		for (EExecutionType et : entryPoint.getExecutionType().getTraversables()) {
-//
-//			if (!cache.containsExecution(entryPoint.getTarget(), et)) {
-//				if (debug) {
-//					waitingOn.add("↳ self: " + entryPoint.getTarget() + ":" + et.literal());
-//					buildable = false;
-//				} else {
-//					return false;
-//				}
-//			}
-//		}
-		
+		// for (EExecutionType et :
+		// entryPoint.getExecutionType().getTraversables()) {
+		//
+		// if (!cache.containsExecution(entryPoint.getTarget(), et)) {
+		// if (debug) {
+		// waitingOn.add("↳ self: " + entryPoint.getTarget() + ":" +
+		// et.literal());
+		// buildable = false;
+		// } else {
+		// return false;
+		// }
+		// }
+		// }
+
 		// up intil, but not including
-		for(int i = 0; i < entryPoint.getExecutionType().ordinal(); i++) {
+		for (int i = 0; i < entryPoint.getExecutionType().ordinal(); i++) {
 			EExecutionType et = EExecutionType.values()[i];
 			if (!cache.containsExecution(entryPoint.getTarget(), et)) {
 				if (debug) {

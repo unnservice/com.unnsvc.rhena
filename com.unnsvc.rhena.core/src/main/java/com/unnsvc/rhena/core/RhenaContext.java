@@ -1,12 +1,12 @@
 
 package com.unnsvc.rhena.core;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.unnsvc.rhena.common.IListenerConfiguration;
 import com.unnsvc.rhena.common.IRepository;
+import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.logging.ILogger;
 import com.unnsvc.rhena.core.logging.LogFacade;
@@ -18,75 +18,34 @@ import com.unnsvc.rhena.core.logging.LogFacade;
  */
 public class RhenaContext implements IRhenaContext {
 
-	private boolean runTest;
-	private boolean runItest;
-	private boolean packageWorkspace;
-	private boolean installLocal;
-	private boolean parallel;
+	private IRhenaConfiguration config;
+
 	private List<IRepository> repositories;
 	private IRepository localCacheRepository;
-	private File rhenaHome;
 	private IListenerConfiguration listenerConfig;
 	private LogFacade logFacade;
 
 	/**
 	 * @TODO this remains from old code
 	 */
-	public RhenaContext() {
+	public RhenaContext(IRhenaConfiguration config) {
 
+		this.config = config;
 		this.repositories = new ArrayList<IRepository>();
 		this.listenerConfig = new ListenerConfiguration();
 		this.logFacade = new LogFacade(listenerConfig);
 	}
 
 	@Override
+	public IRhenaConfiguration getConfig() {
+
+		return config;
+	}
+
+	@Override
 	public IListenerConfiguration getListenerConfig() {
 
 		return listenerConfig;
-	}
-
-	@Override
-	public void setRunTest(boolean runTest) {
-
-		this.runTest = runTest;
-	}
-
-	public boolean isRunTest() {
-
-		return runTest;
-	}
-
-	@Override
-	public void setRunItest(boolean runItest) {
-
-		this.runItest = runItest;
-	}
-
-	public boolean isRunItest() {
-
-		return runItest;
-	}
-
-	@Override
-	public void setPackageWorkspace(boolean packageWorkspace) {
-
-		this.packageWorkspace = packageWorkspace;
-	}
-
-	public boolean isPackageWorkspace() {
-
-		return packageWorkspace;
-	}
-
-	@Override
-	public void setInstallLocal(boolean installLocal) {
-
-		this.installLocal = installLocal;
-	}
-
-	public boolean isInstallLocal() {
-
-		return installLocal;
 	}
 
 	@Override
@@ -98,18 +57,6 @@ public class RhenaContext implements IRhenaContext {
 	public void addWorkspaceRepository(IRepository repository) {
 
 		this.repositories.add(repository);
-	}
-
-	@Override
-	public void setParallel(boolean parallel) {
-
-		this.parallel = parallel;
-	}
-
-	@Override
-	public boolean isParallel() {
-
-		return parallel;
 	}
 
 	@Override
@@ -130,15 +77,12 @@ public class RhenaContext implements IRhenaContext {
 		return localCacheRepository;
 	}
 
+	/**
+	 * @TODO clean caches and everything
+	 */
 	@Override
-	public void setRhenaHome(File rhenaHome) {
+	public void close() throws Exception {
 
-		this.rhenaHome = rhenaHome;
-	}
-
-	@Override
-	public File getRhenaHome() {
-
-		return rhenaHome;
+		
 	}
 }

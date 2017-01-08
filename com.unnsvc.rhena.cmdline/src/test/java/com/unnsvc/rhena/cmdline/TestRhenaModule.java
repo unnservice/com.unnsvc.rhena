@@ -6,6 +6,7 @@ import java.io.File;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -14,6 +15,7 @@ import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.listener.IContextListener;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.core.RhenaConfiguration;
 import com.unnsvc.rhena.core.RhenaContext;
 import com.unnsvc.rhena.core.RhenaEngine;
 import com.unnsvc.rhena.core.events.LogEvent;
@@ -27,42 +29,42 @@ public class TestRhenaModule {
 	@Test
 	public void testModule() throws Exception {
 
-		IRhenaContext context = new RhenaContext();
-		context.setRhenaHome(new File(System.getProperty("user.home"), ".rhena"));
-		context.addWorkspaceRepository(new WorkspaceRepository(context, new File("../../")));
-		context.addWorkspaceRepository(new WorkspaceRepository(context, new File("../")));
-		context.setLocalRepository(new LocalCacheRepository(context));
-		context.setRunTest(true);
-		context.setRunItest(true);
-		context.setParallel(false);
+		IRhenaConfiguration config = new RhenaConfiguration();
+		config.setRhenaHome(new File(System.getProperty("user.home"), ".rhena"));
+		config.setRunTest(true);
+		config.setRunItest(true);
+		config.setParallel(false);
 		// Produce packages or use exploded compilation
-		context.setPackageWorkspace(false);
-		context.setInstallLocal(true);
+		config.setPackageWorkspace(false);
+		config.setInstallLocal(true);
 		// context.setLogHandler(IRhenaLogHandler logHandler);
 		// context.getRepositoryConfiguration().addRepository()
 		// context.getRepositoryConfiguration().setProxyXX?
 		// context.getTestConfiguration().setXXX
 		// context.addListener...
-		context.getListenerConfig().addListener(new IContextListener<LogEvent>() {
-
-			@Override
-			public void onEvent(LogEvent event) throws RhenaException {
-
-				System.out.println(event.toString());
-			}
-
-			@Override
-			public Class<LogEvent> getType() {
-
-				return LogEvent.class;
-			}
-		});
 
 		/**
 		 * This portion below can be executed multiple times, make sure there
 		 * are no resource leaks in the lifecycles
 		 */
-		try {
+		try (IRhenaContext context = new RhenaContext(config)) {
+			context.addWorkspaceRepository(new WorkspaceRepository(context, new File("../../")));
+			context.addWorkspaceRepository(new WorkspaceRepository(context, new File("../")));
+			context.setLocalRepository(new LocalCacheRepository(context));
+			context.getListenerConfig().addListener(new IContextListener<LogEvent>() {
+
+				@Override
+				public void onEvent(LogEvent event) throws RhenaException {
+
+					System.out.println(event.toString());
+				}
+
+				@Override
+				public Class<LogEvent> getType() {
+
+					return LogEvent.class;
+				}
+			});
 
 			IRhenaEngine engine = new RhenaEngine(context);
 

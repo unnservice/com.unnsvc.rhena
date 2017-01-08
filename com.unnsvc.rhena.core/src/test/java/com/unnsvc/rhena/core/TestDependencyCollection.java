@@ -5,6 +5,7 @@ import java.io.File;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -21,9 +22,7 @@ public class TestDependencyCollection {
 	@Test
 	public void testDeps() throws Exception {
 		
-		IRhenaContext config = new RhenaContext();
-		config.addWorkspaceRepository(new WorkspaceRepository(config, new File("../../")));
-		config.addWorkspaceRepository(new WorkspaceRepository(config, new File("../")));
+		IRhenaConfiguration config = new RhenaConfiguration();
 		config.setRunTest(true);
 		config.setRunItest(true);
 		config.setParallel(true);
@@ -35,6 +34,10 @@ public class TestDependencyCollection {
 		// config.getRepositoryConfiguration().setProxyXX?
 		// config.getTestConfiguration().setXXX
 		// config.addListener...
+		
+		IRhenaContext context = new RhenaContext(config);
+		context.addWorkspaceRepository(new WorkspaceRepository(context, new File("../../")));
+		context.addWorkspaceRepository(new WorkspaceRepository(context, new File("../")));
 
 		/**
 		 * This portion below can be executed multiple times, make sure there
@@ -42,7 +45,7 @@ public class TestDependencyCollection {
 		 */
 		try {
 
-			IRhenaEngine engine = new RhenaEngine(config);
+			IRhenaEngine engine = new RhenaEngine(context);
 
 			IRhenaModule entryPointModule = engine.materialiseModel(ModuleIdentifier.valueOf("com.unnsvc.rhena:core:0.0.1"));
 			Assert.assertNotNull(entryPointModule);

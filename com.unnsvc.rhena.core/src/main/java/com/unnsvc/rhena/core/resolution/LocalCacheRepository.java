@@ -35,7 +35,7 @@ public class LocalCacheRepository implements IRepository {
 	public LocalCacheRepository(IRhenaContext context) {
 
 		this.context = context;
-		this.location = new File(context.getRhenaHome(), "repository");
+		this.location = new File(context.getConfig().getRhenaHome(), "repository");
 	}
 
 	@Override
