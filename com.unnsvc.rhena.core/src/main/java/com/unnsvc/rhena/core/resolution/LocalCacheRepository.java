@@ -30,12 +30,10 @@ import com.unnsvc.rhena.core.model.RhenaModuleParser;
 public class LocalCacheRepository implements IRepository {
 
 	private IRhenaContext context;
-	private File location;
 
 	public LocalCacheRepository(IRhenaContext context) {
 
 		this.context = context;
-		this.location = new File(context.getConfig().getRhenaHome(), "repository");
 	}
 
 	@Override
@@ -46,7 +44,7 @@ public class LocalCacheRepository implements IRepository {
 
 		if (!moduleDescriptor.isFile()) {
 
-			context.getLogger().debug(getClass(), identifier, "Not found in repository location: " + location);
+			context.getLogger().debug(getClass(), identifier, "Not found in repository location: " + getLocationFile());
 			return null;
 		}
 
@@ -93,14 +91,19 @@ public class LocalCacheRepository implements IRepository {
 		relpath.append(identifier.getModuleName()).append(File.separator);
 		relpath.append(identifier.getVersion().toString()).append(File.separator);
 
-		File moduleDirectory = new File(location, relpath.toString());
+		File moduleDirectory = new File(getLocationFile(), relpath.toString());
 		return moduleDirectory;
+	}
+
+	public File getLocationFile() {
+
+		return new File(context.getConfig().getRhenaHome(), "repository");
 	}
 
 	@Override
 	public URI getLocation() {
 
-		throw new UnsupportedOperationException("Not implemented");
+		return getLocationFile().toURI();
 	}
 
 }
