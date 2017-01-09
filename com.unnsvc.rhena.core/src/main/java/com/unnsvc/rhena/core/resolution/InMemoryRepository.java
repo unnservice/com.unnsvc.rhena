@@ -8,6 +8,7 @@ import java.util.Map;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
@@ -54,8 +55,10 @@ public class InMemoryRepository implements IRepository {
 
 		// all of its edges need to be added into the cache
 
-		this.context.getCache().addEdge(module.getParent());
-		if (module.getLifecycleName() != null) {
+		if (module.getParent() != null) {
+			this.context.getCache().addEdge(module.getParent());
+		}
+		if (module.getLifecycleName() != null && !module.getLifecycleName().equals(RhenaConstants.DEFAULT_LIFECYCLE_MODULE)) {
 			ILifecycleReference lifecycleRef = module.getLifecycleDeclarations().get(module.getLifecycleName());
 			lifecycleRef.getAllReferences().forEach(ref -> this.context.getCache().addEdge(ref.getModuleEdge()));
 		}

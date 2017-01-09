@@ -34,24 +34,43 @@ public class RootFinder {
 
 		for (IRhenaEdge edge : context.getCache().getEdges()) {
 
+			/**
+			 * Test each edge
+			 */
 			if (edge.getEntryPoint().getTarget().equals(identifier)) {
+				
 				if (edge.getEntryPoint().getExecutionType().compareTo(type) >= 0) {
-					if (edge.getTraverseType().equals(ESelectionType.DIRECT) && level != 1) {
-						// higher up the hierarchy and direct won't reach what
+					System.err.println("Found edge targeting identifier: " + edge);
+					
+					if (edge.getTraverseType().equals(ESelectionType.DIRECT)) {
+						if(level != 1) {
+							continue;
+						}
+						// higher up the hierarchy and DIRECT won't reach what
 						// we're trying to target
 						// so we have found root on the previous node
+						// add current as root
 						roots.add(identifier);
+						continue;
 					}
 					if (edge.getTraverseType().equals(ESelectionType.COMPONENT)) {
 						if (!componentNameOrigin.equals(componentNameCurrent)) {
-							// previous node was a root
+							// current node was a root so don't walk further up
 							roots.add(identifier);
+							continue;
 						}
 					}
 					RootFinder upward = new RootFinder(context, edge.getSource(), type, componentNameOrigin, edge.getSource().getComponentName().toString());
 					roots.addAll(upward.findRoots(level++));
 				}
 			}
+		}
+		
+		/**
+		 * No edges were found to be targeting this, or this was the first parent
+		 */
+		if(roots.isEmpty()) {
+			roots.add(identifier);
 		}
 
 		return roots;

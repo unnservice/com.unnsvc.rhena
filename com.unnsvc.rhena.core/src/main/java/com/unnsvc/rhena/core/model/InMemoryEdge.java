@@ -9,7 +9,6 @@ public class InMemoryEdge extends RhenaEdge {
 	public InMemoryEdge(InMemoryModule source, InMemoryModule target, EExecutionType targetType, ESelectionType targetTraverseType) {
 
 		super(source.getIdentifier(), new EntryPoint(targetType, target.getIdentifier()), targetTraverseType);
-
 	}
 
 }
