@@ -1,6 +1,8 @@
 
 package com.unnsvc.rhena.common;
 
+import java.util.Set;
+
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
@@ -25,5 +27,7 @@ public interface IRhenaEngine {
 	public IRhenaExecution materialiseExecution(IRhenaModule entryPointModule, EExecutionType prototype) throws RhenaException;
 
 	public IRhenaContext getContext();
+
+	public Set<ModuleIdentifier> findRoots(ModuleIdentifier identifier, EExecutionType type);
 
 }

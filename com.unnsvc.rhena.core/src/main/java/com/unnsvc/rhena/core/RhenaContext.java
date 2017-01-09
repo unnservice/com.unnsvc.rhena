@@ -22,6 +22,7 @@ public class RhenaContext implements IRhenaContext {
 	private IRhenaConfiguration config;
 	private IRhenaCache cache;
 	private List<IRepository> repositories;
+	private List<IRepository> additionalRepositories;
 	private IRepository localCacheRepository;
 	private IListenerConfiguration listenerConfig;
 	private LogFacade logFacade;
@@ -34,6 +35,7 @@ public class RhenaContext implements IRhenaContext {
 		this.config = config;
 		this.cache = new RhenaCache(this);
 		this.repositories = new ArrayList<IRepository>();
+		this.additionalRepositories = new ArrayList<IRepository>();
 		this.listenerConfig = new ListenerConfiguration();
 		this.logFacade = new LogFacade(listenerConfig);
 	}
@@ -85,6 +87,18 @@ public class RhenaContext implements IRhenaContext {
 		return localCacheRepository;
 	}
 
+	@Override
+	public List<IRepository> getAdditionalRepositories() {
+
+		return additionalRepositories;
+	}
+
+	@Override
+	public void addAdditionalRepository(IRepository repository) {
+
+		this.additionalRepositories.add(repository);
+	}
+
 	/**
 	 * @TODO clean caches and everything
 	 */
@@ -92,4 +106,5 @@ public class RhenaContext implements IRhenaContext {
 	public void close() throws Exception {
 
 	}
+
 }

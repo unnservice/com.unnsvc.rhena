@@ -23,4 +23,8 @@ public interface IRhenaContext extends AutoCloseable {
 
 	public IListenerConfiguration getListenerConfig();
 
+	public List<IRepository> getAdditionalRepositories();
+
+	public void addAdditionalRepository(IRepository repository);
+
 }
