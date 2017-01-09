@@ -14,6 +14,8 @@ import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.execution.WorkspaceExecution;
+import com.unnsvc.rhena.core.logging.SystemOutLogListener;
+import com.unnsvc.rhena.core.resolution.LocalCacheRepository;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
 import com.unnsvc.rhena.core.visitors.DebugModelVisitor;
 
@@ -23,6 +25,7 @@ public class TestDependencyCollection {
 	public void testDeps() throws Exception {
 		
 		IRhenaConfiguration config = new RhenaConfiguration();
+		config.setRhenaHome(new File(System.getProperty("user.home"), ".rhena"));
 		config.setRunTest(true);
 		config.setRunItest(true);
 		config.setParallel(true);
@@ -35,15 +38,15 @@ public class TestDependencyCollection {
 		// config.getTestConfiguration().setXXX
 		// config.addListener...
 		
-		IRhenaContext context = new RhenaContext(config);
-		context.addWorkspaceRepository(new WorkspaceRepository(context, new File("../../")));
-		context.addWorkspaceRepository(new WorkspaceRepository(context, new File("../")));
-
 		/**
 		 * This portion below can be executed multiple times, make sure there
 		 * are no resource leaks in the lifecycles
 		 */
-		try {
+		try(IRhenaContext context = new RhenaContext(config)) {
+			context.addWorkspaceRepository(new WorkspaceRepository(context, new File("../../")));
+			context.addWorkspaceRepository(new WorkspaceRepository(context, new File("../")));
+			context.setLocalRepository(new LocalCacheRepository(context));
+			context.getListenerConfig().addListener(new SystemOutLogListener());
 
 			IRhenaEngine engine = new RhenaEngine(context);
 

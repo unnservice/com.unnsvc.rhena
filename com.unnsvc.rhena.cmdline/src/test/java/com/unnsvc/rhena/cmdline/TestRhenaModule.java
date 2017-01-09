@@ -13,13 +13,12 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.listener.IContextListener;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.RhenaConfiguration;
 import com.unnsvc.rhena.core.RhenaContext;
 import com.unnsvc.rhena.core.RhenaEngine;
-import com.unnsvc.rhena.core.events.LogEvent;
 import com.unnsvc.rhena.core.execution.WorkspaceExecution;
+import com.unnsvc.rhena.core.logging.SystemOutLogListener;
 import com.unnsvc.rhena.core.resolution.LocalCacheRepository;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
 import com.unnsvc.rhena.core.visitors.DebugModelVisitor;
@@ -51,20 +50,7 @@ public class TestRhenaModule {
 			context.addWorkspaceRepository(new WorkspaceRepository(context, new File("../../")));
 			context.addWorkspaceRepository(new WorkspaceRepository(context, new File("../")));
 			context.setLocalRepository(new LocalCacheRepository(context));
-			context.getListenerConfig().addListener(new IContextListener<LogEvent>() {
-
-				@Override
-				public void onEvent(LogEvent event) throws RhenaException {
-
-					System.out.println(event.toString());
-				}
-
-				@Override
-				public Class<LogEvent> getType() {
-
-					return LogEvent.class;
-				}
-			});
+			context.getListenerConfig().addListener(new SystemOutLogListener());
 
 			IRhenaEngine engine = new RhenaEngine(context);
 
