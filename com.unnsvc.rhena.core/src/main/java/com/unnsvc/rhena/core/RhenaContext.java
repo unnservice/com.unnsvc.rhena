@@ -105,6 +105,14 @@ public class RhenaContext implements IRhenaContext {
 	@Override
 	public void close() throws Exception {
 
+		getCache().getExecutions().clear();
+		getCache().getLifecycles().clear();
+
+		// Only remove lifecycles and executions
+
+		getCache().getModules().clear();
+		getCache().getEdges().clear();
+		getCache().getMerged().clear();
 	}
 
 }

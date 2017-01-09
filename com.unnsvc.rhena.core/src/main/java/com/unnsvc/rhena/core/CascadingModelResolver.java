@@ -3,11 +3,9 @@ package com.unnsvc.rhena.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
@@ -32,13 +30,11 @@ import com.unnsvc.rhena.core.execution.UniqueStack;
 public class CascadingModelResolver {
 
 	private IRhenaContext context;
-	private Set<ModuleIdentifier> merged;
 	private IRhenaCache cache;
 
 	public CascadingModelResolver(IRhenaContext context, IRhenaCache cache) {
 
 		this.context = context;
-		this.merged = new HashSet<ModuleIdentifier>();
 		this.cache = cache;
 	}
 
@@ -77,10 +73,10 @@ public class CascadingModelResolver {
 					 *       middle of the model resolution cascade, but
 					 *       necessary at present to make this work.
 					 */
-					if (currentModule.getParent() != null && !merged.contains(currentModule.getIdentifier())) {
+					if (currentModule.getParent() != null && !cache.getMerged().contains(currentModule.getIdentifier())) {
 						IRhenaModule parentModule = materialiseModel(currentModule.getParent().getEntryPoint().getTarget());
 						merge(currentModule, parentModule);
-						merged.add(currentModule.getIdentifier());
+						cache.getMerged().add(currentModule.getIdentifier());
 					}
 
 					/**

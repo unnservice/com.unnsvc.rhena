@@ -33,4 +33,6 @@ public interface IRhenaCache {
 	public void addEdge(IRhenaEdge edge);
 
 	public Set<IRhenaEdge> getEdges();
+
+	public Set<ModuleIdentifier> getMerged();
 }
