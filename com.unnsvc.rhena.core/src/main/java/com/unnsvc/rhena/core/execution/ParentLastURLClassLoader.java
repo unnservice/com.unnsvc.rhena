@@ -11,7 +11,6 @@ import java.util.List;
  * 
  * @TODO write a proper one for our use-cases
  * 
- * @author noname
  *
  */
 public class ParentLastURLClassLoader extends ClassLoader {
@@ -24,6 +23,7 @@ public class ParentLastURLClassLoader extends ClassLoader {
 	private static class FindClassClassLoader extends ClassLoader {
 
 		public FindClassClassLoader(ClassLoader parent) {
+
 			super(parent);
 		}
 
@@ -44,6 +44,7 @@ public class ParentLastURLClassLoader extends ClassLoader {
 		private FindClassClassLoader realParent;
 
 		public ChildURLClassLoader(URL[] urls, FindClassClassLoader realParent) {
+
 			super(urls, null);
 
 			this.realParent = realParent;
@@ -63,7 +64,8 @@ public class ParentLastURLClassLoader extends ClassLoader {
 		}
 	}
 
-	public ParentLastURLClassLoader(ClassLoader parent, List<URL> classpath) {
+	public ParentLastURLClassLoader(List<URL> classpath, ClassLoader parent) {
+
 		super(parent);
 
 		URL[] urls = classpath.toArray(new URL[classpath.size()]);

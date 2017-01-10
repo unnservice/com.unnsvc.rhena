@@ -3,18 +3,6 @@ package com.unnsvc.rhena.core.resolution;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
-import java.lang.reflect.Constructor;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
@@ -27,23 +15,11 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
-import com.unnsvc.rhena.common.model.lifecycle.IGenerator;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycle;
-import com.unnsvc.rhena.common.model.lifecycle.ILifecycleProcessor;
-import com.unnsvc.rhena.common.model.lifecycle.ILifecycleProcessorReference;
-import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
-import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
-import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 import com.unnsvc.rhena.core.execution.ArtifactDescriptor;
 import com.unnsvc.rhena.core.execution.WorkspaceExecution;
-import com.unnsvc.rhena.core.lifecycle.Lifecycle;
 import com.unnsvc.rhena.core.visitors.Dependencies;
 import com.unnsvc.rhena.core.visitors.DependencyCollectionVisitor;
-import com.unnsvc.rhena.lifecycle.DefaultContext;
-import com.unnsvc.rhena.lifecycle.DefaultGenerator;
-import com.unnsvc.rhena.lifecycle.DefaultJavaProcessor;
-import com.unnsvc.rhena.lifecycle.DefaultManifestProcessor;
 
 /**
  * @TODO cache lifecycle over multiple executions?

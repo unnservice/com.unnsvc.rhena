@@ -5,7 +5,6 @@ import java.io.StringReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +32,7 @@ import com.unnsvc.rhena.common.model.lifecycle.ILifecycleProcessorReference;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
+import com.unnsvc.rhena.core.execution.ParentLastURLClassLoader;
 import com.unnsvc.rhena.core.lifecycle.Lifecycle;
 import com.unnsvc.rhena.core.visitors.DependencyCollectionVisitor;
 import com.unnsvc.rhena.lifecycle.DefaultContext;
@@ -92,11 +92,14 @@ public class LifecycleBuilder {
 	}
 
 	/**
-	 * @TODO checks for constructor validity and type conformance, gc
-	 *       classloaders properly
-	 * @param cache
+	 * 
 	 * @param processor
-	 * @param type
+	 *            the processor reference we're building
+	 * @param marker
+	 *            marker for use in returning a properly typed processor
+	 * @param executionContext
+	 *            May be null if we're constructing the actual executionContext
+	 *            processor
 	 * @return
 	 * @throws RhenaException
 	 */
@@ -114,7 +117,9 @@ public class LifecycleBuilder {
 		 * @TODO Determine strategy for closing the classloader later in the
 		 *       lifecycle?
 		 */
-		URLClassLoader urlc = new URLClassLoader(deps.toArray(new URL[deps.size()]), Thread.currentThread().getContextClassLoader());
+		// URLClassLoader urlc = new URLClassLoader(deps.toArray(new
+		// URL[deps.size()]), Thread.currentThread().getContextClassLoader());
+		ClassLoader urlc = new ParentLastURLClassLoader(deps, Thread.currentThread().getContextClassLoader());
 
 		try {
 			Class<T> clazz = (Class<T>) urlc.loadClass(processor.getClazz());
@@ -127,8 +132,9 @@ public class LifecycleBuilder {
 		} catch (Exception ex) {
 			throw new RhenaException(ex.getMessage(), ex);
 		}
+
 	}
- 
+
 	private void performInjection(Object instance, IExecutionContext executionContext) throws IllegalArgumentException, IllegalAccessException, RhenaException {
 
 		for (Field field : instance.getClass().getDeclaredFields()) {

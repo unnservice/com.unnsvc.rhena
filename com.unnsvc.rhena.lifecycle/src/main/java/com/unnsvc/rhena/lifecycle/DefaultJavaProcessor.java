@@ -9,6 +9,7 @@ import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
+import javax.tools.JavaCompiler.CompilationTask;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
@@ -51,7 +52,12 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 	@Override
 	public void process(IExecutionContext context, IRhenaModule module, EExecutionType type, IDependencies dependencies) throws RhenaException {
 
-		logger.trace(getClass(), "Executing " + getClass());
+		try {
+			logger.trace(getClass(),
+					"Executing " + getClass() + " from own jar location: " + getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+		} catch (Exception ex) {
+			throw new RhenaException(ex.getMessage(), ex);
+		}
 
 		File outputDirectory = new File(context.getOutputDirectory(module), type.literal().toLowerCase());
 		outputDirectory.mkdirs();
@@ -73,7 +79,8 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
 
 		Iterable<? extends JavaFileObject> compilationUnits1 = fileManager.getJavaFileObjectsFromFiles(resources);
-		compiler.getTask(null, fileManager, diagnostics, options, null, compilationUnits1).call();
+		CompilationTask compilationTask = compiler.getTask(null, fileManager, diagnostics, options, null, compilationUnits1);
+		compilationTask.call();
 
 		Diagnostic<? extends JavaFileObject> firstError = null;
 		for (Diagnostic<? extends JavaFileObject> diag : diagnostics.getDiagnostics()) {
