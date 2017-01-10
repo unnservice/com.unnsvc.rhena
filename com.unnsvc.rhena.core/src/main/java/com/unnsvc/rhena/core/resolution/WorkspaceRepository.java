@@ -82,7 +82,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 
 			/**
 			 * Up to, but not with, the ordinal, becauuse that's the one we will
-			 * create next with a lifecycle
+			 * create next by executing a lifecycle
 			 */
 			for (int i = 0; i < entryPoint.getExecutionType().ordinal(); i++) {
 
@@ -90,8 +90,11 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 				deps.addDependency(EExecutionType.values()[i], exec);
 			}
 
+//			LifecycleBuilder lifecycleBuilder = new LifecycleBuilder(module, context);
+//			lifecycleBuilder.buildLifecycle();
+			
 			/**
-			 * @TODO we only want a certain execution type for each execution
+			 * @TODO we only want a certain execution types for each execution
 			 */
 			if (module.getLifecycleName() != null && module.getLifecycleName() != RhenaConstants.DEFAULT_LIFECYCLE_NAME) {
 
@@ -114,13 +117,13 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 			IExecutionContext context = new DefaultContext(cache);
 			context.configure(module, createDefaultContextConfiguration());
 			
-			IProcessor processor = new DefaultJavaProcessor(cache, context);
-			processor.configure(module, Utils.newEmptyDocument());
+			IProcessor javaProcessor = new DefaultJavaProcessor(cache, context);
+			javaProcessor.configure(module, Utils.newEmptyDocument());
 			IProcessor manifestProcessor = new DefaultManifestProcessor(cache, context);
 			manifestProcessor.configure(module, Utils.newEmptyDocument());
 			
 			List<IProcessor> processors = new ArrayList<IProcessor>();
-			processors.add(processor);
+			processors.add(javaProcessor);
 			processors.add(manifestProcessor);
 			
 			IGenerator generator = new DefaultGenerator(cache, context);

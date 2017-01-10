@@ -113,7 +113,13 @@ public class RhenaModuleParser {
 		if (moduleChild.getAttributes().getNamedItem("lifecycle") != null) {
 
 			String lifecycleName = moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue();
+			if(lifecycleName.toLowerCase().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
+				throw new RhenaException("Invalid lifecycle name \"" + lifecycleName + "\".");
+			}
 			module.setLifecycleName(lifecycleName);
+		} else {
+			// no lifecycle declared, declare default
+			module.setLifecycleName(RhenaConstants.DEFAULT_LIFECYCLE_NAME);
 		}
 
 		if (!module.getIdentifier().getComponentName().toString().equals(componentNameStr)) {

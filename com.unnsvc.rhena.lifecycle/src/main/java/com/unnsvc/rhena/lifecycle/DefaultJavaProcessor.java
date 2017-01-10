@@ -5,11 +5,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
+import javax.tools.Diagnostic.Kind;
 
 import org.w3c.dom.Document;
 
@@ -45,6 +47,8 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 	@Override
 	public void process(IExecutionContext context, IRhenaModule module, EExecutionType type, IDependencies dependencies) throws RhenaException {
 
+		System.err.println("Executing " + getClass());
+
 		File outputDirectory = new File(context.getOutputDirectory(module), type.literal().toLowerCase());
 		outputDirectory.mkdirs();
 
@@ -66,6 +70,19 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 
 		Iterable<? extends JavaFileObject> compilationUnits1 = fileManager.getJavaFileObjectsFromFiles(resources);
 		compiler.getTask(null, fileManager, diagnostics, options, null, compilationUnits1).call();
+
+		Diagnostic<? extends JavaFileObject> firstError = null;
+		for (Diagnostic<? extends JavaFileObject> diag : diagnostics.getDiagnostics()) {
+
+			System.err.println("DIAG: " + diag);
+			if (diag.getKind().equals(Kind.ERROR) && firstError == null) {
+				firstError = diag;
+			}
+		}
+
+		if (firstError != null) {
+			throw new RhenaException(firstError.getMessage(null));
+		}
 
 		// compile(module, resources, type, dependencies);
 
