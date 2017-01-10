@@ -90,165 +90,21 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 				deps.addDependency(EExecutionType.values()[i], exec);
 			}
 
-//			LifecycleBuilder lifecycleBuilder = new LifecycleBuilder(module, context);
-//			lifecycleBuilder.buildLifecycle();
+			LifecycleBuilder lifecycleBuilder = new LifecycleBuilder(module, context);
+			ILifecycle lifecycle = lifecycleBuilder.buildLifecycle(entryPoint, module.getLifecycleName());
 			
-			/**
-			 * @TODO we only want a certain execution types for each execution
-			 */
-			if (module.getLifecycleName() != null && module.getLifecycleName() != RhenaConstants.DEFAULT_LIFECYCLE_NAME) {
-
-				return runInExecutableLifecycle(cache, entryPoint, module, deps);
-			} else {
-
-				return runInDefaultExecutableLifecycle(cache, entryPoint, module, deps);
+			File generated = lifecycle.executeLifecycle(module, entryPoint.getExecutionType(), deps);
+			
+			try {
+				return new WorkspaceExecution(entryPoint.getTarget(), entryPoint.getExecutionType(),
+						new ArtifactDescriptor(entryPoint.getTarget().toString(), generated.getCanonicalFile().toURI().toURL(), Utils.generateSha1(generated)));
+			} catch (IOException mue) {
+				throw new RhenaException(mue.getMessage(), mue);
 			}
 		}
 	}
 
-	private IRhenaExecution runInDefaultExecutableLifecycle(IRhenaCache cache, IEntryPoint entryPoint, IRhenaModule module, Dependencies deps)
-			throws RhenaException {
 
-		ILifecycle lifecycle = cache.getLifecycles().get(entryPoint.getTarget());
-		/**
-		 * Build and configure lifecycle
-		 */
-		if(lifecycle == null) {
-			IExecutionContext context = new DefaultContext(cache);
-			context.configure(module, createDefaultContextConfiguration());
-			
-			IProcessor javaProcessor = new DefaultJavaProcessor(cache, context);
-			javaProcessor.configure(module, Utils.newEmptyDocument());
-			IProcessor manifestProcessor = new DefaultManifestProcessor(cache, context);
-			manifestProcessor.configure(module, Utils.newEmptyDocument());
-			
-			List<IProcessor> processors = new ArrayList<IProcessor>();
-			processors.add(javaProcessor);
-			processors.add(manifestProcessor);
-			
-			IGenerator generator = new DefaultGenerator(cache, context);
-			generator.configure(module, Utils.newEmptyDocument());
-
-			lifecycle = new Lifecycle(context, generator, processors);
-			cache.getLifecycles().put(entryPoint.getTarget(), lifecycle);
-		}
-
-		
-		File generated = lifecycle.executeLifecycle(module, entryPoint.getExecutionType(), deps);
-
-		try {
-			return new WorkspaceExecution(entryPoint.getTarget(), entryPoint.getExecutionType(),
-					new ArtifactDescriptor(entryPoint.getTarget().toString(), generated.getCanonicalFile().toURI().toURL(), Utils.generateSha1(generated)));
-		} catch (IOException mue) {
-			throw new RhenaException(mue.getMessage(), mue);
-		}
-	}
-
-	private Document createDefaultContextConfiguration() throws RhenaException {
-
-		Document doc = null;
-		try {
-			DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
-			fact.setNamespaceAware(true);
-			DocumentBuilder db = fact.newDocumentBuilder();
-			InputSource is = new InputSource();
-			is.setCharacterStream(new StringReader(""
-					+ "			<context module=\"com.unnsvc.rhena:lifecycle:0.0.1\" class=\"com.unnsvc.rhena.lifecycle.DefaultContext\">\n"
-					+ "				<resources>\n" + "					<main path=\"src/main/java\" />\n"
-					+ "					<main path=\"src/main/resources\" filter=\"true\" />\n" + "					<test path=\"src/test/java\" />\n"
-					+ "					<test path=\"src/test/resources\" filter=\"true\" />\n" + "				</resources>\n" + "			</context>"));
-
-			doc = db.parse(is);
-		} catch (Exception ex) {
-			throw new RhenaException(ex.getMessage(), ex);
-		}
-		return doc;
-	}
-
-	/**
-	 * @TODO perform injection
-	 * @param cache
-	 * @param entryPoint
-	 * @param module
-	 * @param deps
-	 * @return
-	 * @throws RhenaException
-	 */
-	private IRhenaExecution runInExecutableLifecycle(IRhenaCache cache, IEntryPoint entryPoint, IRhenaModule module, Dependencies dependencies) throws RhenaException {
-
-		ILifecycleReference lifecycleRef = module.getLifecycleDeclarations().get(module.getLifecycleName());
-
-		ILifecycle lifecycle = cache.getLifecycles().get(entryPoint.getTarget());
-		if(lifecycle == null) {
-			IExecutionContext context = constructLifecycleProcessor(cache, lifecycleRef.getContext(), IExecutionContext.class, new Class[] { IRhenaCache.class }, cache);
-			context.configure(module, lifecycleRef.getContext().getConfiguration());
-			
-			List<IProcessor> processors = new ArrayList<IProcessor>();
-			for (IProcessorReference proc : lifecycleRef.getProcessors()) {
-
-				IProcessor processor = constructLifecycleProcessor(cache, proc, IProcessor.class, new Class[] { IRhenaCache.class, IExecutionContext.class }, cache, context);
-				processor.configure(module, proc.getConfiguration());
-				processors.add(processor);
-			}
-			
-			// and finally, execute the generator
-			IGenerator generator = constructLifecycleProcessor(cache, lifecycleRef.getGenerator(), IGenerator.class, new Class[] { IRhenaCache.class, IExecutionContext.class }, cache, context);
-			generator.configure(module, lifecycleRef.getGenerator().getConfiguration());
-			
-			lifecycle = new Lifecycle(context, generator, processors);
-			cache.getLifecycles().put(entryPoint.getTarget(), lifecycle);
-		}
-
-		// and execute it to produce final artifact...
-
-		File generated = lifecycle.executeLifecycle(module, entryPoint.getExecutionType(), dependencies);
-
-		/**
-		 * @TODO validate filename so it conforms to the spec, so it can be used
-		 *       as a dependency, or have a remote artifact descriptor which
-		 *       describes the artifacts produces in each execution
-		 */
-
-		try {
-			return new WorkspaceExecution(entryPoint.getTarget(), entryPoint.getExecutionType(),
-					new ArtifactDescriptor(entryPoint.getTarget().toString(), generated.getCanonicalFile().toURI().toURL(), Utils.generateSha1(generated)));
-		} catch (IOException mue) {
-			throw new RhenaException(mue.getMessage(), mue);
-		}
-	}
-
-	/**
-	 * @TODO checks for constructor validity and type conformance, gc
-	 *       classloaders properly
-	 * @param cache
-	 * @param processor
-	 * @param type
-	 * @return
-	 * @throws RhenaException
-	 */
-	@SuppressWarnings("unchecked")
-	private <T extends ILifecycleProcessor> T constructLifecycleProcessor(IRhenaCache cache, ILifecycleProcessorReference processor, Class<T> type,
-			Class<?>[] argTypes, Object... args) throws RhenaException {
-
-		DependencyCollectionVisitor coll = new DependencyCollectionVisitor(cache, processor.getModuleEdge());
-		List<URL> deps = new ArrayList<URL>();
-		for (IRhenaExecution exec : coll.getDependencies()) {
-			deps.add(exec.getArtifact().getArtifactUrl());
-		}
-
-		/**
-		 * @TODO Determine strategy for closing the classloader later in the lifecycle?
-		 */
-		URLClassLoader urlc = new URLClassLoader(deps.toArray(new URL[deps.size()]), Thread.currentThread().getContextClassLoader());
-
-		try {
-			Class<T> clazz = (Class<T>) urlc.loadClass(processor.getClazz());
-			Constructor<T> constr = clazz.getConstructor(argTypes);
-			return constr.newInstance(args);
-		} catch (Exception ex) {
-			throw new RhenaException(ex.getMessage(), ex);
-		}
-	}
 
 	private void getDepchain(Dependencies deps, IRhenaCache cache, ModuleIdentifier identifier, EExecutionType et) throws RhenaException {
 

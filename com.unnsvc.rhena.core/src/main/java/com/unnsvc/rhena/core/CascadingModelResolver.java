@@ -10,6 +10,7 @@ import java.util.Properties;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.NotExistsException;
 import com.unnsvc.rhena.common.exceptions.NotUniqueException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -82,7 +83,7 @@ public class CascadingModelResolver {
 					/**
 					 * Resolve lifecycle from here after we've merged parents
 					 */
-					if (currentModule.getLifecycleName() != null) {
+					if (!currentModule.getLifecycleName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
 						ILifecycleReference lifecycle = currentModule.getLifecycleDeclarations().get(currentModule.getLifecycleName());
 						if (lifecycle == null) {
 							throw new RhenaException("Could not find lifecycle " + currentModule.getLifecycleName() + " in " + currentModule.getIdentifier());

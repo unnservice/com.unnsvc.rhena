@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.UniqueList;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -196,7 +197,7 @@ public class CascadingModelBuilder {
 		boolean buildable = true;
 		List<String> waitingOn = new UniqueList<String>();
 
-		if (module.getLifecycleName() != null) {
+		if (!module.getLifecycleName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
 			for (ILifecycleProcessorReference ref : module.getLifecycleDeclarations().get(module.getLifecycleName()).getAllReferences()) {
 				IEntryPoint lifecycleEntryPoint = ref.getModuleEdge().getEntryPoint();
 

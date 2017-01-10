@@ -250,7 +250,7 @@ public class Utils {
 			eps.add(module.getParent().getEntryPoint());
 		}
 		if (lifecycles) {
-			if (module.getLifecycleName() != null) {
+			if (!module.getLifecycleName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
 				ILifecycleReference lifecycle = module.getLifecycleDeclarations().get(module.getLifecycleName());
 				eps.add(lifecycle.getContext().getModuleEdge().getEntryPoint());
 				lifecycle.getProcessors().forEach(proc -> eps.add(proc.getModuleEdge().getEntryPoint()));
