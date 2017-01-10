@@ -66,11 +66,15 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 				deps.addDependency(EExecutionType.values()[i], exec);
 			}
 
-			LifecycleBuilder lifecycleBuilder = new LifecycleBuilder(module, context);
-			ILifecycle lifecycle = lifecycleBuilder.buildLifecycle(entryPoint, module.getLifecycleName());
-			
+			ILifecycle lifecycle = context.getCache().getLifecycles().get(entryPoint.getTarget());
+			if (lifecycle == null) {
+				LifecycleBuilder lifecycleBuilder = new LifecycleBuilder(module, context);
+				lifecycle = lifecycleBuilder.buildLifecycle(entryPoint, module.getLifecycleName());
+				context.getCache().getLifecycles().put(entryPoint.getTarget(), lifecycle);
+			}
+
 			File generated = lifecycle.executeLifecycle(module, entryPoint.getExecutionType(), deps);
-			
+
 			try {
 				return new WorkspaceExecution(entryPoint.getTarget(), entryPoint.getExecutionType(),
 						new ArtifactDescriptor(entryPoint.getTarget().toString(), generated.getCanonicalFile().toURI().toURL(), Utils.generateSha1(generated)));
@@ -79,8 +83,6 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 			}
 		}
 	}
-
-
 
 	private void getDepchain(Dependencies deps, IRhenaCache cache, ModuleIdentifier identifier, EExecutionType et) throws RhenaException {
 

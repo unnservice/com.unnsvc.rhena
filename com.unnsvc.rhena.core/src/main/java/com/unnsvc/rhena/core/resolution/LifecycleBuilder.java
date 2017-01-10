@@ -53,19 +53,44 @@ public class LifecycleBuilder {
 
 	public ILifecycle buildLifecycle(IEntryPoint entryPoint, String lifecycleName) throws RhenaException {
 
-		ILifecycle lifecycle = context.getCache().getLifecycles().get(entryPoint.getTarget());
-		if (lifecycle == null) {
-			// construct lifecycle
-
-			if (module.getLifecycleName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
-				lifecycle = constructDefaultLifecycle(entryPoint);
-			} else {
-				lifecycle = constructCustomLifecycle(entryPoint);
-			}
-
-			context.getCache().getLifecycles().put(entryPoint.getTarget(), lifecycle);
+		if (module.getLifecycleName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
+			return constructDefaultLifecycle(entryPoint);
+		} else {
+			return constructCustomLifecycle(entryPoint);
 		}
-		return lifecycle;
+	}
+
+	private ILifecycle constructDefaultLifecycle(IEntryPoint entryPoint) throws RhenaException {
+
+		try {
+			/**
+			 * Build and configure lifecycle
+			 */
+			IExecutionContext contextProc = new DefaultContext();
+			performInjection(contextProc, null);
+			contextProc.configure(module, createDefaultContextConfiguration());
+
+			IProcessor javaProcessor = new DefaultJavaProcessor();
+			performInjection(javaProcessor, contextProc);
+			javaProcessor.configure(module, Utils.newEmptyDocument());
+			IProcessor manifestProcessor = new DefaultManifestProcessor();
+			performInjection(manifestProcessor, contextProc);
+			manifestProcessor.configure(module, Utils.newEmptyDocument());
+
+			List<IProcessor> processors = new ArrayList<IProcessor>();
+			processors.add(javaProcessor);
+			processors.add(manifestProcessor);
+
+			IGenerator generator = new DefaultGenerator();
+			performInjection(generator, contextProc);
+			generator.configure(module, Utils.newEmptyDocument());
+
+			ILifecycle lifecycle = new Lifecycle(contextProc, generator, processors);
+
+			return lifecycle;
+		} catch (Exception ex) {
+			throw new RhenaException(ex.getMessage(), ex);
+		}
 	}
 
 	private ILifecycle constructCustomLifecycle(IEntryPoint entryPoint) throws RhenaException {
@@ -159,39 +184,6 @@ public class LifecycleBuilder {
 				}
 				field.setAccessible(false);
 			}
-		}
-	}
-
-	private ILifecycle constructDefaultLifecycle(IEntryPoint entryPoint) throws RhenaException {
-
-		try {
-			/**
-			 * Build and configure lifecycle
-			 */
-			IExecutionContext contextProc = new DefaultContext();
-			performInjection(contextProc, null);
-			contextProc.configure(module, createDefaultContextConfiguration());
-
-			IProcessor javaProcessor = new DefaultJavaProcessor();
-			performInjection(javaProcessor, contextProc);
-			javaProcessor.configure(module, Utils.newEmptyDocument());
-			IProcessor manifestProcessor = new DefaultManifestProcessor();
-			performInjection(manifestProcessor, contextProc);
-			manifestProcessor.configure(module, Utils.newEmptyDocument());
-
-			List<IProcessor> processors = new ArrayList<IProcessor>();
-			processors.add(javaProcessor);
-			processors.add(manifestProcessor);
-
-			IGenerator generator = new DefaultGenerator();
-			performInjection(generator, contextProc);
-			generator.configure(module, Utils.newEmptyDocument());
-
-			ILifecycle lifecycle = new Lifecycle(contextProc, generator, processors);
-
-			return lifecycle;
-		} catch (Exception ex) {
-			throw new RhenaException(ex.getMessage(), ex);
 		}
 	}
 
