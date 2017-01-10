@@ -5,10 +5,11 @@ import java.io.File;
 
 import org.w3c.dom.Document;
 
-import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.Utils;
+import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
+import com.unnsvc.rhena.common.logging.ILogger;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IGenerator;
@@ -20,11 +21,13 @@ import com.unnsvc.rhena.lifecycle.helpers.JarHelper;
  */
 public class DefaultGenerator implements IGenerator {
 
+	@ProcessorContext
 	private IExecutionContext context;
+	@ProcessorContext
+	private ILogger logger;
 
-	public DefaultGenerator(IRhenaCache cache, IExecutionContext context) {
+	public DefaultGenerator() {
 
-		this.context = context;
 	}
 
 	@Override
@@ -43,7 +46,7 @@ public class DefaultGenerator implements IGenerator {
 		try {
 			File inputLocation = new File(outputDirectory, type.literal().toLowerCase());
 
-			JarHelper helper = new JarHelper(inputLocation, outputLocation);
+			JarHelper helper = new JarHelper(logger, inputLocation, outputLocation);
 			helper.packageJar();
 		} catch (Exception ex) {
 			throw new RhenaException(ex.getMessage(), ex);

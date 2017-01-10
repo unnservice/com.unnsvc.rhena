@@ -6,18 +6,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.tools.Diagnostic;
+import javax.tools.Diagnostic.Kind;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
-import javax.tools.Diagnostic.Kind;
 
 import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.IRhenaCache;
+import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
+import com.unnsvc.rhena.common.logging.ILogger;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.model.lifecycle.IJavaProcessor;
@@ -26,13 +28,15 @@ import com.unnsvc.rhena.common.visitors.IDependencies;
 
 public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 
+	@ProcessorContext
 	private IExecutionContext context;
+	@ProcessorContext
 	private IRhenaCache cache;
+	@ProcessorContext
+	private ILogger logger;
 
-	public DefaultJavaProcessor(IRhenaCache cache, IExecutionContext context) {
+	public DefaultJavaProcessor() {
 
-		this.context = context;
-		this.cache = cache;
 	}
 
 	@Override
@@ -47,7 +51,7 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 	@Override
 	public void process(IExecutionContext context, IRhenaModule module, EExecutionType type, IDependencies dependencies) throws RhenaException {
 
-		System.err.println("Executing " + getClass());
+		logger.trace(getClass(), "Executing " + getClass());
 
 		File outputDirectory = new File(context.getOutputDirectory(module), type.literal().toLowerCase());
 		outputDirectory.mkdirs();
@@ -59,7 +63,7 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 		List<File> resources = context.selectResources(type, "^.*\\.java$");
 
 		if (resources.isEmpty()) {
-			// @TODO WARN LOGGING, NO RESOURCES SELECTED
+			logger.warn(getClass(), "No resources selected for compilation in " + module.getIdentifier() + ":" + type.literal());
 			return;
 		}
 
@@ -74,7 +78,7 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 		Diagnostic<? extends JavaFileObject> firstError = null;
 		for (Diagnostic<? extends JavaFileObject> diag : diagnostics.getDiagnostics()) {
 
-			System.err.println("DIAG: " + diag);
+			logger.trace(getClass(), "Compiler diagnostic: " + diag);
 			if (diag.getKind().equals(Kind.ERROR) && firstError == null) {
 				firstError = diag;
 			}
@@ -83,73 +87,6 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 		if (firstError != null) {
 			throw new RhenaException(firstError.getMessage(null));
 		}
-
-		// compile(module, resources, type, dependencies);
-
-		// // System.err.println("Context is " + context + " type is " + type);
-		// EResourceType restype = type.equals(EExecutionType.MAIN) ?
-		// EResourceType.MAIN : EResourceType.TEST;
-		// for (IResource resource :
-		// context.getResources().getResources(restype)) {
-		//
-		// if (resource.getSourcePath().listFiles().length > 0) {
-		// if (!resource.getTargetFile().exists()) {
-		// resource.getTargetFile().mkdirs();
-		// }
-		// compile(module, resource, type, dependencies);
-		// } else {
-		// // log.debug(module.getIdentifier(), type, "skipping empty
-		// // resource: " + resource);
-		// }
-		// }
 	}
-
-	// private void compile(IRhenaModule module, List<File> resources,
-	// EExecutionType type, IDependencies dependencies) throws RhenaException {
-	//
-	// CompilationProgress progress = new CompilationProgress() {
-	//
-	// @Override
-	// public void begin(int remainingWork) {
-	//
-	// }
-	//
-	// @Override
-	// public void done() {
-	//
-	// }
-	//
-	// @Override
-	// public boolean isCanceled() {
-	//
-	// return false;
-	// }
-	//
-	// @Override
-	// public void setTaskName(String name) {
-	//
-	// }
-	//
-	// @Override
-	// public void worked(int workIncrement, int remainingWork) {
-	//
-	// }
-	// };
-	//
-	// File source = resource.getSourceFile();
-	// File target = resource.getTargetFile();
-	//
-	// // System.err.println("Compiling path " + source);
-	// // System.err.println("Compiling with classpath: " +
-	// // dependencies.getAsClasspath());
-	// String cmdline = "-1.8 -classpath " + dependencies.getAsClasspath() + "
-	// -d " + target + " " + source;
-	// // System.err.println("Compiling with cmdline: " + cmdline);
-	//
-	// if (!BatchCompiler.compile(cmdline, new PrintWriter(System.out), new
-	// PrintWriter(System.err), progress)) {
-	// throw new RhenaException("Compilation did not finish successfully..");
-	// }
-	// }
 
 }

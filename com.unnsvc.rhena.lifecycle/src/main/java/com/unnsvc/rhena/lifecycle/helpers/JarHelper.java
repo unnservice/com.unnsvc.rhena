@@ -11,20 +11,25 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
+import com.unnsvc.rhena.common.logging.ILogger;
+
 public class JarHelper {
 
 	private File basePath;
 	private File targetJar;
+	private ILogger logger;
 
 	/**
 	 * 
+	 * @param logger
 	 * @param basePath
 	 * @param targetJar
 	 * @param manifestFile
 	 *            optional, can be null
 	 */
-	public JarHelper(File basePath, File targetJar) {
+	public JarHelper(ILogger logger, File basePath, File targetJar) {
 
+		this.logger = logger;
 		this.basePath = basePath;
 		this.targetJar = targetJar;
 	}
@@ -57,7 +62,7 @@ public class JarHelper {
 
 		if (currentPath.isDirectory()) {
 			relativePath += "/";
-			System.err.println("Add to jar: " + relativePath);
+			logger.trace(getClass(), "Add to jar: " + relativePath);
 
 			JarEntry entry = new JarEntry(relativePath);
 			entry.setTime(currentPath.lastModified());
@@ -67,7 +72,7 @@ public class JarHelper {
 				addToJar(basePath, contained, output);
 			}
 		} else if (currentPath.isFile() && !relativePath.equals("META-INF/MANIFEST.MF")) {
-			System.err.println("Add to jar: " + relativePath);
+			logger.trace(getClass(), "Add to jar: " + relativePath);
 
 			JarEntry entry = new JarEntry(relativePath);
 			entry.setTime(currentPath.lastModified());
@@ -81,44 +86,4 @@ public class JarHelper {
 			output.closeEntry();
 		}
 	}
-
-	// private void addToJar2(String base, File source, JarOutputStream target)
-	// throws IOException {
-	//
-	// if (source.isDirectory()) {
-	// String name = source.getPath().replace("\\", "/").substring(base.length()
-	// + 1);
-	// if (!name.isEmpty()) {
-	// if (!name.endsWith("/")) {
-	// name += "/";
-	// }
-	// JarEntry entry = new JarEntry(name);
-	// entry.setTime(source.lastModified());
-	// target.putNextEntry(entry);
-	// target.closeEntry();
-	// }
-	// for (File nestedFile : source.listFiles()) {
-	//
-	// addToJar(base, nestedFile, target);
-	// }
-	// return;
-	// }
-	//
-	// JarEntry entry = new JarEntry(source.getPath().replace("\\",
-	// "/").substring(base.length() + 1));
-	// entry.setTime(source.lastModified());
-	// target.putNextEntry(entry);
-	// try (BufferedInputStream in = new BufferedInputStream(new
-	// FileInputStream(source))) {
-	//
-	// byte[] buffer = new byte[1024];
-	// while (true) {
-	// int count = in.read(buffer);
-	// if (count == -1)
-	// break;
-	// target.write(buffer, 0, count);
-	// }
-	// }
-	// target.closeEntry();
-	// }
 }

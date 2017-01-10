@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 
 @Retention(RUNTIME)
 @Target(FIELD)
-public @interface ExecutionContext {
+public @interface ProcessorContext {
 
 }

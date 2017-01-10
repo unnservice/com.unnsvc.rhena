@@ -12,9 +12,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.unnsvc.rhena.common.IRhenaCache;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
+import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
@@ -30,10 +31,12 @@ public class DefaultContext implements IExecutionContext {
 	// private IRhenaModule module;
 	// @ProcessorContext
 	// private ExecutionType type;
+	@ProcessorContext
+	private IRhenaContext context;
 
 	private List<IResource> resources;
 
-	public DefaultContext(IRhenaCache cache) {
+	public DefaultContext() {
 
 		resources = new ArrayList<IResource>();
 	}
