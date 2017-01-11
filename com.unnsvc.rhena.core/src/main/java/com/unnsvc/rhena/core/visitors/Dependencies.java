@@ -13,6 +13,7 @@ import com.unnsvc.rhena.common.visitors.IDependencies;
 
 public class Dependencies implements IDependencies {
 
+	private static final long serialVersionUID = 1L;
 	private EExecutionType executionType;
 	private Map<EExecutionType, List<IRhenaExecution>> dependencies;
 

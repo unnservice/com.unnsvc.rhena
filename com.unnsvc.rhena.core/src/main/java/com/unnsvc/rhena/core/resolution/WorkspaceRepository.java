@@ -69,18 +69,16 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 				deps.addDependency(EExecutionType.values()[i], exec);
 			}
 
+			ILifecycleAgent agent = context.getLifecycleAgent();
 			ILifecycle lifecycle = context.getCache().getLifecycles().get(entryPoint.getTarget());
 			if (lifecycle == null) {
 
 				try {
 
-					ILifecycleAgent agent = context.getLifecycleAgent();
 					lifecycle = agent.buildLifecycle(new LifecycleBuilder(module, context), entryPoint, module.getLifecycleName());
 
-					// LifecycleBuilder lifecycleBuilder = new
-					// LifecycleBuilder(module, context);
-					// lifecycle = lifecycleBuilder.buildLifecycle(entryPoint,
-					// module.getLifecycleName());
+//					LifecycleBuilder lifecycleBuilder = new LifecycleBuilder(module, context);
+//					lifecycle = lifecycleBuilder.buildLifecycle(entryPoint, module.getLifecycleName());
 
 				} catch (Exception re) {
 					throw new RhenaException(re.getMessage(), re);
@@ -89,9 +87,11 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 				context.getCache().getLifecycles().put(entryPoint.getTarget(), lifecycle);
 			}
 
-			File generated = lifecycle.executeLifecycle(module, entryPoint.getExecutionType(), deps);
 
 			try {
+				File generated = agent.executeLifecycle(lifecycle, module, entryPoint.getExecutionType(), deps);
+//				File generated = lifecycle.executeLifecycle(module, entryPoint.getExecutionType(), deps);
+
 				return new WorkspaceExecution(entryPoint.getTarget(), entryPoint.getExecutionType(),
 						new ArtifactDescriptor(entryPoint.getTarget().toString(), generated.getCanonicalFile().toURI().toURL(), Utils.generateSha1(generated)));
 			} catch (IOException mue) {

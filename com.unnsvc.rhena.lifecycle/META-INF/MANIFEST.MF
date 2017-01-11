@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Lifecycle
-Bundle-SymbolicName: com.unnsvc.rhena.lifecycle
+Bundle-SymbolicName: com.unnsvc.rhena.lifecycle;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Export-Package: com.unnsvc.rhena.lifecycle,
  com.unnsvc.rhena.lifecycle.helpers

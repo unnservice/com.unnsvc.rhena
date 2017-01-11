@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Common
-Bundle-SymbolicName: com.unnsvc.rhena.common
+Bundle-SymbolicName: com.unnsvc.rhena.common;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Export-Package: com.unnsvc.rhena.common,
  com.unnsvc.rhena.common.annotation,

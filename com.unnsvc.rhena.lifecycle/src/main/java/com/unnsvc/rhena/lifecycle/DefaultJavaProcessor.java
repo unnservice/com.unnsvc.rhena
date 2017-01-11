@@ -64,9 +64,11 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 		outputDirectory.mkdirs();
 
 		List<String> options = new ArrayList<String>();
+//		options.add("-cp");
+//		options.add(System.getProperty("java.class.path"));
 		options.add("-d");
 		options.add(outputDirectory.getAbsolutePath());
-
+		
 		List<File> resources = context.selectResources(type, "^.*\\.java$");
 
 		if (resources.isEmpty()) {

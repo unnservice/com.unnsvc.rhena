@@ -1,6 +1,7 @@
 
 package com.unnsvc.rhena.agent;
 
+import java.io.File;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -13,8 +14,11 @@ import com.unnsvc.rhena.common.ILifecycleAgentBuilder;
 import com.unnsvc.rhena.common.ILifecycleBuilder;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.model.IEntryPoint;
+import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycle;
+import com.unnsvc.rhena.common.visitors.IDependencies;
 
 /**
  * This agent is executed in a separate agent JVM
@@ -40,6 +44,8 @@ public class LifecycleAgent extends UnicastRemoteObject implements ILifecycleAge
 	 */
 	public static void main(String... args) throws Exception {
 
+		System.err.println("Starting up agent with classpath: " + System.getProperty("java.class.path"));
+
 		LifecycleAgent selfInstance = new LifecycleAgent();
 		selfInstance.setupRegistry();
 		selfInstance.notifyServer();
@@ -47,8 +53,13 @@ public class LifecycleAgent extends UnicastRemoteObject implements ILifecycleAge
 
 	private void setupRegistry() throws RemoteException, AlreadyBoundException {
 
+		if (System.getSecurityManager() == null) {
+//			 System.setSecurityManager(new RMISecurityManager());
+//			System.setSecurityManager(new SecurityManager());
+			System.setSecurityManager(new PermitAllSecurityManager());
+		}
 		registry = LocateRegistry.getRegistry(RhenaConstants.DEFAULT_LIFECYCLE_AGENT_PORT);
-		registry.bind(ILifecycleAgent.class.getName(), this);
+		registry.bind(ILifecycleAgent.class.getName(), (ILifecycleAgent) this);
 	}
 
 	private void notifyServer() throws RemoteException, NotBoundException {
@@ -74,5 +85,16 @@ public class LifecycleAgent extends UnicastRemoteObject implements ILifecycleAge
 		// LifecycleBuilder lifecycleBuilder = new LifecycleBuilder(module,
 		// context);
 		return lifecycleBuilder.buildLifecycle(entryPoint, lifecycleName);
+	}
+
+	@Override
+	public File executeLifecycle(ILifecycle lifecycle, IRhenaModule module, EExecutionType executionType, IDependencies dependencies) throws RemoteException {
+
+		try {
+
+			return lifecycle.executeLifecycle(module, executionType, dependencies);
+		} catch (Throwable ex) {
+			throw new RemoteException(ex.getMessage(), ex);
+		}
 	}
 }

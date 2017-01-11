@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Core
-Bundle-SymbolicName: com.unnsvc.rhena.core
+Bundle-SymbolicName: com.unnsvc.rhena.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Export-Package: com.unnsvc.rhena.core,
  com.unnsvc.rhena.core.events,
