@@ -1,10 +1,14 @@
 
 package com.unnsvc.rhena.core.logging;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
 import com.unnsvc.rhena.common.IListenerConfiguration;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.logging.ELogLevel;
 import com.unnsvc.rhena.common.logging.ILogger;
+import com.unnsvc.rhena.common.logging.ILoggerService;
 import com.unnsvc.rhena.core.events.LogEvent;
 
 /**
@@ -12,13 +16,14 @@ import com.unnsvc.rhena.core.events.LogEvent;
  * @author noname
  *
  */
-public class LogFacade implements ILogger {
+public class LogFacade extends UnicastRemoteObject implements ILogger, ILoggerService {
 
 	private static final long serialVersionUID = 1L;
 	private IListenerConfiguration listenerConfig;
 
-	public LogFacade(IListenerConfiguration listenerConfig) {
+	public LogFacade(IListenerConfiguration listenerConfig) throws RemoteException {
 
+		super();
 		this.listenerConfig = listenerConfig;
 	}
 

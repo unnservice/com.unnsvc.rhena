@@ -22,6 +22,9 @@ public abstract class AbstractRhenaTest {
 	@Before
 	public void before() throws Exception {
 
+		// System.setProperty("sun.rmi.client.logCalls", "true");
+		// System.setProperty("sun.rmi.server.exceptionTrace", "true");
+
 		IRhenaConfiguration config = new RhenaConfiguration();
 		config.setRhenaHome(new File(System.getProperty("user.home"), ".rhena"));
 		config.setRunTest(true);

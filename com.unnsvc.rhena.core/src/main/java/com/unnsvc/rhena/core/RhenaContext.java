@@ -13,6 +13,7 @@ import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.logging.ILogger;
+import com.unnsvc.rhena.common.logging.ILoggerService;
 import com.unnsvc.rhena.core.logging.LogFacade;
 
 /**
@@ -37,13 +38,17 @@ public class RhenaContext implements IRhenaContext {
 	 */
 	public RhenaContext(IRhenaConfiguration config) throws RhenaException {
 
-		this.config = config;
-		this.cache = new RhenaCache(this);
-		this.repositories = new ArrayList<IRepository>();
-		this.additionalRepositories = new ArrayList<IRepository>();
-		this.listenerConfig = new ListenerConfiguration();
-		this.logFacade = new LogFacade(listenerConfig);
-		startupContext();
+		try {
+			this.config = config;
+			this.cache = new RhenaCache(this);
+			this.repositories = new ArrayList<IRepository>();
+			this.additionalRepositories = new ArrayList<IRepository>();
+			this.listenerConfig = new ListenerConfiguration();
+			this.logFacade = new LogFacade(listenerConfig);
+			startupContext();
+		} catch (Throwable t) {
+			throw new RhenaException(t.getMessage(), t);
+		}
 	}
 
 	private void startupContext() throws RhenaException {
@@ -54,6 +59,7 @@ public class RhenaContext implements IRhenaContext {
 			/**
 			 * @TODO export relevant objects
 			 */
+			lifecycleAgentManager.export(ILoggerService.class.getName(), (ILoggerService) logFacade);
 		} catch (Exception ex) {
 			throw new RhenaException(ex.getMessage(), ex);
 		}

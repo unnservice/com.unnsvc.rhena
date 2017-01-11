@@ -9,10 +9,10 @@ import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
-import com.unnsvc.rhena.common.logging.ILogger;
+import com.unnsvc.rhena.common.lifecycle.IExecutionContext;
+import com.unnsvc.rhena.common.lifecycle.IGenerator;
+import com.unnsvc.rhena.common.logging.ILoggerService;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
-import com.unnsvc.rhena.common.model.lifecycle.IGenerator;
 import com.unnsvc.rhena.lifecycle.helpers.JarHelper;
 
 /**
@@ -25,7 +25,7 @@ public class DefaultGenerator implements IGenerator {
 	@ProcessorContext
 	private IExecutionContext context;
 	@ProcessorContext
-	private ILogger logger;
+	private ILoggerService logger;
 
 	public DefaultGenerator() {
 
@@ -37,7 +37,7 @@ public class DefaultGenerator implements IGenerator {
 	}
 
 	@Override
-	public File generate(IExecutionContext context, IRhenaModule module, EExecutionType type) throws RhenaException {
+	public File generate(IRhenaModule module, EExecutionType type) throws RhenaException {
 
 		File outputDirectory = context.getOutputDirectory(module);
 

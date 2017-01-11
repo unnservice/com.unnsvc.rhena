@@ -10,11 +10,12 @@ import java.util.jar.Manifest;
 import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.RhenaConstants;
+import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
+import com.unnsvc.rhena.common.lifecycle.IExecutionContext;
+import com.unnsvc.rhena.common.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
-import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.visitors.IDependencies;
 
 /**
@@ -26,7 +27,9 @@ import com.unnsvc.rhena.common.visitors.IDependencies;
 public class DefaultManifestProcessor implements IProcessor {
 
 	private static final long serialVersionUID = 1L;
-
+	@ProcessorContext
+	private IExecutionContext context;
+	
 	public DefaultManifestProcessor() {
 
 	}
@@ -37,7 +40,7 @@ public class DefaultManifestProcessor implements IProcessor {
 	}
 
 	@Override
-	public void process(IExecutionContext context, IRhenaModule module, EExecutionType type, IDependencies dependencies) throws RhenaException {
+	public void process(IRhenaModule module, EExecutionType type, IDependencies dependencies) throws RhenaException {
 
 		File outputDirectory = new File(context.getOutputDirectory(module), type.literal().toLowerCase());
 		outputDirectory.mkdirs();

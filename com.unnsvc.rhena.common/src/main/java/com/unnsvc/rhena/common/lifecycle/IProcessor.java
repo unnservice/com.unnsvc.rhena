@@ -1,5 +1,7 @@
 
-package com.unnsvc.rhena.common.model.lifecycle;
+package com.unnsvc.rhena.common.lifecycle;
+
+import java.rmi.RemoteException;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
@@ -8,6 +10,6 @@ import com.unnsvc.rhena.common.visitors.IDependencies;
 
 public interface IProcessor extends ILifecycleProcessor {
 
-	public void process(IExecutionContext context, IRhenaModule module, EExecutionType type, IDependencies dependencies) throws RhenaException;
+	public void process(IRhenaModule module, EExecutionType type, IDependencies dependencies) throws RemoteException;
 
 }

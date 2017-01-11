@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.common.model.lifecycle;
+package com.unnsvc.rhena.common.lifecycle;
 
 import java.io.File;
 
@@ -9,6 +9,6 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 
 public interface IGenerator extends ILifecycleProcessor {
 
-	public File generate(IExecutionContext context, IRhenaModule module, EExecutionType type) throws RhenaException;
+	public File generate(IRhenaModule module, EExecutionType type) throws RhenaException;
 
 }

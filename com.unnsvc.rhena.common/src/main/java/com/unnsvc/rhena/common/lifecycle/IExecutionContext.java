@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.common.model.lifecycle;
+package com.unnsvc.rhena.common.lifecycle;
 
 import java.io.File;
 import java.util.List;

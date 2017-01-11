@@ -12,24 +12,22 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
-import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
+import com.unnsvc.rhena.common.lifecycle.EResourceType;
+import com.unnsvc.rhena.common.lifecycle.IExecutionContext;
+import com.unnsvc.rhena.common.lifecycle.IResource;
+import com.unnsvc.rhena.common.lifecycle.Resource;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.lifecycle.EResourceType;
-import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
-import com.unnsvc.rhena.common.model.lifecycle.IResource;
-import com.unnsvc.rhena.common.model.lifecycle.Resource;
 
 public class DefaultContext implements IExecutionContext {
 
 	private static final long serialVersionUID = 1L;
 
-	@ProcessorContext
-	private IRhenaContext context;
+	// @ProcessorContext
+	// private IRhenaContext context;
 
 	private List<IResource> resources;
 
@@ -47,23 +45,31 @@ public class DefaultContext implements IExecutionContext {
 
 		File moduleBasedir = new File(module.getLocation().getPath());
 
-		Node context = Utils.getChildNode(configuration, "context");
-		if (context != null) {
-			Node resourcesNode = Utils.getChildNode(context, "resources");
-			if (resourcesNode != null) {
-				NodeList resourcesChildren = resourcesNode.getChildNodes();
-				for (int j = 0; j < resourcesChildren.getLength(); j++) {
+		if (configuration != null) {
+			Node context = Utils.getChildNode(configuration, "context");
+			if (context != null) {
+				Node resourcesNode = Utils.getChildNode(context, "resources");
+				if (resourcesNode != null) {
+					NodeList resourcesChildren = resourcesNode.getChildNodes();
+					for (int j = 0; j < resourcesChildren.getLength(); j++) {
 
-					Node resource = resourcesChildren.item(j);
-					if (resource.getNodeType() == Node.ELEMENT_NODE) {
-						String path = resource.getAttributes().getNamedItem("path").getNodeValue();
-						File srcPath = new File(moduleBasedir, path).getAbsoluteFile();
-						if (srcPath.isDirectory()) {
-							resources.add(new Resource(EResourceType.valueOf(resource.getLocalName().toUpperCase()), path, srcPath));
+						Node resource = resourcesChildren.item(j);
+						if (resource.getNodeType() == Node.ELEMENT_NODE) {
+							String path = resource.getAttributes().getNamedItem("path").getNodeValue();
+							File srcPath = new File(moduleBasedir, path).getAbsoluteFile();
+							if (srcPath.isDirectory()) {
+								resources.add(new Resource(EResourceType.valueOf(resource.getLocalName().toUpperCase()), path, srcPath));
+							}
 						}
 					}
 				}
 			}
+		} else {
+			// Defaults
+			resources.add(new Resource(EResourceType.MAIN, "src/main/java", new File(moduleBasedir, "src/main/java")));
+			resources.add(new Resource(EResourceType.MAIN, "src/main/java", new File(moduleBasedir, "src/main/resources")));
+			resources.add(new Resource(EResourceType.TEST, "src/test/java", new File(moduleBasedir, "src/test/java")));
+			resources.add(new Resource(EResourceType.TEST, "src/test/java", new File(moduleBasedir, "src/test/resources")));
 		}
 	}
 

@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.common.model.lifecycle;
+package com.unnsvc.rhena.common.lifecycle;
 
 import java.io.Serializable;
 import java.util.List;
@@ -8,11 +8,11 @@ public interface ILifecycleReference extends Serializable {
 
 	public String getName();
 
-	public List<IProcessorReference> getProcessors();
+	public List<ILifecycleProcessorReference> getProcessors();
 
-	public IGeneratorReference getGenerator();
+	public ILifecycleProcessorReference getGenerator();
 
-	public IExecutionReference getContext();
+	public ILifecycleProcessorReference getContext();
 
 	/**
 	 * Convenienc method to get all references

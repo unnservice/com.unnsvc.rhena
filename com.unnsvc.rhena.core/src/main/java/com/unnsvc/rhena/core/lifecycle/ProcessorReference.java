@@ -3,10 +3,10 @@ package com.unnsvc.rhena.core.lifecycle;
 
 import org.w3c.dom.Document;
 
+import com.unnsvc.rhena.common.lifecycle.ILifecycleProcessorReference;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
-import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 
-public class ProcessorReference implements IProcessorReference {
+public class ProcessorReference implements ILifecycleProcessorReference {
 
 	private static final long serialVersionUID = 1L;
 	private String clazz;

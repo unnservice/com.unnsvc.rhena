@@ -3,6 +3,9 @@ package com.unnsvc.rhena.core.resolution;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.unnsvc.rhena.common.ILifecycleAgent;
 import com.unnsvc.rhena.common.IRhenaCache;
@@ -13,14 +16,22 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.lifecycle.ILifecycleProcessorReference;
+import com.unnsvc.rhena.common.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.lifecycle.ILifecycle;
 import com.unnsvc.rhena.core.execution.ArtifactDescriptor;
 import com.unnsvc.rhena.core.execution.WorkspaceExecution;
+import com.unnsvc.rhena.core.lifecycle.CustomProcessorExecutable;
+import com.unnsvc.rhena.core.lifecycle.LifecycleExecutable;
+import com.unnsvc.rhena.core.lifecycle.ProcessorExecutable;
 import com.unnsvc.rhena.core.visitors.Dependencies;
 import com.unnsvc.rhena.core.visitors.DependencyCollectionVisitor;
+import com.unnsvc.rhena.lifecycle.DefaultContext;
+import com.unnsvc.rhena.lifecycle.DefaultGenerator;
+import com.unnsvc.rhena.lifecycle.DefaultJavaProcessor;
+import com.unnsvc.rhena.lifecycle.DefaultManifestProcessor;
 
 /**
  * @TODO cache lifecycle over multiple executions?
@@ -71,28 +82,57 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 
 			try {
 
-				ILifecycleAgent agent = context.getLifecycleAgentManager().getLifecycleAgent();
-				ILifecycle lifecycle = context.getCache().getLifecycles().get(entryPoint.getTarget());
-				if (lifecycle == null) {
-
-					try {
-
-						lifecycle = agent.buildLifecycle(new LifecycleBuilder(module, context), entryPoint, module.getLifecycleName());
-
-						// LifecycleBuilder lifecycleBuilder = new
-						// LifecycleBuilder(module, context);
-						// lifecycle =
-						// lifecycleBuilder.buildLifecycle(entryPoint,
-						// module.getLifecycleName());
-
-					} catch (Exception re) {
-						throw new RhenaException(re.getMessage(), re);
+				/**
+				 * New method of constructing the lifecycle attempts to produce
+				 * a lifecycle in an intermediate format which will make it easy
+				 * for the agent to construct the lifecycle
+				 */
+				LifecycleExecutable lifecycleExecutable = new LifecycleExecutable(RhenaConstants.DEFAULT_LIFECYCLE_NAME);
+				if (module.getLifecycleName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
+					lifecycleExecutable.setContextExecutable(new ProcessorExecutable(DefaultContext.class.getName()));
+					lifecycleExecutable.addProcessorExecutable(new ProcessorExecutable(DefaultJavaProcessor.class.getName()));
+					lifecycleExecutable.addProcessorExecutable(new ProcessorExecutable(DefaultManifestProcessor.class.getName()));
+					lifecycleExecutable.setGenerator(new ProcessorExecutable(DefaultGenerator.class.getName()));
+				} else {
+					ILifecycleReference lifecycleReference = module.getLifecycleDeclarations().get(module.getLifecycleName());
+					ILifecycleProcessorReference context = lifecycleReference.getContext();
+					lifecycleExecutable.setContextExecutable(new CustomProcessorExecutable(context, getDependencies(context.getModuleEdge())));
+					for (ILifecycleProcessorReference processor : lifecycleReference.getProcessors()) {
+						lifecycleExecutable.addProcessorExecutable(new CustomProcessorExecutable(processor, getDependencies(processor.getModuleEdge())));
 					}
-
-					context.getCache().getLifecycles().put(entryPoint.getTarget(), lifecycle);
+					ILifecycleProcessorReference generator = lifecycleReference.getGenerator();
+					lifecycleExecutable.setGenerator(new CustomProcessorExecutable(generator, getDependencies(generator.getModuleEdge())));
 				}
+				
+				ILifecycleAgent agent = context.getLifecycleAgentManager().getLifecycleAgent();
+				File generated = agent.executeLifecycle(lifecycleExecutable, module, entryPoint.getExecutionType(), deps);
 
-				File generated = agent.executeLifecycle(lifecycle, module, entryPoint.getExecutionType(), deps);
+				/**
+				 * Old method below
+				 */
+
+//				ILifecycleAgent agent = context.getLifecycleAgentManager().getLifecycleAgent();
+//				ILifecycle lifecycle = context.getCache().getLifecycles().get(entryPoint.getTarget());
+//				if (lifecycle == null) {
+//
+//					try {
+//
+//						lifecycle = agent.buildLifecycle(new LifecycleBuilder(module, context), entryPoint, module.getLifecycleName());
+//
+//						// LifecycleBuilder lifecycleBuilder = new
+//						// LifecycleBuilder(module, context);
+//						// lifecycle =
+//						// lifecycleBuilder.buildLifecycle(entryPoint,
+//						// module.getLifecycleName());
+//
+//					} catch (Exception re) {
+//						throw new RhenaException(re.getMessage(), re);
+//					}
+//
+//					context.getCache().getLifecycles().put(entryPoint.getTarget(), lifecycle);
+//				}
+
+//				File generated = agent.executeLifecycle(lifecycle, module, entryPoint.getExecutionType(), deps);
 				// File generated = lifecycle.executeLifecycle(module,
 				// entryPoint.getExecutionType(), deps);
 
@@ -102,6 +142,16 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 				throw new RhenaException(mue.getMessage(), mue);
 			}
 		}
+	}
+
+	private List<URL> getDependencies(IRhenaEdge moduleEdge) throws RhenaException {
+
+		DependencyCollectionVisitor coll = new DependencyCollectionVisitor(context.getCache(), moduleEdge);
+		List<URL> deps = new ArrayList<URL>();
+		for (IRhenaExecution exec : coll.getDependencies()) {
+			deps.add(exec.getArtifact().getArtifactUrl());
+		}
+		return coll.getDependenciesURL();
 	}
 
 	private void getDepchain(Dependencies deps, IRhenaCache cache, ModuleIdentifier identifier, EExecutionType et) throws RhenaException {

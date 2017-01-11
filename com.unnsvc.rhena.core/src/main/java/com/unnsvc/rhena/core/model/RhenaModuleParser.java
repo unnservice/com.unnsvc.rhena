@@ -25,8 +25,6 @@ import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
-import com.unnsvc.rhena.core.lifecycle.ContextReference;
-import com.unnsvc.rhena.core.lifecycle.GeneratorReference;
 import com.unnsvc.rhena.core.lifecycle.LifecycleReference;
 import com.unnsvc.rhena.core.lifecycle.ProcessorReference;
 
@@ -169,7 +167,7 @@ public class RhenaModuleParser {
 				IRhenaEdge edge = newEdge(module.getIdentifier(), et, ModuleIdentifier.valueOf(moduleAttrStr), tt);
 				if (child.getLocalName().equals("context")) {
 
-					ContextReference configurator = new ContextReference(edge, clazzAttrStr, schemaAttrStr, config);
+					ProcessorReference configurator = new ProcessorReference(edge, clazzAttrStr, schemaAttrStr, config);
 					lifecycleReference.setContext(configurator);
 				} else if (child.getLocalName().equals("processor")) {
 
@@ -177,7 +175,7 @@ public class RhenaModuleParser {
 					lifecycleReference.addProcessor(processor);
 				} else if (child.getLocalName().equals("generator")) {
 
-					GeneratorReference generator = new GeneratorReference(edge, clazzAttrStr, schemaAttrStr, config);
+					ProcessorReference generator = new ProcessorReference(edge, clazzAttrStr, schemaAttrStr, config);
 					lifecycleReference.setGenerator(generator);
 				}
 			}

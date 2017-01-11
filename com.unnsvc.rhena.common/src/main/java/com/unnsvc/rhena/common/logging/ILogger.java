@@ -1,11 +1,10 @@
 
 package com.unnsvc.rhena.common.logging;
 
-import java.io.Serializable;
-
+import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 
-public interface ILogger extends Serializable {
+public interface ILogger {
 
 	public void info(Class<?> clazz, ModuleIdentifier identifier, String message);
 
@@ -27,6 +26,6 @@ public interface ILogger extends Serializable {
 
 	public void trace(Class<?> clazz, ModuleIdentifier identifier, String message);
 
-	public void fireLogEvent(ELogLevel level, Class<?> clazz, ModuleIdentifier identifier, String message, Throwable throwable);
+	public void fireLogEvent(ELogLevel level, Class<?> clazz, ModuleIdentifier identifier, String message, Throwable throwable) throws RhenaException;
 
 }

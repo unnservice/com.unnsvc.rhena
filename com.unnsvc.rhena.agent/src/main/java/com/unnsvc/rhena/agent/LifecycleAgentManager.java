@@ -4,7 +4,10 @@ package com.unnsvc.rhena.agent;
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.rmi.AccessException;
+import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -126,5 +129,11 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 	public ILifecycleAgent getLifecycleAgent() {
 
 		return lifecycleAgent;
+	}
+
+	@Override
+	public void export(String typeName, Remote object) throws AccessException, RemoteException, AlreadyBoundException {
+
+		registry.bind(typeName, object);
 	}
 }

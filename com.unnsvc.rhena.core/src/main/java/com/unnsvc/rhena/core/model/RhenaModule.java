@@ -11,9 +11,9 @@ import java.util.Properties;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
 public class RhenaModule implements IRhenaModule {
@@ -21,7 +21,7 @@ public class RhenaModule implements IRhenaModule {
 	private static final long serialVersionUID = 1L;
 	private ModuleIdentifier identifier;
 	private URI location;
-	private IRepository repository;
+	private transient IRepository repository;
 	private IRhenaEdge parent;
 	private Properties properties;
 	private String lifecycleName;

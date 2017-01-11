@@ -9,7 +9,7 @@ import java.util.Properties;
 
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
+import com.unnsvc.rhena.common.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.common.visitors.IVisitableModel;
 
 public interface IRhenaModule extends IVisitableModel, Serializable {

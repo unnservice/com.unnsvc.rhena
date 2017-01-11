@@ -2,6 +2,7 @@
 package com.unnsvc.rhena.lifecycle;
 
 import java.io.File;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,15 +17,14 @@ import javax.tools.ToolProvider;
 
 import org.w3c.dom.Document;
 
-import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
-import com.unnsvc.rhena.common.logging.ILogger;
+import com.unnsvc.rhena.common.lifecycle.IExecutionContext;
+import com.unnsvc.rhena.common.lifecycle.IJavaProcessor;
+import com.unnsvc.rhena.common.lifecycle.IProcessor;
+import com.unnsvc.rhena.common.logging.ILoggerService;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.model.lifecycle.IExecutionContext;
-import com.unnsvc.rhena.common.model.lifecycle.IJavaProcessor;
-import com.unnsvc.rhena.common.model.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.visitors.IDependencies;
 
 public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
@@ -32,10 +32,10 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 	private static final long serialVersionUID = 1L;
 	@ProcessorContext
 	private IExecutionContext context;
+//	@ProcessorContext
+//	private IRhenaCache cache;
 	@ProcessorContext
-	private IRhenaCache cache;
-	@ProcessorContext
-	private ILogger logger;
+	private ILoggerService logger;
 
 	public DefaultJavaProcessor() {
 
@@ -47,11 +47,11 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 	}
 
 	/**
-	 * @throws RhenaException
+	 * @throws RemoteException 
 	 * @TODO batch instead of running for each resource
 	 */
 	@Override
-	public void process(IExecutionContext context, IRhenaModule module, EExecutionType type, IDependencies dependencies) throws RhenaException {
+	public void process(IRhenaModule module, EExecutionType type, IDependencies dependencies) throws RemoteException {
 
 		try {
 			logger.trace(getClass(),

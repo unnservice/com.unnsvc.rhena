@@ -4,24 +4,21 @@ package com.unnsvc.rhena.core.lifecycle;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.unnsvc.rhena.common.model.lifecycle.IExecutionReference;
-import com.unnsvc.rhena.common.model.lifecycle.IGeneratorReference;
-import com.unnsvc.rhena.common.model.lifecycle.ILifecycleProcessorReference;
-import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
-import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
+import com.unnsvc.rhena.common.lifecycle.ILifecycleProcessorReference;
+import com.unnsvc.rhena.common.lifecycle.ILifecycleReference;
 
 public class LifecycleReference implements ILifecycleReference {
 
 	private static final long serialVersionUID = 1L;
 	private String name;
-	private IExecutionReference context;
-	private List<IProcessorReference> processors;
-	private IGeneratorReference generator;
+	private ILifecycleProcessorReference context;
+	private List<ILifecycleProcessorReference> processors;
+	private ILifecycleProcessorReference generator;
 
 	public LifecycleReference(String name) {
 
 		this.name = name;
-		this.processors = new ArrayList<IProcessorReference>();
+		this.processors = new ArrayList<ILifecycleProcessorReference>();
 	}
 
 	@Override
@@ -30,35 +27,35 @@ public class LifecycleReference implements ILifecycleReference {
 		return name;
 	}
 
-	public void addProcessor(IProcessorReference processor) {
+	public void addProcessor(ILifecycleProcessorReference processor) {
 
 		this.processors.add(processor);
 	}
 
 	@Override
-	public List<IProcessorReference> getProcessors() {
+	public List<ILifecycleProcessorReference> getProcessors() {
 
 		return processors;
 	}
 
-	public void setGenerator(IGeneratorReference generator) {
+	public void setGenerator(ILifecycleProcessorReference generator) {
 
 		this.generator = generator;
 	}
 
 	@Override
-	public IGeneratorReference getGenerator() {
+	public ILifecycleProcessorReference getGenerator() {
 
 		return generator;
 	}
 
-	public void setContext(IExecutionReference context) {
+	public void setContext(ILifecycleProcessorReference context) {
 
 		this.context = context;
 	}
 
 	@Override
-	public IExecutionReference getContext() {
+	public ILifecycleProcessorReference getContext() {
 
 		return context;
 	}

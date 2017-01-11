@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.common.model.lifecycle;
+package com.unnsvc.rhena.common.lifecycle;
 
 /**
  * This provides a property view into an IConfigurator
