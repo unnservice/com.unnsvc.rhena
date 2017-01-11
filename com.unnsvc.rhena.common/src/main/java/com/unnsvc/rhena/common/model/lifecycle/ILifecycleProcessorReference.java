@@ -1,6 +1,8 @@
 
 package com.unnsvc.rhena.common.model.lifecycle;
 
+import java.io.Serializable;
+
 import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.model.IRhenaEdge;
@@ -11,7 +13,7 @@ import com.unnsvc.rhena.common.model.IRhenaEdge;
  * @author noname
  *
  */
-public interface ILifecycleProcessorReference {
+public interface ILifecycleProcessorReference  extends Serializable {
 
 	public String getSchema();
 

@@ -25,6 +25,8 @@ import com.unnsvc.rhena.common.visitors.IDependencies;
  */
 public class DefaultManifestProcessor implements IProcessor {
 
+	private static final long serialVersionUID = 1L;
+
 	public DefaultManifestProcessor() {
 
 	}

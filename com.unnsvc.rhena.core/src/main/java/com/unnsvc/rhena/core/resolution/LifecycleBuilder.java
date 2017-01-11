@@ -14,6 +14,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
+import com.unnsvc.rhena.common.ILifecycleBuilder;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
@@ -40,8 +41,9 @@ import com.unnsvc.rhena.lifecycle.DefaultGenerator;
 import com.unnsvc.rhena.lifecycle.DefaultJavaProcessor;
 import com.unnsvc.rhena.lifecycle.DefaultManifestProcessor;
 
-public class LifecycleBuilder {
+public class LifecycleBuilder implements ILifecycleBuilder {
 
+	private static final long serialVersionUID = 1L;
 	private IRhenaModule module;
 	private IRhenaContext context;
 
@@ -51,6 +53,7 @@ public class LifecycleBuilder {
 		this.context = context;
 	}
 
+	@Override
 	public ILifecycle buildLifecycle(IEntryPoint entryPoint, String lifecycleName) throws RhenaException {
 
 		if (module.getLifecycleName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
@@ -144,7 +147,7 @@ public class LifecycleBuilder {
 		 */
 		// URLClassLoader urlc = new URLClassLoader(deps.toArray(new
 		// URL[deps.size()]), Thread.currentThread().getContextClassLoader());
-		ClassLoader urlc = new ParentLastURLClassLoader(deps, Thread.currentThread().getContextClassLoader());
+		ClassLoader urlc = new ParentLastURLClassLoader(deps, getClass().getClassLoader());
 
 		try {
 			Class<T> clazz = (Class<T>) urlc.loadClass(processor.getClazz());

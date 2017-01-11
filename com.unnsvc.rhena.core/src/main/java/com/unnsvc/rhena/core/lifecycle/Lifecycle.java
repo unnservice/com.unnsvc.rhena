@@ -15,6 +15,7 @@ import com.unnsvc.rhena.common.visitors.IDependencies;
 
 public class Lifecycle implements ILifecycle {
 
+	private static final long serialVersionUID = 1L;
 	private IExecutionContext context;
 	private IGenerator generator;
 	private List<IProcessor> processors;

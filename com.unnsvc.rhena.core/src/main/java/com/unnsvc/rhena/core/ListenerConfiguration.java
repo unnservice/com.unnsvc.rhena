@@ -13,6 +13,7 @@ import com.unnsvc.rhena.common.listener.IContextListener;
 
 public class ListenerConfiguration implements IListenerConfiguration {
 
+	private static final long serialVersionUID = 1L;
 	private Map<Class<? extends IContextEvent>, List<IContextListener<? extends IContextEvent>>> listeners;
 
 	public ListenerConfiguration() {

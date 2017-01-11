@@ -8,6 +8,7 @@ import com.unnsvc.rhena.common.model.lifecycle.IProcessorReference;
 
 public class ProcessorReference implements IProcessorReference {
 
+	private static final long serialVersionUID = 1L;
 	private String clazz;
 	private String schema;
 	private Document configuration;

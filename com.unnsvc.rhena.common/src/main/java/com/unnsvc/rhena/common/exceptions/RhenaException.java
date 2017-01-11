@@ -1,7 +1,9 @@
 
 package com.unnsvc.rhena.common.exceptions;
 
-public class RhenaException extends Exception {
+import java.rmi.RemoteException;
+
+public class RhenaException extends RemoteException {
 
 	private static final long serialVersionUID = 1L;
 
@@ -12,7 +14,7 @@ public class RhenaException extends Exception {
 
 	public RhenaException(Throwable t) {
 
-		super(t);
+		super(t.getMessage(), t);
 	}
 
 	public RhenaException(String message, Throwable t) {

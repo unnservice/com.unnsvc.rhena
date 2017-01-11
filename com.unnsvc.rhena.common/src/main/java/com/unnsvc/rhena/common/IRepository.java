@@ -1,6 +1,7 @@
 
 package com.unnsvc.rhena.common;
 
+import java.io.Serializable;
 import java.net.URI;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -13,7 +14,7 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
  * @author noname
  *
  */
-public interface IRepository {
+public interface IRepository extends Serializable {
 
 	/**
 	 * 

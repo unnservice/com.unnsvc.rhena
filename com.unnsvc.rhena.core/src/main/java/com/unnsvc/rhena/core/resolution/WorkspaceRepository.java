@@ -4,6 +4,7 @@ package com.unnsvc.rhena.core.resolution;
 import java.io.File;
 import java.io.IOException;
 
+import com.unnsvc.rhena.common.ILifecycleAgent;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
@@ -28,6 +29,8 @@ import com.unnsvc.rhena.core.visitors.DependencyCollectionVisitor;
  *
  */
 public class WorkspaceRepository extends AbstractWorkspaceRepository {
+
+	private static final long serialVersionUID = 1L;
 
 	public WorkspaceRepository(IRhenaContext context, File location) {
 
@@ -57,8 +60,8 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 			getDepchain(deps, cache, entryPoint.getTarget(), entryPoint.getExecutionType());
 
 			/**
-			 * Up to, but not with, the ordinal, becauuse that's the one we will
-			 * create next by executing a lifecycle
+			 * Up to, but not with, the ordinal, becauuse that's the one we
+			 * willimgur create next by executing a lifecycle
 			 */
 			for (int i = 0; i < entryPoint.getExecutionType().ordinal(); i++) {
 
@@ -68,8 +71,21 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 
 			ILifecycle lifecycle = context.getCache().getLifecycles().get(entryPoint.getTarget());
 			if (lifecycle == null) {
-				LifecycleBuilder lifecycleBuilder = new LifecycleBuilder(module, context);
-				lifecycle = lifecycleBuilder.buildLifecycle(entryPoint, module.getLifecycleName());
+
+				try {
+
+					ILifecycleAgent agent = context.getLifecycleAgent();
+					lifecycle = agent.buildLifecycle(new LifecycleBuilder(module, context), entryPoint, module.getLifecycleName());
+
+					// LifecycleBuilder lifecycleBuilder = new
+					// LifecycleBuilder(module, context);
+					// lifecycle = lifecycleBuilder.buildLifecycle(entryPoint,
+					// module.getLifecycleName());
+
+				} catch (Exception re) {
+					throw new RhenaException(re.getMessage(), re);
+				}
+
 				context.getCache().getLifecycles().put(entryPoint.getTarget(), lifecycle);
 			}
 

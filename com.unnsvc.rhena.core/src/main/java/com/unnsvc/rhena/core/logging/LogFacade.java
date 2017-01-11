@@ -14,6 +14,7 @@ import com.unnsvc.rhena.core.events.LogEvent;
  */
 public class LogFacade implements ILogger {
 
+	private static final long serialVersionUID = 1L;
 	private IListenerConfiguration listenerConfig;
 
 	public LogFacade(IListenerConfiguration listenerConfig) {

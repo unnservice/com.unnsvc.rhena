@@ -5,6 +5,7 @@ import java.io.File;
 
 public class Resource implements IResource {
 
+	private static final long serialVersionUID = 1L;
 	private EResourceType type;
 	private String relativePath;
 	private File absolutePath;

@@ -7,7 +7,7 @@ public class RhenaRepositoyException extends RhenaException {
 
 	public RhenaRepositoyException(Throwable t) {
 
-		super(t);
+		super(t.getMessage(), t);
 	}
 
 }

@@ -2,8 +2,9 @@
 package com.unnsvc.rhena.common.model.lifecycle;
 
 import java.io.File;
+import java.io.Serializable;
 
-public interface IResource {
+public interface IResource extends Serializable {
 
 	public EResourceType getResourceType();
 

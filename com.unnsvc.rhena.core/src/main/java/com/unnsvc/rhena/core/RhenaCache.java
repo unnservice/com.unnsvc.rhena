@@ -20,6 +20,7 @@ import com.unnsvc.rhena.core.events.ModuleAddRemoveEvent.EAddRemove;
 
 public class RhenaCache implements IRhenaCache {
 
+	private static final long serialVersionUID = 1L;
 	private IRhenaContext context;
 	private Map<ModuleIdentifier, IRhenaModule> modules;
 	private Map<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>> executions;

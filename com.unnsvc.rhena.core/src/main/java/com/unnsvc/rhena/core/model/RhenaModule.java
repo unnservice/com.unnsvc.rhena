@@ -18,6 +18,7 @@ import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
 public class RhenaModule implements IRhenaModule {
 
+	private static final long serialVersionUID = 1L;
 	private ModuleIdentifier identifier;
 	private URI location;
 	private IRepository repository;

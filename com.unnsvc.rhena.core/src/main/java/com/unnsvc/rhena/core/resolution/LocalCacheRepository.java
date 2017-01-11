@@ -29,6 +29,7 @@ import com.unnsvc.rhena.core.model.RhenaModuleParser;
  */
 public class LocalCacheRepository implements IRepository {
 
+	private static final long serialVersionUID = 1L;
 	private IRhenaContext context;
 
 	public LocalCacheRepository(IRhenaContext context) {

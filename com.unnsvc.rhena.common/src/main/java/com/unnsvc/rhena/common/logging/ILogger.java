@@ -1,9 +1,11 @@
 
 package com.unnsvc.rhena.common.logging;
 
+import java.io.Serializable;
+
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 
-public interface ILogger {
+public interface ILogger extends Serializable {
 
 	public void info(Class<?> clazz, ModuleIdentifier identifier, String message);
 

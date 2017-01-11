@@ -1,9 +1,10 @@
 
 package com.unnsvc.rhena.common.model.lifecycle;
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface ILifecycleReference {
+public interface ILifecycleReference extends Serializable {
 
 	public String getName();
 

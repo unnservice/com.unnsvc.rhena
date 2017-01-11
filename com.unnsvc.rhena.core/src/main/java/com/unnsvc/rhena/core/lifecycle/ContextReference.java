@@ -8,6 +8,7 @@ import com.unnsvc.rhena.common.model.lifecycle.IExecutionReference;
 
 public class ContextReference implements IExecutionReference {
 
+	private static final long serialVersionUID = 1L;
 	private String clazz;
 	private Document configuration;
 	private String schema;

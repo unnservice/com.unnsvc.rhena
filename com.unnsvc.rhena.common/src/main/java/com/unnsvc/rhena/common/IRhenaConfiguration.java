@@ -2,8 +2,9 @@
 package com.unnsvc.rhena.common;
 
 import java.io.File;
+import java.io.Serializable;
 
-public interface IRhenaConfiguration {
+public interface IRhenaConfiguration extends Serializable {
 
 	public void setRhenaHome(File rhenaHome);
 

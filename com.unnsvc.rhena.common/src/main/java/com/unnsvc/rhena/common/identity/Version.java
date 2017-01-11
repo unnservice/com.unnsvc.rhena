@@ -1,13 +1,15 @@
 
 package com.unnsvc.rhena.common.identity;
 
+import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 
-public class Version {
+public class Version implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	public static final String VERSION_PATTERN = "^((?<major>\\d+)(\\.(?<minor>\\d+)(\\.(?<micro>\\d+))?)?)$";
 	public static final Pattern VERSION = Pattern.compile(VERSION_PATTERN);
 

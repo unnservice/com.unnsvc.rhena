@@ -1,6 +1,7 @@
 
 package com.unnsvc.rhena.common.model;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,7 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.common.visitors.IVisitableModel;
 
-public interface IRhenaModule extends IVisitableModel {
+public interface IRhenaModule extends IVisitableModel, Serializable {
 
 	public ModuleIdentifier getIdentifier();
 

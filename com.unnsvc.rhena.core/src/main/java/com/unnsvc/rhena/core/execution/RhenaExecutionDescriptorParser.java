@@ -49,7 +49,7 @@ public class RhenaExecutionDescriptorParser {
 			URI descriptor = new URI(baseUri.toString() + "/" + RhenaConstants.EXECUTION_DESCRIPTOR_FILENAME).normalize();
 			parse(descriptor);
 		} catch (Exception ex) {
-			throw new RhenaException(ex);
+			throw new RhenaException(ex.getMessage(), ex);
 		}
 	}
 

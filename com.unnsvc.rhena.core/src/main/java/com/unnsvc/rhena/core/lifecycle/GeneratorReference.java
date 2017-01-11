@@ -8,6 +8,7 @@ import com.unnsvc.rhena.common.model.lifecycle.IGeneratorReference;
 
 public class GeneratorReference implements IGeneratorReference {
 
+	private static final long serialVersionUID = 1L;
 	private String clazz;
 	private String schema;
 	private Document configuration;

@@ -29,6 +29,7 @@ import com.unnsvc.rhena.common.visitors.IDependencies;
 
 public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 
+	private static final long serialVersionUID = 1L;
 	@ProcessorContext
 	private IExecutionContext context;
 	@ProcessorContext

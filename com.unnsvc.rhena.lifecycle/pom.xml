@@ -9,11 +9,11 @@
 	</parent>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.eclipse.jdt.core.compiler</groupId>
-			<artifactId>ecj</artifactId>
-			<version>4.6.1</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.eclipse.jdt.core.compiler</groupId> -->
+<!-- 			<artifactId>ecj</artifactId> -->
+<!-- 			<version>4.6.1</version> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>com.unnsvc.rhena</groupId>
 			<artifactId>com.unnsvc.rhena.common</artifactId>

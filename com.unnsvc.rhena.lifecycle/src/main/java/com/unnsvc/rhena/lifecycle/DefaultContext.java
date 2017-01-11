@@ -26,11 +26,8 @@ import com.unnsvc.rhena.common.model.lifecycle.Resource;
 
 public class DefaultContext implements IExecutionContext {
 
-	// @TODO injection mechanism
-	// @ProcessorContext
-	// private IRhenaModule module;
-	// @ProcessorContext
-	// private ExecutionType type;
+	private static final long serialVersionUID = 1L;
+
 	@ProcessorContext
 	private IRhenaContext context;
 

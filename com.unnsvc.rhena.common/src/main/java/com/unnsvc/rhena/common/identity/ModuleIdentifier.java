@@ -1,11 +1,14 @@
 
 package com.unnsvc.rhena.common.identity;
 
+import java.io.Serializable;
+
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 
-public class ModuleIdentifier {
+public class ModuleIdentifier implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private Identifier componentName;
 	private Identifier moduleName;
 	private Version version;

@@ -2,6 +2,7 @@
 package com.unnsvc.rhena.common.model.lifecycle;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.List;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -9,7 +10,7 @@ import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.visitors.IDependencies;
 
-public interface ILifecycle {
+public interface ILifecycle extends Serializable {
 
 	public IExecutionContext getContext();
 

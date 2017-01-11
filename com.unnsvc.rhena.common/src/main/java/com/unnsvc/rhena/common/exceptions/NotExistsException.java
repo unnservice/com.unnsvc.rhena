@@ -7,7 +7,7 @@ public class NotExistsException extends RhenaException {
 
 	public NotExistsException(Throwable t) {
 
-		super(t);
+		super(t.getMessage(), t);
 	}
 
 	public NotExistsException(String message) {

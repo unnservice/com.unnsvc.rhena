@@ -21,6 +21,7 @@ import com.unnsvc.rhena.lifecycle.helpers.JarHelper;
  */
 public class DefaultGenerator implements IGenerator {
 
+	private static final long serialVersionUID = 1L;
 	@ProcessorContext
 	private IExecutionContext context;
 	@ProcessorContext

@@ -7,6 +7,7 @@ import com.unnsvc.rhena.common.IRhenaConfiguration;
 
 public class RhenaConfiguration implements IRhenaConfiguration {
 
+	private static final long serialVersionUID = 1L;
 	private File rhenaHome;
 	private boolean runTest;
 	private boolean runItest;

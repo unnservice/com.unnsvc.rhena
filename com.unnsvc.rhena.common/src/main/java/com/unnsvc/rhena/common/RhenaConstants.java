@@ -1,7 +1,7 @@
 
 package com.unnsvc.rhena.common;
 
-import java.io.File;
+import java.rmi.registry.Registry;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
@@ -22,6 +22,7 @@ public class RhenaConstants {
 
 	public static final String DEFAULT_OUTPUT_DIRECTORY_NAME = "target";
 	public static final Object RHENA_VERSION = "1.0";
+	public static final int DEFAULT_LIFECYCLE_AGENT_PORT = Registry.REGISTRY_PORT;
 
 	private static ModuleIdentifier createDefault() {
 

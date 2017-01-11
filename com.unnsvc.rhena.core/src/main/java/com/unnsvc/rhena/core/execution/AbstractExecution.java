@@ -10,6 +10,7 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 
 public abstract class AbstractExecution implements IRhenaExecution {
 
+	private static final long serialVersionUID = 1L;
 	private ModuleIdentifier moduleIdentifier;
 	private EExecutionType executionType;
 	private IArtifactDescriptor artifact;

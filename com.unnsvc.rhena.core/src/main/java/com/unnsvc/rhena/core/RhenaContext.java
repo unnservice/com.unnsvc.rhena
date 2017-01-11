@@ -4,11 +4,15 @@ package com.unnsvc.rhena.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.unnsvc.rhena.agent.LifecycleAgentBuilder;
+import com.unnsvc.rhena.common.ILifecycleAgent;
+import com.unnsvc.rhena.common.ILifecycleAgentBuilder;
 import com.unnsvc.rhena.common.IListenerConfiguration;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.logging.ILogger;
 import com.unnsvc.rhena.core.logging.LogFacade;
 
@@ -19,6 +23,7 @@ import com.unnsvc.rhena.core.logging.LogFacade;
  */
 public class RhenaContext implements IRhenaContext {
 
+	private static final long serialVersionUID = 1L;
 	private IRhenaConfiguration config;
 	private IRhenaCache cache;
 	private List<IRepository> repositories;
@@ -105,6 +110,7 @@ public class RhenaContext implements IRhenaContext {
 	@Override
 	public void close() throws Exception {
 
+		lifecycleAgentBuilder.shutdown();
 		getCache().getExecutions().clear();
 		getCache().getLifecycles().clear();
 
@@ -113,6 +119,26 @@ public class RhenaContext implements IRhenaContext {
 		getCache().getModules().clear();
 		getCache().getEdges().clear();
 		getCache().getMerged().clear();
+	}
+
+	private ILifecycleAgentBuilder lifecycleAgentBuilder;
+	private ILifecycleAgent lifecycleAgent;
+
+	@Override
+	public ILifecycleAgent getLifecycleAgent() throws RhenaException {
+
+		try {
+			if (lifecycleAgent == null) {
+				lifecycleAgentBuilder = new LifecycleAgentBuilder();
+				lifecycleAgentBuilder.startup();
+				lifecycleAgent = lifecycleAgentBuilder.getLifecycleAgent();
+				
+//				agentBuilder.shutdown();
+			}
+		} catch (Exception ex) {
+			throw new RhenaException(ex.getMessage(), ex);
+		}
+		return lifecycleAgent;
 	}
 
 }

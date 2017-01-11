@@ -7,6 +7,7 @@ import com.unnsvc.rhena.common.model.IEntryPoint;
 
 public class EntryPoint implements IEntryPoint {
 
+	private static final long serialVersionUID = 1L;
 	private ModuleIdentifier target;
 	private EExecutionType executionType;
 

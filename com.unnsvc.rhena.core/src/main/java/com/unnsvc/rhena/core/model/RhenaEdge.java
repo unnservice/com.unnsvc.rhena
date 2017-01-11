@@ -8,6 +8,7 @@ import com.unnsvc.rhena.common.model.IRhenaEdge;
 
 public class RhenaEdge implements IRhenaEdge {
 
+	private static final long serialVersionUID = 1L;
 	private ModuleIdentifier source;
 	private IEntryPoint entryPoint;
 	private ESelectionType traverseType;

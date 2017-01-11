@@ -9,6 +9,7 @@ import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 
 public class ArtifactDescriptor implements IArtifactDescriptor {
 
+	private static final long serialVersionUID = 1L;
 	private String name;
 	private URL artifactUrl;
 	private String sha1;
