@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Common
+Bundle-SymbolicName: com.unnsvc.rhena.common
+Bundle-Version: 1.0.0.qualifier
+Export-Package: com.unnsvc.rhena.common,
+ com.unnsvc.rhena.common.annotation,
+ com.unnsvc.rhena.common.exceptions,
+ com.unnsvc.rhena.common.execution,
+ com.unnsvc.rhena.common.identity,
+ com.unnsvc.rhena.common.listener,
+ com.unnsvc.rhena.common.logging,
+ com.unnsvc.rhena.common.model,
+ com.unnsvc.rhena.common.model.lifecycle,
+ com.unnsvc.rhena.common.visitors
