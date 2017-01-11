@@ -69,28 +69,32 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 				deps.addDependency(EExecutionType.values()[i], exec);
 			}
 
-			ILifecycleAgent agent = context.getLifecycleAgent();
-			ILifecycle lifecycle = context.getCache().getLifecycles().get(entryPoint.getTarget());
-			if (lifecycle == null) {
+			try {
 
-				try {
+				ILifecycleAgent agent = context.getLifecycleAgentManager().getLifecycleAgent();
+				ILifecycle lifecycle = context.getCache().getLifecycles().get(entryPoint.getTarget());
+				if (lifecycle == null) {
 
-					lifecycle = agent.buildLifecycle(new LifecycleBuilder(module, context), entryPoint, module.getLifecycleName());
+					try {
 
-//					LifecycleBuilder lifecycleBuilder = new LifecycleBuilder(module, context);
-//					lifecycle = lifecycleBuilder.buildLifecycle(entryPoint, module.getLifecycleName());
+						lifecycle = agent.buildLifecycle(new LifecycleBuilder(module, context), entryPoint, module.getLifecycleName());
 
-				} catch (Exception re) {
-					throw new RhenaException(re.getMessage(), re);
+						// LifecycleBuilder lifecycleBuilder = new
+						// LifecycleBuilder(module, context);
+						// lifecycle =
+						// lifecycleBuilder.buildLifecycle(entryPoint,
+						// module.getLifecycleName());
+
+					} catch (Exception re) {
+						throw new RhenaException(re.getMessage(), re);
+					}
+
+					context.getCache().getLifecycles().put(entryPoint.getTarget(), lifecycle);
 				}
 
-				context.getCache().getLifecycles().put(entryPoint.getTarget(), lifecycle);
-			}
-
-
-			try {
 				File generated = agent.executeLifecycle(lifecycle, module, entryPoint.getExecutionType(), deps);
-//				File generated = lifecycle.executeLifecycle(module, entryPoint.getExecutionType(), deps);
+				// File generated = lifecycle.executeLifecycle(module,
+				// entryPoint.getExecutionType(), deps);
 
 				return new WorkspaceExecution(entryPoint.getTarget(), entryPoint.getExecutionType(),
 						new ArtifactDescriptor(entryPoint.getTarget().toString(), generated.getCanonicalFile().toURI().toURL(), Utils.generateSha1(generated)));

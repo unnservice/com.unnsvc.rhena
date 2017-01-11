@@ -12,7 +12,6 @@ import java.rmi.server.UnicastRemoteObject;
 import com.unnsvc.rhena.common.ILifecycleAgent;
 import com.unnsvc.rhena.common.ILifecycleAgentBuilder;
 import com.unnsvc.rhena.common.ILifecycleBuilder;
-import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.model.IEntryPoint;
@@ -44,21 +43,22 @@ public class LifecycleAgent extends UnicastRemoteObject implements ILifecycleAge
 	 */
 	public static void main(String... args) throws Exception {
 
+		int port = Integer.valueOf(args[0]);
 		System.err.println("Starting up agent with classpath: " + System.getProperty("java.class.path"));
 
 		LifecycleAgent selfInstance = new LifecycleAgent();
-		selfInstance.setupRegistry();
+		selfInstance.setupRegistry(port);
 		selfInstance.notifyServer();
 	}
 
-	private void setupRegistry() throws RemoteException, AlreadyBoundException {
+	private void setupRegistry(int port) throws RemoteException, AlreadyBoundException {
 
 		if (System.getSecurityManager() == null) {
-//			 System.setSecurityManager(new RMISecurityManager());
-//			System.setSecurityManager(new SecurityManager());
+			// System.setSecurityManager(new RMISecurityManager());
+			// System.setSecurityManager(new SecurityManager());
 			System.setSecurityManager(new PermitAllSecurityManager());
 		}
-		registry = LocateRegistry.getRegistry(RhenaConstants.DEFAULT_LIFECYCLE_AGENT_PORT);
+		registry = LocateRegistry.getRegistry(port);
 		registry.bind(ILifecycleAgent.class.getName(), (ILifecycleAgent) this);
 	}
 

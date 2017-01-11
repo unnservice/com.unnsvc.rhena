@@ -4,8 +4,7 @@ package com.unnsvc.rhena.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.unnsvc.rhena.agent.LifecycleAgentBuilder;
-import com.unnsvc.rhena.common.ILifecycleAgent;
+import com.unnsvc.rhena.agent.LifecycleAgentManager;
 import com.unnsvc.rhena.common.ILifecycleAgentBuilder;
 import com.unnsvc.rhena.common.IListenerConfiguration;
 import com.unnsvc.rhena.common.IRepository;
@@ -33,9 +32,10 @@ public class RhenaContext implements IRhenaContext {
 	private ILogger logFacade;
 
 	/**
+	 * @throws RhenaException
 	 * @TODO this remains from old code
 	 */
-	public RhenaContext(IRhenaConfiguration config) {
+	public RhenaContext(IRhenaConfiguration config) throws RhenaException {
 
 		this.config = config;
 		this.cache = new RhenaCache(this);
@@ -43,6 +43,20 @@ public class RhenaContext implements IRhenaContext {
 		this.additionalRepositories = new ArrayList<IRepository>();
 		this.listenerConfig = new ListenerConfiguration();
 		this.logFacade = new LogFacade(listenerConfig);
+		startupContext();
+	}
+
+	private void startupContext() throws RhenaException {
+
+		try {
+			lifecycleAgentManager = new LifecycleAgentManager(config.getAgentClasspath());
+			lifecycleAgentManager.startup();
+			/**
+			 * @TODO export relevant objects
+			 */
+		} catch (Exception ex) {
+			throw new RhenaException(ex.getMessage(), ex);
+		}
 	}
 
 	@Override
@@ -110,7 +124,6 @@ public class RhenaContext implements IRhenaContext {
 	@Override
 	public void close() throws Exception {
 
-		lifecycleAgentBuilder.shutdown();
 		getCache().getExecutions().clear();
 		getCache().getLifecycles().clear();
 
@@ -121,24 +134,12 @@ public class RhenaContext implements IRhenaContext {
 		getCache().getMerged().clear();
 	}
 
-	private ILifecycleAgentBuilder lifecycleAgentBuilder;
-	private ILifecycleAgent lifecycleAgent;
+	private ILifecycleAgentBuilder lifecycleAgentManager;
 
 	@Override
-	public ILifecycleAgent getLifecycleAgent() throws RhenaException {
+	public ILifecycleAgentBuilder getLifecycleAgentManager() throws RhenaException {
 
-		try {
-			if (lifecycleAgent == null) {
-				lifecycleAgentBuilder = new LifecycleAgentBuilder(config, logFacade);
-				lifecycleAgentBuilder.startup();
-				lifecycleAgent = lifecycleAgentBuilder.getLifecycleAgent();
-				
-//				agentBuilder.shutdown();
-			}
-		} catch (Exception ex) {
-			throw new RhenaException(ex.getMessage(), ex);
-		}
-		return lifecycleAgent;
+		return lifecycleAgentManager;
 	}
 
 }
