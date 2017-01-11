@@ -30,6 +30,7 @@ public abstract class AbstractRhenaTest {
 		// Produce packages or use exploded compilation
 		config.setPackageWorkspace(false);
 		config.setInstallLocal(true);
+		config.setAgentClasspath(System.getProperty("java.class.path"));
 		// context.setLogHandler(IRhenaLogHandler logHandler);
 		// context.getRepositoryConfiguration().addRepository()
 		// context.getRepositoryConfiguration().setProxyXX?

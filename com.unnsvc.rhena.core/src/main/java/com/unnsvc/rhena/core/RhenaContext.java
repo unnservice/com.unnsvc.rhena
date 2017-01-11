@@ -30,7 +30,7 @@ public class RhenaContext implements IRhenaContext {
 	private List<IRepository> additionalRepositories;
 	private IRepository localCacheRepository;
 	private IListenerConfiguration listenerConfig;
-	private LogFacade logFacade;
+	private ILogger logFacade;
 
 	/**
 	 * @TODO this remains from old code
@@ -129,7 +129,7 @@ public class RhenaContext implements IRhenaContext {
 
 		try {
 			if (lifecycleAgent == null) {
-				lifecycleAgentBuilder = new LifecycleAgentBuilder();
+				lifecycleAgentBuilder = new LifecycleAgentBuilder(config, logFacade);
 				lifecycleAgentBuilder.startup();
 				lifecycleAgent = lifecycleAgentBuilder.getLifecycleAgent();
 				

@@ -14,8 +14,10 @@ import java.util.List;
 
 import com.unnsvc.rhena.common.ILifecycleAgent;
 import com.unnsvc.rhena.common.ILifecycleAgentBuilder;
+import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.logging.ILogger;
 
 public class LifecycleAgentBuilder extends UnicastRemoteObject implements ILifecycleAgentBuilder {
 
@@ -24,24 +26,29 @@ public class LifecycleAgentBuilder extends UnicastRemoteObject implements ILifec
 	private boolean notifiedByAgent = false;
 	private ILifecycleAgent lifecycleAgent;
 	private Process lifecycleAgentProcess;
+	private IRhenaConfiguration config;
+	private ILogger logger;
 
-	public LifecycleAgentBuilder() throws RemoteException, RhenaException {
+	public LifecycleAgentBuilder(IRhenaConfiguration config, ILogger logFacade) throws RemoteException, RhenaException {
 
 		super();
+		this.config = config;
+		this.logger = logFacade;
 	}
 
 	/**
 	 * Used just for testing
+	 * 
 	 * @param args
 	 * @throws Exception
 	 */
-	public static void main(String... args) throws Exception {
-
-		LifecycleAgentBuilder m = new LifecycleAgentBuilder();
-		m.startup();
-		
-		m.shutdown();
-	}
+//	public static void main(String... args) throws Exception {
+//
+//		LifecycleAgentBuilder m = new LifecycleAgentBuilder();
+//		m.startup();
+//
+//		m.shutdown();
+//	}
 
 	@Override
 	public void startup() throws RhenaException, IOException, InterruptedException, NotBoundException {
@@ -58,7 +65,7 @@ public class LifecycleAgentBuilder extends UnicastRemoteObject implements ILifec
 		try {
 			registry = LocateRegistry.createRegistry(RhenaConstants.DEFAULT_LIFECYCLE_AGENT_PORT);
 			registry.rebind(ILifecycleAgentBuilder.class.getName(), this);
-			System.out.println("Started registry: " + registry);
+			logger.info(getClass(), "Started registry: " + registry);
 		} catch (Exception e) {
 			throw new RhenaException("Failed to create RMI registry", e);
 		}
@@ -71,10 +78,13 @@ public class LifecycleAgentBuilder extends UnicastRemoteObject implements ILifec
 		List<String> cmd = new ArrayList<String>();
 		cmd.add(javaExecutable);
 		cmd.add("-cp");
-		cmd.add(System.getProperty("java.class.path"));
+		cmd.add(config.getAgentClasspath());
 		cmd.add(LifecycleAgent.class.getName());
 
 		ProcessBuilder builder = new ProcessBuilder(cmd);
+
+		logger.info(getClass(), "Building process: " + builder.command());
+
 		lifecycleAgentProcess = builder.inheritIO().start();
 
 		synchronized (this) {
@@ -99,7 +109,7 @@ public class LifecycleAgentBuilder extends UnicastRemoteObject implements ILifec
 	public void shutdown() throws AccessException, RemoteException, NotBoundException {
 
 		lifecycleAgent = null;
-		
+
 		registry.unbind(ILifecycleAgentBuilder.class.getName());
 		UnicastRemoteObject.unexportObject(this, true);
 

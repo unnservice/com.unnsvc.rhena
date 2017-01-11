@@ -29,4 +29,8 @@ public interface IRhenaConfiguration extends Serializable {
 	public boolean isPackageWorkspace();
 
 	public boolean isInstallLocal();
+
+	public String getAgentClasspath();
+
+	public void setAgentClasspath(String agentClasspath);
 }
