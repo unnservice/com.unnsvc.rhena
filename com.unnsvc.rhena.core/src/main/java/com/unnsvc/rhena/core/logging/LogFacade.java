@@ -91,7 +91,17 @@ public class LogFacade extends UnicastRemoteObject implements ILogger, ILoggerSe
 	public void fireLogEvent(ELogLevel level, Class<?> clazz, ModuleIdentifier identifier, String message, Throwable throwable) {
 
 		try {
-			listenerConfig.fireListener(new LogEvent(level, clazz, identifier, message, throwable));
+			listenerConfig.fireListener(new LogEvent(level, clazz.getName(), identifier, message, throwable));
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void fireLogEvent(ELogLevel level, String loggerName, ModuleIdentifier identifier, String message, RemoteException exception) {
+		
+		try {
+			listenerConfig.fireListener(new LogEvent(level, loggerName, identifier, message, exception));
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}

@@ -23,6 +23,7 @@ import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.lifecycle.IJavaProcessor;
 import com.unnsvc.rhena.common.lifecycle.IProcessor;
+import com.unnsvc.rhena.common.logging.ELogLevel;
 import com.unnsvc.rhena.common.logging.ILoggerService;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.visitors.IDependencies;
@@ -53,7 +54,8 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 	@Override
 	public void process(IRhenaModule module, EExecutionType type, IDependencies dependencies) throws RemoteException {
 
-		logger.trace(getClass(), "Executing " + getClass().getName());
+//		logger.trace(getClass().getName(), "Executing " + getClass().getName());
+		logger.fireLogEvent(ELogLevel.TRACE, getClass().getName(), module.getIdentifier(), "Executing " + getClass().getName(), null);
 
 		File outputDirectory = new File(context.getOutputDirectory(module), type.literal().toLowerCase());
 		outputDirectory.mkdirs();
@@ -67,7 +69,8 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 		List<File> resources = context.selectResources(type, "^.*\\.java$");
 
 		if (resources.isEmpty()) {
-			logger.warn(getClass(), "No resources selected for compilation in " + module.getIdentifier() + ":" + type.literal());
+//			logger.warn(getClass(), "No resources selected for compilation in " + module.getIdentifier() + ":" + type.literal());
+			logger.fireLogEvent(ELogLevel.TRACE, getClass().getName(), module.getIdentifier(), "No resources selected for compilation in " + module.getIdentifier() + ":" + type.literal(), null);
 			return;
 		}
 
@@ -83,7 +86,8 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 		Diagnostic<? extends JavaFileObject> firstError = null;
 		for (Diagnostic<? extends JavaFileObject> diag : diagnostics.getDiagnostics()) {
 
-			logger.trace(getClass(), "Compiler diagnostic: " + diag);
+//			logger.trace(getClass(), "Compiler diagnostic: " + diag);
+			logger.fireLogEvent(ELogLevel.TRACE, getClass().getName(), module.getIdentifier(), "Compiler diagnostic: " + diag, null);
 			if (diag.getKind().equals(Kind.ERROR) && firstError == null) {
 				firstError = diag;
 			}

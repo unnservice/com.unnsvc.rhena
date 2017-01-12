@@ -1,6 +1,8 @@
 
 package com.unnsvc.rhena.common.logging;
 
+import java.rmi.RemoteException;
+
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 
@@ -27,5 +29,7 @@ public interface ILogger {
 	public void trace(Class<?> clazz, ModuleIdentifier identifier, String message);
 
 	public void fireLogEvent(ELogLevel level, Class<?> clazz, ModuleIdentifier identifier, String message, Throwable throwable) throws RhenaException;
+
+	public void fireLogEvent(ELogLevel level, String loggerName, ModuleIdentifier identifier, String message, RemoteException exception) throws RhenaException;
 
 }

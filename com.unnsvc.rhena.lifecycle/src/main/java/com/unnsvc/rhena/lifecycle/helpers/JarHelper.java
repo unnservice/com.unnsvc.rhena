@@ -11,6 +11,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
+import com.unnsvc.rhena.common.logging.ELogLevel;
 import com.unnsvc.rhena.common.logging.ILoggerService;
 
 public class JarHelper {
@@ -62,7 +63,9 @@ public class JarHelper {
 
 		if (currentPath.isDirectory()) {
 			relativePath += "/";
-			logger.trace(getClass(), "Add to jar: " + relativePath);
+//			logger.trace(getClass(), "Add to jar: " + relativePath);
+			logger.fireLogEvent(ELogLevel.TRACE, getClass().getName(), null, "Add to jar: " + relativePath, null);
+
 
 			JarEntry entry = new JarEntry(relativePath);
 			entry.setTime(currentPath.lastModified());
@@ -72,7 +75,8 @@ public class JarHelper {
 				addToJar(basePath, contained, output);
 			}
 		} else if (currentPath.isFile() && !relativePath.equals("META-INF/MANIFEST.MF")) {
-			logger.trace(getClass(), "Add to jar: " + relativePath);
+//			logger.trace(getClass(), "Add to jar: " + relativePath);
+			logger.fireLogEvent(ELogLevel.TRACE, getClass().getName(), null, "Add to jar: " + relativePath, null);
 
 			JarEntry entry = new JarEntry(relativePath);
 			entry.setTime(currentPath.lastModified());

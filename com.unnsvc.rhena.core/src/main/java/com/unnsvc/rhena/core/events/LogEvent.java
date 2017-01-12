@@ -11,24 +11,24 @@ public class LogEvent implements IContextEvent {
 
 	private Date timestamp;
 	private ELogLevel level;
-	private Class<?> clazz;
+	private String loggerName;
 	private ModuleIdentifier identifier;
 	private String message;
 	private Throwable throwable;
 
-	public LogEvent(ELogLevel level, Class<?> clazz, ModuleIdentifier identifier, String message, Throwable throwable) {
+	public LogEvent(ELogLevel level, String loggerName, ModuleIdentifier identifier, String message, Throwable throwable) {
 
 		this.timestamp = new Date();
 		this.level = level;
-		this.clazz = clazz;
+		this.loggerName = loggerName;
 		this.identifier = identifier;
 		this.message = message;
 		this.throwable = throwable;
 	}
 
-	public LogEvent(ELogLevel level, Class<?> clazz, ModuleIdentifier identifier, String message) {
+	public LogEvent(ELogLevel level, Class<?> loggerName, ModuleIdentifier identifier, String message) {
 
-		this(level, clazz, identifier, message, null);
+		this(level, loggerName.getName(), identifier, message, null);
 	}
 
 	public Date getTimestamp() {
@@ -41,9 +41,9 @@ public class LogEvent implements IContextEvent {
 		return level;
 	}
 
-	public Class<?> getClazz() {
+	public String getClazz() {
 
-		return clazz;
+		return loggerName;
 	}
 
 	public ModuleIdentifier getIdentifier() {
@@ -64,7 +64,7 @@ public class LogEvent implements IContextEvent {
 	@Override
 	public String toString() {
 
-		return "LogEvent [" + getLevel().toString() + " [" + shorten(getClazz().getName()) + "] " + message;
+		return "LogEvent [" + getLevel().toString() + " [" + shorten(getClazz()) + "] " + message;
 	}
 
 	private String shorten(String name) {
