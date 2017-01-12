@@ -15,6 +15,7 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	private boolean installLocal;
 	private boolean parallel;
 	private String agentClasspath;
+	private String profilerClasspath;
 
 	@Override
 	public void setRhenaHome(File rhenaHome) {
@@ -87,17 +88,28 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 
 		return parallel;
 	}
-	
+
 	@Override
 	public void setAgentClasspath(String agentClasspath) {
-		
+
 		this.agentClasspath = agentClasspath;
 	}
 
 	@Override
 	public String getAgentClasspath() {
 
-		
 		return agentClasspath;
+	}
+
+	@Override
+	public void setProfilerClasspath(String profilerClasspath) {
+
+		this.profilerClasspath = profilerClasspath;
+	}
+
+	@Override
+	public String getProfilerClasspath() {
+
+		return profilerClasspath;
 	}
 }

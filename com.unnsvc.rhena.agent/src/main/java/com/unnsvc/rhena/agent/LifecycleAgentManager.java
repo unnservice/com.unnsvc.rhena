@@ -28,11 +28,13 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 	private Process lifecycleAgentProcess;
 	private int rmiRegistryPort = 0;
 	private String lifecycleAgentClasspath;
+	private String profilerClasspath;
 
-	public LifecycleAgentManager(String lifecycleAgentClasspath) throws RemoteException, RhenaException {
+	public LifecycleAgentManager(String lifecycleAgentClasspath, String profilerClasspath) throws RemoteException, RhenaException {
 
 		super();
 		this.lifecycleAgentClasspath = lifecycleAgentClasspath;
+		this.profilerClasspath = profilerClasspath;
 	}
 
 	@Override
@@ -85,6 +87,9 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 		if (lifecycleAgentClasspath != null) {
 			cmd.add("-classpath");
 			cmd.add(lifecycleAgentClasspath);
+		}
+		if(profilerClasspath != null) {
+			cmd.add("-javaagent:" + profilerClasspath);
 		}
 		cmd.add(LifecycleAgent.class.getName());
 		cmd.add(rmiRegistryPort + "");

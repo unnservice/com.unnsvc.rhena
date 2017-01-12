@@ -13,4 +13,5 @@ Export-Package: com.unnsvc.rhena.core,
  com.unnsvc.rhena.core.visitors
 Require-Bundle: com.unnsvc.rhena.agent,
  com.unnsvc.rhena.common,
- com.unnsvc.rhena.lifecycle
+ com.unnsvc.rhena.lifecycle,
+ com.unnsvc.rhena.profiling

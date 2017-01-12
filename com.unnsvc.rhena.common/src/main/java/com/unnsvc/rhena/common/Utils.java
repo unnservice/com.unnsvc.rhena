@@ -122,22 +122,6 @@ public class Utils {
 	 */
 	public static EExecutionType valueOf(String executionType) throws RhenaException {
 
-		// switch (executionType) {
-		// case "model":
-		// return EExecutionType.MODEL;
-		// case "framework":
-		// return EExecutionType.FRAMEWORK;
-		// case "deliverable":
-		// return EExecutionType.DELIVERABLE;
-		// case "test":
-		// return EExecutionType.TEST;
-		// case "integration":
-		// return EExecutionType.INTEGRATION;
-		// case "prototype":
-		// return EExecutionType.PROTOTYPE;
-		// default:
-		// throw new RhenaException("Unknown execution type: " + executionType);
-		// }
 		try {
 			return EExecutionType.valueOf(executionType.toUpperCase());
 		} catch (Throwable t) {
@@ -220,28 +204,6 @@ public class Utils {
 		return identifier.getComponentName().toString() + "." + identifier.getModuleName().toString() + "-" + type.toString().toLowerCase() + "-"
 				+ identifier.getVersion().toString();
 	}
-
-	// /**
-	// * @param module
-	// * @return
-	// */
-	// public static List<IRhenaEdge> getAllRelationships(IRhenaModule module) {
-	//
-	// List<IRhenaEdge> relationships = new ArrayList<IRhenaEdge>();
-	// if (module.getParent() != null) {
-	// relationships.add(module.getParent());
-	// }
-	// if (module.getLifecycleName() != null) {
-	// ILifecycleDeclaration lifecycle =
-	// module.getLifecycleDeclarations().get(module.getLifecycleName());
-	// relationships.add(lifecycle.getContext().getModuleEdge());
-	// lifecycle.getProcessors().forEach(proc ->
-	// relationships.add(proc.getModuleEdge()));
-	// relationships.add(lifecycle.getGenerator().getModuleEdge());
-	// }
-	// relationships.addAll(module.getDependencies());
-	// return relationships;
-	// }
 
 	public static List<IEntryPoint> getAllEntryPoints(IRhenaModule module, boolean lifecycles) {
 

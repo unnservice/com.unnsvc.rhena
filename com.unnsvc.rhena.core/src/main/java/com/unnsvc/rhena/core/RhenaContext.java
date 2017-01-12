@@ -31,6 +31,7 @@ public class RhenaContext implements IRhenaContext {
 	private IRepository localCacheRepository;
 	private IListenerConfiguration listenerConfig;
 	private ILogger logFacade;
+	private ILifecycleAgentBuilder lifecycleAgentManager;
 
 	/**
 	 * @throws RhenaException
@@ -54,7 +55,7 @@ public class RhenaContext implements IRhenaContext {
 	private void startupContext() throws RhenaException {
 
 		try {
-			lifecycleAgentManager = new LifecycleAgentManager(config.getAgentClasspath());
+			lifecycleAgentManager = new LifecycleAgentManager(config.getAgentClasspath(), config.getProfilerClasspath());
 			lifecycleAgentManager.startup();
 			/**
 			 * @TODO export relevant objects
@@ -139,8 +140,6 @@ public class RhenaContext implements IRhenaContext {
 		getCache().getEdges().clear();
 		getCache().getMerged().clear();
 	}
-
-	private ILifecycleAgentBuilder lifecycleAgentManager;
 
 	@Override
 	public ILifecycleAgentBuilder getLifecycleAgentManager() throws RhenaException {

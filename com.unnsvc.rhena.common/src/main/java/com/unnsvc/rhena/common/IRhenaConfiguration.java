@@ -33,4 +33,8 @@ public interface IRhenaConfiguration extends Serializable {
 	public String getAgentClasspath();
 
 	public void setAgentClasspath(String agentClasspath);
+
+	public String getProfilerClasspath();
+
+	public void setProfilerClasspath(String profilerClasspath);
 }

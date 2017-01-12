@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Profiling
+Bundle-SymbolicName: com.unnsvc.rhena.profiling;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Export-Package: com.unnsvc.rhena.profiling
+Require-Bundle: com.unnsvc.rhena.common
+Premain-Class:  com.unnsvc.rhena.profiling.ProfilingAgent
+Can-Redefine-Classes: true
+Can-Retransform-Classes: true
+Can-Set-Native-Method-Prefix: true
+Implementation-Title: com.unnsvc.rhena.profiling.ClassLogger
+Implementation-Version: 1.0.0.qualifier

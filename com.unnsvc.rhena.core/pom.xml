@@ -30,6 +30,11 @@
 			<artifactId>com.unnsvc.rhena.agent</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.unnsvc.rhena</groupId>
+			<artifactId>com.unnsvc.rhena.profiling</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 </project>

@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Cmdline
+Bundle-SymbolicName: com.unnsvc.rhena.cmdline
+Bundle-Version: 1.0.0.qualifier
+Export-Package: com.unnsvc.rhena.cmdline
