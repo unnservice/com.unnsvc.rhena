@@ -15,7 +15,7 @@ import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 
 import com.unnsvc.rhena.common.ILifecycleAgent;
-import com.unnsvc.rhena.common.ILifecycleAgentBuilder;
+import com.unnsvc.rhena.common.ILifecycleAgentManager;
 
 public abstract class AbstractLifecycleAgent extends UnicastRemoteObject implements ILifecycleAgent {
 
@@ -89,7 +89,7 @@ public abstract class AbstractLifecycleAgent extends UnicastRemoteObject impleme
 
 	private void notifyServer() throws RemoteException, NotBoundException {
 
-		ILifecycleAgentBuilder server = (ILifecycleAgentBuilder) registry.lookup(ILifecycleAgentBuilder.class.getName());
+		ILifecycleAgentManager server = (ILifecycleAgentManager) registry.lookup(ILifecycleAgentManager.class.getName());
 		server.agentNotify();
 	}
 

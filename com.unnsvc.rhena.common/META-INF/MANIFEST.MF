@@ -12,4 +12,5 @@ Export-Package: com.unnsvc.rhena.common,
  com.unnsvc.rhena.common.listener,
  com.unnsvc.rhena.common.logging,
  com.unnsvc.rhena.common.model,
+ com.unnsvc.rhena.common.process,
  com.unnsvc.rhena.common.visitors

@@ -19,10 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.unnsvc.rhena.common.ILifecycleAgent;
-import com.unnsvc.rhena.common.ILifecycleAgentBuilder;
+import com.unnsvc.rhena.common.ILifecycleAgentManager;
+import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.process.IProcessListener;
+import com.unnsvc.rhena.common.process.ProcessExitTracker;
 
-public class LifecycleAgentManager extends UnicastRemoteObject implements ILifecycleAgentBuilder {
+public class LifecycleAgentManager extends UnicastRemoteObject implements ILifecycleAgentManager {
 
 	private static final long serialVersionUID = 1L;
 	private Registry registry;
@@ -32,16 +35,17 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 	private int rmiRegistryPort = 0;
 	private String lifecycleAgentClasspath;
 	private String profilerClasspath;
+	private ProcessExitTracker lifecycleAgentProcessExitTracker;
+	private IRhenaConfiguration config;
 
-	public LifecycleAgentManager(String lifecycleAgentClasspath, String profilerClasspath) throws RemoteException, RhenaException {
+	public LifecycleAgentManager(IRhenaConfiguration config) throws RemoteException, RhenaException {
 
 		super();
-		this.lifecycleAgentClasspath = lifecycleAgentClasspath;
-		this.profilerClasspath = profilerClasspath;
+		this.config = config;
 	}
 
 	@Override
-	public void startup() throws RhenaException, IOException, InterruptedException, NotBoundException {
+	public synchronized void startup() throws RhenaException, IOException, InterruptedException, NotBoundException {
 
 		createRegistry();
 		start();
@@ -54,7 +58,7 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 		 */
 		try {
 			final ServerSocket ss = new ServerSocket(0);
-//			ss.close();
+			// ss.close();
 			rmiRegistryPort = ss.getLocalPort();
 
 			int timeout = 5000;
@@ -78,7 +82,7 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 			};
 
 			registry = LocateRegistry.createRegistry(rmiRegistryPort, fact, fact);
-			registry.rebind(ILifecycleAgentBuilder.class.getName(), (ILifecycleAgentBuilder) this);
+			registry.rebind(ILifecycleAgentManager.class.getName(), (ILifecycleAgentManager) this);
 			// logger.info(getClass(), "Started registry: " + registry);
 			Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 
@@ -108,12 +112,12 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 		// cmd.add("-Djava.rmi.server.codebase=" +
 		// createPrefixed(config.getAgentClasspath()));
 		// cmd.add(config.getAgentClasspath());
-		if (lifecycleAgentClasspath != null) {
+		if (config.getAgentClasspath() != null) {
 			cmd.add("-classpath");
-			cmd.add(lifecycleAgentClasspath);
+			cmd.add(config.getAgentClasspath());
 		}
-		if (profilerClasspath != null) {
-			cmd.add("-javaagent:" + profilerClasspath);
+		if (config.getProfilerClasspath() != null) {
+			cmd.add("-javaagent:" + config.getProfilerClasspath());
 		}
 		cmd.add(LifecycleAgent.class.getName());
 		cmd.add(rmiRegistryPort + "");
@@ -124,15 +128,20 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 		// logger.info(getClass(), "Building process: " + builder.command());
 
 		lifecycleAgentProcess = builder.inheritIO().start();
+		lifecycleAgentProcessExitTracker = new ProcessExitTracker(lifecycleAgentProcess, config);
+		lifecycleAgentProcessExitTracker.start();
 
-		synchronized (this) {
-			/**
-			 * Sleep until the agent is ready
-			 */
-			wait(5000);
+		/**
+		 * Sleep until the agent is ready
+		 */
+		wait(5000);
 
-			if (!notifiedByAgent) {
-				throw new RhenaException("Timeout reached, failed to start lifecycle agent");
+		if (!notifiedByAgent) {
+			throw new RhenaException("Timeout reached, failed to start lifecycle agent");
+		} else {
+			for (IProcessListener listener : config.getAgentStartListeners()) {
+
+				listener.onProcess(lifecycleAgentProcess);
 			}
 		}
 
@@ -146,12 +155,10 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 	}
 
 	@Override
-	public void agentNotify() {
+	public synchronized void agentNotify() {
 
-		synchronized (this) {
-			this.notifiedByAgent = true;
-			notifyAll();
-		}
+		this.notifiedByAgent = true;
+		notifyAll();
 	}
 
 	@Override

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.unnsvc.rhena.agent.LifecycleAgentManager;
-import com.unnsvc.rhena.common.ILifecycleAgentBuilder;
+import com.unnsvc.rhena.common.ILifecycleAgentManager;
 import com.unnsvc.rhena.common.IListenerConfiguration;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
@@ -31,7 +31,7 @@ public class RhenaContext implements IRhenaContext {
 	private IRepository localCacheRepository;
 	private IListenerConfiguration listenerConfig;
 	private ILogger logFacade;
-	private ILifecycleAgentBuilder lifecycleAgentManager;
+	private ILifecycleAgentManager lifecycleAgentManager;
 
 	/**
 	 * @throws RhenaException
@@ -55,7 +55,7 @@ public class RhenaContext implements IRhenaContext {
 	private void startupContext() throws RhenaException {
 
 		try {
-			lifecycleAgentManager = new LifecycleAgentManager(config.getAgentClasspath(), config.getProfilerClasspath());
+			lifecycleAgentManager = new LifecycleAgentManager(config);
 			lifecycleAgentManager.startup();
 			/**
 			 * @TODO export relevant objects
@@ -142,9 +142,8 @@ public class RhenaContext implements IRhenaContext {
 	}
 
 	@Override
-	public ILifecycleAgentBuilder getLifecycleAgentManager() throws RhenaException {
+	public ILifecycleAgentManager getLifecycleAgentManager() throws RhenaException {
 
 		return lifecycleAgentManager;
 	}
-
 }

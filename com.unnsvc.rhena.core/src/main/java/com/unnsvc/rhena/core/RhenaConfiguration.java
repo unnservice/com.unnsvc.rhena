@@ -2,8 +2,11 @@
 package com.unnsvc.rhena.core;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.unnsvc.rhena.common.IRhenaConfiguration;
+import com.unnsvc.rhena.common.process.IProcessListener;
 
 public class RhenaConfiguration implements IRhenaConfiguration {
 
@@ -16,6 +19,14 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	private boolean parallel;
 	private String agentClasspath;
 	private String profilerClasspath;
+	private List<IProcessListener> agentExitListeners;
+	private List<IProcessListener> agentStartListeners;
+
+	public RhenaConfiguration() {
+
+		this.agentExitListeners = new ArrayList<IProcessListener>();
+		this.agentStartListeners = new ArrayList<IProcessListener>();
+	}
 
 	@Override
 	public void setRhenaHome(File rhenaHome) {
@@ -111,5 +122,17 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	public String getProfilerClasspath() {
 
 		return profilerClasspath;
+	}
+
+	@Override
+	public List<IProcessListener> getAgentExitListeners() {
+
+		return agentExitListeners;
+	}
+
+	@Override
+	public List<IProcessListener> getAgentStartListeners() {
+
+		return agentStartListeners;
 	}
 }

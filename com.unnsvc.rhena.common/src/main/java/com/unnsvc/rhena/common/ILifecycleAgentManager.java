@@ -10,7 +10,7 @@ import java.rmi.RemoteException;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 
-public interface ILifecycleAgentBuilder extends Remote {
+public interface ILifecycleAgentManager extends Remote {
 
 	/**
 	 * Called by agent upon startup to notify that it has started up

@@ -29,6 +29,6 @@ public interface IRhenaContext extends AutoCloseable, Serializable {
 
 	public void addAdditionalRepository(IRepository repository);
 
-	public ILifecycleAgentBuilder getLifecycleAgentManager() throws RhenaException;
+	public ILifecycleAgentManager getLifecycleAgentManager() throws RhenaException;
 
 }
