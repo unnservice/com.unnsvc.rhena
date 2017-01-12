@@ -8,6 +8,7 @@ import java.util.List;
 /**
  * Copied from:
  * http://stackoverflow.com/questions/5445511/how-do-i-create-a-parent-last-child-first-classloader-in-java-or-how-to-overr
+ * with modifications.
  * 
  * @TODO write a proper one for our use-cases
  * 
@@ -61,6 +62,13 @@ public class ParentLastURLClassLoader extends ClassLoader {
 				// class (we give up)
 				return realParent.loadClass(name);
 			}
+		}
+		
+		@Override
+		public String toString() {
+		
+			
+			return super.toString() + ":@";
 		}
 	}
 

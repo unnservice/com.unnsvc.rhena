@@ -32,8 +32,8 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 	private static final long serialVersionUID = 1L;
 	@ProcessorContext
 	private IExecutionContext context;
-//	@ProcessorContext
-//	private IRhenaCache cache;
+	// @ProcessorContext
+	// private IRhenaCache cache;
 	@ProcessorContext
 	private ILoggerService logger;
 
@@ -47,28 +47,23 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 	}
 
 	/**
-	 * @throws RemoteException 
+	 * @throws RemoteException
 	 * @TODO batch instead of running for each resource
 	 */
 	@Override
 	public void process(IRhenaModule module, EExecutionType type, IDependencies dependencies) throws RemoteException {
 
-		try {
-			logger.trace(getClass(),
-					"Executing " + getClass() + " from own jar location: " + getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-		} catch (Exception ex) {
-			throw new RhenaException(ex.getMessage(), ex);
-		}
+		logger.trace(getClass(), "Executing " + getClass().getName());
 
 		File outputDirectory = new File(context.getOutputDirectory(module), type.literal().toLowerCase());
 		outputDirectory.mkdirs();
 
 		List<String> options = new ArrayList<String>();
-//		options.add("-cp");
-//		options.add(System.getProperty("java.class.path"));
+		// options.add("-cp");
+		// options.add(System.getProperty("java.class.path"));
 		options.add("-d");
 		options.add(outputDirectory.getAbsolutePath());
-		
+
 		List<File> resources = context.selectResources(type, "^.*\\.java$");
 
 		if (resources.isEmpty()) {

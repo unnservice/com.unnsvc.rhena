@@ -47,7 +47,8 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public File executeLifecycle(ILifecycleExecutable lifecycleExecutable, IRhenaModule module, EExecutionType executionType, IDependencies dependencies) throws RemoteException {
+	public File executeLifecycle(ILifecycleExecutable lifecycleExecutable, IRhenaModule module, EExecutionType executionType, IDependencies dependencies)
+			throws RemoteException {
 
 		try {
 			/**
@@ -58,20 +59,21 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 			executeProcessor(context, module, executionType, contextExecutable, dependencies);
 			additionalInjectableTypes.put(IExecutionContext.class, context);
 
+			ClassLoader previousClassloader = context.getClass().getClassLoader();
 			for (ILifecycleProcessorExecutable processorExecutable : lifecycleExecutable.getProcessorExecutables()) {
-				IProcessor processor = constructProcessor(processorExecutable, IProcessor.class, context.getClass().getClassLoader());
+				IProcessor processor = constructProcessor(processorExecutable, IProcessor.class, previousClassloader);
 				executeProcessor(processor, module, executionType, processorExecutable, dependencies);
 				List<IProcessor> additional = (List<IProcessor>) additionalInjectableTypes.get(List.class);
 				additional.add(processor);
+				previousClassloader = processor.getClass().getClassLoader();
 			}
 
 			ILifecycleProcessorExecutable generatorExecutable = lifecycleExecutable.getGeneratorExecutable();
-			IGenerator generator = constructProcessor(generatorExecutable, IGenerator.class, context.getClass().getClassLoader());
+			IGenerator generator = constructProcessor(generatorExecutable, IGenerator.class, previousClassloader);
 			executeProcessor(generator, module, executionType, generatorExecutable, dependencies);
 			return generator.generate(module, executionType);
 
 		} catch (Throwable ex) {
-			System.err.println("Thrown: " + ex);
 			throw new RemoteException(ex.getMessage(), ex);
 		}
 	}
@@ -86,8 +88,24 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 			processor.configure(module, null);
 		}
 
+		System.out.println("Executing processor " + processor.getClass().getName());
 		if (processor instanceof IProcessor) {
 			IProcessor proc = (IProcessor) processor;
+//			try {
+//				System.out.println("Declaring class fields: " + proc.getClass().getDeclaredFields().length + ": " + proc.getClass().getName() + " classloader: " + proc.getClass().getClassLoader());
+//				System.err.println("Encloding " + Arrays.toString(proc.getClass().cast(proc).getClass().getDeclaredFields()));
+//				for (Class c : proc.getClass().getDeclaredClasses()) {
+//					for (Field field : c.getDeclaredFields()) {
+//						if (field.isAnnotationPresent(ProcessorContext.class)) {
+//							System.out.println("\tfield:" + field + ":" + field.getType() + ": " + field.get(proc));
+//						}
+//					}
+//				}
+//				Class<?> type = proc.getClass().getClassLoader().loadClass(proc.getClass().getName());
+//				System.err.println("Fields " + type.getName() + ": " + type.getSuperclass());
+//			} catch (Exception ex) {
+//				throw new RemoteException(ex.getMessage(), ex);
+//			}
 			proc.process(module, executionType, dependencies);
 		}
 	}
@@ -98,9 +116,9 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 		ClassLoader classloader = null;
 		if (executable instanceof ICustomLifecycleProcessorExecutable) {
 			ICustomLifecycleProcessorExecutable customExecutable = (ICustomLifecycleProcessorExecutable) executable;
-			classloader = new ParentLastURLClassLoader(customExecutable.getDependencies(), getClass().getClassLoader());
+			classloader = new ParentLastURLClassLoader(customExecutable.getDependencies(), parentClassLoader);
 		} else {
-			classloader = new ParentLastURLClassLoader(new ArrayList<URL>(), getClass().getClassLoader());
+			classloader = new ParentLastURLClassLoader(new ArrayList<URL>(), parentClassLoader);
 		}
 
 		Class<?> type = classloader.loadClass(executable.getClazz());
@@ -108,31 +126,40 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 		Object instance = constr.newInstance();
 		// ensure that it implements the marker interface
 		// type.isInstance(obj)
-		performInjection(instance);
+		performInjection(type, instance);
 
 		return (T) instance;
 	}
 
-	private void performInjection(Object instance)
-			throws IllegalArgumentException, IllegalAccessException, AccessException, RemoteException, NotBoundException {
+	private void performInjection(Class<?> type, Object instance)
+			throws IllegalArgumentException, IllegalAccessException, AccessException, RemoteException, NotBoundException, ClassNotFoundException {
 
-		for (Field field : instance.getClass().getDeclaredFields()) {
+		for (Field field : type.getDeclaredFields()) {
 
-			field.setAccessible(true);
 			if (field.isAnnotationPresent(ProcessorContext.class)) {
+				field.setAccessible(true);
+
 				if (field.getType().equals(ILoggerService.class)) {
-					field.set(instance, getRemoteType(ILoggerService.class));
+
+					System.err.println("Injecting ILoggerService to " + getRemoteType(ILoggerService.class.getName()));
+					field.set(instance, getRemoteType(ILoggerService.class.getName()));
 				} else if (additionalInjectableTypes.containsKey(field.getType())) {
 					// try to find in additional types
 
 					field.set(instance, additionalInjectableTypes.get(field.getType()));
 				} else {
-					
+
 					throw new RhenaException(
-							"Found @ProcessorContext but failed to find an instance to inject. " + field.getType() + " in " + instance.getClass());
+							"Found @ProcessorContext but failed to find an instance to inject. " + field.getType() + " in " + type);
 				}
+
+				field.setAccessible(false);
 			}
-			field.setAccessible(false);
+		}
+		
+		if(type.getSuperclass() != null && !type.getSuperclass().equals(Object.class)) {
+//			System.err.println("Casting to " + instance.getClass().getName() + " to " + instance.getClass().getSuperclass().getName());
+			performInjection(type.getSuperclass(), instance);
 		}
 	}
 }

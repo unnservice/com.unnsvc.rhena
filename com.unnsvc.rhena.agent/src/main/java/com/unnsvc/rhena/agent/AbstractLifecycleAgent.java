@@ -55,8 +55,8 @@ public abstract class AbstractLifecycleAgent extends UnicastRemoteObject impleme
 		server.agentNotify();
 	}
 	
-	protected Object getRemoteType(Class<?> clazz) throws AccessException, RemoteException, NotBoundException {
+	protected Object getRemoteType(String typeName) throws AccessException, RemoteException, NotBoundException {
 
-		return registry.lookup(clazz.getName());
+		return registry.lookup(typeName);
 	}
 }
