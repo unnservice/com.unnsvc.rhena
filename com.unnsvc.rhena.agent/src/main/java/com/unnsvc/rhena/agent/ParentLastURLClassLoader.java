@@ -1,6 +1,8 @@
 
 package com.unnsvc.rhena.agent;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
@@ -14,7 +16,7 @@ import java.util.List;
  * 
  *
  */
-public class ParentLastURLClassLoader extends ClassLoader {
+public class ParentLastURLClassLoader extends ClassLoader implements Closeable {
 
 	private ChildURLClassLoader childClassLoader;
 
@@ -63,11 +65,10 @@ public class ParentLastURLClassLoader extends ClassLoader {
 				return realParent.loadClass(name);
 			}
 		}
-		
+
 		@Override
 		public String toString() {
-		
-			
+
 			return super.toString() + ":@";
 		}
 	}
@@ -91,5 +92,11 @@ public class ParentLastURLClassLoader extends ClassLoader {
 			// didn't find it, try the parent
 			return super.loadClass(name, resolve);
 		}
+	}
+
+	@Override
+	public void close() throws IOException {
+
+		childClassLoader.close();
 	}
 }

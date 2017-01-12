@@ -1,12 +1,17 @@
 
 package com.unnsvc.rhena.agent;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.rmi.AccessException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 
 import com.unnsvc.rhena.common.ILifecycleAgent;
@@ -45,8 +50,41 @@ public abstract class AbstractLifecycleAgent extends UnicastRemoteObject impleme
 			// System.setSecurityManager(new SecurityManager());
 			System.setSecurityManager(new PermitAllSecurityManager());
 		}
-		registry = LocateRegistry.getRegistry(port);
-		registry.bind(ILifecycleAgent.class.getName(), (ILifecycleAgent) this);
+		int timeout = 5000;
+		RMISocketFactory fact = new RMISocketFactory() {
+
+			@Override
+			public Socket createSocket(String host, int port) throws IOException {
+
+				Socket socket = new Socket();
+				socket.setSoTimeout(timeout);
+				socket.setSoLinger(false, 0);
+				socket.connect(new InetSocketAddress(host, port), timeout);
+				return socket;
+			}
+
+			@Override
+			public ServerSocket createServerSocket(int port) throws IOException {
+
+				return new ServerSocket(port);
+			}
+		};
+
+		registry = LocateRegistry.getRegistry(null, port, fact);
+		registry.bind(ILifecycleAgent.class.getName(), this);
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+
+			public void run() {
+
+				try {
+
+					UnicastRemoteObject.unexportObject(AbstractLifecycleAgent.this, true);
+				} catch (Exception ex) {
+					// When list() fails
+					ex.printStackTrace();
+				}
+			}
+		}));
 	}
 
 	private void notifyServer() throws RemoteException, NotBoundException {
@@ -54,7 +92,7 @@ public abstract class AbstractLifecycleAgent extends UnicastRemoteObject impleme
 		ILifecycleAgentBuilder server = (ILifecycleAgentBuilder) registry.lookup(ILifecycleAgentBuilder.class.getName());
 		server.agentNotify();
 	}
-	
+
 	protected Object getRemoteType(String typeName) throws AccessException, RemoteException, NotBoundException {
 
 		return registry.lookup(typeName);

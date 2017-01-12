@@ -3,7 +3,9 @@ package com.unnsvc.rhena.agent;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.rmi.AccessException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
@@ -11,6 +13,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,10 +53,31 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 		 * Create registry
 		 */
 		try {
-			ServerSocket ss = new ServerSocket(0);
-			ss.close();
+			final ServerSocket ss = new ServerSocket(0);
+//			ss.close();
 			rmiRegistryPort = ss.getLocalPort();
-			registry = LocateRegistry.createRegistry(rmiRegistryPort);
+
+			int timeout = 5000;
+			RMISocketFactory fact = new RMISocketFactory() {
+
+				@Override
+				public Socket createSocket(String host, int port) throws IOException {
+
+					Socket socket = new Socket();
+					socket.setSoTimeout(timeout);
+					socket.setSoLinger(false, 0);
+					socket.connect(new InetSocketAddress(host, port), timeout);
+					return socket;
+				}
+
+				@Override
+				public ServerSocket createServerSocket(int port) throws IOException {
+
+					return ss;
+				}
+			};
+
+			registry = LocateRegistry.createRegistry(rmiRegistryPort, fact, fact);
 			registry.rebind(ILifecycleAgentBuilder.class.getName(), (ILifecycleAgentBuilder) this);
 			// logger.info(getClass(), "Started registry: " + registry);
 			Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
@@ -88,7 +112,7 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 			cmd.add("-classpath");
 			cmd.add(lifecycleAgentClasspath);
 		}
-		if(profilerClasspath != null) {
+		if (profilerClasspath != null) {
 			cmd.add("-javaagent:" + profilerClasspath);
 		}
 		cmd.add(LifecycleAgent.class.getName());
