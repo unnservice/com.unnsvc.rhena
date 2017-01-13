@@ -8,7 +8,7 @@
 		<prop:anotherprop>anothervalue</prop:anotherprop>
 
 		<lifecycle name="library">
-			<!-- @TODO allow custom properties to be declared in the lifecycles -->
+			<!-- @TODO properties in lifecycle to override from heirarchy -->
 
 			<context module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.DefaultContext">
 				<resources>
@@ -24,7 +24,7 @@
 
 			<generator module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.DefaultGenerator" />
 
-			<!-- Example -->
+			<!-- Each lifecycle can have commands -->
 			<!-- <command name="cmd1" module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.Command1" /> -->
 			<!-- <command name="cmd2" module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.Command2" /> -->
 			<!-- <command name="cmd3" module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.Command3" /> -->
@@ -33,8 +33,7 @@
 
 	</meta>
 
-	<!-- when declaring a dependency on another module, what we're actually saying is we are requesting the execution of this type from module -->
-	<!-- <dependency:deliverable module="component2:module1:0.0.1" /> -->
+	<!-- <dependency:main module="component2:module1:0.0.1" /> -->
 	<!-- <dependency:test module="component2:module1:0.0.1" traverse="scope" /> -->
 	<dependency:test module="org.junit:junit:4.12" />
 
