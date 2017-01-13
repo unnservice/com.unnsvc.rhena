@@ -67,9 +67,9 @@ public class DefaultContext implements IExecutionContext {
 		} else {
 			// Defaults
 			resources.add(new Resource(EResourceType.MAIN, "src/main/java", new File(moduleBasedir, "src/main/java")));
-			resources.add(new Resource(EResourceType.MAIN, "src/main/java", new File(moduleBasedir, "src/main/resources")));
+			resources.add(new Resource(EResourceType.MAIN, "src/main/resources", new File(moduleBasedir, "src/main/resources")));
 			resources.add(new Resource(EResourceType.TEST, "src/test/java", new File(moduleBasedir, "src/test/java")));
-			resources.add(new Resource(EResourceType.TEST, "src/test/java", new File(moduleBasedir, "src/test/resources")));
+			resources.add(new Resource(EResourceType.TEST, "src/test/resources", new File(moduleBasedir, "src/test/resources")));
 		}
 	}
 
