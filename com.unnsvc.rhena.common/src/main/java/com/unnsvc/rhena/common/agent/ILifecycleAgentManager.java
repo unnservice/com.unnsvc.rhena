@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.common;
+package com.unnsvc.rhena.common.agent;
 
 import java.io.IOException;
 import java.rmi.AccessException;

@@ -14,8 +14,8 @@ import java.rmi.registry.Registry;
 import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 
-import com.unnsvc.rhena.common.ILifecycleAgent;
-import com.unnsvc.rhena.common.ILifecycleAgentManager;
+import com.unnsvc.rhena.common.agent.ILifecycleAgent;
+import com.unnsvc.rhena.common.agent.ILifecycleAgentManager;
 
 public abstract class AbstractLifecycleAgent extends UnicastRemoteObject implements ILifecycleAgent {
 

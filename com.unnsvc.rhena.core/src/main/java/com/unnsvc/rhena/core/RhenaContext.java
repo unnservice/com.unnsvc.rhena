@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.unnsvc.rhena.agent.LifecycleAgentManager;
-import com.unnsvc.rhena.common.ILifecycleAgentManager;
 import com.unnsvc.rhena.common.IListenerConfiguration;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.agent.ILifecycleAgentManager;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.logging.ILogger;
 import com.unnsvc.rhena.common.logging.ILoggerService;

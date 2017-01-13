@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.unnsvc.rhena.agent.lifecycle.LifecycleExecutionResult;
+import com.unnsvc.rhena.common.agent.ILifecycleExecutionResult;
 import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
@@ -23,6 +25,7 @@ import com.unnsvc.rhena.common.lifecycle.ILifecycleExecutable;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleProcessor;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleProcessorExecutable;
 import com.unnsvc.rhena.common.lifecycle.IProcessor;
+import com.unnsvc.rhena.common.lifecycle.IResource;
 import com.unnsvc.rhena.common.logging.ILoggerService;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.visitors.IDependencies;
@@ -44,7 +47,7 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public synchronized File executeLifecycle(ILifecycleExecutable lifecycleExecutable, IRhenaModule module, EExecutionType executionType, IDependencies dependencies)
+	public synchronized ILifecycleExecutionResult executeLifecycle(ILifecycleExecutable lifecycleExecutable, IRhenaModule module, EExecutionType executionType, IDependencies dependencies)
 			throws RemoteException {
 
 		Map<Class<?>, Object> additionalInjectableTypes;
@@ -73,8 +76,11 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 			IGenerator generator = constructProcessor(generatorExecutable, IGenerator.class, previousClassloader, additionalInjectableTypes);
 			executeProcessor(generator, module, executionType, generatorExecutable, dependencies);
 
-			return generator.generate(module, executionType);
-
+			List<IResource> inputs = context.getResources();
+			File generatedFile = generator.generate(module, executionType);
+			
+			LifecycleExecutionResult result = new LifecycleExecutionResult(generatedFile, inputs);
+			return result;
 		} catch (Throwable ex) {
 			throw new RemoteException(ex.getMessage(), ex);
 		} finally {

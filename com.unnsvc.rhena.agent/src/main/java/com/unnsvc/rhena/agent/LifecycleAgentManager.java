@@ -18,9 +18,9 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.unnsvc.rhena.common.ILifecycleAgent;
-import com.unnsvc.rhena.common.ILifecycleAgentManager;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
+import com.unnsvc.rhena.common.agent.ILifecycleAgent;
+import com.unnsvc.rhena.common.agent.ILifecycleAgentManager;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.process.IProcessListener;
 import com.unnsvc.rhena.common.process.ProcessExitTracker;
