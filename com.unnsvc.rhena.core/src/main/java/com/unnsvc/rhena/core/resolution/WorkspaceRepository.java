@@ -25,6 +25,8 @@ import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.execution.ArtifactDescriptor;
 import com.unnsvc.rhena.core.execution.WorkspaceExecution;
+import com.unnsvc.rhena.core.lifecycle.CommandProcessorReference;
+import com.unnsvc.rhena.core.lifecycle.CustomCommandExecutable;
 import com.unnsvc.rhena.core.lifecycle.CustomProcessorExecutable;
 import com.unnsvc.rhena.core.lifecycle.LifecycleExecutable;
 import com.unnsvc.rhena.core.lifecycle.ProcessorExecutable;
@@ -105,6 +107,10 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 					}
 					ILifecycleProcessorReference generator = lifecycleReference.getGenerator();
 					lifecycleExecutable.setGenerator(new CustomProcessorExecutable(generator, getDependencies(generator.getModuleEdge())));
+					for(ILifecycleProcessorReference command : lifecycleReference.getCommands()) {
+						CommandProcessorReference commandRef = (CommandProcessorReference) command;
+						lifecycleExecutable.addCommandExecutable(new CustomCommandExecutable(commandRef, getDependencies(commandRef.getModuleEdge())));
+					}
 				}
 
 				ILifecycleAgent agent = context.getLifecycleAgentManager().getLifecycleAgent();

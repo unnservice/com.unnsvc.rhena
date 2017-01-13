@@ -4,6 +4,7 @@ package com.unnsvc.rhena.core.lifecycle;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.unnsvc.rhena.common.lifecycle.ICustomLifecycleCommandExecutable;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleExecutable;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleProcessorExecutable;
 
@@ -14,11 +15,13 @@ public class LifecycleExecutable implements ILifecycleExecutable {
 	private ILifecycleProcessorExecutable contextExecutable;
 	private List<ILifecycleProcessorExecutable> processorExecutables;
 	private ILifecycleProcessorExecutable generatorExecutable;
+	private List<ICustomLifecycleCommandExecutable> commandExecutables;
 
 	public LifecycleExecutable(String lifecycleName) {
 
 		this.lifecycleName = lifecycleName;
 		this.processorExecutables = new ArrayList<ILifecycleProcessorExecutable>();
+		this.commandExecutables = new ArrayList<ICustomLifecycleCommandExecutable>();
 	}
 
 	@Override
@@ -58,5 +61,16 @@ public class LifecycleExecutable implements ILifecycleExecutable {
 	public ILifecycleProcessorExecutable getGeneratorExecutable() {
 
 		return generatorExecutable;
+	}
+
+	public void addCommandExecutable(ICustomLifecycleCommandExecutable commandExecutable) {
+
+		this.commandExecutables.add(commandExecutable);
+	}
+	
+	@Override
+	public List<ICustomLifecycleCommandExecutable> getCommandExecutables() {
+
+		return commandExecutables;
 	}
 }

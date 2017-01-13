@@ -9,7 +9,7 @@
 
 		<lifecycle name="library">
 			<!-- @TODO allow custom properties to be declared in the lifecycles -->
-			
+
 			<context module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.DefaultContext">
 				<resources>
 					<main path="src/main/java" />
@@ -18,11 +18,17 @@
 					<test path="src/test/resources" filter="true" />
 				</resources>
 			</context>
-			
+
 			<processor module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.DefaultJavaProcessor" />
 			<processor module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.DefaultManifestProcessor" />
-			
+
 			<generator module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.DefaultGenerator" />
+
+			<!-- Example -->
+			<!-- <command name="cmd1" module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.Command1" /> -->
+			<!-- <command name="cmd2" module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.Command2" /> -->
+			<!-- <command name="cmd3" module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.Command3" /> -->
+
 		</lifecycle>
 
 	</meta>

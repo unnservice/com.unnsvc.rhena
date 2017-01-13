@@ -42,4 +42,8 @@ public interface IRhenaModule extends IVisitableModel, Serializable {
 
 	public void setProperties(Properties properties);
 
+	public void setModuleType(ERhenaModuleType moduleType);
+
+	public ERhenaModuleType getModuleType();
+
 }

@@ -23,8 +23,10 @@ import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.ERhenaModuleType;
 import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
+import com.unnsvc.rhena.core.lifecycle.CommandProcessorReference;
 import com.unnsvc.rhena.core.lifecycle.LifecycleReference;
 import com.unnsvc.rhena.core.lifecycle.ProcessorReference;
 
@@ -52,6 +54,12 @@ public class RhenaModuleParser {
 
 		NodeList children = document.getChildNodes();
 		Node moduleNode = children.item(0);
+		
+		if(moduleNode.getLocalName().equals("module")) {
+			module.setModuleType(ERhenaModuleType.MODULE);
+		} else if (moduleNode.getLocalName().equals("framework")) {
+			module.setModuleType(ERhenaModuleType.FRAMEWORK);
+		}
 
 		if (moduleNode.getAttributes().getNamedItem("extends") != null) {
 			Node extendsAttribute = moduleNode.getAttributes().getNamedItem("extends");
@@ -177,6 +185,11 @@ public class RhenaModuleParser {
 
 					ProcessorReference generator = new ProcessorReference(edge, clazzAttrStr, schemaAttrStr, config);
 					lifecycleReference.setGenerator(generator);
+				} else if (child.getLocalName().equals("command")) {
+					
+					String commandName = child.getAttributes().getNamedItem("name").getNodeValue();
+					CommandProcessorReference command = new CommandProcessorReference(commandName, edge, clazzAttrStr, schemaAttrStr, config);
+					lifecycleReference.addCommand(command);
 				}
 			}
 		}

@@ -217,6 +217,7 @@ public class Utils {
 				eps.add(lifecycle.getContext().getModuleEdge().getEntryPoint());
 				lifecycle.getProcessors().forEach(proc -> eps.add(proc.getModuleEdge().getEntryPoint()));
 				eps.add(lifecycle.getGenerator().getModuleEdge().getEntryPoint());
+				lifecycle.getCommands().forEach(comm -> eps.add(comm.getModuleEdge().getEntryPoint()));
 			}
 		}
 		module.getDependencies().forEach(dep -> eps.add(dep.getEntryPoint()));

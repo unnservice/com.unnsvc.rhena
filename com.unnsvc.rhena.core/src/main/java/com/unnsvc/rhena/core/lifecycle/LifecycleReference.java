@@ -14,11 +14,13 @@ public class LifecycleReference implements ILifecycleReference {
 	private ILifecycleProcessorReference context;
 	private List<ILifecycleProcessorReference> processors;
 	private ILifecycleProcessorReference generator;
+	private List<ILifecycleProcessorReference> commands;
 
 	public LifecycleReference(String name) {
 
 		this.name = name;
 		this.processors = new ArrayList<ILifecycleProcessorReference>();
+		this.commands = new ArrayList<ILifecycleProcessorReference>();
 	}
 
 	@Override
@@ -65,8 +67,20 @@ public class LifecycleReference implements ILifecycleReference {
 
 		List<ILifecycleProcessorReference> allrefs = new ArrayList<ILifecycleProcessorReference>();
 		allrefs.add(getContext());
-		getProcessors().forEach(proc -> allrefs.add(proc));
+		allrefs.addAll(getProcessors());
 		allrefs.add(getGenerator());
+		allrefs.addAll(getCommands());
 		return allrefs;
+	}
+
+	public void addCommand(CommandProcessorReference command) {
+
+		this.commands.add(command);
+	}
+
+	@Override
+	public List<ILifecycleProcessorReference> getCommands() {
+
+		return commands;
 	}
 }

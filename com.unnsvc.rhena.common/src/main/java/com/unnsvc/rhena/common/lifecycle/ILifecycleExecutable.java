@@ -13,4 +13,6 @@ public interface ILifecycleExecutable extends Serializable {
 	public List<ILifecycleProcessorExecutable> getProcessorExecutables();
 
 	public ILifecycleProcessorExecutable getGeneratorExecutable();
+
+	public List<ICustomLifecycleCommandExecutable> getCommandExecutables();
 }

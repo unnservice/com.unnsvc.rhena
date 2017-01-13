@@ -12,6 +12,7 @@ import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleReference;
+import com.unnsvc.rhena.common.model.ERhenaModuleType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
@@ -27,6 +28,7 @@ public class RhenaModule implements IRhenaModule {
 	private String lifecycleName;
 	private Map<String, ILifecycleReference> lifecycleDeclarations;
 	private List<IRhenaEdge> dependencies;
+	private ERhenaModuleType moduleType;
 
 	public RhenaModule(ModuleIdentifier identifier, URI location, IRepository repository) {
 
@@ -127,5 +129,17 @@ public class RhenaModule implements IRhenaModule {
 	public void setProperties(Properties properties) {
 
 		this.properties = properties;
+	}
+
+	@Override
+	public void setModuleType(ERhenaModuleType moduleType) {
+
+		this.moduleType = moduleType;
+	}
+	
+	@Override
+	public ERhenaModuleType getModuleType() {
+		
+		return moduleType;
 	}
 }

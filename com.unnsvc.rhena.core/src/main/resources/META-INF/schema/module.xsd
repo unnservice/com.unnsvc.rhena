@@ -24,6 +24,14 @@
 		<xs:attribute name="schema" type="xs:string" use="optional" />
 	</xs:complexType>
 
+	<xs:complexType name="commandType">
+		<xs:complexContent>
+			<xs:extension base="tns:processorType">
+				<xs:attribute name="name" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
 	<xs:complexType name="includeExcludeType">
 		<xs:attribute name="pattern" type="xs:string" use="required" />
 	</xs:complexType>
@@ -33,11 +41,23 @@
 			<xs:element name="context" type="tns:processorType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="processor" type="tns:processorType" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="generator" type="tns:processorType" minOccurs="1" maxOccurs="1" />
+			<xs:element name="command" type="tns:commandType" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="name" use="required" type="xs:string" />
 	</xs:complexType>
 
 	<xs:element name="module">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="meta" type="tns:metaType" minOccurs="1" maxOccurs="1" />
+				<xs:group ref="dependency:dependencyTypes" />
+			</xs:sequence>
+			<xs:attribute name="extends" type="common:qualifiedIdentifier" use="optional" />
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Additional root element used for IDE detection so it can add the appropriate classpaths -->
+	<xs:element name="framework">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="meta" type="tns:metaType" minOccurs="1" maxOccurs="1" />

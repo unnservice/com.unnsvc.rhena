@@ -19,6 +19,7 @@ import com.unnsvc.rhena.core.model.InMemoryModule;
 
 public class InMemoryRepository implements IRepository {
 
+	private static final long serialVersionUID = 1L;
 	private IRhenaContext context;
 	private Map<ModuleIdentifier, IRhenaModule> modules;
 
