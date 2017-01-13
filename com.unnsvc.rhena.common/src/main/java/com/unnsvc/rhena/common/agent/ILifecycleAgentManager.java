@@ -9,6 +9,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.profiling.report.IDiagnosticReport;
 
 public interface ILifecycleAgentManager extends Remote {
 
@@ -24,5 +25,7 @@ public interface ILifecycleAgentManager extends Remote {
 	public ILifecycleAgent getLifecycleAgent() throws RemoteException;
 
 	public void export(String typeName, Remote object) throws AccessException, RemoteException, AlreadyBoundException;
+
+	public IDiagnosticReport getAgentReport() throws AccessException, RemoteException, NotBoundException;
 
 }

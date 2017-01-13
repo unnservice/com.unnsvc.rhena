@@ -16,7 +16,11 @@
 				<executions>
 					<execution>
 						<id>default-jar</id>
-						<phase>jar</phase>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+							<goal>test-jar</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
@@ -53,19 +57,5 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-
-	<dependencies>
-		<dependency>
-			<groupId>com.unnsvc.rhena</groupId>
-			<artifactId>com.unnsvc.rhena.common</artifactId>
-			<version>${project.version}</version>
-			<type>test-jar</type>
-		</dependency>
-		<dependency>
-			<groupId>com.unnsvc.rhena</groupId>
-			<artifactId>com.unnsvc.rhena.common</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-	</dependencies>
 
 </project>

@@ -6,4 +6,5 @@ Bundle-Version: 1.0.0.qualifier
 Export-Package: com.unnsvc.rhena.agent,
  com.unnsvc.rhena.agent.lifecycle
 Require-Bundle: com.unnsvc.rhena.common,
- com.unnsvc.rhena.lifecycle
+ com.unnsvc.rhena.lifecycle,
+ com.unnsvc.rhena.profiling

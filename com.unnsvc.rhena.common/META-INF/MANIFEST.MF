@@ -15,3 +15,5 @@ Export-Package: com.unnsvc.rhena.common,
  com.unnsvc.rhena.common.model,
  com.unnsvc.rhena.common.process,
  com.unnsvc.rhena.common.visitors
+Require-Bundle: com.unnsvc.rhena.profiling,
+ org.junit

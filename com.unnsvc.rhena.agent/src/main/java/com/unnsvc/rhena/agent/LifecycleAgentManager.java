@@ -24,6 +24,8 @@ import com.unnsvc.rhena.common.agent.ILifecycleAgentManager;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.process.IProcessListener;
 import com.unnsvc.rhena.common.process.ProcessExitTracker;
+import com.unnsvc.rhena.profiling.IClassLoaderReporting;
+import com.unnsvc.rhena.profiling.report.IDiagnosticReport;
 
 public class LifecycleAgentManager extends UnicastRemoteObject implements ILifecycleAgentManager {
 
@@ -33,8 +35,6 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 	private ILifecycleAgent lifecycleAgent;
 	private Process lifecycleAgentProcess;
 	private int rmiRegistryPort = 0;
-	private String lifecycleAgentClasspath;
-	private String profilerClasspath;
 	private ProcessExitTracker lifecycleAgentProcessExitTracker;
 	private IRhenaConfiguration config;
 
@@ -109,6 +109,7 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 
 		List<String> cmd = new ArrayList<String>();
 		cmd.add(javaExecutable);
+		
 		// cmd.add("-Djava.rmi.server.codebase=" +
 		// createPrefixed(config.getAgentClasspath()));
 		// cmd.add(config.getAgentClasspath());
@@ -117,7 +118,7 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 			cmd.add(config.getAgentClasspath());
 		}
 		if (config.getProfilerClasspath() != null) {
-			cmd.add("-javaagent:" + config.getProfilerClasspath());
+			cmd.add("-javaagent:" + config.getProfilerClasspath() + "=\"" + rmiRegistryPort + "\"");
 		}
 		cmd.add(LifecycleAgent.class.getName());
 		cmd.add(rmiRegistryPort + "");
@@ -171,5 +172,12 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 	public void export(String typeName, Remote object) throws AccessException, RemoteException, AlreadyBoundException {
 
 		registry.bind(typeName, object);
+	}
+	
+	@Override
+	public IDiagnosticReport getAgentReport() throws AccessException, RemoteException, NotBoundException {
+		
+		IClassLoaderReporting clr = (IClassLoaderReporting) registry.lookup(IClassLoaderReporting.class.getName());
+		return clr.produceRuntimeReport();
 	}
 }

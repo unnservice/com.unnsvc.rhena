@@ -4,3 +4,6 @@ Bundle-Name: Cmdline
 Bundle-SymbolicName: com.unnsvc.rhena.cmdline
 Bundle-Version: 1.0.0.qualifier
 Export-Package: com.unnsvc.rhena.cmdline
+Require-Bundle: com.unnsvc.rhena.common,
+ org.junit,
+ com.unnsvc.rhena.core
