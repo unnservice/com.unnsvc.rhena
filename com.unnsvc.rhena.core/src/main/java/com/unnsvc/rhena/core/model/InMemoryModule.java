@@ -9,6 +9,8 @@ import com.unnsvc.rhena.core.resolution.InMemoryRepository;
 
 public class InMemoryModule extends RhenaModule {
 
+	private static final long serialVersionUID = 1L;
+
 	public InMemoryModule(String identifier, InMemoryRepository repository) throws RhenaException {
 
 		super(ModuleIdentifier.valueOf(identifier), null, repository);

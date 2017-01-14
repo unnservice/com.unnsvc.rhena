@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
+import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
@@ -14,7 +15,6 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.execution.ArtifactDescriptor;
 import com.unnsvc.rhena.core.execution.LocalExecution;
@@ -54,29 +54,29 @@ public class LocalCacheRepository implements IRepository {
 	}
 
 	@Override
-	public IRhenaExecution materialiseExecution(IRhenaCache cache, IEntryPoint entryPoint) throws RhenaException {
+	public IRhenaExecution materialiseExecution(IRhenaCache cache, ICaller caller) throws RhenaException {
 
-		File moduleDirectory = getModuleDirectory(entryPoint.getTarget());
-		if (entryPoint.getExecutionType().equals(EExecutionType.MODEL)) {
+		File moduleDirectory = getModuleDirectory(caller.getIdentifier());
+		if (caller.getExecutionType().equals(EExecutionType.MODEL)) {
 
 			File moduleDescriptor = new File(moduleDirectory, RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
 			try {
-				return new LocalExecution(entryPoint.getTarget(), entryPoint.getExecutionType(), new ArtifactDescriptor(entryPoint.getTarget().toString(),
+				return new LocalExecution(caller.getIdentifier(), caller.getExecutionType(), new ArtifactDescriptor(caller.getIdentifier().toString(),
 						moduleDescriptor.getCanonicalFile().toURI().toURL(), Utils.generateSha1(moduleDescriptor)));
 			} catch (IOException mue) {
 				throw new RhenaException(mue.getMessage(), mue);
 			}
 		} else {
 
-			File executionDirectory = new File(moduleDirectory, entryPoint.getExecutionType().literal());
+			File executionDirectory = new File(moduleDirectory, caller.getExecutionType().literal());
 
 			if (!executionDirectory.isDirectory()) {
 				return null;
 			}
 
-			RhenaExecutionDescriptorParser execParser = new RhenaExecutionDescriptorParser(entryPoint.getTarget(), entryPoint.getExecutionType(),
+			RhenaExecutionDescriptorParser execParser = new RhenaExecutionDescriptorParser(caller.getIdentifier(), caller.getExecutionType(),
 					executionDirectory.toURI());
-			context.getLogger().debug(getClass(), entryPoint.getTarget(), "Created execution: " + execParser.getExecution());
+			context.getLogger().debug(getClass(), caller.getIdentifier(), "Created execution: " + execParser.getExecution());
 			return execParser.getExecution();
 		}
 		// throw new UnsupportedOperationException("Not implemented for

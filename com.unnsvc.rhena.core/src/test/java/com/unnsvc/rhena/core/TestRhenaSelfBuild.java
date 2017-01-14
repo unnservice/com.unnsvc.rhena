@@ -6,6 +6,7 @@ import java.io.File;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
@@ -18,18 +19,20 @@ public class TestRhenaSelfBuild extends AbstractRhenaTest {
 
 	@Test
 	public void testModule() throws Exception {
-
+		
 		getContext().addWorkspaceRepository(new WorkspaceRepository(getContext(), new File("../../")));
 		getContext().addWorkspaceRepository(new WorkspaceRepository(getContext(), new File("../")));
 
 		IRhenaEngine engine = new RhenaEngine(getContext());
+		
+		ICaller caller = new Caller(ModuleIdentifier.valueOf("com.unnsvc.rhena:core:0.0.1"), EExecutionType.TEST);
 
-		IRhenaModule entryPointModule = engine.materialiseModel(ModuleIdentifier.valueOf("com.unnsvc.rhena:core:0.0.1"));
+		IRhenaModule entryPointModule = engine.materialiseModel(caller);
 		Assert.assertNotNull(entryPointModule);
 
 		debugContext(engine);
 
-		IRhenaExecution execution = engine.materialiseExecution(entryPointModule, EExecutionType.TEST);
+		IRhenaExecution execution = engine.materialiseExecution(caller);
 		Assert.assertNotNull(execution);
 
 		// because we want to configure eclipse with it

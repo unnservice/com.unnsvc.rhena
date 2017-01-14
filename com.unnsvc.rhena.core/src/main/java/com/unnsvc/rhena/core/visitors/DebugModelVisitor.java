@@ -8,6 +8,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
+import com.unnsvc.rhena.core.InternalCaller;
 
 /**
  * Example:
@@ -66,7 +67,7 @@ public class DebugModelVisitor implements IModelVisitor {
 
 			for (IRhenaEdge edge : module.getDependencies()) {
 
-				IRhenaModule dep = context.materialiseModel(edge.getEntryPoint().getTarget());
+				IRhenaModule dep = context.materialiseModel(new InternalCaller(edge.getEntryPoint()));
 				dep.visit(new DebugModelVisitor(config, indents + 1, context, edge.getEntryPoint().getExecutionType().toString()));
 			}
 

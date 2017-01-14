@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
@@ -47,11 +48,11 @@ public class CascadingModelResolver {
 	 * @param entryPoint
 	 * @throws RhenaException
 	 */
-	public IRhenaModule resolveEntryPoint(IEntryPoint entryPoint) throws RhenaException {
+	public IRhenaModule resolveEntryPoint(ICaller caller) throws RhenaException {
 
 		List<IEntryPoint> processed = new ArrayList<IEntryPoint>();
 		UniqueStack<IEntryPoint> tracker = new UniqueStack<IEntryPoint>();
-		tracker.push(entryPoint);
+		tracker.push(caller.getEntryPoint());
 
 		try {
 			while (!tracker.isEmpty()) {
@@ -140,7 +141,7 @@ public class CascadingModelResolver {
 			// }
 
 		} catch (NotUniqueException nue) {
-			context.getLogger().error(getClass(), entryPoint.getTarget(), "Cyclic dependency path detected:");
+			context.getLogger().error(getClass(), caller.getIdentifier(), "Cyclic dependency path detected:");
 			boolean shift = false;
 
 			/**
@@ -154,7 +155,7 @@ public class CascadingModelResolver {
 				}
 				if (startlog) {
 					// @TODO
-					context.getLogger().error(getClass(), entryPoint.getTarget(),
+					context.getLogger().error(getClass(), caller.getIdentifier(),
 							"Cycle: " + (shift ? "↓" : "↓") + " " + materialiseModel(edge.getTarget()).getIdentifier().toTag(edge.getExecutionType()));
 					shift = !shift;
 				}
@@ -162,7 +163,7 @@ public class CascadingModelResolver {
 			throw new RhenaException(nue.getMessage(), nue);
 		}
 
-		return materialiseModel(entryPoint.getTarget());
+		return materialiseModel(caller.getIdentifier());
 	}
 
 	private void merge(IRhenaModule currentModule, IRhenaModule parentModule) {

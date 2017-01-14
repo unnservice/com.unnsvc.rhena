@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
@@ -20,7 +21,6 @@ import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleProcessorReference;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleReference;
-import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.execution.ArtifactDescriptor;
@@ -53,35 +53,36 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 	}
 
 	@Override
-	public IRhenaExecution materialiseExecution(IRhenaCache cache, IEntryPoint entryPoint) throws RhenaException {
+	public IRhenaExecution materialiseExecution(IRhenaCache cache, ICaller caller) throws RhenaException {
 
-		IRhenaModule module = cache.getModule(entryPoint.getTarget());
+		IRhenaModule module = cache.getModule(caller.getIdentifier());
 
-		if (entryPoint.getExecutionType().equals(EExecutionType.MODEL)) {
+		if (caller.getExecutionType().equals(EExecutionType.MODEL)) {
 
 			File workspaceDirectory = new File(module.getLocation().getPath());
 			File moduleDescriptor = new File(workspaceDirectory, RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
 			try {
 				String sha1sum = Utils.generateSha1(moduleDescriptor);
-				IArtifactDescriptor descriptor = new ArtifactDescriptor(entryPoint.getTarget().toString(), moduleDescriptor.getCanonicalFile().toURI().toURL(), sha1sum);
-				return new WorkspaceExecution(entryPoint.getTarget(), entryPoint.getExecutionType(), descriptor);
+				IArtifactDescriptor descriptor = new ArtifactDescriptor(caller.getIdentifier().toString(), moduleDescriptor.getCanonicalFile().toURI().toURL(),
+						sha1sum);
+				return new WorkspaceExecution(caller.getIdentifier(), caller.getExecutionType(), descriptor);
 			} catch (IOException mue) {
 				throw new RhenaException(mue.getMessage(), mue);
 			}
 		} else {
 
-			Dependencies deps = new Dependencies(entryPoint.getExecutionType());
+			Dependencies deps = new Dependencies(caller.getExecutionType());
 
 			// get dependency chains of dependencies
-			getDepchain(deps, cache, entryPoint.getTarget(), entryPoint.getExecutionType());
+			getDepchain(deps, cache, caller.getIdentifier(), caller.getExecutionType());
 
 			/**
 			 * Up to, but not with, the ordinal, becauuse that's the one we
 			 * willimgur create next by executing a lifecycle
 			 */
-			for (int i = 0; i < entryPoint.getExecutionType().ordinal(); i++) {
+			for (int i = 0; i < caller.getExecutionType().ordinal(); i++) {
 
-				IRhenaExecution exec = cache.getExecution(entryPoint.getTarget()).get(EExecutionType.values()[i]);
+				IRhenaExecution exec = cache.getExecution(caller.getIdentifier()).get(EExecutionType.values()[i]);
 				deps.addDependency(EExecutionType.values()[i], exec);
 			}
 
@@ -107,14 +108,14 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 					}
 					ILifecycleProcessorReference generator = lifecycleReference.getGenerator();
 					lifecycleExecutable.setGenerator(new CustomProcessorExecutable(generator, getDependencies(generator.getModuleEdge())));
-					for(ILifecycleProcessorReference command : lifecycleReference.getCommands()) {
+					for (ILifecycleProcessorReference command : lifecycleReference.getCommands()) {
 						CommandProcessorReference commandRef = (CommandProcessorReference) command;
 						lifecycleExecutable.addCommandExecutable(new CustomCommandExecutable(commandRef, getDependencies(commandRef.getModuleEdge())));
 					}
 				}
 
 				ILifecycleAgent agent = context.getLifecycleAgentManager().getLifecycleAgent();
-				ILifecycleExecutionResult generated = agent.executeLifecycle(lifecycleExecutable, module, entryPoint.getExecutionType(), deps);
+				ILifecycleExecutionResult generated = agent.executeLifecycle(caller, module, lifecycleExecutable, deps);
 
 				/**
 				 * Old method below
@@ -122,8 +123,8 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 
 				File generatedFile = generated.getGeneratedArtifact().getCanonicalFile();
 				String sha1sum = Utils.generateSha1(generatedFile);
-				IArtifactDescriptor descriptor = new ArtifactDescriptor(entryPoint.getTarget().toString(), generatedFile.toURI().toURL(), sha1sum);
-				return new WorkspaceExecution(entryPoint.getTarget(), entryPoint.getExecutionType(), descriptor, generated.getInputs());
+				IArtifactDescriptor descriptor = new ArtifactDescriptor(caller.getIdentifier().toString(), generatedFile.toURI().toURL(), sha1sum);
+				return new WorkspaceExecution(caller.getIdentifier(), caller.getExecutionType(), descriptor, generated.getInputs());
 			} catch (IOException mue) {
 				throw new RhenaException(mue.getMessage(), mue);
 			}

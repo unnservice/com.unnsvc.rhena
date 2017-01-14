@@ -3,6 +3,7 @@ package com.unnsvc.rhena.core;
 
 import java.util.Set;
 
+import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -34,21 +35,15 @@ public class RhenaEngine implements IRhenaEngine {
 	}
 
 	@Override
-	public IRhenaModule materialiseModel(ModuleIdentifier identifier) throws RhenaException {
+	public IRhenaModule materialiseModel(ICaller caller) throws RhenaException {
 
-		/**
-		 * We resolve its test to ensure we get the maximum coverage in cyclic
-		 * check
-		 */
-		IEntryPoint entryPoint = new EntryPoint(EExecutionType.TEST, identifier);
-		return cascadingResolver.resolveEntryPoint(entryPoint);
+		return cascadingResolver.resolveEntryPoint(caller);
 	}
 
 	@Override
-	public IRhenaExecution materialiseExecution(IRhenaModule module, EExecutionType type) throws RhenaException {
+	public IRhenaExecution materialiseExecution(ICaller caller) throws RhenaException {
 
-		IEntryPoint entryPoint = new EntryPoint(type, module.getIdentifier());
-		return cascadingBuilder.buildEntryPoint(entryPoint);
+		return cascadingBuilder.buildEntryPoint(caller);
 	}
 
 	@Override
@@ -71,4 +66,5 @@ public class RhenaEngine implements IRhenaEngine {
 		RootFinder finder = new RootFinder(context, identifier, type, identifier.getComponentName().toString(), identifier.getComponentName().toString());
 		return finder.findRoots(0);
 	}
+
 }

@@ -39,7 +39,7 @@ public class TestFindRoots extends AbstractRhenaTest {
 		repo.addModule(four);
 
 		IRhenaEngine engine = new RhenaEngine(getContext());
-		IRhenaModule module = engine.materialiseModel(ModuleIdentifier.valueOf("test:four:0.0.1"));
+		IRhenaModule module = engine.materialiseModel(new Caller(ModuleIdentifier.valueOf("test:four:0.0.1"), EExecutionType.TEST));
 		Assert.assertNotNull(module);
 		Set<ModuleIdentifier> roots = engine.findRoots(module.getIdentifier(), EExecutionType.TEST);
 		roots.forEach(root -> System.err.println("Root contained: " + root));
@@ -76,7 +76,7 @@ public class TestFindRoots extends AbstractRhenaTest {
 		repo.addModule(five);
 
 		IRhenaEngine engine = new RhenaEngine(getContext());
-		IRhenaModule module = engine.materialiseModel(ModuleIdentifier.valueOf("test:five:0.0.1"));
+		IRhenaModule module = engine.materialiseModel(new Caller(ModuleIdentifier.valueOf("test:five:0.0.1"), EExecutionType.TEST));
 		Assert.assertNotNull(module);
 		Set<ModuleIdentifier> roots = engine.findRoots(module.getIdentifier(), EExecutionType.TEST);
 		roots.forEach(root -> System.err.println("Root contained: " + root));

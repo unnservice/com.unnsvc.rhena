@@ -13,7 +13,7 @@ import com.unnsvc.rhena.core.model.EntryPoint;
  * @author noname
  *
  */
-public class ExecutionMergeEdgeSet extends HashSet<IEntryPoint> {
+public class ExecutionMergeEntryPoint extends HashSet<IEntryPoint> {
 
 	private static final long serialVersionUID = 1L;
 

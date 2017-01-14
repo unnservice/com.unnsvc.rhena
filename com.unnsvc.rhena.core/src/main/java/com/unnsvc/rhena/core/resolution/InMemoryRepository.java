@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
@@ -13,7 +14,6 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleReference;
-import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.model.InMemoryModule;
 
@@ -30,13 +30,13 @@ public class InMemoryRepository implements IRepository {
 	}
 
 	@Override
-	public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
+	public IRhenaModule materialiseModel(ModuleIdentifier identifier) throws RhenaException {
 
-		return modules.get(moduleIdentifier);
+		return modules.get(identifier);
 	}
 
 	@Override
-	public IRhenaExecution materialiseExecution(IRhenaCache cache, IEntryPoint entryPoint) throws RhenaException {
+	public IRhenaExecution materialiseExecution(IRhenaCache cache, ICaller caller) throws RhenaException {
 
 		throw new UnsupportedOperationException("Not implemented for in-memory repository");
 	}
@@ -59,7 +59,7 @@ public class InMemoryRepository implements IRepository {
 		if (module.getParent() != null) {
 			this.context.getCache().addEdge(module.getParent());
 		}
-		if (module.getLifecycleName() != null && !module.getLifecycleName().equals(RhenaConstants.DEFAULT_LIFECYCLE_MODULE)) {
+		if (!module.getLifecycleName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
 			ILifecycleReference lifecycleRef = module.getLifecycleDeclarations().get(module.getLifecycleName());
 			lifecycleRef.getAllReferences().forEach(ref -> this.context.getCache().addEdge(ref.getModuleEdge()));
 		}

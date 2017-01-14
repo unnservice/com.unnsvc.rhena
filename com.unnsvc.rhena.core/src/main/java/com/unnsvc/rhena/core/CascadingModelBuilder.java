@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
@@ -35,11 +36,14 @@ public class CascadingModelBuilder {
 		this.context = context;
 	}
 
-	public IRhenaExecution buildEntryPoint(IEntryPoint entryPoint) throws RhenaException {
+	public IRhenaExecution buildEntryPoint(ICaller caller) throws RhenaException {
 
-		ExecutionMergeEdgeSet allEdges = getAllEntryPoints(entryPoint);
-		prefillExecutions(allEdges);
-		Set<IEntryPoint> resolvable = new HashSet<IEntryPoint>();
+		/**
+		 * Refactor to traverse tree and only get relevant entry points
+		 */
+		ExecutionMergeEntryPoint allEntryPoints = getAllEntryPoints(caller.getEntryPoint());
+		prefillExecutions(allEntryPoints);
+		Set<IEntryPoint> resolvableEntryPoints = new HashSet<IEntryPoint>();
 
 		/**
 		 * @TODO we want more efficient threading, instead of waiting for each n
@@ -47,28 +51,28 @@ public class CascadingModelBuilder {
 		 *       each thread completion so we can feed the thread pool
 		 *       continuously
 		 */
-		while (loopGuard(allEdges)) {
+		while (loopGuard(allEntryPoints)) {
 
-			resolvable = selectResolved(allEdges);
+			resolvableEntryPoints = selectResolved(allEntryPoints);
 
 			// Second loop guard to check whether any where selected, if not
 			// then we have an error because the selectResolved should always
 			// select
 			// @TODO move into loopGuard?
-			if (resolvable.isEmpty()) {
-				for (IEntryPoint edge : allEdges) {
+			if (resolvableEntryPoints.isEmpty()) {
+				for (IEntryPoint edge : allEntryPoints) {
 					context.getLogger().debug(getClass(), "Nonresolvable in queue (framework bug): " + edge);
 					IRhenaModule module = cache.getModule(edge.getTarget());
 					isBuildable(edge, module, true);
 				}
-				throw new RhenaException("Nonresolvable edges in queue, this is a bug: " + allEdges);
+				throw new RhenaException("Nonresolvable edges in queue, this is a bug: " + allEntryPoints);
 			}
 
 			Runtime runtime = Runtime.getRuntime();
 			int threads = context.getConfig().isParallel() ? runtime.availableProcessors() : 1;
 			ExecutorService executor = Executors.newFixedThreadPool(threads);
 
-			for (final IEntryPoint edge : resolvable) {
+			for (final IEntryPoint resolvableEntryPoint : resolvableEntryPoints) {
 
 				executor.submit(new Callable<IRhenaExecution>() {
 
@@ -76,10 +80,22 @@ public class CascadingModelBuilder {
 					public IRhenaExecution call() throws Exception {
 
 						try {
-							IRhenaExecution execution = materialiseExecution(edge);
-							return execution;
+							/**
+							 * When it's the caller, produce execution witht he
+							 * same caller object, otherwise create an internal
+							 * caller object
+							 */
+							if (caller.getEntryPoint().equals(resolvableEntryPoint)) {
+								IRhenaExecution execution = materialiseExecution(caller);
+								return execution;
+							} else {
+								ICaller internalCaller = new InternalCaller(resolvableEntryPoint);
+								IRhenaExecution execution = materialiseExecution(internalCaller);
+								return execution;
+							}
 						} catch (Throwable t) {
-							context.getLogger().error(getClass(), edge.getTarget(), "Exception in execution materialisation: " + t.getMessage());
+							context.getLogger().error(getClass(), resolvableEntryPoint.getTarget(),
+									"Exception in execution materialisation: " + t.getMessage());
 							t.printStackTrace();
 							throw new RhenaException(t.getMessage(), t);
 						}
@@ -88,8 +104,9 @@ public class CascadingModelBuilder {
 			}
 
 			/**
-			 * Theory is that this can't wait indefinitely because the model is
-			 * checked for cycles so it can resolve.
+			 * @TODO It might be so that a lifecycle blocks because of bad
+			 *       code/bugs/jvm oom, so there might need to be a timeout of
+			 *       some kind, maybe by polling the agent for a few seconds.
 			 */
 			try {
 				executor.shutdown();
@@ -101,7 +118,7 @@ public class CascadingModelBuilder {
 
 		}
 
-		return materialiseExecution(entryPoint);
+		return materialiseExecution(caller);
 	}
 
 	/**
@@ -109,9 +126,9 @@ public class CascadingModelBuilder {
 	 * @param entryPoint
 	 * @return
 	 */
-	private ExecutionMergeEdgeSet getAllEntryPoints(IEntryPoint entryPoint) {
+	private ExecutionMergeEntryPoint getAllEntryPoints(IEntryPoint entryPoint) {
 
-		ExecutionMergeEdgeSet allEntryPoints = new ExecutionMergeEdgeSet();
+		ExecutionMergeEntryPoint allEntryPoints = new ExecutionMergeEntryPoint();
 		allEntryPoints.addEntryPoint(entryPoint);
 
 		for (IRhenaModule module : cache.getModules().values()) {
@@ -142,32 +159,32 @@ public class CascadingModelBuilder {
 	}
 
 	/**
-	 * This will be called from the thread pool
+	 * This will be called in the thread pool
 	 * 
 	 * @param edge
 	 * @return
 	 * @throws RhenaException
 	 */
-	private IRhenaExecution materialiseExecution(IEntryPoint entryPoint) throws RhenaException {
+	private IRhenaExecution materialiseExecution(ICaller caller) throws RhenaException {
 
 		IRhenaExecution execution = null;
 
-		if (cache.getExecution(entryPoint.getTarget()).containsKey(entryPoint.getExecutionType())) {
+		if (cache.getExecution(caller.getIdentifier()).containsKey(caller.getExecutionType())) {
 
-			return cache.getExecution(entryPoint.getTarget()).get(entryPoint.getExecutionType());
+			return cache.getExecution(caller.getIdentifier()).get(caller.getExecutionType());
 		}
 
-		execution = produceExecution(entryPoint);
-		cache.getExecution(entryPoint.getTarget()).put(entryPoint.getExecutionType(), execution);
+		execution = produceExecution(caller);
+		cache.getExecution(caller.getIdentifier()).put(caller.getExecutionType(), execution);
 		return execution;
 	}
 
-	private IRhenaExecution produceExecution(IEntryPoint entryPoint) throws RhenaException {
+	private IRhenaExecution produceExecution(ICaller caller) throws RhenaException {
 
-		context.getLogger().info(getClass(), entryPoint.getTarget(), "Building: " + entryPoint.getTarget() + ":" + entryPoint.getExecutionType());
+		context.getLogger().info(getClass(), caller.getIdentifier(), "Building: " + caller.toString());
 
-		IRhenaModule module = cache.getModule(entryPoint.getTarget());
-		IRhenaExecution execution = module.getRepository().materialiseExecution(cache, entryPoint);
+		IRhenaModule module = cache.getModule(caller.getIdentifier());
+		IRhenaExecution execution = module.getRepository().materialiseExecution(cache, caller);
 
 		return execution;
 	}

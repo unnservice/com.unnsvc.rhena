@@ -7,7 +7,6 @@ import java.net.URI;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 
 /**
@@ -33,7 +32,7 @@ public interface IRepository extends Serializable {
 	 * @return
 	 * @throws RhenaException
 	 */
-	public IRhenaExecution materialiseExecution(IRhenaCache cache, IEntryPoint entryPoint) throws RhenaException;
+	public IRhenaExecution materialiseExecution(IRhenaCache cache, ICaller caller) throws RhenaException;
 
 	public URI getLocation();
 }

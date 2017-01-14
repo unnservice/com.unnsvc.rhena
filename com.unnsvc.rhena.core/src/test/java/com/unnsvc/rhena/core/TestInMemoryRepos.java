@@ -33,7 +33,7 @@ public class TestInMemoryRepos extends AbstractRhenaTest {
 		repo.addModule(four);
 
 		IRhenaEngine engine = new RhenaEngine(getContext());
-		IRhenaModule module = engine.materialiseModel(ModuleIdentifier.valueOf("test:one:0.0.1"));
+		IRhenaModule module = engine.materialiseModel(new Caller(ModuleIdentifier.valueOf("test:one:0.0.1"), EExecutionType.TEST));
 		Assert.assertTrue(module instanceof InMemoryModule);
 		Assert.assertEquals(module.getIdentifier().toString(), "test:one:0.0.1");
 	}

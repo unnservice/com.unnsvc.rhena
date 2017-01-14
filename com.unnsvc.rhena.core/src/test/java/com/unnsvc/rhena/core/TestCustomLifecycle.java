@@ -1,3 +1,4 @@
+
 package com.unnsvc.rhena.core;
 
 import java.io.File;
@@ -5,6 +6,7 @@ import java.io.File;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
@@ -18,16 +20,18 @@ public class TestCustomLifecycle extends AbstractRhenaTest {
 	@Test
 	public void testModule() throws Exception {
 
+		ICaller caller = new CommandCaller(ModuleIdentifier.valueOf("com.test:module1:0.0.1"), EExecutionType.TEST, "testCommand");
+
 		getContext().addWorkspaceRepository(new WorkspaceRepository(getContext(), new File("/home/noname/workspaces/runtime-New_configuration")));
 
 		IRhenaEngine engine = new RhenaEngine(getContext());
 
-		IRhenaModule entryPointModule = engine.materialiseModel(ModuleIdentifier.valueOf("com.test:module1:0.0.1"));
+		IRhenaModule entryPointModule = engine.materialiseModel(caller);
 		Assert.assertNotNull(entryPointModule);
 
 		debugContext(engine);
 
-		IRhenaExecution execution = engine.materialiseExecution(entryPointModule, EExecutionType.TEST);
+		IRhenaExecution execution = engine.materialiseExecution(caller);
 		Assert.assertNotNull(execution);
 
 		// because we want to configure eclipse with it

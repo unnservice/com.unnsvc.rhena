@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.unnsvc.rhena.common.IRepository;
+import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleReference;
@@ -38,6 +39,7 @@ public class RhenaModule implements IRhenaModule {
 		this.properties = new Properties();
 		this.lifecycleDeclarations = new HashMap<String, ILifecycleReference>();
 		this.dependencies = new ArrayList<IRhenaEdge>();
+		this.lifecycleName = RhenaConstants.DEFAULT_LIFECYCLE_NAME;
 	}
 
 	@Override
