@@ -14,6 +14,7 @@ import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.core.Caller;
 import com.unnsvc.rhena.core.RhenaConfiguration;
 import com.unnsvc.rhena.core.RhenaContext;
 import com.unnsvc.rhena.core.RhenaEngine;
@@ -59,7 +60,7 @@ public class TestRhenaModule {
 
 			debugContext(engine);
 
-			IRhenaExecution execution = engine.materialiseExecution(entryPointModule, EExecutionType.TEST);
+			IRhenaExecution execution = engine.materialiseExecution(new Caller(entryPointModule, EExecutionType.TEST));
 			Assert.assertNotNull(execution);
 
 			// because we want to configure eclipse with it

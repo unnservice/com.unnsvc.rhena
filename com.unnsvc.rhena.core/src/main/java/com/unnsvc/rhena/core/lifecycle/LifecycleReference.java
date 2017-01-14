@@ -4,6 +4,7 @@ package com.unnsvc.rhena.core.lifecycle;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.unnsvc.rhena.common.lifecycle.ILifecycleCommandReference;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleProcessorReference;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleReference;
 
@@ -14,13 +15,13 @@ public class LifecycleReference implements ILifecycleReference {
 	private ILifecycleProcessorReference context;
 	private List<ILifecycleProcessorReference> processors;
 	private ILifecycleProcessorReference generator;
-	private List<ILifecycleProcessorReference> commands;
+	private List<ILifecycleCommandReference> commands;
 
 	public LifecycleReference(String name) {
 
 		this.name = name;
 		this.processors = new ArrayList<ILifecycleProcessorReference>();
-		this.commands = new ArrayList<ILifecycleProcessorReference>();
+		this.commands = new ArrayList<ILifecycleCommandReference>();
 	}
 
 	@Override
@@ -79,7 +80,7 @@ public class LifecycleReference implements ILifecycleReference {
 	}
 
 	@Override
-	public List<ILifecycleProcessorReference> getCommands() {
+	public List<ILifecycleCommandReference> getCommands() {
 
 		return commands;
 	}

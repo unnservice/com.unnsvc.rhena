@@ -21,6 +21,6 @@ public interface ILifecycleReference extends Serializable {
 	 */
 	public List<ILifecycleProcessorReference> getAllReferences();
 
-	public List<ILifecycleProcessorReference> getCommands();
+	public List<ILifecycleCommandReference> getCommands();
 
 }
