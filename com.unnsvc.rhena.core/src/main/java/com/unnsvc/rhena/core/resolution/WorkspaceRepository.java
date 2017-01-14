@@ -55,7 +55,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 	@Override
 	public IRhenaExecution materialiseExecution(IRhenaCache cache, ICaller caller) throws RhenaException {
 
-		IRhenaModule module = cache.getModule(caller.getIdentifier());
+		IRhenaModule module = caller.getModule();
 
 		if (caller.getExecutionType().equals(EExecutionType.MODEL)) {
 
@@ -115,7 +115,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 				}
 
 				ILifecycleAgent agent = context.getLifecycleAgentManager().getLifecycleAgent();
-				ILifecycleExecutionResult generated = agent.executeLifecycle(caller, module, lifecycleExecutable, deps);
+				ILifecycleExecutionResult generated = agent.executeLifecycle(caller, lifecycleExecutable, deps);
 
 				/**
 				 * Old method below

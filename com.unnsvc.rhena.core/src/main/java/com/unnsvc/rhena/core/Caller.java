@@ -5,21 +5,25 @@ import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IEntryPoint;
+import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.model.EntryPoint;
 
 public class Caller implements ICaller {
 
 	private static final long serialVersionUID = 1L;
+	private IRhenaModule module;
 	private IEntryPoint entryPoint;
 
-	public Caller(ModuleIdentifier identifier, EExecutionType executionType) {
+	public Caller(IRhenaModule module, EExecutionType executionType) {
 
-		this.entryPoint = new EntryPoint(executionType, identifier);
+		this.module = module;
+		this.entryPoint = new EntryPoint(executionType, module.getIdentifier());
 	}
 
-	public Caller(IEntryPoint entryPoint) {
+	@Override
+	public IRhenaModule getModule() {
 
-		this.entryPoint = entryPoint;
+		return module;
 	}
 
 	@Override
@@ -40,4 +44,9 @@ public class Caller implements ICaller {
 		return entryPoint;
 	}
 
+	@Override
+	public String toString() {
+
+		return "Caller [entryPoint=" + entryPoint + "]";
+	}
 }

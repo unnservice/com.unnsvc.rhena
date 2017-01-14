@@ -3,16 +3,16 @@ package com.unnsvc.rhena.core;
 
 import com.unnsvc.rhena.common.ICommandCaller;
 import com.unnsvc.rhena.common.execution.EExecutionType;
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.IRhenaModule;
 
 public class CommandCaller extends Caller implements ICommandCaller {
 
 	private static final long serialVersionUID = 1L;
 	private String command;
 
-	public CommandCaller(ModuleIdentifier identifier, EExecutionType executionType, String command) {
+	public CommandCaller(IRhenaModule module, EExecutionType executionType, String command) {
 
-		super(identifier, executionType);
+		super(module, executionType);
 		this.command = command;
 	}
 
@@ -20,5 +20,11 @@ public class CommandCaller extends Caller implements ICommandCaller {
 	public String getCommand() {
 
 		return command;
+	}
+
+	@Override
+	public String toString() {
+
+		return "CommandCaller [getEntryPoint()=" + getEntryPoint() + ", command=" + command + "]";
 	}
 }

@@ -14,7 +14,7 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
  */
 public interface IRhenaEngine {
 
-	public IRhenaModule materialiseModel(ICaller caller) throws RhenaException;
+	public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException;
 
 	/**
 	 * We require a processed model to produce an execution.

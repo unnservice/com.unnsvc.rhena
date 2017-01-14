@@ -19,7 +19,6 @@ import com.unnsvc.rhena.common.ICommandCaller;
 import com.unnsvc.rhena.common.agent.ILifecycleExecutionResult;
 import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.lifecycle.ICommand;
 import com.unnsvc.rhena.common.lifecycle.ICustomLifecycleCommandExecutable;
 import com.unnsvc.rhena.common.lifecycle.ICustomLifecycleProcessorExecutable;
@@ -31,7 +30,6 @@ import com.unnsvc.rhena.common.lifecycle.ILifecycleProcessorExecutable;
 import com.unnsvc.rhena.common.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.lifecycle.IResource;
 import com.unnsvc.rhena.common.logging.ILoggerService;
-import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.visitors.IDependencies;
 
 /**
@@ -51,8 +49,8 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public synchronized ILifecycleExecutionResult executeLifecycle(ICaller caller, IRhenaModule module, ILifecycleExecutable lifecycleExecutable,
-			IDependencies dependencies) throws RemoteException {
+	public synchronized ILifecycleExecutionResult executeLifecycle(ICaller caller, ILifecycleExecutable lifecycleExecutable, IDependencies dependencies)
+			throws RemoteException {
 
 		Map<Class<?>, Object> additionalInjectableTypes;
 		additionalInjectableTypes = new HashMap<Class<?>, Object>();
@@ -64,13 +62,13 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 			 */
 			ILifecycleProcessorExecutable contextExecutable = lifecycleExecutable.getContextExecutable();
 			IExecutionContext context = constructProcessor(contextExecutable, IExecutionContext.class, getClass().getClassLoader(), additionalInjectableTypes);
-			executeProcessor(context, module, caller.getExecutionType(), contextExecutable, dependencies);
+			executeProcessor(caller, context, contextExecutable, dependencies);
 			additionalInjectableTypes.put(IExecutionContext.class, context);
 
 			ClassLoader previousClassloader = context.getClass().getClassLoader();
 			for (ILifecycleProcessorExecutable processorExecutable : lifecycleExecutable.getProcessorExecutables()) {
 				IProcessor processor = constructProcessor(processorExecutable, IProcessor.class, previousClassloader, additionalInjectableTypes);
-				executeProcessor(processor, module, caller.getExecutionType(), processorExecutable, dependencies);
+				executeProcessor(caller, processor, processorExecutable, dependencies);
 				List<IProcessor> additional = (List<IProcessor>) additionalInjectableTypes.get(List.class);
 				additional.add(processor);
 				previousClassloader = processor.getClass().getClassLoader();
@@ -78,10 +76,10 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 
 			ILifecycleProcessorExecutable generatorExecutable = lifecycleExecutable.getGeneratorExecutable();
 			IGenerator generator = constructProcessor(generatorExecutable, IGenerator.class, previousClassloader, additionalInjectableTypes);
-			executeProcessor(generator, module, caller.getExecutionType(), generatorExecutable, dependencies);
+			executeProcessor(caller, generator, generatorExecutable, dependencies);
 
 			List<IResource> inputs = context.getResources();
-			File generatedFile = generator.generate(module, caller.getExecutionType());
+			File generatedFile = generator.generate(caller);
 			previousClassloader = generator.getClass().getClassLoader();
 
 			if (caller instanceof ICommandCaller) {
@@ -99,7 +97,7 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 
 				// execute
 				ICommand command = constructProcessor(foundCommandExec, ICommand.class, previousClassloader, additionalInjectableTypes);
-				executeProcessor(command, module, caller.getExecutionType(), foundCommandExec, dependencies);
+				executeProcessor(caller, command, foundCommandExec, dependencies);
 			}
 
 			LifecycleExecutionResult result = new LifecycleExecutionResult(generatedFile, inputs);
@@ -112,14 +110,14 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 
 	}
 
-	private void executeProcessor(ILifecycleProcessor processor, IRhenaModule module, EExecutionType executionType, ILifecycleProcessorExecutable executable,
-			IDependencies dependencies) throws RemoteException {
+	private void executeProcessor(ICaller caller, ILifecycleProcessor processor, ILifecycleProcessorExecutable executable, IDependencies dependencies)
+			throws RemoteException {
 
 		if (executable instanceof ICustomLifecycleProcessorExecutable) {
 			ICustomLifecycleProcessorExecutable customExecutable = (ICustomLifecycleProcessorExecutable) executable;
-			processor.configure(module, customExecutable.getConfiguration());
+			processor.configure(caller, customExecutable.getConfiguration());
 		} else {
-			processor.configure(module, null);
+			processor.configure(caller, null);
 		}
 
 		// System.out.println("Executing processor " +
@@ -127,7 +125,7 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 		if (processor instanceof IProcessor) {
 
 			IProcessor proc = (IProcessor) processor;
-			proc.process(module, executionType, dependencies);
+			proc.process(caller, dependencies);
 		}
 	}
 

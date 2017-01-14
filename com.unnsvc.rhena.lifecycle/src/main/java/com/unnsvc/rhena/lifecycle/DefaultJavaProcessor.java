@@ -17,6 +17,7 @@ import javax.tools.ToolProvider;
 
 import org.w3c.dom.Document;
 
+import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
@@ -43,7 +44,7 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 	}
 
 	@Override
-	public void configure(IRhenaModule module, Document configuration) {
+	public void configure(ICaller caller, Document configuration) {
 
 	}
 
@@ -52,9 +53,12 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 	 * @TODO batch instead of running for each resource
 	 */
 	@Override
-	public void process(IRhenaModule module, EExecutionType type, IDependencies dependencies) throws RemoteException {
+	public void process(ICaller caller, IDependencies dependencies) throws RemoteException {
 
-//		logger.trace(getClass().getName(), "Executing " + getClass().getName());
+		IRhenaModule module = caller.getModule();
+		EExecutionType type = caller.getExecutionType();
+		// logger.trace(getClass().getName(), "Executing " +
+		// getClass().getName());
 		logger.fireLogEvent(ELogLevel.TRACE, getClass().getName(), module.getIdentifier(), "Executing " + getClass().getName(), null);
 
 		File outputDirectory = new File(context.getOutputDirectory(module), type.literal().toLowerCase());
@@ -69,8 +73,10 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 		List<File> resources = context.selectResources(type, "^.*\\.java$");
 
 		if (resources.isEmpty()) {
-//			logger.warn(getClass(), "No resources selected for compilation in " + module.getIdentifier() + ":" + type.literal());
-			logger.fireLogEvent(ELogLevel.TRACE, getClass().getName(), module.getIdentifier(), "No resources selected for compilation in " + module.getIdentifier() + ":" + type.literal(), null);
+			// logger.warn(getClass(), "No resources selected for compilation in
+			// " + module.getIdentifier() + ":" + type.literal());
+			logger.fireLogEvent(ELogLevel.TRACE, getClass().getName(), module.getIdentifier(),
+					"No resources selected for compilation in " + module.getIdentifier() + ":" + type.literal(), null);
 			return;
 		}
 
@@ -86,7 +92,7 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 		Diagnostic<? extends JavaFileObject> firstError = null;
 		for (Diagnostic<? extends JavaFileObject> diag : diagnostics.getDiagnostics()) {
 
-//			logger.trace(getClass(), "Compiler diagnostic: " + diag);
+			// logger.trace(getClass(), "Compiler diagnostic: " + diag);
 			logger.fireLogEvent(ELogLevel.TRACE, getClass().getName(), module.getIdentifier(), "Compiler diagnostic: " + diag, null);
 			if (diag.getKind().equals(Kind.ERROR) && firstError == null) {
 				firstError = diag;

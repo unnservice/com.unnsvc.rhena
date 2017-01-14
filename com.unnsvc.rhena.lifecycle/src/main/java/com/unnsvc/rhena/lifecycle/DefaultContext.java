@@ -12,6 +12,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -41,8 +42,9 @@ public class DefaultContext implements IExecutionContext {
 	 * @TODO Better separation between sources and resources?
 	 */
 	@Override
-	public void configure(IRhenaModule module, Document configuration) {
+	public void configure(ICaller caller, Document configuration) {
 
+		IRhenaModule module = caller.getModule();
 		File moduleBasedir = new File(module.getLocation().getPath());
 
 		if (configuration != null) {

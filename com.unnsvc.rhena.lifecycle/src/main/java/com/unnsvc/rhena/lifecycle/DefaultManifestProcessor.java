@@ -9,10 +9,10 @@ import java.util.jar.Manifest;
 
 import org.w3c.dom.Document;
 
+import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.model.IRhenaModule;
@@ -29,20 +29,21 @@ public class DefaultManifestProcessor implements IProcessor {
 	private static final long serialVersionUID = 1L;
 	@ProcessorContext
 	private IExecutionContext context;
-	
+
 	public DefaultManifestProcessor() {
 
 	}
 
 	@Override
-	public void configure(IRhenaModule module, Document configuration) throws RhenaException {
+	public void configure(ICaller caller, Document configuration) throws RhenaException {
 
 	}
 
 	@Override
-	public void process(IRhenaModule module, EExecutionType type, IDependencies dependencies) throws RhenaException {
+	public void process(ICaller caller, IDependencies dependencies) throws RhenaException {
 
-		File outputDirectory = new File(context.getOutputDirectory(module), type.literal().toLowerCase());
+		IRhenaModule module = caller.getModule();
+		File outputDirectory = new File(context.getOutputDirectory(module), caller.getExecutionType().literal().toLowerCase());
 		outputDirectory.mkdirs();
 
 		File metainfDirectory = new File(outputDirectory, "META-INF");

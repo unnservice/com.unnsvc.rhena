@@ -5,10 +5,10 @@ import java.io.File;
 
 import org.w3c.dom.Document;
 
+import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.lifecycle.IGenerator;
 import com.unnsvc.rhena.common.logging.ILoggerService;
@@ -32,20 +32,21 @@ public class DefaultGenerator implements IGenerator {
 	}
 
 	@Override
-	public void configure(IRhenaModule module, Document configuration) {
+	public void configure(ICaller caller, Document configuration) {
 
 	}
 
 	@Override
-	public File generate(IRhenaModule module, EExecutionType type) throws RhenaException {
+	public File generate(ICaller caller) throws RhenaException {
 
+		IRhenaModule module = caller.getModule();
 		File outputDirectory = context.getOutputDirectory(module);
 
-		String fileName = Utils.toFileName(module.getIdentifier(), type);
+		String fileName = Utils.toFileName(module.getIdentifier(), caller.getExecutionType());
 		File outputLocation = new File(outputDirectory, fileName + ".jar");
 
 		try {
-			File inputLocation = new File(outputDirectory, type.literal().toLowerCase());
+			File inputLocation = new File(outputDirectory, caller.getExecutionType().literal().toLowerCase());
 
 			JarHelper helper = new JarHelper(logger, inputLocation, outputLocation);
 			helper.packageJar();

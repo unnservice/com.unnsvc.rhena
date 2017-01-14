@@ -6,11 +6,8 @@ import org.junit.Test;
 
 import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.core.model.InMemoryEdge;
 import com.unnsvc.rhena.core.model.InMemoryModule;
 import com.unnsvc.rhena.core.resolution.InMemoryRepository;
 
@@ -33,7 +30,7 @@ public class TestInMemoryRepos extends AbstractRhenaTest {
 		repo.addModule(four);
 
 		IRhenaEngine engine = new RhenaEngine(getContext());
-		IRhenaModule module = engine.materialiseModel(new Caller(ModuleIdentifier.valueOf("test:one:0.0.1"), EExecutionType.TEST));
+		IRhenaModule module = engine.materialiseModel(ModuleIdentifier.valueOf("test:one:0.0.1"));
 		Assert.assertTrue(module instanceof InMemoryModule);
 		Assert.assertEquals(module.getIdentifier().toString(), "test:one:0.0.1");
 	}

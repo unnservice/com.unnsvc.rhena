@@ -89,7 +89,8 @@ public class CascadingModelBuilder {
 								IRhenaExecution execution = materialiseExecution(caller);
 								return execution;
 							} else {
-								ICaller internalCaller = new InternalCaller(resolvableEntryPoint);
+								IRhenaModule module = cache.getModule(resolvableEntryPoint.getTarget());
+								ICaller internalCaller = new InternalCaller(module, resolvableEntryPoint.getExecutionType());
 								IRhenaExecution execution = materialiseExecution(internalCaller);
 								return execution;
 							}
@@ -183,8 +184,7 @@ public class CascadingModelBuilder {
 
 		context.getLogger().info(getClass(), caller.getIdentifier(), "Building: " + caller.toString());
 
-		IRhenaModule module = cache.getModule(caller.getIdentifier());
-		IRhenaExecution execution = module.getRepository().materialiseExecution(cache, caller);
+		IRhenaExecution execution = caller.getModule().getRepository().materialiseExecution(cache, caller);
 
 		return execution;
 	}

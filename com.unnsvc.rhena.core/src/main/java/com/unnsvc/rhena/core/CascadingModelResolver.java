@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
@@ -43,16 +42,15 @@ public class CascadingModelResolver {
 	/**
 	 * Cascading resolver which performs cyclic checking.
 	 * 
-	 * @TODO make bolognese out of this pasta, factor out the breaks into method
-	 *       returns
+	 * @TODO make bolognese out of this pasta, factor out the break
 	 * @param entryPoint
 	 * @throws RhenaException
 	 */
-	public IRhenaModule resolveEntryPoint(ICaller caller) throws RhenaException {
+	public IRhenaModule resolveEntryPoint(IEntryPoint entryPoint) throws RhenaException {
 
 		List<IEntryPoint> processed = new ArrayList<IEntryPoint>();
 		UniqueStack<IEntryPoint> tracker = new UniqueStack<IEntryPoint>();
-		tracker.push(caller.getEntryPoint());
+		tracker.push(entryPoint);
 
 		try {
 			while (!tracker.isEmpty()) {
@@ -141,7 +139,7 @@ public class CascadingModelResolver {
 			// }
 
 		} catch (NotUniqueException nue) {
-			context.getLogger().error(getClass(), caller.getIdentifier(), "Cyclic dependency path detected:");
+			context.getLogger().error(getClass(), entryPoint.getTarget(), "Cyclic dependency path detected:");
 			boolean shift = false;
 
 			/**
@@ -155,7 +153,7 @@ public class CascadingModelResolver {
 				}
 				if (startlog) {
 					// @TODO
-					context.getLogger().error(getClass(), caller.getIdentifier(),
+					context.getLogger().error(getClass(), entryPoint.getTarget(),
 							"Cycle: " + (shift ? "↓" : "↓") + " " + materialiseModel(edge.getTarget()).getIdentifier().toTag(edge.getExecutionType()));
 					shift = !shift;
 				}
@@ -163,7 +161,7 @@ public class CascadingModelResolver {
 			throw new RhenaException(nue.getMessage(), nue);
 		}
 
-		return materialiseModel(caller.getIdentifier());
+		return materialiseModel(entryPoint.getTarget());
 	}
 
 	private void merge(IRhenaModule currentModule, IRhenaModule parentModule) {

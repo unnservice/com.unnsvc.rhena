@@ -35,9 +35,11 @@ public class RhenaEngine implements IRhenaEngine {
 	}
 
 	@Override
-	public IRhenaModule materialiseModel(ICaller caller) throws RhenaException {
+	public IRhenaModule materialiseModel(ModuleIdentifier identifier) throws RhenaException {
 
-		return cascadingResolver.resolveEntryPoint(caller);
+		// Get maximum coverage in model resolution with test
+		IEntryPoint entryPoint = new EntryPoint(EExecutionType.TEST, identifier);
+		return cascadingResolver.resolveEntryPoint(entryPoint);
 	}
 
 	@Override

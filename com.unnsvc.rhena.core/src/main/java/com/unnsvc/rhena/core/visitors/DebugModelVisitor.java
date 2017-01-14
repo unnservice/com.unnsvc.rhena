@@ -8,7 +8,6 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
-import com.unnsvc.rhena.core.InternalCaller;
 
 /**
  * Example:
@@ -31,7 +30,7 @@ public class DebugModelVisitor implements IModelVisitor {
 	private IRhenaContext config;
 	private int indents;
 	// private String prefix;
-	private IRhenaEngine context;
+	private IRhenaEngine engine;
 
 	public DebugModelVisitor(IRhenaContext config, int indents, IRhenaEngine context) {
 
@@ -43,7 +42,7 @@ public class DebugModelVisitor implements IModelVisitor {
 		this.config = config;
 		this.indents = indents;
 		// this.prefix = prefix;
-		this.context = context;
+		this.engine = context;
 	}
 
 	public String i(int indent) {
@@ -67,8 +66,8 @@ public class DebugModelVisitor implements IModelVisitor {
 
 			for (IRhenaEdge edge : module.getDependencies()) {
 
-				IRhenaModule dep = context.materialiseModel(new InternalCaller(edge.getEntryPoint()));
-				dep.visit(new DebugModelVisitor(config, indents + 1, context, edge.getEntryPoint().getExecutionType().toString()));
+				IRhenaModule dep = engine.materialiseModel(edge.getEntryPoint().getTarget());
+				dep.visit(new DebugModelVisitor(config, indents + 1, engine, edge.getEntryPoint().getExecutionType().toString()));
 			}
 
 			config.getLogger().debug(getClass(), i(indents) + "</" + module.getIdentifier() + ">");
