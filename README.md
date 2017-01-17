@@ -1,5 +1,8 @@
 Rhena Build System Automation, the flexible build system
 
+# License
+GPL General Public License Version 3
+
 # Purpose
 It has been observed that existing build systems are inadequate for building large systems. I have made many attempts in building around the existing frameworks such as maven and grade, even going as far as building an XML framework on top of grade to automate most aspects of the build, but the level of automation was not found to be sufficient in aiding in the construction of large enterprise applications.
 
