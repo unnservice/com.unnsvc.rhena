@@ -36,6 +36,41 @@ The lifecycle is executed in a classloader heirarchy which looks like this:
 | +-----------------------------------------+    |
 +------------------------------------------------+
 
+# The lifecycle
+The lifecycles are written in java so you can have lifecycles in the same project!
+
+# The module
+Modules are described in a module.xml file and will look like this (Don't worry aboout all the XML, it will have schemas):
+<?xml version="1.0" encoding="utf-8"?>
+<framework xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="urn:rhena:module" xmlns:prop="urn:rhena:properties"
+	xmlns:dependency="urn:rhena:dependency"
+	xsi:schemaLocation="urn:rhena:module http://schema.unnsvc.com/rhena/module.xsd"
+        extends="com.unnsvc:parent:0.0.1">
+
+	<meta component="com.test" version="0.0.1">
+		<lifecycle name="library">
+
+			<context module="com.test:lifecycle:0.0.1" class="com.test.lifecycle.CustomContext">
+				<resources>
+					<main path="src/main/java" />
+					<main path="src/main/resources" filter="true" />
+					<test path="src/test/java" />
+					<test path="src/test/resources" filter="true" />
+				</resources>
+			</context> 
+    
+			<processor module="com.test:lifecycle:0.0.1" class="com.test.lifecycle.CustomJavaProcessor" />
+			<generator module="com.test:lifecycle:0.0.1" class="com.test.lifecycle.CustomGenerator" />
+			<command module="com.test:lifecycle:0.0.1" class="com.test.lifecycle.CustomCommand" name="testCommand" />
+
+		</lifecycle>
+	</meta>
+
+</framework>
+
+
+
 
 # Missing features
 As this framework is under development, there are many features which are incomplete, some of them include:
