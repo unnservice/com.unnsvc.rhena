@@ -12,6 +12,7 @@ It does many other neat things and enables deep integration with the IDE, and to
 
 # Architecture description
 2 Runtimes which work in unison to produce artifacts through execution of lifecycles. You will also be able to configure Rhena to only use 1 runtime for both tasks, but this is not implemented yet.
+```
 +------------------------+
 | +--------------------+ |
 | | Model runtime      | |
@@ -22,10 +23,12 @@ It does many other neat things and enables deep integration with the IDE, and to
 | | - model execution  | |
 | +--------------------+ |
 +------------------------+
+```
 
 A lifecycle is the main building block for producing artifacts, it does so by first building a context which will mainly contain context objects available thrughout the lifecycle, and , then by executing processors which process the module by using the context as an input. Then, a generator is executed to produce the final execution output.
 A fourth type of processor can be added, a command, which executes as a final command to do anything you want it to.
 The lifecycle is executed in a classloader heirarchy which looks like this:
+```
 +------------------------------------------------+
 | +-----------------------+                      |
 | | Agent classloader     |                      |
@@ -38,12 +41,14 @@ The lifecycle is executed in a classloader heirarchy which looks like this:
 | | Processor/Generator/Command classloader +-+  |
 | +-----------------------------------------+    |
 +------------------------------------------------+
+```
 
 # The lifecycle
 The lifecycles are written in java so you can have lifecycles in the same project!
 
 # The module
 Modules are described in a module.xml file and will look like this (Don't worry aboout all the XML, it will have schemas):
+```
 <?xml version="1.0" encoding="utf-8"?>
 <framework xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="urn:rhena:module" xmlns:prop="urn:rhena:properties"
@@ -52,6 +57,10 @@ Modules are described in a module.xml file and will look like this (Don't worry 
         extends="com.unnsvc:parent:0.0.1">
 
 	<meta component="com.test" version="0.0.1">
+
+		<prop:someprop>somevalue</prop:someprop>
+		<prop:anotherprop>anothervalue</prop:anotherprop>
+
 		<lifecycle name="library">
 
 			<context module="com.test:lifecycle:0.0.1" class="com.test.lifecycle.CustomContext">
@@ -71,7 +80,7 @@ Modules are described in a module.xml file and will look like this (Don't worry 
 	</meta>
 
 </framework>
-
+```
 
 
 
