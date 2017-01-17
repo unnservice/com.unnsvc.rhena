@@ -33,7 +33,11 @@ public class Dependencies implements IDependencies {
 	@Override
 	public List<IRhenaExecution> getDependencies() {
 
-		return dependencies.get(type);
+		List<IRhenaExecution> exec = new ArrayList<IRhenaExecution>();
+		for (EExecutionType type : EExecutionType.values()) {
+			exec.addAll(dependencies.get(type));
+		}
+		return exec;
 	}
 
 	@Override
@@ -85,8 +89,10 @@ public class Dependencies implements IDependencies {
 
 		System.err.println("Dependencies for " + identifier + ":" + type);
 		for (EExecutionType et : dependencies.keySet()) {
-			for (IRhenaExecution exec : dependencies.get(et)) {
-				System.err.println("\t" + et + " " + exec);
+			if (!dependencies.get(et).isEmpty()) {
+				for (IRhenaExecution exec : dependencies.get(et)) {
+					System.err.println("\t" + et + " " + exec);
+				}
 			}
 		}
 	}
