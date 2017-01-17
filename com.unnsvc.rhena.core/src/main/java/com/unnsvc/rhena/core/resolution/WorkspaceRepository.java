@@ -68,13 +68,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 
 			URLDependencyTreeVisitor depvisitor = new URLDependencyTreeVisitor(cache, caller.getExecutionType());
 			module.visit(depvisitor);
-
-			// Dependencies deps = new Dependencies(caller.getExecutionType());
-
-			// get dependency chains of dependencies
-			// getDepchain(deps, cache, caller.getIdentifier(),
-			// caller.getExecutionType());
-
+			
 			/**
 			 * Up to, but not with, the ordinal, becauuse that's the one we will
 			 * create next by executing a lifecycle Start at 1 so we skip MODEL

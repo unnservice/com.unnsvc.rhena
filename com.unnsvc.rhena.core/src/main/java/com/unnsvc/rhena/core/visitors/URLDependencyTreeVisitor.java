@@ -39,11 +39,6 @@ public class URLDependencyTreeVisitor extends ADependencyTreeVisitor {
 	@Override
 	public void beforeEnteringEdge(IRhenaEdge enteringEdge, IRhenaModule enteringModule) {
 
-		if (!dependencies.containsKey(enteringEdge.getEntryPoint().getExecutionType())) {
-
-			dependencies.put(getType(), new ArrayList<IRhenaExecution>());
-		}
-
 		IRhenaExecution execution = getCache().getExecutions().get(enteringModule.getIdentifier()).get(getType());
 		dependencies.get(getType()).add(execution);
 	}

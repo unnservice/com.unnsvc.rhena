@@ -36,7 +36,7 @@ public abstract class ADependencyTreeVisitor implements IModelVisitor {
 		// visit dependencies
 		for (IRhenaEdge edge : module.getDependencies()) {
 
-			if (edge.getEntryPoint().getExecutionType().compareTo(edge.getEntryPoint().getExecutionType()) >= 0) {
+			if (edge.getEntryPoint().getExecutionType().compareTo(getType()) >= 0) {
 
 				IModelVisitor visitor = newVisitor(cache, edge.getEntryPoint().getExecutionType());
 				IRhenaModule entering = getModule(edge.getEntryPoint().getTarget());

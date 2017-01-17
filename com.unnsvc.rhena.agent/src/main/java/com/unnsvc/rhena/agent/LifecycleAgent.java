@@ -5,6 +5,7 @@ import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -57,11 +58,12 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 		additionalInjectableTypes.put(List.class, new ArrayList<IProcessor>());
 
 		try {
-			System.err.println("Executing  " + caller + " with " + dependencies);
-			ClassLoader previousClassloader = new ParentLastURLClassLoader(dependencies.getAsURLs(), getClass().getClassLoader());
-			for(URL url : dependencies.getAsURLs()) {
-				System.err.println("Executing context with url " + url);
-			}
+//			System.err.println("Executing  " + caller + " with " + dependencies);
+//			ClassLoader previousClassloader = new ParentLastURLClassLoader(dependencies.getAsURLs(), getClass().getClassLoader());
+			ClassLoader previousClassloader = getClass().getClassLoader();
+//			for(URL url : dependencies.getAsURLs()) {
+//				System.err.println("Executing context with url " + url);
+//			}
 			/**
 			 * Produce classloader heirarchy etc
 			 */
@@ -69,14 +71,13 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 			IExecutionContext context = constructProcessor(contextExecutable, IExecutionContext.class, previousClassloader, additionalInjectableTypes);
 			executeProcessor(caller, context, contextExecutable, dependencies);
 			additionalInjectableTypes.put(IExecutionContext.class, context);
-
 			previousClassloader = context.getClass().getClassLoader();
+			
 			for (ILifecycleProcessorExecutable processorExecutable : lifecycleExecutable.getProcessorExecutables()) {
 				IProcessor processor = constructProcessor(processorExecutable, IProcessor.class, previousClassloader, additionalInjectableTypes);
 				executeProcessor(caller, processor, processorExecutable, dependencies);
 				List<IProcessor> additional = (List<IProcessor>) additionalInjectableTypes.get(List.class);
 				additional.add(processor);
-				previousClassloader = processor.getClass().getClassLoader();
 			}
 
 			ILifecycleProcessorExecutable generatorExecutable = lifecycleExecutable.getGeneratorExecutable();
@@ -85,7 +86,6 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 
 			List<IResource> inputs = context.getResources();
 			File generatedFile = generator.generate(caller);
-			previousClassloader = generator.getClass().getClassLoader();
 
 			if (caller instanceof ICommandCaller) {
 				ICommandCaller commandCaller = (ICommandCaller) caller;
@@ -96,6 +96,7 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 						break;
 					}
 				}
+				
 				if (foundCommandExec == null) {
 					throw new RhenaException("Command not found: " + caller.toString());
 				}
@@ -141,9 +142,11 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 		ClassLoader classloader = null;
 		if (executable instanceof ICustomLifecycleProcessorExecutable) {
 			ICustomLifecycleProcessorExecutable customExecutable = (ICustomLifecycleProcessorExecutable) executable;
-			classloader = new ParentLastURLClassLoader(customExecutable.getDependencies().getAsURLs(), parentClassLoader);
+//			classloader = new ParentLastURLClassLoader(customExecutable.getDependencies().getAsURLs(), parentClassLoader);
+			classloader = new URLClassLoader(customExecutable.getDependencies().getAsURLs().toArray(new URL[0]), parentClassLoader);
 		} else {
-			classloader = new ParentLastURLClassLoader(new ArrayList<URL>(), parentClassLoader);
+//			classloader = new ParentLastURLClassLoader(new ArrayList<URL>(), parentClassLoader);
+			classloader = new URLClassLoader(new URL[0], parentClassLoader);
 		}
 
 		Class<?> type = classloader.loadClass(executable.getClazz());
@@ -151,7 +154,7 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 		Object instance = constr.newInstance();
 		performInjection(type, instance, additionalInjectableTypes);
 
-		System.err.println("Casting " + instance + " from classloader " + instance.getClass().getClassLoader() + " to interface "+marker+" from classloader " + marker.getClassLoader());
+//		System.err.println("Casting " + instance + " from classloader " + instance.getClass().getClassLoader() + " to interface "+marker+" from classloader " + marker.getClassLoader());
 		return (T) instance;
 	}
 
