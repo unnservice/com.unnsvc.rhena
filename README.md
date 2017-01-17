@@ -79,6 +79,10 @@ Modules are described in a module.xml file and will look like this (Don't worry 
 		</lifecycle>
 	</meta>
 
+	<dependency:main module="com.test:lifecycle:0.0.1" />
+	<dependency:test module="com.test:lifecycle:0.0.1" />
+	<dependency:test module="org.junit:junit:4.12" />
+
 </module>
 ```
 
@@ -87,6 +91,7 @@ Modules are described in a module.xml file and will look like this (Don't worry 
 # Missing features
 As this framework is under development, there are many features which are incomplete, some of them include:
 - Testing. This will be built as a pluggable library on top of the core framework, but support for executing commands is complete, and testing could be performed either there, or in lifecycle processors.
+- Integration with maven
 - Property substitutions on resources
 - Build projects without packaging them first
 - Remote execution of the agent on a different machine
