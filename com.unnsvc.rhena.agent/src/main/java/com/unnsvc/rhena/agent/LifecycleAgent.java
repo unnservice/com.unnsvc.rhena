@@ -57,15 +57,20 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 		additionalInjectableTypes.put(List.class, new ArrayList<IProcessor>());
 
 		try {
+			System.err.println("Executing  " + caller + " with " + dependencies);
+			ClassLoader previousClassloader = new ParentLastURLClassLoader(dependencies.getAsURLs(), getClass().getClassLoader());
+			for(URL url : dependencies.getAsURLs()) {
+				System.err.println("Executing context with url " + url);
+			}
 			/**
 			 * Produce classloader heirarchy etc
 			 */
 			ILifecycleProcessorExecutable contextExecutable = lifecycleExecutable.getContextExecutable();
-			IExecutionContext context = constructProcessor(contextExecutable, IExecutionContext.class, getClass().getClassLoader(), additionalInjectableTypes);
+			IExecutionContext context = constructProcessor(contextExecutable, IExecutionContext.class, previousClassloader, additionalInjectableTypes);
 			executeProcessor(caller, context, contextExecutable, dependencies);
 			additionalInjectableTypes.put(IExecutionContext.class, context);
 
-			ClassLoader previousClassloader = context.getClass().getClassLoader();
+			previousClassloader = context.getClass().getClassLoader();
 			for (ILifecycleProcessorExecutable processorExecutable : lifecycleExecutable.getProcessorExecutables()) {
 				IProcessor processor = constructProcessor(processorExecutable, IProcessor.class, previousClassloader, additionalInjectableTypes);
 				executeProcessor(caller, processor, processorExecutable, dependencies);
@@ -136,7 +141,7 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 		ClassLoader classloader = null;
 		if (executable instanceof ICustomLifecycleProcessorExecutable) {
 			ICustomLifecycleProcessorExecutable customExecutable = (ICustomLifecycleProcessorExecutable) executable;
-			classloader = new ParentLastURLClassLoader(customExecutable.getDependencies(), parentClassLoader);
+			classloader = new ParentLastURLClassLoader(customExecutable.getDependencies().getAsURLs(), parentClassLoader);
 		} else {
 			classloader = new ParentLastURLClassLoader(new ArrayList<URL>(), parentClassLoader);
 		}
@@ -146,6 +151,7 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 		Object instance = constr.newInstance();
 		performInjection(type, instance, additionalInjectableTypes);
 
+		System.err.println("Casting " + instance + " from classloader " + instance.getClass().getClassLoader() + " to interface "+marker+" from classloader " + marker.getClassLoader());
 		return (T) instance;
 	}
 

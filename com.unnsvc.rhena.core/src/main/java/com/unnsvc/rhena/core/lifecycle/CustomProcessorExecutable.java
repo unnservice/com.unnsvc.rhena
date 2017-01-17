@@ -8,15 +8,16 @@ import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.lifecycle.ICustomLifecycleProcessorExecutable;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleProcessorReference;
+import com.unnsvc.rhena.common.visitors.IDependencies;
 
 public class CustomProcessorExecutable extends ProcessorExecutable implements ICustomLifecycleProcessorExecutable {
 
 	private static final long serialVersionUID = 1L;
 	private String schema;
 	private Document configuration;
-	private List<URL> dependencies;
+	private IDependencies dependencies;
 
-	public CustomProcessorExecutable(ILifecycleProcessorReference processor, List<URL> dependencies) {
+	public CustomProcessorExecutable(ILifecycleProcessorReference processor, IDependencies dependencies) {
 
 		super(processor.getClazz());
 		this.schema = processor.getSchema();
@@ -37,7 +38,7 @@ public class CustomProcessorExecutable extends ProcessorExecutable implements IC
 	}
 
 	@Override
-	public List<URL> getDependencies() {
+	public IDependencies getDependencies() {
 
 		return dependencies;
 	}

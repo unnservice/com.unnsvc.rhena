@@ -1,115 +1,65 @@
 
 package com.unnsvc.rhena.core.visitors;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import com.unnsvc.rhena.common.ExecutionTypeMap;
 import com.unnsvc.rhena.common.IRhenaCache;
-import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
-import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.visitors.IDependencies;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
+import com.unnsvc.rhena.core.resolution.Dependencies;
 
-public class DependencyCollectionVisitor implements IModelVisitor {
+public class URLDependencyTreeVisitor extends ADependencyTreeVisitor {
 
-	// private Logger log = LoggerFactory.getLogger(getClass());
-	private List<IRhenaExecution> dependencies;
-	private EExecutionType executionType;
-	private IRhenaCache cache;
-	private ESelectionType traverseType;
+	private Map<EExecutionType, List<IRhenaExecution>> dependencies;
 
-	public DependencyCollectionVisitor(IRhenaCache cache, IRhenaEdge edge) {
+	public URLDependencyTreeVisitor(IRhenaCache cache, EExecutionType requestedType) {
 
-		this(cache, new ArrayList<IRhenaExecution>(), edge);
+		this(cache, requestedType, new ExecutionTypeMap());
 	}
 
-	public DependencyCollectionVisitor(IRhenaCache cache, List<IRhenaExecution> dependencies, IRhenaEdge edge) {
+	public URLDependencyTreeVisitor(IRhenaCache cache, EExecutionType requestedType, Map<EExecutionType, List<IRhenaExecution>> dependencies) {
 
-		this.cache = cache;
+		super(cache, requestedType);
 		this.dependencies = dependencies;
-		this.executionType = edge.getEntryPoint().getExecutionType();
-		this.traverseType = edge.getTraverseType();
-
-		dependencies.add(cache.getExecution(edge.getEntryPoint().getTarget()).get(executionType));
 	}
 
 	@Override
-	public void visit(IRhenaModule model) throws RhenaException {
+	protected IModelVisitor newVisitor(IRhenaCache cache, EExecutionType executionType) {
 
-		for (IRhenaEdge edge : model.getDependencies()) {
+		return new URLDependencyTreeVisitor(cache, executionType, dependencies);
+	}
 
-			if (edge.getEntryPoint().getExecutionType().equals(executionType)) {
+	@Override
+	public void beforeEnteringEdge(IRhenaEdge enteringEdge, IRhenaModule enteringModule) {
 
-				addDependency(edge);
+		if (!dependencies.containsKey(enteringEdge.getEntryPoint().getExecutionType())) {
 
-				if (traverseType.equals(ESelectionType.NONE)) {
-
-					// no-op
-				} else if (traverseType.equals(ESelectionType.COMPONENT)) {
-
-					if (model.getIdentifier().getComponentName().equals(edge.getEntryPoint().getTarget().getComponentName())) {
-						// @TODO instead of "this", create a new object with the
-						// new traverse type declared?
-						cache.getModule(edge.getEntryPoint().getTarget()).visit(this);
-						// context.materialiseModel(edge.getEntryPoint().getTarget()).visit(this);
-					}
-				} else if (traverseType.equals(ESelectionType.SCOPE)) {
-
-					cache.getModule(edge.getEntryPoint().getTarget()).visit(this);
-					// context.materialiseModel(edge.getEntryPoint().getTarget()).visit(this);
-				} else if (traverseType.equals(ESelectionType.DIRECT)) {
-
-					for (IRhenaEdge depEdge : cache.getModule(edge.getEntryPoint().getTarget()).getDependencies()) {
-
-						if (depEdge.getEntryPoint().getExecutionType().equals(executionType)) {
-
-							// dependencies.add(
-							// cache.getExecution(
-							// depEdge.getEntryPoint().getTarget()
-							// ).get(depEdge.getEntryPoint().getExecutionType())
-							// );
-
-							addDependency(depEdge);
-
-							// dependencies.add(
-							// context.materialiseExecution(
-							// context.materialiseModel(depEdge.getEntryPoint().getTarget()),
-							// depEdge.getEntryPoint().getExecutionType()
-							// )
-							// );
-						}
-					}
-				}
-			}
+			dependencies.put(getType(), new ArrayList<IRhenaExecution>());
 		}
+
+		IRhenaExecution execution = getCache().getExecutions().get(enteringModule.getIdentifier()).get(getType());
+		dependencies.get(getType()).add(execution);
 	}
 
-	private void addDependency(IRhenaEdge edge) throws RhenaException {
-		// System.out.println("Add dep on: " + edge);
+	public List<IRhenaExecution> getExecutions(EExecutionType type) {
 
-		IRhenaExecution execution = cache.getExecution(edge.getEntryPoint().getTarget()).get(edge.getEntryPoint().getExecutionType());
+		List<IRhenaExecution> depchain = dependencies.get(type);
+		if (depchain == null) {
 
-		dependencies.add(execution);
-
-		// dependencies.add(context.materialiseExecution(context.materialiseModel(edge.getEntryPoint().getTarget()),
-		// edge.getEntryPoint().getExecutionType()));
-	}
-
-	public List<IRhenaExecution> getDependencies() {
-
-		return dependencies;
-	}
-
-	public List<URL> getDependenciesURL() throws RhenaException {
-
-		List<URL> urls = new ArrayList<URL>();
-		for (IRhenaExecution re : getDependencies()) {
-			urls.add(re.getArtifact().getArtifactUrl());
+			return new ArrayList<IRhenaExecution>();
 		}
-		return urls;
+		return depchain;
+	}
+
+	public IDependencies getDependencies() {
+
+		return new Dependencies(getType(), dependencies);
 	}
 }

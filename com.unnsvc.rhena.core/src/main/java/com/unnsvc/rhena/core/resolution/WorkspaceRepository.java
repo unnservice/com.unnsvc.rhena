@@ -3,9 +3,6 @@ package com.unnsvc.rhena.core.resolution;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.IRhenaCache;
@@ -18,11 +15,11 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleProcessorReference;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.visitors.IDependencies;
 import com.unnsvc.rhena.core.execution.ArtifactDescriptor;
 import com.unnsvc.rhena.core.execution.WorkspaceExecution;
 import com.unnsvc.rhena.core.lifecycle.CommandProcessorReference;
@@ -30,8 +27,7 @@ import com.unnsvc.rhena.core.lifecycle.CustomCommandExecutable;
 import com.unnsvc.rhena.core.lifecycle.CustomProcessorExecutable;
 import com.unnsvc.rhena.core.lifecycle.LifecycleExecutable;
 import com.unnsvc.rhena.core.lifecycle.ProcessorExecutable;
-import com.unnsvc.rhena.core.visitors.Dependencies;
-import com.unnsvc.rhena.core.visitors.DependencyCollectionVisitor;
+import com.unnsvc.rhena.core.visitors.URLDependencyTreeVisitor;
 import com.unnsvc.rhena.lifecycle.DefaultContext;
 import com.unnsvc.rhena.lifecycle.DefaultGenerator;
 import com.unnsvc.rhena.lifecycle.DefaultJavaProcessor;
@@ -63,27 +59,32 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 			File moduleDescriptor = new File(workspaceDirectory, RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
 			try {
 				String sha1sum = Utils.generateSha1(moduleDescriptor);
-				IArtifactDescriptor descriptor = new ArtifactDescriptor(caller.getIdentifier().toString(), moduleDescriptor.getCanonicalFile().toURI().toURL(),
-						sha1sum);
+				IArtifactDescriptor descriptor = new ArtifactDescriptor(caller.getIdentifier().toString(), moduleDescriptor.getCanonicalFile().toURI().toURL(), sha1sum);
 				return new WorkspaceExecution(caller.getIdentifier(), caller.getExecutionType(), descriptor);
 			} catch (IOException mue) {
 				throw new RhenaException(mue.getMessage(), mue);
 			}
 		} else {
 
-			Dependencies deps = new Dependencies(caller.getExecutionType());
+			URLDependencyTreeVisitor depvisitor = new URLDependencyTreeVisitor(cache, caller.getExecutionType());
+			module.visit(depvisitor);
+
+			// Dependencies deps = new Dependencies(caller.getExecutionType());
 
 			// get dependency chains of dependencies
-			getDepchain(deps, cache, caller.getIdentifier(), caller.getExecutionType());
+			// getDepchain(deps, cache, caller.getIdentifier(),
+			// caller.getExecutionType());
 
 			/**
-			 * Up to, but not with, the ordinal, becauuse that's the one we
-			 * willimgur create next by executing a lifecycle
+			 * Up to, but not with, the ordinal, becauuse that's the one we will
+			 * create next by executing a lifecycle Start at 1 so we skip MODEL
 			 */
 			for (int i = 0; i < caller.getExecutionType().ordinal(); i++) {
+				// 0 is model
 
-				IRhenaExecution exec = cache.getExecution(caller.getIdentifier()).get(EExecutionType.values()[i]);
-				deps.addDependency(EExecutionType.values()[i], exec);
+				EExecutionType t = EExecutionType.values()[i];
+				IRhenaExecution exec = cache.getExecution(caller.getIdentifier()).get(t);
+				depvisitor.getExecutions(t).add(0, exec);
 			}
 
 			try {
@@ -102,20 +103,21 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 				} else {
 					ILifecycleReference lifecycleReference = module.getLifecycleDeclarations().get(module.getLifecycleName());
 					ILifecycleProcessorReference context = lifecycleReference.getContext();
-					lifecycleExecutable.setContextExecutable(new CustomProcessorExecutable(context, getDependencies(context.getModuleEdge())));
+					lifecycleExecutable.setContextExecutable(new CustomProcessorExecutable(context, getLifecycleDependencies(context.getModuleEdge())));
 					for (ILifecycleProcessorReference processor : lifecycleReference.getProcessors()) {
-						lifecycleExecutable.addProcessorExecutable(new CustomProcessorExecutable(processor, getDependencies(processor.getModuleEdge())));
+						lifecycleExecutable.addProcessorExecutable(new CustomProcessorExecutable(processor, getLifecycleDependencies(processor.getModuleEdge())));
 					}
 					ILifecycleProcessorReference generator = lifecycleReference.getGenerator();
-					lifecycleExecutable.setGenerator(new CustomProcessorExecutable(generator, getDependencies(generator.getModuleEdge())));
+					lifecycleExecutable.setGenerator(new CustomProcessorExecutable(generator, getLifecycleDependencies(generator.getModuleEdge())));
 					for (ILifecycleProcessorReference command : lifecycleReference.getCommands()) {
 						CommandProcessorReference commandRef = (CommandProcessorReference) command;
-						lifecycleExecutable.addCommandExecutable(new CustomCommandExecutable(commandRef, getDependencies(commandRef.getModuleEdge())));
+						lifecycleExecutable.addCommandExecutable(new CustomCommandExecutable(commandRef, getLifecycleDependencies(commandRef.getModuleEdge())));
 					}
 				}
 
+				((Dependencies) depvisitor.getDependencies()).debug(caller.getIdentifier(), caller.getExecutionType());
 				ILifecycleAgent agent = context.getLifecycleAgentManager().getLifecycleAgent();
-				ILifecycleExecutionResult generated = agent.executeLifecycle(caller, lifecycleExecutable, deps);
+				ILifecycleExecutionResult generated = agent.executeLifecycle(caller, lifecycleExecutable, depvisitor.getDependencies());
 
 				/**
 				 * Old method below
@@ -131,32 +133,16 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 		}
 	}
 
-	private List<URL> getDependencies(IRhenaEdge moduleEdge) throws RhenaException {
+	private IDependencies getLifecycleDependencies(IRhenaEdge moduleEdge) throws RhenaException {
 
-		DependencyCollectionVisitor coll = new DependencyCollectionVisitor(context.getCache(), moduleEdge);
-		List<URL> deps = new ArrayList<URL>();
-		for (IRhenaExecution exec : coll.getDependencies()) {
-			deps.add(exec.getArtifact().getArtifactUrl());
-		}
-		return coll.getDependenciesURL();
-	}
+		IRhenaCache cache = context.getCache();
+		IRhenaModule module = cache.getModule(moduleEdge.getEntryPoint().getTarget());
+		URLDependencyTreeVisitor coll = new URLDependencyTreeVisitor(cache, moduleEdge.getEntryPoint().getExecutionType());
+		module.visit(coll);
+		// include the actual lifecycle dependency too
+		IRhenaExecution selfExecution = cache.getExecution(moduleEdge.getEntryPoint().getTarget()).get(moduleEdge.getEntryPoint().getExecutionType());
+		coll.getExecutions(moduleEdge.getEntryPoint().getExecutionType()).add(0, selfExecution);
 
-	private void getDepchain(Dependencies deps, IRhenaCache cache, ModuleIdentifier identifier, EExecutionType et) throws RhenaException {
-
-		IRhenaModule module = cache.getModule(identifier);
-
-		/**
-		 * Collect dependency information
-		 */
-		for (IRhenaEdge edge : module.getDependencies()) {
-			IRhenaModule depmod = cache.getModule(identifier);
-			DependencyCollectionVisitor coll = new DependencyCollectionVisitor(cache, edge);
-			depmod.visit(coll);
-
-			for (IRhenaExecution exec : coll.getDependencies()) {
-
-				deps.addDependency(edge.getEntryPoint().getExecutionType(), exec);
-			}
-		}
+		return coll.getDependencies();
 	}
 }
