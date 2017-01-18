@@ -14,6 +14,7 @@ It does many other neat things and enables deep integration with the IDE, and to
 2 Runtimes which work in unison to produce artifacts through execution of lifecycles. You will also be able to configure Rhena to only use 1 runtime for both tasks, but this is not implemented yet.
 ```
 +------------------------+
+|    Rhena Framework     |
 | +--------------------+ |
 | | Model runtime      | |
 | | - model resolution | |

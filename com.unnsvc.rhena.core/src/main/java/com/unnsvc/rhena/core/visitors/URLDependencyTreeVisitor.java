@@ -2,8 +2,10 @@
 package com.unnsvc.rhena.core.visitors;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.unnsvc.rhena.common.ExecutionTypeMap;
 import com.unnsvc.rhena.common.IRhenaCache;
@@ -22,20 +24,20 @@ public class URLDependencyTreeVisitor extends ADependencyTreeVisitor {
 
 	public URLDependencyTreeVisitor(IRhenaCache cache, EExecutionType requestedType, ESelectionType selectionType) {
 
-		this(cache, requestedType, new ExecutionTypeMap(), selectionType);
+		this(cache, requestedType, new ExecutionTypeMap(), selectionType, new HashSet<IRhenaEdge>());
 	}
 
-	public URLDependencyTreeVisitor(IRhenaCache cache, EExecutionType requestedType, Map<EExecutionType, List<IRhenaExecution>> dependencies, ESelectionType selectionType) {
+	protected URLDependencyTreeVisitor(IRhenaCache cache, EExecutionType requestedType, Map<EExecutionType, List<IRhenaExecution>> dependencies,
+			ESelectionType selectionType, Set<IRhenaEdge> edgeTracker) {
 
-		super(cache, requestedType, selectionType);
+		super(cache, requestedType, selectionType, edgeTracker);
 		this.dependencies = dependencies;
-		System.err.println(getClass() + ": New dependency collection");
 	}
 
 	@Override
-	protected IModelVisitor newVisitor(IRhenaCache cache, EExecutionType executionType, ESelectionType selectionType) {
+	protected IModelVisitor newVisitor(IRhenaCache cache, EExecutionType executionType, ESelectionType selectionType, Set<IRhenaEdge> edgeTracker) {
 
-		return new URLDependencyTreeVisitor(cache, executionType, dependencies, selectionType);
+		return new URLDependencyTreeVisitor(cache, executionType, dependencies, selectionType, edgeTracker);
 	}
 
 	@Override
@@ -44,8 +46,6 @@ public class URLDependencyTreeVisitor extends ADependencyTreeVisitor {
 		EExecutionType type = enteringEdge.getEntryPoint().getExecutionType();
 		IRhenaExecution execution = getCache().getExecutions().get(enteringModule.getIdentifier()).get(type);
 		dependencies.get(type).add(execution);
-
-		System.err.println(getClass() + ": selected " + enteringEdge.getEntryPoint().getTarget() + ":" + enteringEdge.getEntryPoint().getExecutionType() + ":" + execution);
 	}
 
 	public List<IRhenaExecution> getExecutions(EExecutionType type) {

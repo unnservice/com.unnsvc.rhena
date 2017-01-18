@@ -1,6 +1,8 @@
 
 package com.unnsvc.rhena.core.visitors;
 
+import java.util.Set;
+
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
@@ -22,12 +24,14 @@ public abstract class ADependencyTreeVisitor implements IModelVisitor {
 	private IRhenaCache cache;
 	private EExecutionType type;
 	private ESelectionType selectionType;
+	private Set<IRhenaEdge> edgeTracker;
 
-	public ADependencyTreeVisitor(IRhenaCache cache, EExecutionType requestedType, ESelectionType selectionType) {
+	protected ADependencyTreeVisitor(IRhenaCache cache, EExecutionType requestedType, ESelectionType selectionType, Set<IRhenaEdge> edgeTracker) {
 
 		this.cache = cache;
 		this.type = requestedType;
 		this.selectionType = selectionType;
+		this.edgeTracker = edgeTracker;
 	}
 
 	@Override
@@ -38,11 +42,15 @@ public abstract class ADependencyTreeVisitor implements IModelVisitor {
 		// visit dependencies
 		for (IRhenaEdge edge : module.getDependencies()) {
 
+			if(edgeTracker.contains(edge)) {
+				continue;
+			}
+			
 			IEntryPoint entryPoint = edge.getEntryPoint();
 			if (getType().compareTo(entryPoint.getExecutionType()) >= 0) {
 				// for example, we reuqested TEST, and current is MAIN or TEST
 
-				IModelVisitor visitor = newVisitor(cache, edge.getEntryPoint().getExecutionType(), edge.getTraverseType());
+				IModelVisitor visitor = newVisitor(cache, edge.getEntryPoint().getExecutionType(), edge.getTraverseType(), edgeTracker);
 				IRhenaModule entering = getModule(edge.getEntryPoint().getTarget());
 				// Enter tree
 				if (selectionType.equals(ESelectionType.SCOPE)) {
@@ -63,6 +71,8 @@ public abstract class ADependencyTreeVisitor implements IModelVisitor {
 					// we don't enter further here
 				}
 			}
+			
+			edgeTracker.add(edge);
 		}
 	}
 
@@ -78,7 +88,7 @@ public abstract class ADependencyTreeVisitor implements IModelVisitor {
 	 * @param executionType
 	 * @return
 	 */
-	protected abstract IModelVisitor newVisitor(IRhenaCache cache, EExecutionType executionType, ESelectionType selectionType);
+	protected abstract IModelVisitor newVisitor(IRhenaCache cache, EExecutionType executionType, ESelectionType selectionType, Set<IRhenaEdge> edgeTracker);
 
 	protected abstract void selectDependency(IRhenaEdge enteringEdge, IRhenaModule enteringModule);
 
