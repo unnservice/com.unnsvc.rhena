@@ -3,7 +3,6 @@ package com.unnsvc.rhena.core.visitors;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Stack;
 
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.execution.EExecutionType;

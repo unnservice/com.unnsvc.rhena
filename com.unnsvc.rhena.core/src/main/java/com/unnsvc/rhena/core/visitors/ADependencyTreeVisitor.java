@@ -6,9 +6,9 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ESelectionType;
+import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.visitors.IDependencies;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
 /**
@@ -21,11 +21,13 @@ public abstract class ADependencyTreeVisitor implements IModelVisitor {
 
 	private IRhenaCache cache;
 	private EExecutionType type;
+	private ESelectionType selectionType;
 
-	public ADependencyTreeVisitor(IRhenaCache cache, EExecutionType requestedType) {
+	public ADependencyTreeVisitor(IRhenaCache cache, EExecutionType requestedType, ESelectionType selectionType) {
 
 		this.cache = cache;
 		this.type = requestedType;
+		this.selectionType = selectionType;
 	}
 
 	@Override
@@ -36,26 +38,28 @@ public abstract class ADependencyTreeVisitor implements IModelVisitor {
 		// visit dependencies
 		for (IRhenaEdge edge : module.getDependencies()) {
 
-			if (edge.getEntryPoint().getExecutionType().compareTo(getType()) <= 0) {
+			IEntryPoint entryPoint = edge.getEntryPoint();
+			if (getType().compareTo(entryPoint.getExecutionType()) >= 0) {
+				// for example, we reuqested TEST, and current is MAIN or TEST
 
-				IModelVisitor visitor = newVisitor(cache, edge.getEntryPoint().getExecutionType());
+				IModelVisitor visitor = newVisitor(cache, edge.getEntryPoint().getExecutionType(), edge.getTraverseType());
 				IRhenaModule entering = getModule(edge.getEntryPoint().getTarget());
 				// Enter tree
-				if (edge.getTraverseType().equals(ESelectionType.SCOPE)) {
+				if (selectionType.equals(ESelectionType.SCOPE)) {
 
-					beforeEnteringEdge(edge, entering);
+					selectDependency(edge, entering);
 					entering.visit(visitor);
 
-				} else if (edge.getTraverseType().equals(ESelectionType.COMPONENT)) {
+				} else if (selectionType.equals(ESelectionType.COMPONENT)) {
 
 					if (module.getIdentifier().getComponentName().equals(entering.getIdentifier().getComponentName())) {
 
-						beforeEnteringEdge(edge, entering);
+						selectDependency(edge, entering);
 						entering.visit(visitor);
 					}
-				} else if (edge.getTraverseType().equals(ESelectionType.DIRECT)) {
+				} else if (selectionType.equals(ESelectionType.DIRECT)) {
 
-					beforeEnteringEdge(edge, entering);
+					selectDependency(edge, entering);
 					// we don't enter further here
 				}
 			}
@@ -74,9 +78,9 @@ public abstract class ADependencyTreeVisitor implements IModelVisitor {
 	 * @param executionType
 	 * @return
 	 */
-	protected abstract IModelVisitor newVisitor(IRhenaCache cache, EExecutionType executionType);
+	protected abstract IModelVisitor newVisitor(IRhenaCache cache, EExecutionType executionType, ESelectionType selectionType);
 
-	protected abstract void beforeEnteringEdge(IRhenaEdge enteringEdge, IRhenaModule enteringModule);
+	protected abstract void selectDependency(IRhenaEdge enteringEdge, IRhenaModule enteringModule);
 
 	protected IRhenaCache getCache() {
 

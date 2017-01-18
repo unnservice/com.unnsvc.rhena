@@ -218,24 +218,15 @@ public class RhenaModuleParser {
 		String dependencyTargetModuleIdentifier = moduleChild.getAttributes().getNamedItem("module").getNodeValue();
 
 		ModuleIdentifier moduleIdentifier = ModuleIdentifier.valueOf(dependencyTargetModuleIdentifier);
-		IRhenaEdge edge = null;
+		ESelectionType traverseType = ESelectionType.SCOPE;
 
 		if (moduleChild.getAttributes().getNamedItem("traverse") != null) {
 
-			ESelectionType traverseType = ESelectionType.valueOf(moduleChild.getAttributes().getNamedItem("traverse").getNodeValue().toUpperCase());
-			edge = newEdge(module.getIdentifier(), dependencyType, moduleIdentifier, traverseType);
-		} else {
-
-			/**
-			 * Default to scope traversal for deliverables
-			 */
-			ESelectionType traverseType = ESelectionType.NONE;
-			if (dependencyType.equals(EExecutionType.MAIN)) {
-				traverseType = ESelectionType.SCOPE;
-			}
-			edge = newEdge(module.getIdentifier(), dependencyType, moduleIdentifier, traverseType);
+			traverseType = ESelectionType.valueOf(moduleChild.getAttributes().getNamedItem("traverse").getNodeValue().toUpperCase());
 		}
 
+		IRhenaEdge edge = newEdge(module.getIdentifier(), dependencyType, moduleIdentifier, traverseType);
+		
 		if (!module.getDependencies().contains(edge)) {
 			module.getDependencies().add(edge);
 		}

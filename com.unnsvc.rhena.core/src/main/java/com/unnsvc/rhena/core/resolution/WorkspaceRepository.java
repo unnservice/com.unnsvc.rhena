@@ -17,6 +17,7 @@ import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleProcessorReference;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleReference;
+import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.visitors.IDependencies;
@@ -66,7 +67,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 			}
 		} else {
 
-			URLDependencyTreeVisitor depvisitor = new URLDependencyTreeVisitor(cache, caller.getExecutionType());
+			URLDependencyTreeVisitor depvisitor = new URLDependencyTreeVisitor(cache, caller.getExecutionType(), ESelectionType.SCOPE);
 			module.visit(depvisitor);
 			
 			/**
@@ -131,7 +132,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 
 		IRhenaCache cache = context.getCache();
 		IRhenaModule module = cache.getModule(moduleEdge.getEntryPoint().getTarget());
-		URLDependencyTreeVisitor coll = new URLDependencyTreeVisitor(cache, moduleEdge.getEntryPoint().getExecutionType());
+		URLDependencyTreeVisitor coll = new URLDependencyTreeVisitor(cache, moduleEdge.getEntryPoint().getExecutionType(), moduleEdge.getTraverseType());
 		module.visit(coll);
 		// include the actual lifecycle dependency too
 		IRhenaExecution selfExecution = cache.getExecution(moduleEdge.getEntryPoint().getTarget()).get(moduleEdge.getEntryPoint().getExecutionType());

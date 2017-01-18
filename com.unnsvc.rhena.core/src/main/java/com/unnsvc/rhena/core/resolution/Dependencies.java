@@ -34,7 +34,8 @@ public class Dependencies implements IDependencies {
 	public List<IRhenaExecution> getDependencies() {
 
 		List<IRhenaExecution> exec = new ArrayList<IRhenaExecution>();
-		for (EExecutionType type : EExecutionType.values()) {
+		for (int i = 0; i <= type.ordinal(); i++) {
+			EExecutionType type = EExecutionType.values()[i];
 			exec.addAll(dependencies.get(type));
 		}
 		return exec;
@@ -68,8 +69,9 @@ public class Dependencies implements IDependencies {
 	public List<URL> getAsURLs() {
 
 		List<URL> urls = new ArrayList<URL>();
-		for (EExecutionType t : EExecutionType.values()) {
-			urls.addAll(getAsURLs(t));
+		for (int i = 0; i <= type.ordinal(); i++) {
+			EExecutionType type = EExecutionType.values()[i];
+			urls.addAll(getAsURLs(type));
 		}
 		return urls;
 	}

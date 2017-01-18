@@ -9,6 +9,7 @@ import com.unnsvc.rhena.common.ExecutionTypeMap;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
+import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.visitors.IDependencies;
@@ -19,28 +20,32 @@ public class URLDependencyTreeVisitor extends ADependencyTreeVisitor {
 
 	private Map<EExecutionType, List<IRhenaExecution>> dependencies;
 
-	public URLDependencyTreeVisitor(IRhenaCache cache, EExecutionType requestedType) {
+	public URLDependencyTreeVisitor(IRhenaCache cache, EExecutionType requestedType, ESelectionType selectionType) {
 
-		this(cache, requestedType, new ExecutionTypeMap());
+		this(cache, requestedType, new ExecutionTypeMap(), selectionType);
 	}
 
-	public URLDependencyTreeVisitor(IRhenaCache cache, EExecutionType requestedType, Map<EExecutionType, List<IRhenaExecution>> dependencies) {
+	public URLDependencyTreeVisitor(IRhenaCache cache, EExecutionType requestedType, Map<EExecutionType, List<IRhenaExecution>> dependencies, ESelectionType selectionType) {
 
-		super(cache, requestedType);
+		super(cache, requestedType, selectionType);
 		this.dependencies = dependencies;
+		System.err.println(getClass() + ": New dependency collection");
 	}
 
 	@Override
-	protected IModelVisitor newVisitor(IRhenaCache cache, EExecutionType executionType) {
+	protected IModelVisitor newVisitor(IRhenaCache cache, EExecutionType executionType, ESelectionType selectionType) {
 
-		return new URLDependencyTreeVisitor(cache, executionType, dependencies);
+		return new URLDependencyTreeVisitor(cache, executionType, dependencies, selectionType);
 	}
 
 	@Override
-	public void beforeEnteringEdge(IRhenaEdge enteringEdge, IRhenaModule enteringModule) {
+	public void selectDependency(IRhenaEdge enteringEdge, IRhenaModule enteringModule) {
 
-		IRhenaExecution execution = getCache().getExecutions().get(enteringModule.getIdentifier()).get(getType());
-		dependencies.get(getType()).add(execution);
+		EExecutionType type = enteringEdge.getEntryPoint().getExecutionType();
+		IRhenaExecution execution = getCache().getExecutions().get(enteringModule.getIdentifier()).get(type);
+		dependencies.get(type).add(execution);
+
+		System.err.println(getClass() + ": selected " + enteringEdge.getEntryPoint().getTarget() + ":" + enteringEdge.getEntryPoint().getExecutionType() + ":" + execution);
 	}
 
 	public List<IRhenaExecution> getExecutions(EExecutionType type) {
