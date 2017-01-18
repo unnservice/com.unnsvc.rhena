@@ -97,8 +97,8 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 				executeProcessor(caller, generator, generatorExecutable, dependencies);
 
 				File generatedFile = generator.generate(caller);
-				IResult result = new ArtifactResult(generatedFile.getName(),  generatedFile.toURI().toURL());
-				
+				IResult result = new ArtifactResult(generatedFile.getName(), generatedFile.toURI().toURL());
+
 				executeCommand(caller, lifecycleExecutable, previousClassloader, additionalInjectableTypes, dependencies);
 
 				return new LifecycleExecutionResult(Collections.singletonList(result), inputs);
@@ -108,10 +108,12 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 
 				List<IResult> generated = new ArrayList<IResult>();
 				for (IResource resource : inputs) {
-					File sourceDir = new File(resource.getBaseDirectory(), resource.getRelativeSourcePath()).getCanonicalFile().getAbsoluteFile();
-					File outputDir = new File(resource.getBaseDirectory(), resource.getRelativeOutputPath()).getCanonicalFile().getAbsoluteFile();
-					if(outputDir.exists()) {
-						generated.add(new ExplodedResult(outputDir.getName(), outputDir.toURI().toURL(), sourceDir.toURI().toURL()));
+					if (resource.getResourceType().equals(caller.getExecutionType())) {
+						File sourceDir = new File(resource.getBaseDirectory(), resource.getRelativeSourcePath()).getCanonicalFile().getAbsoluteFile();
+						File outputDir = new File(resource.getBaseDirectory(), resource.getRelativeOutputPath()).getCanonicalFile().getAbsoluteFile();
+						if (outputDir.exists() && outputDir.list().length > 0) {
+							generated.add(new ExplodedResult(outputDir.getName(), outputDir.toURI().toURL(), sourceDir.toURI().toURL()));
+						}
 					}
 				}
 				return new LifecycleExecutionResult(generated, inputs);
