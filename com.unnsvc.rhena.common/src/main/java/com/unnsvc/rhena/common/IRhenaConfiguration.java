@@ -13,10 +13,6 @@ public interface IRhenaConfiguration extends Serializable {
 
 	public File getRhenaHome();
 
-	public void setRunTest(boolean runTest);
-
-	public void setRunItest(boolean runItest);
-
 	public void setPackageWorkspace(boolean packageWorkspace);
 
 	public void setInstallLocal(boolean installLocal);
@@ -24,10 +20,6 @@ public interface IRhenaConfiguration extends Serializable {
 	public void setParallel(boolean parallel);
 
 	public boolean isParallel();
-
-	public boolean isRunTest();
-
-	public boolean isRunItest();
 
 	public boolean isPackageWorkspace();
 

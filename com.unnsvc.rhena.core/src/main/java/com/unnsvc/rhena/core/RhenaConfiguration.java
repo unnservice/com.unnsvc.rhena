@@ -12,8 +12,6 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 
 	private static final long serialVersionUID = 1L;
 	private File rhenaHome;
-	private boolean runTest;
-	private boolean runItest;
 	private boolean packageWorkspace;
 	private boolean installLocal;
 	private boolean parallel;
@@ -43,30 +41,6 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	public File getRhenaHome() {
 
 		return rhenaHome;
-	}
-
-	@Override
-	public void setRunTest(boolean runTest) {
-
-		this.runTest = runTest;
-	}
-
-	@Override
-	public boolean isRunTest() {
-
-		return runTest;
-	}
-
-	@Override
-	public void setRunItest(boolean runItest) {
-
-		this.runItest = runItest;
-	}
-
-	@Override
-	public boolean isRunItest() {
-
-		return runItest;
 	}
 
 	@Override

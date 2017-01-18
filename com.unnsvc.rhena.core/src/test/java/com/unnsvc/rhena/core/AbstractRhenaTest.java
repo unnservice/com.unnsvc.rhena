@@ -27,8 +27,6 @@ public abstract class AbstractRhenaTest {
 
 		IRhenaConfiguration config = new RhenaConfiguration();
 		config.setRhenaHome(new File(System.getProperty("user.home"), ".rhena"));
-		config.setRunTest(true);
-		config.setRunItest(true);
 		config.setParallel(false);
 		// Produce packages or use exploded compilation
 		config.setPackageWorkspace(true);
