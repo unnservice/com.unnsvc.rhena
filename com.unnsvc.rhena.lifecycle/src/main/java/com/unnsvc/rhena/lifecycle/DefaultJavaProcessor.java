@@ -2,6 +2,7 @@
 package com.unnsvc.rhena.lifecycle;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,12 +62,24 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 		// getClass().getName());
 		logger.fireLogEvent(ELogLevel.TRACE, getClass().getName(), module.getIdentifier(), "Executing " + getClass().getName(), null);
 
+		StringBuilder sb = new StringBuilder();
+		sb.append(System.getProperty("java.class.path")).append(File.pathSeparator);
+		for (EExecutionType alltypes : EExecutionType.values()) {
+			sb.append(dependencies.getAsClasspath(alltypes));
+			sb.append(File.pathSeparator);
+			if (alltypes == type) {
+				break;
+			}
+		}
+
 		File outputDirectory = new File(context.getOutputDirectory(module), type.literal().toLowerCase());
 		outputDirectory.mkdirs();
 
 		List<String> options = new ArrayList<String>();
 		// options.add("-cp");
 		// options.add(System.getProperty("java.class.path"));
+		options.add("-cp");
+		options.add(sb.toString());
 		options.add("-d");
 		options.add(outputDirectory.getAbsolutePath());
 
@@ -83,7 +96,7 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
 
-		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
+		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, Charset.forName("UTF-8"));
 
 		Iterable<? extends JavaFileObject> compilationUnits1 = fileManager.getJavaFileObjectsFromFiles(resources);
 		CompilationTask compilationTask = compiler.getTask(null, fileManager, diagnostics, options, null, compilationUnits1);
