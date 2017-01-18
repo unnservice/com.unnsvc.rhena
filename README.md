@@ -94,6 +94,5 @@ As this framework is under development, there are many features which are incomp
 - Testing. This will be built as a pluggable library on top of the core framework, but support for executing commands is complete, and testing could be performed either there, or in lifecycle processors.
 - Integration with maven
 - Remote resolution of artifacts
-- Build projects without packaging them first
 - Remote execution of the agent on a different machine
 - ...
