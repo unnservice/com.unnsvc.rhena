@@ -1,6 +1,4 @@
-package com.unnsvc.rhena.lifecycle.resources;
-
-import com.unnsvc.rhena.common.lifecycle.IResource;
+package com.unnsvc.rhena.common.lifecycle;
 
 public interface IFilteredResource extends IResource {
 

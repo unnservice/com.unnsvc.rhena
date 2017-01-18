@@ -19,8 +19,13 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	private boolean parallel;
 	private String agentClasspath;
 	private String profilerClasspath;
-	private List<IProcessListener> agentExitListeners;
-	private List<IProcessListener> agentStartListeners;
+
+	/**
+	 * As the configuration needs to be passed into the lifecycle agent, we
+	 * can't serialize the listeners with whatever they may implement
+	 */
+	private transient List<IProcessListener> agentExitListeners;
+	private transient List<IProcessListener> agentStartListeners;
 
 	public RhenaConfiguration() {
 

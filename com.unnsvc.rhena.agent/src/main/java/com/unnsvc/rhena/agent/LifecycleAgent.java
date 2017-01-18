@@ -19,9 +19,12 @@ import com.unnsvc.rhena.agent.lifecycle.LifecycleExecutionResult;
 import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.ICommandCaller;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
+import com.unnsvc.rhena.common.agent.ArtifactResult;
+import com.unnsvc.rhena.common.agent.ExplodedResult;
 import com.unnsvc.rhena.common.agent.ILifecycleExecutionResult;
 import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.IResult;
 import com.unnsvc.rhena.common.lifecycle.ICommand;
 import com.unnsvc.rhena.common.lifecycle.ICustomLifecycleCommandExecutable;
 import com.unnsvc.rhena.common.lifecycle.ICustomLifecycleProcessorExecutable;
@@ -94,19 +97,21 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 				executeProcessor(caller, generator, generatorExecutable, dependencies);
 
 				File generatedFile = generator.generate(caller);
-
+				IResult result = new ArtifactResult(generatedFile.getName(),  generatedFile.toURI().toURL());
+				
 				executeCommand(caller, lifecycleExecutable, previousClassloader, additionalInjectableTypes, dependencies);
 
-				return new LifecycleExecutionResult(Collections.singletonList(generatedFile), inputs);
+				return new LifecycleExecutionResult(Collections.singletonList(result), inputs);
 			} else {
 
 				executeCommand(caller, lifecycleExecutable, previousClassloader, additionalInjectableTypes, dependencies);
 
-				List<File> generated = new ArrayList<File>();
+				List<IResult> generated = new ArrayList<IResult>();
 				for (IResource resource : inputs) {
+					File sourceDir = new File(resource.getBaseDirectory(), resource.getRelativeSourcePath()).getCanonicalFile().getAbsoluteFile();
 					File outputDir = new File(resource.getBaseDirectory(), resource.getRelativeOutputPath()).getCanonicalFile().getAbsoluteFile();
 					if(outputDir.exists()) {
-						generated.add(outputDir);
+						generated.add(new ExplodedResult(outputDir.getName(), outputDir.toURI().toURL(), sourceDir.toURI().toURL()));
 					}
 				}
 				return new LifecycleExecutionResult(generated, inputs);

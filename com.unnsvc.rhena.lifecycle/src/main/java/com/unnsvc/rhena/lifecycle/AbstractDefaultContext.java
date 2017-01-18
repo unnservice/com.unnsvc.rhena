@@ -14,11 +14,11 @@ import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
+import com.unnsvc.rhena.common.lifecycle.FilteredResource;
 import com.unnsvc.rhena.common.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.lifecycle.IResource;
+import com.unnsvc.rhena.common.lifecycle.Resource;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.lifecycle.resources.FilteredResource;
-import com.unnsvc.rhena.lifecycle.resources.Resource;
 
 public abstract class AbstractDefaultContext implements IExecutionContext {
 

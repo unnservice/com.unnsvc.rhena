@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.lifecycle.resources;
+package com.unnsvc.rhena.common.lifecycle;
 
 import java.io.File;
 

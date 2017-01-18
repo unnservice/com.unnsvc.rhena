@@ -1,10 +1,9 @@
 
-package com.unnsvc.rhena.lifecycle.resources;
+package com.unnsvc.rhena.common.lifecycle;
 
 import java.io.File;
 
 import com.unnsvc.rhena.common.execution.EExecutionType;
-import com.unnsvc.rhena.common.lifecycle.IResource;
 
 public class Resource implements IResource {
 

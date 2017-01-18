@@ -21,12 +21,12 @@ import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.lifecycle.IExecutionContext;
+import com.unnsvc.rhena.common.lifecycle.IFilteredResource;
 import com.unnsvc.rhena.common.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.lifecycle.IResource;
+import com.unnsvc.rhena.common.lifecycle.Resource;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.visitors.IDependencies;
-import com.unnsvc.rhena.lifecycle.resources.IFilteredResource;
-import com.unnsvc.rhena.lifecycle.resources.Resource;
 
 /**
  * Resource filtering processor performs resource filtering and transforms
