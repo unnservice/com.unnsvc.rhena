@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.common.execution;
+package com.unnsvc.rhena.common.agent;
 
 import java.io.Serializable;
 import java.net.URL;

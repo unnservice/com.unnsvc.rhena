@@ -15,7 +15,8 @@ public class WorkspaceExecution extends AbstractExecution {
 	private static final long serialVersionUID = 1L;
 	private List<IResource> inputs;
 
-	public WorkspaceExecution(ModuleIdentifier moduleIdentifier, EExecutionType executionType, List<IArtifactDescriptor> artifacts, Calendar executionDate, List<IResource> inputs) {
+	public WorkspaceExecution(ModuleIdentifier moduleIdentifier, EExecutionType executionType, List<IArtifactDescriptor> artifacts, Calendar executionDate,
+			List<IResource> inputs) {
 
 		super(moduleIdentifier, executionType, artifacts, executionDate);
 		this.inputs = inputs;
@@ -37,4 +38,32 @@ public class WorkspaceExecution extends AbstractExecution {
 
 		return inputs;
 	}
+
+	@Override
+	public int hashCode() {
+
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((inputs == null) ? 0 : inputs.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		WorkspaceExecution other = (WorkspaceExecution) obj;
+		if (inputs == null) {
+			if (other.inputs != null)
+				return false;
+		} else if (!inputs.equals(other.inputs))
+			return false;
+		return true;
+	}
+
 }

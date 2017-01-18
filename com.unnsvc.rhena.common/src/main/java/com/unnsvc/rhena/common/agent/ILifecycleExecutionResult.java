@@ -4,7 +4,6 @@ package com.unnsvc.rhena.common.agent;
 import java.io.Serializable;
 import java.util.List;
 
-import com.unnsvc.rhena.common.execution.IResult;
 import com.unnsvc.rhena.common.lifecycle.IResource;
 
 public interface ILifecycleExecutionResult extends Serializable {

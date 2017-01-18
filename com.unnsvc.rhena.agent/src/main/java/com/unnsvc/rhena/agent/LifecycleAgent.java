@@ -22,9 +22,9 @@ import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.agent.ArtifactResult;
 import com.unnsvc.rhena.common.agent.ExplodedResult;
 import com.unnsvc.rhena.common.agent.ILifecycleExecutionResult;
+import com.unnsvc.rhena.common.agent.IResult;
 import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.IResult;
 import com.unnsvc.rhena.common.lifecycle.ICommand;
 import com.unnsvc.rhena.common.lifecycle.ICustomLifecycleCommandExecutable;
 import com.unnsvc.rhena.common.lifecycle.ICustomLifecycleProcessorExecutable;
@@ -58,8 +58,7 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 	public synchronized ILifecycleExecutionResult executeLifecycle(IRhenaConfiguration config, ICaller caller, ILifecycleExecutable lifecycleExecutable,
 			IDependencies dependencies) throws RemoteException {
 
-		Map<Class<?>, Object> additionalInjectableTypes;
-		additionalInjectableTypes = new HashMap<Class<?>, Object>();
+		Map<Class<?>, Object> additionalInjectableTypes  = new HashMap<Class<?>, Object>();
 		additionalInjectableTypes.put(List.class, new ArrayList<IProcessor>());
 
 		try {

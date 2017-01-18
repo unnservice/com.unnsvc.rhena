@@ -48,7 +48,7 @@ public class DefaultGenerator implements IGenerator {
 		Set<File> toPackage = new HashSet<File>();
 		for(IResource resource  : context.getResources()) {
 			if(resource.getResourceType().equals(caller.getExecutionType())) {
-				System.err.println("Packaging " + new File(resource.getBaseDirectory(), resource.getRelativeOutputPath()));
+//				System.err.println("Packaging " + new File(resource.getBaseDirectory(), resource.getRelativeOutputPath()));
 				toPackage.add(new File(resource.getBaseDirectory(), resource.getRelativeOutputPath()));
 			}
 		}

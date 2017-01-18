@@ -6,7 +6,7 @@ public enum EExecutionType {
 	/**
 	 * Keep it simple in a flat model without hierarchies
 	 */
-	MODEL, MAIN, TEST;
+	MODEL, MAIN, TEST, ITEST, PROTO;
 
 	EExecutionType() {
 

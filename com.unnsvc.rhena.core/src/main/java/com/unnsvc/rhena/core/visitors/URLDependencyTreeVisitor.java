@@ -45,7 +45,9 @@ public class URLDependencyTreeVisitor extends ADependencyTreeVisitor {
 
 		EExecutionType type = enteringEdge.getEntryPoint().getExecutionType();
 		IRhenaExecution execution = getCache().getExecutions().get(enteringModule.getIdentifier()).get(type);
-		dependencies.get(type).add(execution);
+		if (!dependencies.get(type).contains(execution)) {
+			dependencies.get(type).add(execution);
+		}
 	}
 
 	public List<IRhenaExecution> getExecutions(EExecutionType type) {

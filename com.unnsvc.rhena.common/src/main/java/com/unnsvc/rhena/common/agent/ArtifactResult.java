@@ -3,8 +3,6 @@ package com.unnsvc.rhena.common.agent;
 
 import java.net.URL;
 
-import com.unnsvc.rhena.common.execution.IResult;
-
 public class ArtifactResult implements IResult {
 
 	private URL resultUrl;

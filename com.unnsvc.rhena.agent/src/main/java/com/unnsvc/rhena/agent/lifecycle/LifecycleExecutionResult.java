@@ -4,7 +4,7 @@ package com.unnsvc.rhena.agent.lifecycle;
 import java.util.List;
 
 import com.unnsvc.rhena.common.agent.ILifecycleExecutionResult;
-import com.unnsvc.rhena.common.execution.IResult;
+import com.unnsvc.rhena.common.agent.IResult;
 import com.unnsvc.rhena.common.lifecycle.IResource;
 
 public class LifecycleExecutionResult implements ILifecycleExecutionResult {

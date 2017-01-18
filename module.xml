@@ -18,7 +18,7 @@
 					<test path="src/test/resources" filter="true" />
 				</resources>
 			</context>
-			
+
 			<processor module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.DefaultResourceFilteringProcessor" />
 			<processor module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.DefaultJavaProcessor" />
 			<processor module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.DefaultManifestProcessor" />
@@ -36,7 +36,7 @@
 
 	<!-- <dependency:main module="component2:module1:0.0.1" /> -->
 	<!-- <dependency:test module="component2:module1:0.0.1" traverse="scope" /> -->
-	<dependency:test module="org.junit:junit:4.12" />
+	<!-- <dependency:test module="org.junit:junit:4.12" /> -->
 
 </module>
 
