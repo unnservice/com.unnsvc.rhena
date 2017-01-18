@@ -1,9 +1,9 @@
-Rhena Build System Automation, the flexible build system
+Rhena Build System Automation, the flexible build system.
 
 # License
 GPL General Public License Version 3
 
-# Purpose
+# Rationale
 It has been observed that existing build systems are inadequate for building large systems. I have made many attempts in building around the existing frameworks such as maven and grade, even going as far as building an XML framework on top of grade to automate most aspects of the build, but the level of automation was not found to be sufficient in aiding in the construction of large enterprise applications.
 
 Rhena attempts to solve most problems you will face when dealing with 100 to 1000 projects and beyond, and do so in the most performant way by using an agent for the execution of lifecycles instead of starting new agents during the build of each module, as the other systems do. Beyond that, it allows you to have only certain modules in the workspace which may be indirectly linked to each other to enable you to only have relevant aspects of what I call a "mega model" in the workspace, the workspace which functions as a repository.
@@ -93,6 +93,7 @@ Modules are described in a module.xml file and will look like this (Don't worry 
 As this framework is under development, there are many features which are incomplete, some of them include:
 - Testing. This will be built as a pluggable library on top of the core framework, but support for executing commands is complete, and testing could be performed either there, or in lifecycle processors.
 - Integration with maven
+- Remote resolution of artifacts
 - Build projects without packaging them first
 - Remote execution of the agent on a different machine
 - ...

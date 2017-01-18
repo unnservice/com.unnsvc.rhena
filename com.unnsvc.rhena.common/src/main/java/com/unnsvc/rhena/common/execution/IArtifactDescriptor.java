@@ -10,6 +10,4 @@ public interface IArtifactDescriptor extends Serializable {
 
 	public URL getArtifactUrl();
 
-	public String getSha1();
-
 }

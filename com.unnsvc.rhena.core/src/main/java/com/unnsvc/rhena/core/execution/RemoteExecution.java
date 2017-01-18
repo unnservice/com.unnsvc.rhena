@@ -2,6 +2,7 @@
 package com.unnsvc.rhena.core.execution;
 
 import java.util.Calendar;
+import java.util.List;
 
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
@@ -14,13 +15,15 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
  */
 public class RemoteExecution extends AbstractExecution {
 
-	public RemoteExecution(ModuleIdentifier moduleIdentifier, EExecutionType executionType, IArtifactDescriptor artifact, Calendar executionDate) {
+	private static final long serialVersionUID = 1L;
 
-		super(moduleIdentifier, executionType, artifact, executionDate);
+	public RemoteExecution(ModuleIdentifier moduleIdentifier, EExecutionType executionType, List<IArtifactDescriptor> artifacts, Calendar executionDate) {
+
+		super(moduleIdentifier, executionType, artifacts, executionDate);
 	}
 
-	public RemoteExecution(ModuleIdentifier moduleIdentifier, EExecutionType executionType, IArtifactDescriptor artifact) {
+	public RemoteExecution(ModuleIdentifier moduleIdentifier, EExecutionType executionType, List<IArtifactDescriptor> artifacts) {
 
-		super(moduleIdentifier, executionType, artifact);
+		super(moduleIdentifier, executionType, artifacts);
 	}
 }

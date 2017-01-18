@@ -10,19 +10,19 @@ import com.unnsvc.rhena.common.lifecycle.IResource;
 public class LifecycleExecutionResult implements ILifecycleExecutionResult {
 
 	private static final long serialVersionUID = 1L;
-	private File generatedArtifact;
+	private List<File> generatedArtifacts;
 	private List<IResource> inputs;
 
-	public LifecycleExecutionResult(File generatedArtifact, List<IResource> inputs) {
+	public LifecycleExecutionResult(List<File> generatedArtifacts, List<IResource> inputs) {
 
-		this.generatedArtifact = generatedArtifact;
+		this.generatedArtifacts = generatedArtifacts;
 		this.inputs = inputs;
 	}
 
 	@Override
-	public File getGeneratedArtifact() {
+	public List<File> getGeneratedArtifacts() {
 
-		return generatedArtifact;
+		return generatedArtifacts;
 	}
 
 	@Override

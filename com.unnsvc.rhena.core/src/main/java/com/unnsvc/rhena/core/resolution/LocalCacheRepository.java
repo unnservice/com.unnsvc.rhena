@@ -4,6 +4,7 @@ package com.unnsvc.rhena.core.resolution;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collections;
 
 import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.IRepository;
@@ -13,10 +14,11 @@ import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
+import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.core.execution.ArtifactDescriptor;
+import com.unnsvc.rhena.core.execution.PackagedArtifactDescriptor;
 import com.unnsvc.rhena.core.execution.LocalExecution;
 import com.unnsvc.rhena.core.execution.RhenaExecutionDescriptorParser;
 import com.unnsvc.rhena.core.model.RhenaModuleParser;
@@ -61,8 +63,8 @@ public class LocalCacheRepository implements IRepository {
 
 			File moduleDescriptor = new File(moduleDirectory, RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
 			try {
-				return new LocalExecution(caller.getIdentifier(), caller.getExecutionType(), new ArtifactDescriptor(caller.getIdentifier().toString(),
-						moduleDescriptor.getCanonicalFile().toURI().toURL(), Utils.generateSha1(moduleDescriptor)));
+				IArtifactDescriptor descriptor = new PackagedArtifactDescriptor(caller.getIdentifier().toString(), moduleDescriptor.getCanonicalFile().toURI().toURL(), Utils.generateSha1(moduleDescriptor));
+				return new LocalExecution(caller.getIdentifier(), caller.getExecutionType(), Collections.singletonList(descriptor));
 			} catch (IOException mue) {
 				throw new RhenaException(mue.getMessage(), mue);
 			}

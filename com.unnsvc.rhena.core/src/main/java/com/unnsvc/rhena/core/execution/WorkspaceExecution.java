@@ -15,22 +15,21 @@ public class WorkspaceExecution extends AbstractExecution {
 	private static final long serialVersionUID = 1L;
 	private List<IResource> inputs;
 
-	public WorkspaceExecution(ModuleIdentifier moduleIdentifier, EExecutionType executionType, IArtifactDescriptor artifact, Calendar executionDate,
-			List<IResource> inputs) {
+	public WorkspaceExecution(ModuleIdentifier moduleIdentifier, EExecutionType executionType, List<IArtifactDescriptor> artifacts, Calendar executionDate, List<IResource> inputs) {
 
-		super(moduleIdentifier, executionType, artifact, executionDate);
+		super(moduleIdentifier, executionType, artifacts, executionDate);
 		this.inputs = inputs;
 	}
 
-	public WorkspaceExecution(ModuleIdentifier moduleIdentifier, EExecutionType executionType, IArtifactDescriptor artifact, List<IResource> inputs) {
+	public WorkspaceExecution(ModuleIdentifier moduleIdentifier, EExecutionType executionType, List<IArtifactDescriptor> artifacts, List<IResource> inputs) {
 
-		super(moduleIdentifier, executionType, artifact);
+		super(moduleIdentifier, executionType, artifacts);
 		this.inputs = inputs;
 	}
 
-	public WorkspaceExecution(ModuleIdentifier moduleIdentifier, EExecutionType executionType, IArtifactDescriptor artifact) {
+	public WorkspaceExecution(ModuleIdentifier moduleIdentifier, EExecutionType executionType, List<IArtifactDescriptor> artifacts) {
 
-		super(moduleIdentifier, executionType, artifact);
+		super(moduleIdentifier, executionType, artifacts);
 		this.inputs = new ArrayList<IResource>();
 	}
 

@@ -77,7 +77,7 @@ public class RhenaExecutionDescriptorParser {
 
 					URI location = new URI(baseUri.toString() + "/" + fileName).normalize();
 
-					artifacts.add(new ArtifactDescriptor(fileName, location.toURL(), sha1));
+					artifacts.add(new PackagedArtifactDescriptor(fileName, location.toURL(), sha1));
 					return;
 				}
 			}
@@ -107,7 +107,7 @@ public class RhenaExecutionDescriptorParser {
 
 	public IRhenaExecution getExecution() {
 
-		return new RemoteExecution(identifier, type, artifacts.get(0), date);
+		return new RemoteExecution(identifier, type, artifacts, date);
 	}
 
 }

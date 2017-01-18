@@ -2,6 +2,7 @@
 package com.unnsvc.rhena.core.execution;
 
 import java.util.Calendar;
+import java.util.List;
 
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
@@ -13,20 +14,20 @@ public abstract class AbstractExecution implements IRhenaExecution {
 	private static final long serialVersionUID = 1L;
 	private ModuleIdentifier moduleIdentifier;
 	private EExecutionType executionType;
-	private IArtifactDescriptor artifact;
+	private List<IArtifactDescriptor> artifacts;
 	private Calendar executionDate;
 
-	public AbstractExecution(ModuleIdentifier moduleIdentifier, EExecutionType executionType, IArtifactDescriptor artifact, Calendar executionDate) {
+	public AbstractExecution(ModuleIdentifier moduleIdentifier, EExecutionType executionType, List<IArtifactDescriptor> artifacts, Calendar executionDate) {
 
 		this.moduleIdentifier = moduleIdentifier;
 		this.executionType = executionType;
-		this.artifact = artifact;
+		this.artifacts = artifacts;
 		this.executionDate = executionDate;
 	}
 
-	public AbstractExecution(ModuleIdentifier moduleIdentifier, EExecutionType executionType, IArtifactDescriptor artifact) {
+	public AbstractExecution(ModuleIdentifier moduleIdentifier, EExecutionType executionType, List<IArtifactDescriptor> artifacts) {
 
-		this(moduleIdentifier, executionType, artifact, Calendar.getInstance());
+		this(moduleIdentifier, executionType, artifacts, Calendar.getInstance());
 	}
 
 	@Override
@@ -36,9 +37,9 @@ public abstract class AbstractExecution implements IRhenaExecution {
 	}
 
 	@Override
-	public IArtifactDescriptor getArtifact() {
+	public List<IArtifactDescriptor> getArtifacts() {
 
-		return artifact;
+		return artifacts;
 	}
 
 	@Override
@@ -58,7 +59,7 @@ public abstract class AbstractExecution implements IRhenaExecution {
 
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((artifact == null) ? 0 : artifact.hashCode());
+		result = prime * result + ((artifacts == null) ? 0 : artifacts.hashCode());
 		result = prime * result + ((executionDate == null) ? 0 : executionDate.hashCode());
 		result = prime * result + ((executionType == null) ? 0 : executionType.hashCode());
 		result = prime * result + ((moduleIdentifier == null) ? 0 : moduleIdentifier.hashCode());
@@ -74,23 +75,23 @@ public abstract class AbstractExecution implements IRhenaExecution {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		IRhenaExecution other = (IRhenaExecution) obj;
-		if (artifact == null) {
-			if (other.getArtifact() != null)
+		AbstractExecution other = (AbstractExecution) obj;
+		if (artifacts == null) {
+			if (other.artifacts != null)
 				return false;
-		} else if (!artifact.equals(other.getArtifact()))
+		} else if (!artifacts.equals(other.artifacts))
 			return false;
 		if (executionDate == null) {
-			if (other.getExecutionDate() != null)
+			if (other.executionDate != null)
 				return false;
-		} else if (!executionDate.equals(other.getExecutionDate()))
+		} else if (!executionDate.equals(other.executionDate))
 			return false;
-		if (executionType != other.getExecutionType())
+		if (executionType != other.executionType)
 			return false;
 		if (moduleIdentifier == null) {
-			if (other.getModuleIdentifier() != null)
+			if (other.moduleIdentifier != null)
 				return false;
-		} else if (!moduleIdentifier.equals(other.getModuleIdentifier()))
+		} else if (!moduleIdentifier.equals(other.moduleIdentifier))
 			return false;
 		return true;
 	}
@@ -98,7 +99,8 @@ public abstract class AbstractExecution implements IRhenaExecution {
 	@Override
 	public String toString() {
 
-		return getClass().getSimpleName() + " [moduleIdentifier=" + moduleIdentifier + ", executionType=" + executionType + ", artifact=" + artifact
-				+ ", executionDate=" + executionDate.getTime() + "]";
+		return "AbstractExecution [moduleIdentifier=" + moduleIdentifier + ", executionType=" + executionType + ", artifacts=" + artifacts + ", executionDate="
+				+ executionDate + "]";
 	}
+
 }

@@ -5,12 +5,13 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 import com.unnsvc.rhena.common.ICaller;
+import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleExecutable;
 import com.unnsvc.rhena.common.visitors.IDependencies;
 
 public interface ILifecycleAgent extends Remote {
 
-	public ILifecycleExecutionResult executeLifecycle(ICaller caller, ILifecycleExecutable lifecycleExecutable, IDependencies dependencies)
-			throws RemoteException;
+	public ILifecycleExecutionResult executeLifecycle(IRhenaConfiguration config, ICaller caller, ILifecycleExecutable lifecycleExecutable,
+			IDependencies dependencies) throws RemoteException;
 
 }

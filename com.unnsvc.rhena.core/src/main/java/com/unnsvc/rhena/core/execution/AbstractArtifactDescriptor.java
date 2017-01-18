@@ -7,21 +7,20 @@ import java.net.URL;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 
-public class ArtifactDescriptor implements IArtifactDescriptor {
+public abstract class AbstractArtifactDescriptor implements IArtifactDescriptor {
 
 	private static final long serialVersionUID = 1L;
+
 	private String name;
 	private URL artifactUrl;
-	private String sha1;
 
-	public ArtifactDescriptor(String name, URL artifactUrl, String sha1) {
+	public AbstractArtifactDescriptor(String name, URL artifactUrl) {
 
 		this.name = name;
 		this.artifactUrl = artifactUrl;
-		this.sha1 = sha1;
 	}
 
-	public ArtifactDescriptor(String name, String artifactUrl, String sha1) throws RhenaException {
+	public AbstractArtifactDescriptor(String name, String artifactUrl) throws RhenaException {
 
 		this.name = name;
 		try {
@@ -29,7 +28,6 @@ public class ArtifactDescriptor implements IArtifactDescriptor {
 		} catch (MalformedURLException mue) {
 			throw new RhenaException(mue.getMessage(), mue);
 		}
-		this.sha1 = sha1;
 	}
 
 	@Override
@@ -45,14 +43,9 @@ public class ArtifactDescriptor implements IArtifactDescriptor {
 	}
 
 	@Override
-	public String getSha1() {
-
-		return sha1;
-	}
-
-	@Override
 	public String toString() {
 
-		return "ArtifactDescriptor [name=" + name + ", artifactUrl=" + artifactUrl + ", sha1=" + sha1 + "]";
+		return "AbstractArtifactDescriptor [name=" + name + ", artifactUrl=" + artifactUrl + "]";
 	}
+
 }

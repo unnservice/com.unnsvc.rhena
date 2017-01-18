@@ -9,7 +9,7 @@ import com.unnsvc.rhena.common.lifecycle.IResource;
 
 public interface ILifecycleExecutionResult extends Serializable {
 
-	public File getGeneratedArtifact();
+	public List<File> getGeneratedArtifacts();
 
 	public List<IResource> getInputs();
 

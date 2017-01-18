@@ -31,7 +31,7 @@ public abstract class AbstractRhenaTest {
 		config.setRunItest(true);
 		config.setParallel(false);
 		// Produce packages or use exploded compilation
-		config.setPackageWorkspace(false);
+		config.setPackageWorkspace(true);
 		config.setInstallLocal(true);
 		config.setAgentClasspath(System.getProperty("java.class.path"));
 		// config.setProfilerClasspath(getProfilerClasspath("/META-INF/com.unnsvc.rhena.profiling"));

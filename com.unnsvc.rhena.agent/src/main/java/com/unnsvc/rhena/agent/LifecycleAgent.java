@@ -10,6 +10,7 @@ import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import java.util.Map;
 import com.unnsvc.rhena.agent.lifecycle.LifecycleExecutionResult;
 import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.ICommandCaller;
+import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.agent.ILifecycleExecutionResult;
 import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -50,20 +52,23 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public synchronized ILifecycleExecutionResult executeLifecycle(ICaller caller, ILifecycleExecutable lifecycleExecutable, IDependencies dependencies)
-			throws RemoteException {
+	public synchronized ILifecycleExecutionResult executeLifecycle(IRhenaConfiguration config, ICaller caller, ILifecycleExecutable lifecycleExecutable,
+			IDependencies dependencies) throws RemoteException {
 
 		Map<Class<?>, Object> additionalInjectableTypes;
 		additionalInjectableTypes = new HashMap<Class<?>, Object>();
 		additionalInjectableTypes.put(List.class, new ArrayList<IProcessor>());
 
 		try {
-//			System.err.println("Executing  " + caller + " with " + dependencies);
-//			ClassLoader previousClassloader = new ParentLastURLClassLoader(dependencies.getAsURLs(), getClass().getClassLoader());
+			// System.err.println("Executing " + caller + " with " +
+			// dependencies);
+			// ClassLoader previousClassloader = new
+			// ParentLastURLClassLoader(dependencies.getAsURLs(),
+			// getClass().getClassLoader());
 			ClassLoader previousClassloader = getClass().getClassLoader();
-//			for(URL url : dependencies.getAsURLs()) {
-//				System.err.println("Executing context with url " + url);
-//			}
+			// for(URL url : dependencies.getAsURLs()) {
+			// System.err.println("Executing context with url " + url);
+			// }
 			/**
 			 * Produce classloader heirarchy etc
 			 */
@@ -72,7 +77,7 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 			executeProcessor(caller, context, contextExecutable, dependencies);
 			additionalInjectableTypes.put(IExecutionContext.class, context);
 			previousClassloader = context.getClass().getClassLoader();
-			
+
 			for (ILifecycleProcessorExecutable processorExecutable : lifecycleExecutable.getProcessorExecutables()) {
 				IProcessor processor = constructProcessor(processorExecutable, IProcessor.class, previousClassloader, additionalInjectableTypes);
 				executeProcessor(caller, processor, processorExecutable, dependencies);
@@ -80,40 +85,61 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 				additional.add(processor);
 			}
 
-			ILifecycleProcessorExecutable generatorExecutable = lifecycleExecutable.getGeneratorExecutable();
-			IGenerator generator = constructProcessor(generatorExecutable, IGenerator.class, previousClassloader, additionalInjectableTypes);
-			executeProcessor(caller, generator, generatorExecutable, dependencies);
-
 			List<IResource> inputs = context.getResources();
-			File generatedFile = generator.generate(caller);
 
-			if (caller instanceof ICommandCaller) {
-				ICommandCaller commandCaller = (ICommandCaller) caller;
-				ICustomLifecycleCommandExecutable foundCommandExec = null;
-				for (ICustomLifecycleCommandExecutable commandExec : lifecycleExecutable.getCommandExecutables()) {
-					if (commandExec.getCommandName().equals(commandCaller.getCommand())) {
-						foundCommandExec = commandExec;
-						break;
+			if (config.isPackageWorkspace()) {
+
+				ILifecycleProcessorExecutable generatorExecutable = lifecycleExecutable.getGeneratorExecutable();
+				IGenerator generator = constructProcessor(generatorExecutable, IGenerator.class, previousClassloader, additionalInjectableTypes);
+				executeProcessor(caller, generator, generatorExecutable, dependencies);
+
+				File generatedFile = generator.generate(caller);
+
+				executeCommand(caller, lifecycleExecutable, previousClassloader, additionalInjectableTypes, dependencies);
+
+				return new LifecycleExecutionResult(Collections.singletonList(generatedFile), inputs);
+			} else {
+
+				executeCommand(caller, lifecycleExecutable, previousClassloader, additionalInjectableTypes, dependencies);
+
+				List<File> generated = new ArrayList<File>();
+				for (IResource resource : inputs) {
+					File outputDir = new File(resource.getBaseDirectory(), resource.getRelativeOutputPath()).getCanonicalFile().getAbsoluteFile();
+					if(outputDir.exists()) {
+						generated.add(outputDir);
 					}
 				}
-				
-				if (foundCommandExec == null) {
-					throw new RhenaException("Command not found: " + caller.toString());
-				}
-
-				// execute
-				ICommand command = constructProcessor(foundCommandExec, ICommand.class, previousClassloader, additionalInjectableTypes);
-				executeProcessor(caller, command, foundCommandExec, dependencies);
+				return new LifecycleExecutionResult(generated, inputs);
 			}
-
-			LifecycleExecutionResult result = new LifecycleExecutionResult(generatedFile, inputs);
-			return result;
 		} catch (Throwable ex) {
 			throw new RemoteException(ex.getMessage(), ex);
 		} finally {
 			additionalInjectableTypes.clear();
 		}
 
+	}
+
+	private void executeCommand(ICaller caller, ILifecycleExecutable lifecycleExecutable, ClassLoader previousClassloader,
+			Map<Class<?>, Object> additionalInjectableTypes, IDependencies dependencies) throws Exception {
+
+		if (caller instanceof ICommandCaller) {
+			ICommandCaller commandCaller = (ICommandCaller) caller;
+			ICustomLifecycleCommandExecutable foundCommandExec = null;
+			for (ICustomLifecycleCommandExecutable commandExec : lifecycleExecutable.getCommandExecutables()) {
+				if (commandExec.getCommandName().equals(commandCaller.getCommand())) {
+					foundCommandExec = commandExec;
+					break;
+				}
+			}
+
+			if (foundCommandExec == null) {
+				throw new RhenaException("Command not found: " + caller.toString());
+			}
+
+			// execute
+			ICommand command = constructProcessor(foundCommandExec, ICommand.class, previousClassloader, additionalInjectableTypes);
+			executeProcessor(caller, command, foundCommandExec, dependencies);
+		}
 	}
 
 	private void executeProcessor(ICaller caller, ILifecycleProcessor processor, ILifecycleProcessorExecutable executable, IDependencies dependencies)
@@ -142,10 +168,13 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 		ClassLoader classloader = null;
 		if (executable instanceof ICustomLifecycleProcessorExecutable) {
 			ICustomLifecycleProcessorExecutable customExecutable = (ICustomLifecycleProcessorExecutable) executable;
-//			classloader = new ParentLastURLClassLoader(customExecutable.getDependencies().getAsURLs(), parentClassLoader);
+			// classloader = new
+			// ParentLastURLClassLoader(customExecutable.getDependencies().getAsURLs(),
+			// parentClassLoader);
 			classloader = new URLClassLoader(customExecutable.getDependencies().getAsURLs().toArray(new URL[0]), parentClassLoader);
 		} else {
-//			classloader = new ParentLastURLClassLoader(new ArrayList<URL>(), parentClassLoader);
+			// classloader = new ParentLastURLClassLoader(new ArrayList<URL>(),
+			// parentClassLoader);
 			classloader = new URLClassLoader(new URL[0], parentClassLoader);
 		}
 
@@ -154,7 +183,9 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 		Object instance = constr.newInstance();
 		performInjection(type, instance, additionalInjectableTypes);
 
-//		System.err.println("Casting " + instance + " from classloader " + instance.getClass().getClassLoader() + " to interface "+marker+" from classloader " + marker.getClassLoader());
+		// System.err.println("Casting " + instance + " from classloader " +
+		// instance.getClass().getClassLoader() + " to interface "+marker+" from
+		// classloader " + marker.getClassLoader());
 		return (T) instance;
 	}
 

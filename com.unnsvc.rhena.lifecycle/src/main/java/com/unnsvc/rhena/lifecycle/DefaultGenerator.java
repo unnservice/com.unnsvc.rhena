@@ -67,8 +67,6 @@ public class DefaultGenerator implements IGenerator {
 			throw new RhenaException(ex.getMessage(), ex);
 		}
 
-
-
 		return outputLocation;
 	}
 }

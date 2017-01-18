@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.unnsvc.rhena.common.execution.EExecutionType;
+import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.visitors.IDependencies;
@@ -47,8 +48,10 @@ public class Dependencies implements IDependencies {
 		StringBuffer sb = new StringBuffer();
 
 		for (IRhenaExecution exec : dependencies.get(type)) {
-			sb.append(exec.getArtifact().getArtifactUrl().getPath());
-			sb.append(File.pathSeparator);
+			for (IArtifactDescriptor descriptor : exec.getArtifacts()) {
+				sb.append(descriptor.getArtifactUrl().getPath());
+				sb.append(File.pathSeparator);
+			}
 		}
 
 		return sb.toString();
@@ -59,8 +62,9 @@ public class Dependencies implements IDependencies {
 
 		List<URL> urls = new ArrayList<URL>();
 		for (IRhenaExecution exec : dependencies.get(type)) {
-
-			urls.add(exec.getArtifact().getArtifactUrl());
+			for (IArtifactDescriptor descriptor : exec.getArtifacts()) {
+				urls.add(descriptor.getArtifactUrl());
+			}
 		}
 		return urls;
 	}

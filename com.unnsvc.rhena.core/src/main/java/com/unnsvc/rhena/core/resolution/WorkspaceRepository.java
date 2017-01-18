@@ -3,6 +3,9 @@ package com.unnsvc.rhena.core.resolution;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.IRhenaCache;
@@ -21,7 +24,8 @@ import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.visitors.IDependencies;
-import com.unnsvc.rhena.core.execution.ArtifactDescriptor;
+import com.unnsvc.rhena.core.execution.ExplodedArtifactDescriptor;
+import com.unnsvc.rhena.core.execution.PackagedArtifactDescriptor;
 import com.unnsvc.rhena.core.execution.WorkspaceExecution;
 import com.unnsvc.rhena.core.lifecycle.CommandProcessorReference;
 import com.unnsvc.rhena.core.lifecycle.CustomCommandExecutable;
@@ -60,8 +64,9 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 			File moduleDescriptor = new File(workspaceDirectory, RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
 			try {
 				String sha1sum = Utils.generateSha1(moduleDescriptor);
-				IArtifactDescriptor descriptor = new ArtifactDescriptor(caller.getIdentifier().toString(), moduleDescriptor.getCanonicalFile().toURI().toURL(), sha1sum);
-				return new WorkspaceExecution(caller.getIdentifier(), caller.getExecutionType(), descriptor);
+				IArtifactDescriptor descriptor = new PackagedArtifactDescriptor(caller.getIdentifier().toString(),
+						moduleDescriptor.getCanonicalFile().toURI().toURL(), sha1sum);
+				return new WorkspaceExecution(caller.getIdentifier(), caller.getExecutionType(), Collections.singletonList(descriptor));
 			} catch (IOException mue) {
 				throw new RhenaException(mue.getMessage(), mue);
 			}
@@ -69,7 +74,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 
 			URLDependencyTreeVisitor depvisitor = new URLDependencyTreeVisitor(cache, caller.getExecutionType(), ESelectionType.SCOPE);
 			module.visit(depvisitor);
-			
+
 			/**
 			 * Up to, but not with, the ordinal, becauuse that's the one we will
 			 * create next by executing a lifecycle Start at 1 so we skip MODEL
@@ -100,10 +105,13 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 					ILifecycleProcessorReference context = lifecycleReference.getContext();
 					lifecycleExecutable.setContextExecutable(new CustomProcessorExecutable(context, getLifecycleDependencies(context.getModuleEdge())));
 					for (ILifecycleProcessorReference processor : lifecycleReference.getProcessors()) {
-						lifecycleExecutable.addProcessorExecutable(new CustomProcessorExecutable(processor, getLifecycleDependencies(processor.getModuleEdge())));
+						lifecycleExecutable
+								.addProcessorExecutable(new CustomProcessorExecutable(processor, getLifecycleDependencies(processor.getModuleEdge())));
 					}
+					
 					ILifecycleProcessorReference generator = lifecycleReference.getGenerator();
 					lifecycleExecutable.setGenerator(new CustomProcessorExecutable(generator, getLifecycleDependencies(generator.getModuleEdge())));
+
 					for (ILifecycleProcessorReference command : lifecycleReference.getCommands()) {
 						CommandProcessorReference commandRef = (CommandProcessorReference) command;
 						lifecycleExecutable.addCommandExecutable(new CustomCommandExecutable(commandRef, getLifecycleDependencies(commandRef.getModuleEdge())));
@@ -112,16 +120,27 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 
 				((Dependencies) depvisitor.getDependencies()).debug(caller.getIdentifier(), caller.getExecutionType());
 				ILifecycleAgent agent = context.getLifecycleAgentManager().getLifecycleAgent();
-				ILifecycleExecutionResult generated = agent.executeLifecycle(caller, lifecycleExecutable, depvisitor.getDependencies());
+				ILifecycleExecutionResult generated = agent.executeLifecycle(getContext().getConfig(), caller, lifecycleExecutable,
+						depvisitor.getDependencies());
 
 				/**
 				 * Old method below
 				 */
 
-				File generatedFile = generated.getGeneratedArtifact().getCanonicalFile();
-				String sha1sum = Utils.generateSha1(generatedFile);
-				IArtifactDescriptor descriptor = new ArtifactDescriptor(caller.getIdentifier().toString(), generatedFile.toURI().toURL(), sha1sum);
-				return new WorkspaceExecution(caller.getIdentifier(), caller.getExecutionType(), descriptor, generated.getInputs());
+				List<File> generatedFiles = generated.getGeneratedArtifacts();
+				List<IArtifactDescriptor> descriptors = new ArrayList<IArtifactDescriptor>();
+				for (File generatedFile : generatedFiles) {
+					if (generatedFile.isDirectory()) {
+						IArtifactDescriptor descriptor = new ExplodedArtifactDescriptor(generatedFile.getName(), generatedFile.toURI().toURL());
+						descriptors.add(descriptor);
+					} else {
+						String sha1sum = Utils.generateSha1(generatedFile);
+						IArtifactDescriptor descriptor = new PackagedArtifactDescriptor(caller.getIdentifier().toString(), generatedFile.toURI().toURL(),
+								sha1sum);
+						descriptors.add(descriptor);
+					}
+				}
+				return new WorkspaceExecution(caller.getIdentifier(), caller.getExecutionType(), descriptors, generated.getInputs());
 			} catch (IOException mue) {
 				throw new RhenaException(mue.getMessage(), mue);
 			}
