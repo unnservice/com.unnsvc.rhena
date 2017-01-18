@@ -18,7 +18,8 @@
 					<test path="src/test/resources" filter="true" />
 				</resources>
 			</context>
-
+			
+			<processor module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.DefaultResourceFilteringProcessor" />
 			<processor module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.DefaultJavaProcessor" />
 			<processor module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.DefaultManifestProcessor" />
 

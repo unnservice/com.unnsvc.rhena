@@ -2,6 +2,8 @@
 package com.unnsvc.rhena.lifecycle;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.w3c.dom.Document;
 
@@ -11,6 +13,7 @@ import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.lifecycle.IGenerator;
+import com.unnsvc.rhena.common.lifecycle.IResource;
 import com.unnsvc.rhena.common.logging.ILoggerService;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.lifecycle.helpers.JarHelper;
@@ -40,19 +43,31 @@ public class DefaultGenerator implements IGenerator {
 	public File generate(ICaller caller) throws RhenaException {
 
 		IRhenaModule module = caller.getModule();
-		File outputDirectory = context.getOutputDirectory(module);
 
+		
+		Set<File> toPackage = new HashSet<File>();
+		for(IResource resource  : context.getResources()) {
+			if(resource.getResourceType().equals(caller.getExecutionType())) {
+				System.err.println("Packaging " + new File(resource.getBaseDirectory(), resource.getRelativeOutputPath()));
+				toPackage.add(new File(resource.getBaseDirectory(), resource.getRelativeOutputPath()));
+			}
+		}
+		
+		File outputDirectory = context.getOutputDirectory(module);
+		
 		String fileName = Utils.toFileName(module.getIdentifier(), caller.getExecutionType());
 		File outputLocation = new File(outputDirectory, fileName + ".jar");
 
 		try {
-			File inputLocation = new File(outputDirectory, caller.getExecutionType().literal().toLowerCase());
+//			File inputLocation = new File(outputDirectory, caller.getExecutionType().literal().toLowerCase());
 
-			JarHelper helper = new JarHelper(logger, inputLocation, outputLocation);
+			JarHelper helper = new JarHelper(logger, toPackage, outputLocation);
 			helper.packageJar();
 		} catch (Exception ex) {
 			throw new RhenaException(ex.getMessage(), ex);
 		}
+
+
 
 		return outputLocation;
 	}

@@ -14,6 +14,8 @@ public interface IExecutionContext extends ILifecycleProcessor {
 
 	public List<IResource> getResources();
 
+	public void setResources(List<IResource> resources);
+
 	public File getOutputDirectory(IRhenaModule module);
 
 }

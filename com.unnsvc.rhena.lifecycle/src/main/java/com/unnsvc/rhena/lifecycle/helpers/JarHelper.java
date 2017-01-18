@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
@@ -16,7 +17,7 @@ import com.unnsvc.rhena.common.logging.ILoggerService;
 
 public class JarHelper {
 
-	private File basePath;
+	private Set<File> toPackages;
 	private File targetJar;
 	private ILoggerService logger;
 
@@ -28,10 +29,10 @@ public class JarHelper {
 	 * @param manifestFile
 	 *            optional, can be null
 	 */
-	public JarHelper(ILoggerService logger, File basePath, File targetJar) {
+	public JarHelper(ILoggerService logger, Set<File> toPackages, File targetJar) {
 
 		this.logger = logger;
-		this.basePath = basePath;
+		this.toPackages = toPackages;
 		this.targetJar = targetJar;
 	}
 
@@ -39,18 +40,23 @@ public class JarHelper {
 
 		Manifest manifest = null;
 		// try seeing if there's a manifest in what we're packaging
-		File manifestFile = new File(basePath, "META-INF/MANIFEST.MF");
-		if (manifestFile.exists()) {
-			try (FileInputStream manifestIs = new FileInputStream(manifestFile)) {
-				manifest = new Manifest(manifestIs);
+		for (File toPackage : toPackages) {
+			File manifestFile = new File(toPackage, "META-INF/MANIFEST.MF");
+			if (manifestFile.exists()) {
+				try (FileInputStream manifestIs = new FileInputStream(manifestFile)) {
+					manifest = new Manifest(manifestIs);
+				}
+				break;
 			}
 		}
 
 		try (FileOutputStream targetJarOs = new FileOutputStream(targetJar)) {
 			try (JarOutputStream jos = manifest == null ? new JarOutputStream(targetJarOs) : new JarOutputStream(targetJarOs, manifest)) {
-				for (File contained : basePath.getAbsoluteFile().listFiles()) {
+				for (File toPackage : toPackages) {
+					for (File contained : toPackage.getAbsoluteFile().listFiles()) {
 
-					addToJar(basePath.getAbsoluteFile(), contained, jos);
+						addToJar(toPackage.getAbsoluteFile(), contained, jos);
+					}
 				}
 			}
 		}
@@ -63,9 +69,8 @@ public class JarHelper {
 
 		if (currentPath.isDirectory()) {
 			relativePath += "/";
-//			logger.trace(getClass(), "Add to jar: " + relativePath);
-			logger.fireLogEvent(ELogLevel.TRACE, getClass().getName(), null, "Add to jar: " + relativePath, null);
-
+			// logger.trace(getClass(), "Add to jar: " + relativePath);
+//			logger.fireLogEvent(ELogLevel.TRACE, getClass().getName(), null, "Add to jar: " + relativePath, null);
 
 			JarEntry entry = new JarEntry(relativePath);
 			entry.setTime(currentPath.lastModified());
@@ -75,7 +80,7 @@ public class JarHelper {
 				addToJar(basePath, contained, output);
 			}
 		} else if (currentPath.isFile() && !relativePath.equals("META-INF/MANIFEST.MF")) {
-//			logger.trace(getClass(), "Add to jar: " + relativePath);
+			// logger.trace(getClass(), "Add to jar: " + relativePath);
 			logger.fireLogEvent(ELogLevel.TRACE, getClass().getName(), null, "Add to jar: " + relativePath, null);
 
 			JarEntry entry = new JarEntry(relativePath);

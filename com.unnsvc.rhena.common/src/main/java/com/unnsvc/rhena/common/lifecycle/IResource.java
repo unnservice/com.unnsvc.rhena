@@ -4,12 +4,16 @@ package com.unnsvc.rhena.common.lifecycle;
 import java.io.File;
 import java.io.Serializable;
 
+import com.unnsvc.rhena.common.execution.EExecutionType;
+
 public interface IResource extends Serializable {
 
-	public EResourceType getResourceType();
+	public EExecutionType getResourceType();
 
-	public String getRelativePath();
+	public File getBaseDirectory();
+	
+	public String getRelativeSourcePath();
 
-	public File getAbsolutePath();
+	public String getRelativeOutputPath();
 
 }
