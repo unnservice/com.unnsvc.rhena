@@ -3,6 +3,7 @@ package com.unnsvc.rhena.core.events;
 
 import java.util.Date;
 
+import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.listener.IContextEvent;
 import com.unnsvc.rhena.common.logging.ELogLevel;
@@ -64,16 +65,14 @@ public class LogEvent implements IContextEvent {
 	@Override
 	public String toString() {
 
-		return "LogEvent [" + getLevel().toString() + " [" + shorten(getClazz()) + "] " + message;
+		return "LogEvent " + Utils.format("%5s", getLevel().toString()) + " [" + Utils.format("%30s", shorten(30, getClazz())) + "] " + message;
 	}
 
-	private String shorten(String name) {
+	private String shorten(int len, String name) {
 
-		int width = 30;
+		if (name.length() > len) {
 
-		if (name.length() > 30) {
-
-			return new String(name.getBytes(), name.length() - width, width);
+			return new String(name.getBytes(), name.length() - len, len);
 		}
 
 		return name;

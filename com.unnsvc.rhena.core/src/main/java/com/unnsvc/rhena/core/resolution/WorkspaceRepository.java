@@ -120,7 +120,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 					}
 				}
 
-				((Dependencies) depvisitor.getDependencies()).debug(caller.getIdentifier(), caller.getExecutionType());
+				((Dependencies) depvisitor.getDependencies()).debug(getContext().getLogger(), caller.getIdentifier(), caller.getExecutionType());
 				ILifecycleAgent agent = context.getLifecycleAgentManager().getLifecycleAgent();
 				ILifecycleExecutionResult generated = agent.executeLifecycle(getContext().getConfig(), caller, lifecycleExecutable, depvisitor.getDependencies());
 

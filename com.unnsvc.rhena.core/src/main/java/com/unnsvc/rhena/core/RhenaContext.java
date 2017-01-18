@@ -55,7 +55,7 @@ public class RhenaContext implements IRhenaContext {
 	private void startupContext() throws RhenaException {
 
 		try {
-			lifecycleAgentManager = new LifecycleAgentManager(config);
+			lifecycleAgentManager = new LifecycleAgentManager(getLogger(), config);
 			lifecycleAgentManager.startup();
 			/**
 			 * @TODO export relevant objects

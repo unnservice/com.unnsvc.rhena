@@ -22,6 +22,7 @@ import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.agent.ILifecycleAgent;
 import com.unnsvc.rhena.common.agent.ILifecycleAgentManager;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.logging.ILogger;
 import com.unnsvc.rhena.common.process.IProcessListener;
 import com.unnsvc.rhena.common.process.ProcessExitTracker;
 import com.unnsvc.rhena.profiling.IClassLoaderReporting;
@@ -37,10 +38,12 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 	private int rmiRegistryPort = 0;
 	private ProcessExitTracker lifecycleAgentProcessExitTracker;
 	private IRhenaConfiguration config;
+	private ILogger logger;
 
-	public LifecycleAgentManager(IRhenaConfiguration config) throws RemoteException, RhenaException {
+	public LifecycleAgentManager(ILogger logger, IRhenaConfiguration config) throws RemoteException, RhenaException {
 
 		super();
+		this.logger = logger;
 		this.config = config;
 	}
 
@@ -125,7 +128,7 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 
 		ProcessBuilder builder = new ProcessBuilder(cmd);
 
-		System.err.println("Starting lifecycle agent: " + builder.command());
+		logger.debug(getClass(), "Starting lifecycle agent: " + builder.command());
 		// logger.info(getClass(), "Building process: " + builder.command());
 
 		lifecycleAgentProcess = builder.inheritIO().start();
@@ -150,9 +153,9 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 		 * Now obtain the remoting interface
 		 */
 		Object remoteObj = registry.lookup(ILifecycleAgent.class.getName());
-		System.err.println("Remote object is: " + remoteObj);
+		logger.debug(getClass(), "Remote object is: " + remoteObj);
 		this.lifecycleAgent = (ILifecycleAgent) registry.lookup(ILifecycleAgent.class.getName());
-		System.out.println("Retrieved lifecycle agent in child process: " + lifecycleAgent);
+		logger.debug(getClass(), "Retrieved lifecycle agent in child process: " + lifecycleAgent);
 	}
 
 	@Override

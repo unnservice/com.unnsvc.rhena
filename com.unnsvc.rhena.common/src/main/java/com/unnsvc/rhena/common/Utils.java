@@ -13,6 +13,7 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.List;
 
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
@@ -195,6 +196,7 @@ public class Utils {
 
 	/**
 	 * To file name without extension
+	 * 
 	 * @param identifier
 	 * @param type
 	 * @return
@@ -278,5 +280,13 @@ public class Utils {
 			}
 		}
 		return null;
+	}
+
+	public static String format(String format, Object... args) {
+
+		try (Formatter f = new Formatter()) {
+
+			return f.format(format, args).toString();
+		}
 	}
 }

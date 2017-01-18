@@ -11,6 +11,7 @@ import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.logging.ILogger;
 import com.unnsvc.rhena.common.visitors.IDependencies;
 
 public class Dependencies implements IDependencies {
@@ -91,13 +92,13 @@ public class Dependencies implements IDependencies {
 	 * 
 	 * @param identifier
 	 */
-	public void debug(ModuleIdentifier identifier, EExecutionType type) {
+	public void debug(ILogger logger, ModuleIdentifier identifier, EExecutionType type) {
 
-		System.err.println("Dependencies for " + identifier + ":" + type);
+		logger.trace(getClass(), "Dependencies for " + identifier + ":" + type);
 		for (EExecutionType et : dependencies.keySet()) {
 			if (!dependencies.get(et).isEmpty()) {
 				for (IRhenaExecution exec : dependencies.get(et)) {
-					System.err.println("\t" + et + " " + exec);
+					logger.trace(getClass(), "\t" + et + " " + exec);
 				}
 			}
 		}
