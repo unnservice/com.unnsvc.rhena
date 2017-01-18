@@ -1,4 +1,4 @@
-Rhena Build System Automation, the flexible build system.
+Rhena Build Automation v2.0 - megabuilds
 
 # License
 GPL General Public License Version 3
