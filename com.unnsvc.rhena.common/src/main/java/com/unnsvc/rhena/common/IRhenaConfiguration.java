@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 
+import com.unnsvc.rhena.common.config.IRhenaSettings;
 import com.unnsvc.rhena.common.process.IProcessListener;
 
 public interface IRhenaConfiguration extends Serializable {
@@ -36,4 +37,6 @@ public interface IRhenaConfiguration extends Serializable {
 	public List<IProcessListener> getAgentExitListeners();
 
 	public List<IProcessListener> getAgentStartListeners();
+
+	public IRhenaSettings getSettings();
 }

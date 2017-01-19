@@ -36,7 +36,7 @@ public abstract class AbstractLifecycleAgent extends UnicastRemoteObject impleme
 	public static void main(String... args) throws Exception {
 
 		int port = Integer.valueOf(args[0]);
-		System.err.println("Starting up agent with classpath: " + System.getProperty("java.class.path"));
+//		System.err.println("Starting up agent with classpath: " + System.getProperty("java.class.path"));
 
 		AbstractLifecycleAgent selfInstance = new LifecycleAgent();
 		selfInstance.setupRegistry(port);

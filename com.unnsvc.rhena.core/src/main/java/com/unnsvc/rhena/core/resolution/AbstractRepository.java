@@ -15,12 +15,6 @@ public abstract class AbstractRepository implements IRepository {
 		this.context = context;
 	}
 
-//	protected RhenaModule resolveModel(ModuleType moduleType, ModuleIdentifier moduleIdentifier, URI projectLocationUri) throws RhenaException {
-//
-//		RhenaModule model = new RhenaModuleParser(context, moduleType, moduleIdentifier, projectLocationUri, this).getModel();
-//		return model;
-//	}
-
 	public IRhenaEngine getContext() {
 
 		return context;

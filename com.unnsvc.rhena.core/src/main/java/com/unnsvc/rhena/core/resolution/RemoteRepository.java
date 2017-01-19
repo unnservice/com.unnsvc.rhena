@@ -1,6 +1,21 @@
 
 package com.unnsvc.rhena.core.resolution;
 
+import java.net.URI;
+
+import com.unnsvc.rhena.common.ICaller;
+import com.unnsvc.rhena.common.IRepository;
+import com.unnsvc.rhena.common.IRhenaCache;
+import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.RhenaConstants;
+import com.unnsvc.rhena.common.Utils;
+import com.unnsvc.rhena.common.config.RepositoryDefinition;
+import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.IRhenaExecution;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.core.model.RhenaModuleParser;
+
 /**
  * 
  * 
@@ -16,95 +31,160 @@ package com.unnsvc.rhena.core.resolution;
  * @author noname
  *
  */
-public class RemoteRepository  {
+public class RemoteRepository implements IRepository {
+
+	private static final long serialVersionUID = 1L;
+	private IRhenaContext context;
+	private RepositoryDefinition repoDef;
+
+	public RemoteRepository(IRhenaContext context, RepositoryDefinition repoDef) {
+
+		this.context = context;
+		this.repoDef = repoDef;
+	}
+
+	@Override
+	public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
+
+		StringBuilder moduleDescriptorPath = new StringBuilder(getModuleBase(moduleIdentifier));
+		moduleDescriptorPath.append(RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
+		URI moduleDescriptor = Utils.toUri(moduleDescriptorPath.toString());
+
+		if (Utils.exists(moduleDescriptor)) {
+
+			return new RhenaModuleParser(context, this, moduleIdentifier, moduleDescriptor).getModel();
+		} else {
+
+			return null;
+		}
+	}
+
+	@Override
+	public IRhenaExecution materialiseExecution(IRhenaCache cache, ICaller caller) throws RhenaException {
+
+		IRhenaModule module = caller.getModule();
+		StringBuilder moduleDescriptorPath = new StringBuilder(getModuleBase(module.getIdentifier()));
+
+		throw new UnsupportedOperationException("Not implemented");
+	}
+
+	private String getModuleBase(ModuleIdentifier moduleIdentifier) {
+
+		StringBuilder moduleBase = new StringBuilder();
+		moduleBase.append(repoDef.getUri().toString()).append("/");
+		moduleBase.append("main").append("/");
+		moduleBase.append(moduleIdentifier.getComponentName().toString().replaceAll("\\.", "/")).append("/");
+		moduleBase.append(moduleIdentifier.getModuleName()).append("/");
+		moduleBase.append(moduleIdentifier.getVersion()).append("/");
+		return moduleBase.toString();
+	}
+
+	@Override
+	public URI getLocation() {
+
+		return repoDef.getUri();
+	}
+}
 // extends AbstractRepository {
 //
-//	public RemoteRepository(IRhenaContext context) {
-//		
-//		super(context);
-//	}
+// public RemoteRepository(IRhenaContext context) {
 //
-//	@Override
-//	public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
+// super(context);
+// }
 //
-//		
-//		return null;
-//	}
+// @Override
+// public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier)
+// throws RhenaException {
 //
-//	@Override
-//	public IRhenaExecution materialiseExecution(IModelResolver resolver, IEntryPoint entryPoint) throws RhenaException {
 //
-//		
-//		return null;
-//	}
+// return null;
+// }
 //
-//	@Override
-//	public URI getLocation() {
+// @Override
+// public IRhenaExecution materialiseExecution(IModelResolver resolver,
+// IEntryPoint entryPoint) throws RhenaException {
 //
-//		
-//		return null;
-//	}
+//
+// return null;
+// }
+//
+// @Override
+// public URI getLocation() {
+//
+//
+// return null;
+// }
 
-//	private IRhenaLoggingHandler log;
-//	private URI location;
+// private IRhenaLoggingHandler log;
+// private URI location;
 //
-//	public RemoteRepository(IRhenaContext context, URI location) {
+// public RemoteRepository(IRhenaContext context, URI location) {
 //
-//		super(context);
-//		this.location = location.normalize();
-//		this.log = context.getLogger(getClass());
-//	}
+// super(context);
+// this.location = location.normalize();
+// this.log = context.getLogger(getClass());
+// }
 //
-//	@Override
-//	public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
+// @Override
+// public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier)
+// throws RhenaException {
 //
-//		StringBuilder moduleDescriptorPath = new StringBuilder(getModuleBase(moduleIdentifier));
-//		moduleDescriptorPath.append(RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
-//		URI moduleDescriptor = Utils.toUri(moduleDescriptorPath.toString());
+// StringBuilder moduleDescriptorPath = new
+// StringBuilder(getModuleBase(moduleIdentifier));
+// moduleDescriptorPath.append(RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
+// URI moduleDescriptor = Utils.toUri(moduleDescriptorPath.toString());
 //
-//		if (Utils.exists(moduleDescriptor)) {
+// if (Utils.exists(moduleDescriptor)) {
 //
-//			return resolveModel(ModuleType.REMOTE, moduleIdentifier, Utils.toUri(getModuleBase(moduleIdentifier)));
-//		} else {
+// return resolveModel(ModuleType.REMOTE, moduleIdentifier,
+// Utils.toUri(getModuleBase(moduleIdentifier)));
+// } else {
 //
-//			log.debug(moduleIdentifier, EExecutionType.MODEL, " was not found at: " + moduleDescriptor.toASCIIString());
-//			return null;
-//		}
-//	}
+// log.debug(moduleIdentifier, EExecutionType.MODEL, " was not found at: " +
+// moduleDescriptor.toASCIIString());
+// return null;
+// }
+// }
 //
-//	private String getModuleBase(ModuleIdentifier moduleIdentifier) {
+// private String getModuleBase(ModuleIdentifier moduleIdentifier) {
 //
-//		StringBuilder moduleBase = new StringBuilder();
-//		moduleBase.append(location.toString()).append("/");
-//		moduleBase.append(moduleIdentifier.getComponentName().toString().replaceAll("\\.", "/")).append("/");
-//		moduleBase.append(moduleIdentifier.getModuleName()).append("/");
-//		moduleBase.append(moduleIdentifier.getVersion()).append("/");
-//		return moduleBase.toString();
-//	}
+// StringBuilder moduleBase = new StringBuilder();
+// moduleBase.append(location.toString()).append("/");
+// moduleBase.append(moduleIdentifier.getComponentName().toString().replaceAll("\\.",
+// "/")).append("/");
+// moduleBase.append(moduleIdentifier.getModuleName()).append("/");
+// moduleBase.append(moduleIdentifier.getVersion()).append("/");
+// return moduleBase.toString();
+// }
 //
-//	@Override
-//	public IRhenaExecution materialiseExecution(IRhenaModule module, EExecutionType type) throws RhenaException {
+// @Override
+// public IRhenaExecution materialiseExecution(IRhenaModule module,
+// EExecutionType type) throws RhenaException {
 //
-//		StringBuilder base = new StringBuilder(getModuleBase(module.getModuleIdentifier()));
-//		base.append(type.toString().toLowerCase()).append("/");
+// StringBuilder base = new
+// StringBuilder(getModuleBase(module.getModuleIdentifier()));
+// base.append(type.toString().toLowerCase()).append("/");
 //
-//		// ------------ @TODO clean
-//		StringBuilder executionDescriptorPath = new StringBuilder(base);
-//		executionDescriptorPath.append(RhenaConstants.EXECUTION_DESCRIPTOR_FILENAME);
-//		URI executionDescriptor = Utils.toUri(executionDescriptorPath.toString());
-//		if (!Utils.exists(executionDescriptor)) {
+// // ------------ @TODO clean
+// StringBuilder executionDescriptorPath = new StringBuilder(base);
+// executionDescriptorPath.append(RhenaConstants.EXECUTION_DESCRIPTOR_FILENAME);
+// URI executionDescriptor = Utils.toUri(executionDescriptorPath.toString());
+// if (!Utils.exists(executionDescriptor)) {
 //
-//			throw new NotExistsException("Descriptor does not exist: " + executionDescriptor);
-//		}
-//		// ------------
+// throw new NotExistsException("Descriptor does not exist: " +
+// executionDescriptor);
+// }
+// // ------------
 //
-//		RhenaExecutionDescriptorParser parser = new RhenaExecutionDescriptorParser(getContext(), module.getModuleIdentifier(), type, Utils.toUri(base.toString()));
-//		IRhenaExecution execution = parser.getExecution();
+// RhenaExecutionDescriptorParser parser = new
+// RhenaExecutionDescriptorParser(getContext(), module.getModuleIdentifier(),
+// type, Utils.toUri(base.toString()));
+// IRhenaExecution execution = parser.getExecution();
 //
-//		return execution;
-//	}
+// return execution;
+// }
 //
-//	// Add a publish method which can know whether this repository is local and
-//	// can install accordingly
-
-}
+// // Add a publish method which can know whether this repository is local and
+// // can install accordingly
+//
+// }

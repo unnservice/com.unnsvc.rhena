@@ -6,7 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.unnsvc.rhena.common.IRhenaConfiguration;
+import com.unnsvc.rhena.common.config.IRhenaSettings;
+import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.process.IProcessListener;
+import com.unnsvc.rhena.core.config.RhenaSettingsParser;
 
 public class RhenaConfiguration implements IRhenaConfiguration {
 
@@ -17,6 +20,7 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	private boolean parallel;
 	private String agentClasspath;
 	private String profilerClasspath;
+	private IRhenaSettings settings;
 
 	/**
 	 * As the configuration needs to be passed into the lifecycle agent, we
@@ -25,10 +29,12 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	private transient List<IProcessListener> agentExitListeners;
 	private transient List<IProcessListener> agentStartListeners;
 
-	public RhenaConfiguration() {
+	public RhenaConfiguration() throws RhenaException {
 
 		this.agentExitListeners = new ArrayList<IProcessListener>();
 		this.agentStartListeners = new ArrayList<IProcessListener>();
+		
+		this.settings = new RhenaSettingsParser();
 	}
 
 	@Override
@@ -113,5 +119,11 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	public List<IProcessListener> getAgentStartListeners() {
 
 		return agentStartListeners;
+	}
+	
+	@Override
+	public IRhenaSettings getSettings() {
+
+		return settings;
 	}
 }

@@ -6,6 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Export-Package: com.unnsvc.rhena.common,
  com.unnsvc.rhena.common.agent,
  com.unnsvc.rhena.common.annotation,
+ com.unnsvc.rhena.common.config,
  com.unnsvc.rhena.common.exceptions,
  com.unnsvc.rhena.common.execution,
  com.unnsvc.rhena.common.identity,

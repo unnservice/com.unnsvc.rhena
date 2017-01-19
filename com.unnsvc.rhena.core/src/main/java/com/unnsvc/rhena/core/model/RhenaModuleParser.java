@@ -30,6 +30,11 @@ import com.unnsvc.rhena.core.lifecycle.CommandProcessorReference;
 import com.unnsvc.rhena.core.lifecycle.LifecycleReference;
 import com.unnsvc.rhena.core.lifecycle.ProcessorReference;
 
+/**
+ * @TODO XSD validation once the settings.xml format is established
+ * @author noname
+ *
+ */
 public class RhenaModuleParser {
 
 	private RhenaModule module;
@@ -54,8 +59,8 @@ public class RhenaModuleParser {
 
 		NodeList children = document.getChildNodes();
 		Node moduleNode = children.item(0);
-		
-		if(moduleNode.getLocalName().equals("module")) {
+
+		if (moduleNode.getLocalName().equals("module")) {
 			module.setModuleType(ERhenaModuleType.MODULE);
 		} else if (moduleNode.getLocalName().equals("framework")) {
 			module.setModuleType(ERhenaModuleType.FRAMEWORK);
@@ -119,7 +124,7 @@ public class RhenaModuleParser {
 		if (moduleChild.getAttributes().getNamedItem("lifecycle") != null) {
 
 			String lifecycleName = moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue();
-			if(lifecycleName.toLowerCase().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
+			if (lifecycleName.toLowerCase().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
 				throw new RhenaException("Invalid lifecycle name \"" + lifecycleName + "\".");
 			}
 			module.setLifecycleName(lifecycleName);
@@ -186,7 +191,7 @@ public class RhenaModuleParser {
 					ProcessorReference generator = new ProcessorReference(edge, clazzAttrStr, schemaAttrStr, config);
 					lifecycleReference.setGenerator(generator);
 				} else if (child.getLocalName().equals("command")) {
-					
+
 					String commandName = child.getAttributes().getNamedItem("name").getNodeValue();
 					CommandProcessorReference command = new CommandProcessorReference(commandName, edge, clazzAttrStr, schemaAttrStr, config);
 					lifecycleReference.addCommand(command);
@@ -226,7 +231,7 @@ public class RhenaModuleParser {
 		}
 
 		IRhenaEdge edge = newEdge(module.getIdentifier(), dependencyType, moduleIdentifier, traverseType);
-		
+
 		if (!module.getDependencies().contains(edge)) {
 			module.getDependencies().add(edge);
 		}

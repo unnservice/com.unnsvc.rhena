@@ -11,10 +11,12 @@ import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.agent.ILifecycleAgentManager;
+import com.unnsvc.rhena.common.config.RepositoryDefinition;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.logging.ILogger;
 import com.unnsvc.rhena.common.logging.ILoggerService;
 import com.unnsvc.rhena.core.logging.LogFacade;
+import com.unnsvc.rhena.core.resolution.RemoteRepository;
 
 /**
  * @TODO different locations for RHENA_HOME for windows and unix etc?
@@ -46,9 +48,20 @@ public class RhenaContext implements IRhenaContext {
 			this.additionalRepositories = new ArrayList<IRepository>();
 			this.listenerConfig = new ListenerConfiguration();
 			this.logFacade = new LogFacade(listenerConfig);
+			initialConfiguration();
 			startupContext();
 		} catch (Throwable t) {
 			throw new RhenaException(t.getMessage(), t);
+		}
+	}
+
+	/**
+	 * Fill with initial configuration from the settings
+	 */
+	private void initialConfiguration() {
+
+		for (RepositoryDefinition repoDef : config.getSettings().getRepositoryDefinitions()) {
+			addAdditionalRepository(new RemoteRepository(this, repoDef));
 		}
 	}
 

@@ -1,0 +1,7 @@
+<settings xmlns:repository="urn:rhena:settings:repository">
+        <repositories>
+                <repository:rhena name="malmo1" url="http://dev.unnsvc.com/malmo" credentials="test:test" />
+                <repository:maven name="maven1" url="http://dev.unnsvc.com/nexus" />
+        </repositories>
+</settings>
+

@@ -9,9 +9,11 @@ import org.junit.Before;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.IRhenaEngine;
+import com.unnsvc.rhena.common.config.RepositoryDefinition;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.core.logging.SystemOutLogListener;
 import com.unnsvc.rhena.core.resolution.LocalCacheRepository;
+import com.unnsvc.rhena.core.resolution.RemoteRepository;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
 import com.unnsvc.rhena.core.visitors.DebugModelVisitor;
 
@@ -43,13 +45,6 @@ public abstract class AbstractRhenaTest {
 		context.addWorkspaceRepository(new WorkspaceRepository(context, new File("src/test/resources/testrepo/")));
 		context.setLocalRepository(new LocalCacheRepository(context));
 		context.getListenerConfig().addListener(new SystemOutLogListener());
-	}
-
-	private String getProfilerClasspath() {
-
-		File base = new File("../").getAbsoluteFile();
-		File profilePath = new File(base, "/com.unnsvc.rhena.profiling/target/com.unnsvc.rhena.profiling-0.0.1-SNAPSHOT.jar");
-		return profilePath.getAbsolutePath();
 	}
 
 	// private String getProfilerClasspath(String marker) {
