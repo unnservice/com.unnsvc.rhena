@@ -72,7 +72,7 @@ public class DefaultResourceFilteringProcessor implements IProcessor {
 		File sourcePath = new File(unfiltered.getBaseDirectory(), unfiltered.getRelativeSourcePath()).getCanonicalFile();
 		File intermediaryPath = new File(unfiltered.getBaseDirectory(), unfiltered.getRelativeIntermediaryPath()).getCanonicalFile();
 		filterResources(module, sourcePath.getPath(), sourcePath, intermediaryPath);
-		return new Resource(unfiltered.getResourceType(), unfiltered.getBaseDirectory(), unfiltered.getRelativeIntermediaryPath(), unfiltered.getRelativeOutputPath());
+		return new Resource(unfiltered.getResourceType(), unfiltered.getBaseDirectory(), unfiltered.getRelativeIntermediaryPath(), unfiltered.getRelativeOutputPath(), unfiltered.getRelativeSourcePath());
 	}
 
 	private void filterResources(IRhenaModule module, String basePath, File currentPath, File intermediaryPath) throws FileNotFoundException, IOException {

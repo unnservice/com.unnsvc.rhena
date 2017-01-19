@@ -12,6 +12,7 @@ public class Resource implements IResource {
 	private File baseDir;
 	private String relativeSourcePath;
 	private String relativeOutputPath;
+	private String originalRelativeSourcePath;
 
 	public Resource(EExecutionType type, File baseDir, String relativeSourcePath, String relativeOutputPath) {
 
@@ -19,6 +20,12 @@ public class Resource implements IResource {
 		this.baseDir = baseDir;
 		this.relativeSourcePath = relativeSourcePath;
 		this.relativeOutputPath = relativeOutputPath;
+	}
+	
+	public Resource(EExecutionType type, File baseDir, String relativeSourcePath, String relativeOutputPath, String originalRelativeSourcePath) {
+
+		this(type, baseDir, relativeSourcePath, relativeOutputPath);
+		this.originalRelativeSourcePath = originalRelativeSourcePath;
 	}
 
 	@Override
@@ -43,6 +50,15 @@ public class Resource implements IResource {
 	public File getBaseDirectory() {
 
 		return baseDir;
+	}
+	
+	@Override
+	public String getOriginalRelativeSourcePath() {
+		
+		if(originalRelativeSourcePath == null) {
+			return getRelativeSourcePath();
+		}
+		return originalRelativeSourcePath;
 	}
 
 	@Override
