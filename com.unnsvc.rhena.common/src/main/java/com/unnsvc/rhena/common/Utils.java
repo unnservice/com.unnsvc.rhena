@@ -289,4 +289,16 @@ public class Utils {
 			return f.format(format, args).toString();
 		}
 	}
+
+	public static List<Node> getNodeChildren(Node node) {
+
+		List<Node> nodes = new ArrayList<Node>();
+		for (int i = 0; i < node.getChildNodes().getLength(); i++) {
+			Node child = node.getChildNodes().item(i);
+			if (child.getNodeType() == Node.ELEMENT_NODE) {
+				nodes.add(child);
+			}
+		}
+		return nodes;
+	}
 }

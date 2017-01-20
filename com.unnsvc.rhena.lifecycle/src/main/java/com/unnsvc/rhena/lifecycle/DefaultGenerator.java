@@ -56,17 +56,26 @@ public class DefaultGenerator implements IGenerator {
 		File outputDirectory = context.getOutputDirectory(module);
 		
 		String fileName = Utils.toFileName(module.getIdentifier(), caller.getExecutionType());
-		File outputLocation = new File(outputDirectory, fileName + ".jar");
+		File outputLocation = new File(outputDirectory, fileName + "." + getExtension());
 
 		try {
 //			File inputLocation = new File(outputDirectory, caller.getExecutionType().literal().toLowerCase());
 
-			JarHelper helper = new JarHelper(logger, toPackage, outputLocation);
-			helper.packageJar();
+			JarHelper packagingHelper = new JarHelper(logger, toPackage, outputLocation);
+			packagingHelper.packageJar();
 		} catch (Exception ex) {
 			throw new RhenaException(ex.getMessage(), ex);
 		}
 
 		return outputLocation;
+	}
+	
+	/**
+	 * Three letter extension
+	 * @return
+	 */
+	public String getExtension() {
+		
+		return "jar";
 	}
 }

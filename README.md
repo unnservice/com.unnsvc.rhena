@@ -1,4 +1,4 @@
-Rhena Build Automation v2.0 - megabuilds
+Rhena Build Automation v0.2 - Megabuilds
 
 # License
 GPL General Public License Version 3
@@ -87,7 +87,8 @@ Modules are described in a module.xml file and will look like this (Don't worry 
 </module>
 ```
 
-
+# Authors
+- Paul Alesius
 
 # Missing features
 As this framework is under development, there are many features which are incomplete, some of them include:
