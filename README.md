@@ -87,6 +87,10 @@ Modules are described in a module.xml file and will look like this (Don't worry 
 </module>
 ```
 
+# Related projects
+- [eRhena - Eclipse IDE integration for Rhena](https://github.com/unnservice/com.unnsvc.erhena)
+- [Malmoe - Repository manager](https://github.com/unnservice/com.unnsvc.malmoe)
+
 # Authors
 - Paul Alesius
 
