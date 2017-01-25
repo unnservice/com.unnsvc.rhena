@@ -7,10 +7,15 @@ import java.util.regex.Pattern;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 
+/**
+ * @TODO patter cannot start with - or_
+ * @author noname
+ *
+ */
 public class Identifier implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	public static final String IDENTIFIER_PATTERN = "^[a-zA-Z0-9]+(\\.[a-zA-Z0-9]+)*$";
+	public static final String IDENTIFIER_PATTERN = "^[a-zA-Z0-9\\-_]+(\\.[a-zA-Z0-9\\-_]+)*$";
 	public static final Pattern IDENTIFIER = Pattern.compile(IDENTIFIER_PATTERN);
 	private String identifier;
 

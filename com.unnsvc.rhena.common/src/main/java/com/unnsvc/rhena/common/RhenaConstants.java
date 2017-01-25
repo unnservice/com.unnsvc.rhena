@@ -25,6 +25,7 @@ public class RhenaConstants {
 	public static final String DEFAULT_OUTPUT_DIRECTORY_NAME = "target";
 	public static final Object RHENA_VERSION = "1.0";
 	public static final int DEFAULT_LIFECYCLE_AGENT_PORT = Registry.REGISTRY_PORT;
+	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
 	private static ModuleIdentifier createDefault() {
 

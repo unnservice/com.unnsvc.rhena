@@ -10,18 +10,20 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 public class Version implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	public static final String VERSION_PATTERN = "^((?<major>\\d+)(\\.(?<minor>\\d+)(\\.(?<micro>\\d+))?)?)$";
+	public static final String VERSION_PATTERN = "^((?<major>\\d+)(\\.(?<minor>\\d+)(\\.(?<micro>\\d+))?)?)(?<qualifier>[\\.\\-_].*)?$";
 	public static final Pattern VERSION = Pattern.compile(VERSION_PATTERN);
 
 	private int major;
 	private int minor;
 	private int micro;
+	private String qualifier;
 
-	private Version(int major, int minor, int micro) {
+	private Version(int major, int minor, int micro, String qualifier) {
 
 		this.major = major;
 		this.minor = minor;
 		this.micro = micro;
+		this.qualifier = qualifier;
 	}
 
 	public static Version valueOf(String versionString) throws RhenaException {
@@ -32,8 +34,9 @@ public class Version implements Serializable {
 			int major = vOrNull(matcher.group("major"));
 			int minor = vOrNull(matcher.group("minor"));
 			int micro = vOrNull(matcher.group("micro"));
+			String qualifier = matcher.group("qualifier");
 
-			return new Version(major, minor, micro);
+			return new Version(major, minor, micro, qualifier);
 		}
 
 		throw new RhenaException("Invalid version: " + versionString);
@@ -51,7 +54,7 @@ public class Version implements Serializable {
 	@Override
 	public String toString() {
 
-		return major + (minor == -1 ? "" : "." + minor + (micro == -1 ? "" : "." + micro));
+		return major + (minor == -1 ? "" : "." + minor + (micro == -1 ? "" : "." + micro) + (qualifier == null ? "" : qualifier));
 	}
 
 	@Override
@@ -62,6 +65,7 @@ public class Version implements Serializable {
 		result = prime * result + major;
 		result = prime * result + micro;
 		result = prime * result + minor;
+		result = prime * result + ((qualifier == null) ? 0 : qualifier.hashCode());
 		return result;
 	}
 
@@ -81,7 +85,11 @@ public class Version implements Serializable {
 			return false;
 		if (minor != other.minor)
 			return false;
+		if (qualifier == null) {
+			if (other.qualifier != null)
+				return false;
+		} else if (!qualifier.equals(other.qualifier))
+			return false;
 		return true;
 	}
-
 }
