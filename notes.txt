@@ -1,5 +1,0 @@
-## Ideas
-- Separate lifecycle processor into different processors for different execution types? This would be to enable different logic in for example testing where it would also execute tests.
-- Make entire framework serialisable for remote RMI execution inside Project Malmo
-- Send events on various phases of execution generation
-- context processors can have filters
