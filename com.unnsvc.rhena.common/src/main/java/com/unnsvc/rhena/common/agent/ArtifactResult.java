@@ -5,6 +5,7 @@ import java.net.URL;
 
 public class ArtifactResult implements IResult {
 
+	private static final long serialVersionUID = 1L;
 	private URL resultUrl;
 	private String name;
 

@@ -1,9 +1,6 @@
 
 package com.unnsvc.rhena.core.lifecycle;
 
-import java.net.URL;
-import java.util.List;
-
 import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.lifecycle.ICustomLifecycleProcessorExecutable;

@@ -62,8 +62,8 @@ public class RemoteRepository implements IRepository {
 	@Override
 	public IRhenaExecution materialiseExecution(IRhenaCache cache, ICaller caller) throws RhenaException {
 
-		IRhenaModule module = caller.getModule();
-		StringBuilder moduleDescriptorPath = new StringBuilder(getModuleBase(module.getIdentifier()));
+//		IRhenaModule module = caller.getModule();
+//		StringBuilder moduleDescriptorPath = new StringBuilder(getModuleBase(module.getIdentifier()));
 
 		throw new UnsupportedOperationException("Not implemented");
 	}
