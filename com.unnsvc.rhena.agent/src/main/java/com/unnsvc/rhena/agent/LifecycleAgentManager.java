@@ -18,6 +18,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.unnsvc.rhena.agent.sockets.CustomServerSocket;
+import com.unnsvc.rhena.agent.sockets.CustomSocket;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.agent.ILifecycleAgent;
 import com.unnsvc.rhena.common.agent.ILifecycleAgentManager;
@@ -60,7 +62,7 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 		 * Create registry
 		 */
 		try {
-			final ServerSocket ss = new ServerSocket(0);
+			final ServerSocket ss = new CustomServerSocket(0);
 			// ss.close();
 			rmiRegistryPort = ss.getLocalPort();
 
@@ -70,7 +72,7 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 				@Override
 				public Socket createSocket(String host, int port) throws IOException {
 
-					Socket socket = new Socket();
+					Socket socket = new CustomSocket();
 					socket.setSoTimeout(timeout);
 					socket.setSoLinger(false, 0);
 					socket.connect(new InetSocketAddress(host, port), timeout);
@@ -83,7 +85,7 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 					return ss;
 				}
 			};
-
+			
 			registry = LocateRegistry.createRegistry(rmiRegistryPort, fact, fact);
 			registry.rebind(ILifecycleAgentManager.class.getName(), (ILifecycleAgentManager) this);
 			// logger.info(getClass(), "Started registry: " + registry);
@@ -112,6 +114,12 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 
 		List<String> cmd = new ArrayList<String>();
 		cmd.add(javaExecutable);
+		
+		cmd.add("-Djava.rmi.server.logCalls=true");
+		cmd.add("-Djava.rmi.server.logLevel=FINEST");
+		cmd.add("-Dsun.rmi.transport.logLevel=FINEST");
+		cmd.add("-Dsun.rmi.transport.tcp.logLevel=FINEST");
+		cmd.add("-Dsun.io.serialization.extendedDebugInfo=true");
 		
 		// cmd.add("-Djava.rmi.server.codebase=" +
 		// createPrefixed(config.getAgentClasspath()));

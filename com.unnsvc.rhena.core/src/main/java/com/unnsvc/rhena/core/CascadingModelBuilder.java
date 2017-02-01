@@ -95,8 +95,7 @@ public class CascadingModelBuilder {
 								return execution;
 							}
 						} catch (Throwable t) {
-							context.getLogger().error(getClass(), resolvableEntryPoint.getTarget(),
-									"Exception in execution materialisation: " + t.getMessage());
+							context.getLogger().error(getClass(), resolvableEntryPoint.getTarget(), "Exception in execution materialisation: " + t.getMessage());
 							t.printStackTrace();
 							throw new RhenaException(t.getMessage(), t);
 						}

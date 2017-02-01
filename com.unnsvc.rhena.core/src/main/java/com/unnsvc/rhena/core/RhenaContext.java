@@ -43,7 +43,7 @@ public class RhenaContext implements IRhenaContext {
 
 		try {
 			this.config = config;
-			this.cache = new RhenaCache(this);
+			this.cache = new RhenaCache();
 			this.repositories = new ArrayList<IRepository>();
 			this.additionalRepositories = new ArrayList<IRepository>();
 			this.listenerConfig = new ListenerConfiguration();

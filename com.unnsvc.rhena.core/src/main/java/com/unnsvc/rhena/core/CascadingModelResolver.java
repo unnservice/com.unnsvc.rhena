@@ -66,9 +66,6 @@ public class CascadingModelResolver {
 					}
 
 					/**
-					 * @TODO evaluate impact. We don't want to merge a third
-					 *       child before a second if they both end up in the
-					 *       tracker. Can this even occur?
 					 * @TODO really shouldn't perform model merge right in the
 					 *       middle of the model resolution cascade, but
 					 *       necessary at present to make this work.
@@ -112,16 +109,6 @@ public class CascadingModelResolver {
 								break edgeProcessing;
 							}
 						}
-						// if
-						// (currentEntryPoint.getExecutionType().canTraverse(dependency.getEntryPoint().getExecutionType()))
-						// {
-						//
-						// if (!processed.contains(dependency.getEntryPoint()))
-						// {
-						// tracker.pushUnique(dependency.getEntryPoint());
-						// break edgeProcessing;
-						// }
-						// }
 					}
 
 					/**

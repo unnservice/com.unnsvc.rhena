@@ -14,7 +14,6 @@ import com.unnsvc.rhena.core.model.RhenaModuleParser;
 
 public abstract class AbstractWorkspaceRepository implements IRepository {
 
-	private static final long serialVersionUID = 1L;
 	protected IRhenaContext context;
 	private File location;
 
