@@ -1,14 +1,13 @@
 
 package com.unnsvc.rhena.common;
 
-import java.io.Serializable;
 import java.util.List;
 
 import com.unnsvc.rhena.common.agent.ILifecycleAgentManager;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.logging.ILogger;
 
-public interface IRhenaContext extends AutoCloseable, Serializable {
+public interface IRhenaContext extends AutoCloseable {
 
 	public IRhenaConfiguration getConfig();
 

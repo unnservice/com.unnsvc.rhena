@@ -25,7 +25,6 @@ import com.unnsvc.rhena.core.resolution.RemoteRepository;
  */
 public class RhenaContext implements IRhenaContext {
 
-	private static final long serialVersionUID = 1L;
 	private IRhenaConfiguration config;
 	private IRhenaCache cache;
 	private List<IRepository> repositories;

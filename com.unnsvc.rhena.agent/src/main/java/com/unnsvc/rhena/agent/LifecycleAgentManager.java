@@ -18,8 +18,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.unnsvc.rhena.agent.sockets.CustomServerSocket;
-import com.unnsvc.rhena.agent.sockets.CustomSocket;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.agent.ILifecycleAgent;
 import com.unnsvc.rhena.common.agent.ILifecycleAgentManager;
@@ -62,7 +60,7 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 		 * Create registry
 		 */
 		try {
-			final ServerSocket ss = new CustomServerSocket(0);
+			final ServerSocket ss = new ServerSocket(0);
 			// ss.close();
 			rmiRegistryPort = ss.getLocalPort();
 
@@ -72,7 +70,7 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 				@Override
 				public Socket createSocket(String host, int port) throws IOException {
 
-					Socket socket = new CustomSocket();
+					Socket socket = new Socket();
 					socket.setSoTimeout(timeout);
 					socket.setSoLinger(false, 0);
 					socket.connect(new InetSocketAddress(host, port), timeout);
