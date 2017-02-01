@@ -136,7 +136,7 @@ public class RhenaModuleParser {
 		if (!module.getIdentifier().getComponentName().toString().equals(componentNameStr)) {
 			throw new RhenaException("Component mismatch between: " + module.getIdentifier().getComponentName() + " and declared: " + componentNameStr);
 		} else if (!module.getIdentifier().getVersion().toString().equals(versionStr)) {
-			throw new RhenaException("Version mismatch between: " + module.getIdentifier().getVersion() + " and declared: " + versionStr);
+			throw new RhenaException("Version mismatch on requested module: " + module.getIdentifier().toString() + " and declared version: " + versionStr);
 		}
 
 		NodeList metaNodeChildren = moduleChild.getChildNodes();

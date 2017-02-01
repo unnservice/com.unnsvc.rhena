@@ -9,12 +9,6 @@
 
 	</meta>
 
-	<!-- when declaring a dependency on another module, what we're actually saying is we are requesting the execution of this type from module -->
-	<!-- <dependency:deliverable module="component2:module1:0.0.1" /> -->
-	<!-- <dependency:test module="component2:module1:0.0.1" traverse="scope" /> -->
-
-	<dependency:main module="com.unnsvc.rhena:common:1.0.0" />
-
 </module>
 
 
