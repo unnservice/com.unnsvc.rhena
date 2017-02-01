@@ -1,4 +1,8 @@
-Rhena Build Automation v0.2 - Megabuilds
+```
+This project is under active development and has not reached version 1.0
+```
+
+Rhena Build Automation - Megabuilds
 
 # License
 GPL General Public License Version 3
@@ -49,7 +53,7 @@ The lifecycles are written in java so you can have lifecycles in the same projec
 
 # The module
 Modules are described in a module.xml file and will look like this (Don't worry aboout all the XML, it will have schemas):
-```
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="urn:rhena:module" xmlns:prop="urn:rhena:properties"
