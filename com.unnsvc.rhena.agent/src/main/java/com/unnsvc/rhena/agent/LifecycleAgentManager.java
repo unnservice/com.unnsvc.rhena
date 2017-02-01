@@ -113,11 +113,11 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 		List<String> cmd = new ArrayList<String>();
 		cmd.add(javaExecutable);
 		
-		cmd.add("-Djava.rmi.server.logCalls=true");
-		cmd.add("-Djava.rmi.server.logLevel=FINEST");
-		cmd.add("-Dsun.rmi.transport.logLevel=FINEST");
-		cmd.add("-Dsun.rmi.transport.tcp.logLevel=FINEST");
-		cmd.add("-Dsun.io.serialization.extendedDebugInfo=true");
+//		cmd.add("-Djava.rmi.server.logCalls=true");
+//		cmd.add("-Djava.rmi.server.logLevel=FINEST");
+//		cmd.add("-Dsun.rmi.transport.logLevel=FINEST");
+//		cmd.add("-Dsun.rmi.transport.tcp.logLevel=FINEST");
+//		cmd.add("-Dsun.io.serialization.extendedDebugInfo=true");
 		
 		// cmd.add("-Djava.rmi.server.codebase=" +
 		// createPrefixed(config.getAgentClasspath()));
