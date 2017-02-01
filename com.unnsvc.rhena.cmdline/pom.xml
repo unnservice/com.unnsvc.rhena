@@ -21,6 +21,20 @@
 		</dependency>
 		<dependency>
 			<groupId>com.unnsvc.rhena</groupId>
+			<artifactId>com.unnsvc.rhena.common</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>
+		<dependency>
+			<groupId>com.unnsvc.rhena</groupId>
+			<artifactId>com.unnsvc.rhena.core</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>
+		<dependency>
+			<groupId>com.unnsvc.rhena</groupId>
 			<artifactId>com.unnsvc.rhena.core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
