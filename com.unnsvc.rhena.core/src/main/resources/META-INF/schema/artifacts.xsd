@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:rhena:execution" xmlns:tns="urn:rhena:execution" xmlns:common="urn:rhena:common"
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:rhena:artifacts" xmlns:tns="urn:rhena:artifacts" xmlns:common="urn:rhena:common"
 	elementFormDefault="qualified">
 
 	<!-- in the future, extend the schema to allow a default="" on <execution> and a tag="" on artifact, to allow for multiple artifacts in an execution. Or more importantly, 
@@ -15,12 +15,12 @@
 		<xs:attribute name="name" type="xs:string" use="required" />
 		<xs:attribute name="sha1" type="xs:string" use="required" />
 	</xs:complexType>
-	
+
 	<xs:complexType name="metaType">
 		<xs:attribute name="date" type="xs:dateTime" use="required" />
 	</xs:complexType>
 
-	<xs:element name="execution">
+	<xs:element name="artifacts">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="meta" type="tns:metaType" minOccurs="1" maxOccurs="1" />

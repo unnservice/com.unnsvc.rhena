@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<execution xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:rhena:execution" xsi:schemaLocation="urn:rhena:execution ./execution.xsd">
-
-	<meta date="2002-05-30T09:00:00" />
-
-	<artifact name="somefile.file" sha1="" />
-
-</execution>

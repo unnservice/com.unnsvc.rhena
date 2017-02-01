@@ -26,7 +26,7 @@ import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 
-public class RhenaExecutionDescriptorParser {
+public class RhenaArtifactsDescriptorParser {
 
 	private ModuleIdentifier identifier;
 	private EExecutionType type;
@@ -39,14 +39,14 @@ public class RhenaExecutionDescriptorParser {
 	 * @param executionDescriptor
 	 * @throws RhenaException
 	 */
-	public RhenaExecutionDescriptorParser(ModuleIdentifier identifier, EExecutionType type, URI baseUri) throws RhenaException {
+	public RhenaArtifactsDescriptorParser(ModuleIdentifier identifier, EExecutionType type, URI baseUri) throws RhenaException {
 
 		this.identifier = identifier;
 		this.type = type;
 		this.baseUri = baseUri;
 		try {
 
-			URI descriptor = new URI(baseUri.toString() + "/" + RhenaConstants.EXECUTION_DESCRIPTOR_FILENAME).normalize();
+			URI descriptor = new URI(baseUri.toString() + "/" + RhenaConstants.ARTIFACTS_DESCRIPTOR_FILENAME).normalize();
 			parse(descriptor);
 		} catch (Exception ex) {
 			throw new RhenaException(ex.getMessage(), ex);
@@ -93,7 +93,7 @@ public class RhenaExecutionDescriptorParser {
 
 		// validate
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource("META-INF/schema/execution.xsd"));
+		Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource("META-INF/schema/artifacts.xsd"));
 
 		try {
 			Validator validator = schema.newValidator();

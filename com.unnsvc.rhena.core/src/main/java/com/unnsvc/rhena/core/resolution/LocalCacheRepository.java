@@ -20,7 +20,7 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.execution.PackagedArtifactDescriptor;
 import com.unnsvc.rhena.core.execution.LocalExecution;
-import com.unnsvc.rhena.core.execution.RhenaExecutionDescriptorParser;
+import com.unnsvc.rhena.core.execution.RhenaArtifactsDescriptorParser;
 import com.unnsvc.rhena.core.model.RhenaModuleParser;
 
 /**
@@ -76,7 +76,7 @@ public class LocalCacheRepository implements IRepository {
 				return null;
 			}
 
-			RhenaExecutionDescriptorParser execParser = new RhenaExecutionDescriptorParser(caller.getIdentifier(), caller.getExecutionType(),
+			RhenaArtifactsDescriptorParser execParser = new RhenaArtifactsDescriptorParser(caller.getIdentifier(), caller.getExecutionType(),
 					executionDirectory.toURI());
 			context.getLogger().debug(getClass(), caller.getIdentifier(), "Created execution: " + execParser.getExecution());
 			return execParser.getExecution();

@@ -24,7 +24,7 @@ import com.unnsvc.rhena.core.model.RhenaModuleParser;
  * 
  * <pre>
  * 	workspace		</some/path/repository>/com/component/module1/version/module.xml
- *  remote			</some/path/repository>/com/component/module1/version/<execution>/execution.xml
+ *  remote			</some/path/repository>/com/component/module1/version/<execution>/artifacts.xml
  *  remote			</some/path/repository>/com/component/module1/version/<execution>/component1.module1-deliverable-version.ext
  * </pre>
  * 
