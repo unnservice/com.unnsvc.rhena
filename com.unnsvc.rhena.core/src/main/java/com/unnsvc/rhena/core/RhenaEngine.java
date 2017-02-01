@@ -12,8 +12,8 @@ import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.search.RootFinder;
 import com.unnsvc.rhena.core.model.EntryPoint;
-import com.unnsvc.rhena.core.visitors.RootFinder;
 
 /**
  * @TODO implement an internal context for saving thirngs during execution,
@@ -65,7 +65,7 @@ public class RhenaEngine implements IRhenaEngine {
 	@Override
 	public Set<ModuleIdentifier> findRoots(ModuleIdentifier identifier, EExecutionType type) {
 
-		RootFinder finder = new RootFinder(context, identifier, type, identifier.getComponentName().toString(), identifier.getComponentName().toString());
+		RootFinder finder = new RootFinder(context.getCache(), identifier, type, identifier.getComponentName().toString(), identifier.getComponentName().toString());
 		return finder.findRoots(0);
 	}
 

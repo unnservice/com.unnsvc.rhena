@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.core.visitors;
+package com.unnsvc.rhena.common.search;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -14,9 +14,7 @@ import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.visitors.IDependencies;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
-import com.unnsvc.rhena.core.resolution.Dependencies;
 
 public class URLDependencyTreeVisitor extends ADependencyTreeVisitor {
 

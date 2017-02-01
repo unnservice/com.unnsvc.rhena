@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.core.visitors;
+package com.unnsvc.rhena.common.search;
 
 import java.util.Set;
 

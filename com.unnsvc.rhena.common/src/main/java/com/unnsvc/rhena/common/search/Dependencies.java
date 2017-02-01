@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.core.resolution;
+package com.unnsvc.rhena.common.search;
 
 import java.io.File;
 import java.net.URL;
@@ -12,7 +12,6 @@ import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.logging.ILogger;
-import com.unnsvc.rhena.common.visitors.IDependencies;
 
 public class Dependencies implements IDependencies {
 

@@ -2,7 +2,7 @@
 package com.unnsvc.rhena.core.lifecycle;
 
 import com.unnsvc.rhena.common.lifecycle.ICustomLifecycleCommandExecutable;
-import com.unnsvc.rhena.common.visitors.IDependencies;
+import com.unnsvc.rhena.common.search.IDependencies;
 
 public class CustomCommandExecutable extends CustomProcessorExecutable implements ICustomLifecycleCommandExecutable {
 

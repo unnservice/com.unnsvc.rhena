@@ -4,7 +4,7 @@ package com.unnsvc.rhena.common.lifecycle;
 import java.rmi.RemoteException;
 
 import com.unnsvc.rhena.common.ICaller;
-import com.unnsvc.rhena.common.visitors.IDependencies;
+import com.unnsvc.rhena.common.search.IDependencies;
 
 public interface IProcessor extends ILifecycleProcessor {
 

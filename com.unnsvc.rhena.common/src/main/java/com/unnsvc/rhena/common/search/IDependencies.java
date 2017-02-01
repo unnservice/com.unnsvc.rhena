@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.common.visitors;
+package com.unnsvc.rhena.common.search;
 
 import java.io.Serializable;
 import java.net.URL;

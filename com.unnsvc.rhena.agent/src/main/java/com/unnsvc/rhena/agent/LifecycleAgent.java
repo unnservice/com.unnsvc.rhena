@@ -18,6 +18,7 @@ import java.util.Map;
 import com.unnsvc.rhena.agent.lifecycle.LifecycleExecutionResult;
 import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.ICommandCaller;
+import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.agent.ArtifactResult;
 import com.unnsvc.rhena.common.agent.ExplodedResult;
@@ -25,6 +26,8 @@ import com.unnsvc.rhena.common.agent.ILifecycleExecutionResult;
 import com.unnsvc.rhena.common.agent.IResult;
 import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.EExecutionType;
+import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.lifecycle.ICommand;
 import com.unnsvc.rhena.common.lifecycle.ICustomLifecycleCommandExecutable;
 import com.unnsvc.rhena.common.lifecycle.ICustomLifecycleProcessorExecutable;
@@ -36,7 +39,9 @@ import com.unnsvc.rhena.common.lifecycle.ILifecycleProcessorExecutable;
 import com.unnsvc.rhena.common.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.lifecycle.IResource;
 import com.unnsvc.rhena.common.logging.ILoggerService;
-import com.unnsvc.rhena.common.visitors.IDependencies;
+import com.unnsvc.rhena.common.model.ESelectionType;
+import com.unnsvc.rhena.common.search.IDependencies;
+import com.unnsvc.rhena.common.search.URLDependencyTreeVisitor;
 
 /**
  * This agent is executed in a separate agent JVM
@@ -55,13 +60,15 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public synchronized ILifecycleExecutionResult executeLifecycle(IRhenaConfiguration config, ICaller caller, ILifecycleExecutable lifecycleExecutable,
-			IDependencies dependencies) throws RemoteException {
+	public synchronized ILifecycleExecutionResult executeLifecycle(IRhenaCache cache, IRhenaConfiguration config, ICaller caller, ILifecycleExecutable lifecycleExecutable) throws RemoteException {
 
-		Map<Class<?>, Object> additionalInjectableTypes  = new HashMap<Class<?>, Object>();
+
+		Map<Class<?>, Object> additionalInjectableTypes = new HashMap<Class<?>, Object>();
 		additionalInjectableTypes.put(List.class, new ArrayList<IProcessor>());
 
 		try {
+			IDependencies dependencies = getDependencies(caller, cache);
+			
 			// System.err.println("Executing " + caller + " with " +
 			// dependencies);
 			// ClassLoader previousClassloader = new
@@ -123,6 +130,28 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 			additionalInjectableTypes.clear();
 		}
 
+	}
+
+	private IDependencies getDependencies(ICaller caller, IRhenaCache cache) throws RhenaException {
+
+		// ((Dependencies)
+		// depvisitor.getDependencies()).debug(getContext().getLogger(),
+		// caller.getIdentifier(), caller.getExecutionType());
+		URLDependencyTreeVisitor depvisitor = new URLDependencyTreeVisitor(cache, caller.getExecutionType(), ESelectionType.SCOPE);
+		caller.getModule().visit(depvisitor);
+
+		/**
+		 * Up to, but not with, the ordinal, becauuse that's the one we will
+		 * create next by executing a lifecycle Start at 1 so we skip MODEL
+		 */
+		for (int i = 0; i < caller.getExecutionType().ordinal(); i++) {
+			// 0 is model
+
+			EExecutionType t = EExecutionType.values()[i];
+			IRhenaExecution exec = cache.getExecution(caller.getIdentifier()).get(t);
+			depvisitor.getExecutions(t).add(0, exec);
+		}
+		return depvisitor.getDependencies();
 	}
 
 	private void executeCommand(ICaller caller, ILifecycleExecutable lifecycleExecutable, ClassLoader previousClassloader,

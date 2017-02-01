@@ -8,7 +8,7 @@ import java.util.List;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.visitors.IDependencies;
+import com.unnsvc.rhena.common.search.IDependencies;
 
 public interface ILifecycle extends Serializable {
 

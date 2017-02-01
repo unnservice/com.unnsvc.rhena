@@ -28,7 +28,7 @@ import com.unnsvc.rhena.common.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.logging.ELogLevel;
 import com.unnsvc.rhena.common.logging.ILoggerService;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.visitors.IDependencies;
+import com.unnsvc.rhena.common.search.IDependencies;
 
 public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 

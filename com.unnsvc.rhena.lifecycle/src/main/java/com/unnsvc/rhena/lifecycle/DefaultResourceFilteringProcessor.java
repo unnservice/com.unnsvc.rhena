@@ -26,7 +26,7 @@ import com.unnsvc.rhena.common.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.lifecycle.IResource;
 import com.unnsvc.rhena.common.lifecycle.Resource;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.visitors.IDependencies;
+import com.unnsvc.rhena.common.search.IDependencies;
 
 /**
  * Resource filtering processor performs resource filtering and transforms

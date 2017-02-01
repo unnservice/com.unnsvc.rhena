@@ -1,10 +1,10 @@
 
-package com.unnsvc.rhena.core.visitors;
+package com.unnsvc.rhena.common.search;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ESelectionType;
@@ -12,15 +12,15 @@ import com.unnsvc.rhena.common.model.IRhenaEdge;
 
 public class RootFinder {
 
-	private IRhenaContext context;
+	private IRhenaCache cache;
 	private ModuleIdentifier identifier;
 	private EExecutionType type;
 	private String componentNameOrigin;
 	private String componentNameCurrent;
 
-	public RootFinder(IRhenaContext context, ModuleIdentifier identifier, EExecutionType type, String componentNameOrigin, String componentNameCurrent) {
+	public RootFinder(IRhenaCache cache, ModuleIdentifier identifier, EExecutionType type, String componentNameOrigin, String componentNameCurrent) {
 
-		this.context = context;
+		this.cache = cache;
 		this.identifier = identifier;
 		this.type = type;
 		this.componentNameOrigin = componentNameOrigin;
@@ -31,7 +31,7 @@ public class RootFinder {
 
 		Set<ModuleIdentifier> roots = new HashSet<ModuleIdentifier>();
 
-		for (IRhenaEdge edge : context.getCache().getEdges()) {
+		for (IRhenaEdge edge : cache.getEdges()) {
 
 			/**
 			 * Test each edge
@@ -59,7 +59,7 @@ public class RootFinder {
 							continue;
 						}
 					}
-					RootFinder upward = new RootFinder(context, edge.getSource(), type, componentNameOrigin, edge.getSource().getComponentName().toString());
+					RootFinder upward = new RootFinder(cache, edge.getSource(), type, componentNameOrigin, edge.getSource().getComponentName().toString());
 					roots.addAll(upward.findRoots(level++));
 				}
 			}

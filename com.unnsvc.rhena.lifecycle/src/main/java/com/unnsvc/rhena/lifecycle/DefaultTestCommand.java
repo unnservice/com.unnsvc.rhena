@@ -9,7 +9,7 @@ import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.lifecycle.ICommand;
-import com.unnsvc.rhena.common.visitors.IDependencies;
+import com.unnsvc.rhena.common.search.IDependencies;
 
 public class DefaultTestCommand implements ICommand {
 

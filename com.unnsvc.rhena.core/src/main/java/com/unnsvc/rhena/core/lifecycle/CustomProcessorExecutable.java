@@ -5,7 +5,7 @@ import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.lifecycle.ICustomLifecycleProcessorExecutable;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleProcessorReference;
-import com.unnsvc.rhena.common.visitors.IDependencies;
+import com.unnsvc.rhena.common.search.IDependencies;
 
 public class CustomProcessorExecutable extends ProcessorExecutable implements ICustomLifecycleProcessorExecutable {
 

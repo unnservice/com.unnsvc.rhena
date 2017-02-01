@@ -16,7 +16,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.visitors.IDependencies;
+import com.unnsvc.rhena.common.search.IDependencies;
 
 /**
  * Produces a MANIFEST.MF

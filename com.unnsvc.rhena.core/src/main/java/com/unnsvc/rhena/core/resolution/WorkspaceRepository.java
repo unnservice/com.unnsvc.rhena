@@ -22,10 +22,10 @@ import com.unnsvc.rhena.common.execution.IExplodedResult;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleProcessorReference;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleReference;
-import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.visitors.IDependencies;
+import com.unnsvc.rhena.common.search.IDependencies;
+import com.unnsvc.rhena.common.search.URLDependencyTreeVisitor;
 import com.unnsvc.rhena.core.execution.ExplodedArtifactDescriptor;
 import com.unnsvc.rhena.core.execution.PackagedArtifactDescriptor;
 import com.unnsvc.rhena.core.execution.WorkspaceExecution;
@@ -34,7 +34,6 @@ import com.unnsvc.rhena.core.lifecycle.CustomCommandExecutable;
 import com.unnsvc.rhena.core.lifecycle.CustomProcessorExecutable;
 import com.unnsvc.rhena.core.lifecycle.LifecycleExecutable;
 import com.unnsvc.rhena.core.lifecycle.ProcessorExecutable;
-import com.unnsvc.rhena.core.visitors.URLDependencyTreeVisitor;
 import com.unnsvc.rhena.lifecycle.DefaultContext;
 import com.unnsvc.rhena.lifecycle.DefaultGenerator;
 import com.unnsvc.rhena.lifecycle.DefaultJavaProcessor;
@@ -47,8 +46,6 @@ import com.unnsvc.rhena.lifecycle.DefaultManifestProcessor;
  *
  */
 public class WorkspaceRepository extends AbstractWorkspaceRepository {
-
-	private static final long serialVersionUID = 1L;
 
 	public WorkspaceRepository(IRhenaContext context, File location) {
 
@@ -73,21 +70,6 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 				throw new RhenaException(mue.getMessage(), mue);
 			}
 		} else {
-
-			URLDependencyTreeVisitor depvisitor = new URLDependencyTreeVisitor(cache, caller.getExecutionType(), ESelectionType.SCOPE);
-			module.visit(depvisitor);
-
-			/**
-			 * Up to, but not with, the ordinal, becauuse that's the one we will
-			 * create next by executing a lifecycle Start at 1 so we skip MODEL
-			 */
-			for (int i = 0; i < caller.getExecutionType().ordinal(); i++) {
-				// 0 is model
-
-				EExecutionType t = EExecutionType.values()[i];
-				IRhenaExecution exec = cache.getExecution(caller.getIdentifier()).get(t);
-				depvisitor.getExecutions(t).add(0, exec);
-			}
 
 			try {
 
@@ -120,9 +102,8 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 					}
 				}
 
-				((Dependencies) depvisitor.getDependencies()).debug(getContext().getLogger(), caller.getIdentifier(), caller.getExecutionType());
 				ILifecycleAgent agent = context.getLifecycleAgentManager().getLifecycleAgent();
-				ILifecycleExecutionResult generated = agent.executeLifecycle(getContext().getConfig(), caller, lifecycleExecutable, depvisitor.getDependencies());
+				ILifecycleExecutionResult generated = agent.executeLifecycle(getContext().getCache(), getContext().getConfig(), caller, lifecycleExecutable);
 
 				List<IResult> results = generated.getGeneratedArtifacts();
 				List<IArtifactDescriptor> descriptors = new ArrayList<IArtifactDescriptor>();
