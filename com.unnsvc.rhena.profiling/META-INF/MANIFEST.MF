@@ -5,10 +5,10 @@ Bundle-SymbolicName: com.unnsvc.rhena.profiling;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Export-Package: com.unnsvc.rhena.profiling,
  com.unnsvc.rhena.profiling.report
-Premain-Class:  com.unnsvc.rhena.profiling.ProfilingAgent
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Can-Redefine-Classes: true
+Premain-Class: com.unnsvc.rhena.profiling.ProfilingAgent
+Implementation-Version: 1.0.0.qualifier
+Implementation-Title: com.unnsvc.rhena.profiling.ClassLogger
 Can-Retransform-Classes: true
 Can-Set-Native-Method-Prefix: true
-Implementation-Title: com.unnsvc.rhena.profiling.ClassLogger
-Implementation-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8

@@ -4,7 +4,8 @@ Bundle-Name: Agent
 Bundle-SymbolicName: com.unnsvc.rhena.agent;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Export-Package: com.unnsvc.rhena.agent,
- com.unnsvc.rhena.agent.lifecycle
+ com.unnsvc.rhena.agent.lifecycle,
+ com.unnsvc.rhena.agent.rmiexample
 Require-Bundle: com.unnsvc.rhena.common,
  com.unnsvc.rhena.lifecycle,
  com.unnsvc.rhena.profiling
