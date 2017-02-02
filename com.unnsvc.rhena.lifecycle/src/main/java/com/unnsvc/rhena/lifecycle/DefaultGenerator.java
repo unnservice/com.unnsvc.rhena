@@ -18,6 +18,7 @@ import com.unnsvc.rhena.common.execution.PackagedArtifactDescriptor;
 import com.unnsvc.rhena.common.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.lifecycle.IGenerator;
 import com.unnsvc.rhena.common.lifecycle.IResource;
+import com.unnsvc.rhena.common.logging.ELogLevel;
 import com.unnsvc.rhena.common.logging.ILoggerService;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.lifecycle.helpers.JarHelper;
@@ -76,9 +77,12 @@ public class DefaultGenerator implements IGenerator {
 
 		try {
 
+			logger.fireLogEvent(ELogLevel.INFO, getClass().getName(), null, "Building: " + outputLocation, null);
 			JarHelper packagingHelper = new JarHelper(logger, compiledLocations, outputLocation);
 			packagingHelper.packageJar();
 
+			
+			logger.fireLogEvent(ELogLevel.INFO, getClass().getName(), null, "Building: " + sourceOutputLocation, null);
 			JarHelper sourcePackagingHelper = new JarHelper(logger, sourceLocations, sourceOutputLocation);
 			sourcePackagingHelper.packageJar();
 

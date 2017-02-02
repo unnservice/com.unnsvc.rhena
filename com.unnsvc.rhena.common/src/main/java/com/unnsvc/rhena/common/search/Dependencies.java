@@ -43,14 +43,24 @@ public class Dependencies implements IDependencies {
 	}
 
 	@Override
-	public String getAsClasspath(EExecutionType type) {
+	public String getAsClasspath(EExecutionType type, String... classifiers) {
 
 		StringBuffer sb = new StringBuffer();
 
 		for (IRhenaExecution exec : dependencies.get(type)) {
 			for (IArtifactDescriptor descriptor : exec.getArtifacts()) {
-				sb.append(descriptor.getArtifactUrl().getPath());
-				sb.append(File.pathSeparator);
+				if (classifiers == null) {
+					sb.append(descriptor.getArtifactUrl().getPath());
+					sb.append(File.pathSeparator);
+				} else {
+					for(String classifier : classifiers) {
+						
+						if(descriptor.getClassifier().equals(classifier)) {
+							sb.append(descriptor.getArtifactUrl().getPath());
+							sb.append(File.pathSeparator);
+						}
+					}
+				}
 			}
 		}
 

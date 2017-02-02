@@ -14,7 +14,14 @@ public interface IDependencies extends Serializable {
 
 	public List<IRhenaExecution> getDependencies();
 
-	public String getAsClasspath(EExecutionType type);
+	/**
+	 * 
+	 * @param type
+	 * @param classifiers
+	 *            Specify none to select all classifiers
+	 * @return
+	 */
+	public String getAsClasspath(EExecutionType type, String... classifiers);
 
 	public List<URL> getAsURLs(EExecutionType type);
 
