@@ -106,7 +106,7 @@ public class CascadingModelBuilder {
 			/**
 			 * @TODO It might be so that a lifecycle blocks because of bad
 			 *       code/bugs/jvm oom, so there might need to be a timeout of
-			 *       some kind, maybe by polling the agent for a few seconds.
+			 *       some kind, maybe by polling the agent after a few seconds.
 			 */
 			try {
 				executor.shutdown();
@@ -133,7 +133,7 @@ public class CascadingModelBuilder {
 
 		for (IRhenaModule module : cache.getModules().values()) {
 
-			for (IEntryPoint relationshipEntryPoint : Utils.getAllEntryPoints(module, true)) {
+			for (IEntryPoint relationshipEntryPoint : Utils.getAllEntryPoints(cache, module, true)) {
 
 				allEntryPoints.addEntryPoint(relationshipEntryPoint);
 			}
@@ -214,7 +214,7 @@ public class CascadingModelBuilder {
 		List<String> waitingOn = new UniqueList<String>();
 
 		if (!module.getLifecycleName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
-			for (ILifecycleProcessorReference ref : module.getLifecycleDeclarations().get(module.getLifecycleName()).getAllReferences()) {
+			for (ILifecycleProcessorReference ref : module.getMergedLifecycleDeclarations(cache).get(module.getLifecycleName()).getAllReferences()) {
 				IEntryPoint lifecycleEntryPoint = ref.getModuleEdge().getEntryPoint();
 
 				if (!cache.containsExecution(lifecycleEntryPoint.getTarget(), lifecycleEntryPoint.getExecutionType())) {
@@ -257,7 +257,7 @@ public class CascadingModelBuilder {
 		}
 
 		// check whether all relationships have been executed
-		for (IRhenaEdge edge : module.getDependencies()) {
+		for (IRhenaEdge edge : module.getMergedDependencies(cache)) {
 
 			IEntryPoint relEntryPoint = edge.getEntryPoint();
 			if (!cache.containsExecution(relEntryPoint.getTarget(), relEntryPoint.getExecutionType())) {

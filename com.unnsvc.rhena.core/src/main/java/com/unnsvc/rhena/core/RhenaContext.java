@@ -150,7 +150,6 @@ public class RhenaContext implements IRhenaContext {
 
 		getCache().getModules().clear();
 		getCache().getEdges().clear();
-		getCache().getMerged().clear();
 	}
 
 	@Override

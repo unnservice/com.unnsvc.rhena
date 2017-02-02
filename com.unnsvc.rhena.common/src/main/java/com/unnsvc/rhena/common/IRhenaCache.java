@@ -34,6 +34,4 @@ public interface IRhenaCache extends Serializable {
 	public void addEdge(IRhenaEdge edge);
 
 	public Set<IRhenaEdge> getEdges();
-
-	public Set<ModuleIdentifier> getMerged();
 }

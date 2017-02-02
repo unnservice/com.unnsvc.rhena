@@ -18,6 +18,7 @@ import java.util.Properties;
 import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.ICaller;
+import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.lifecycle.IExecutionContext;
@@ -40,6 +41,8 @@ public class DefaultResourceFilteringProcessor implements IProcessor {
 	private static final long serialVersionUID = 1L;
 	@ProcessorContext
 	private IExecutionContext context;
+	@ProcessorContext
+	private IRhenaCache cache;
 
 	@Override
 	public void configure(ICaller caller, Document configuration) throws RhenaException {
@@ -72,7 +75,8 @@ public class DefaultResourceFilteringProcessor implements IProcessor {
 		File sourcePath = new File(unfiltered.getBaseDirectory(), unfiltered.getRelativeSourcePath()).getCanonicalFile();
 		File intermediaryPath = new File(unfiltered.getBaseDirectory(), unfiltered.getRelativeIntermediaryPath()).getCanonicalFile();
 		filterResources(module, sourcePath.getPath(), sourcePath, intermediaryPath);
-		return new Resource(unfiltered.getResourceType(), unfiltered.getBaseDirectory(), unfiltered.getRelativeIntermediaryPath(), unfiltered.getRelativeOutputPath(), unfiltered.getRelativeSourcePath());
+		return new Resource(unfiltered.getResourceType(), unfiltered.getBaseDirectory(), unfiltered.getRelativeIntermediaryPath(),
+				unfiltered.getRelativeOutputPath(), unfiltered.getRelativeSourcePath());
 	}
 
 	private void filterResources(IRhenaModule module, String basePath, File currentPath, File intermediaryPath) throws FileNotFoundException, IOException {
@@ -86,7 +90,7 @@ public class DefaultResourceFilteringProcessor implements IProcessor {
 
 			String relativePath = currentPath.getPath().substring(basePath.length());
 			File targetFile = new File(intermediaryPath, relativePath);
-			
+
 			if (targetFile.lastModified() <= currentPath.lastModified()) {
 				if (!targetFile.getParentFile().exists()) {
 					targetFile.getParentFile().mkdirs();
@@ -98,7 +102,6 @@ public class DefaultResourceFilteringProcessor implements IProcessor {
 
 	private void copy(IRhenaModule module, File currentPath, File targetFile) throws FileNotFoundException, IOException {
 
-//		System.err.println("Filtering " + currentPath + " to " + targetFile);
 		try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(currentPath))) {
 
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -107,7 +110,7 @@ public class DefaultResourceFilteringProcessor implements IProcessor {
 				baos.write(buff);
 			}
 			String read = new String(baos.toByteArray(), Charset.forName("UTF-8"));
-			Properties props = module.getProperties();
+			Properties props = module.getMergedProperties(cache);
 
 			for (Object keyObj : props.keySet()) {
 				String key = (String) keyObj;

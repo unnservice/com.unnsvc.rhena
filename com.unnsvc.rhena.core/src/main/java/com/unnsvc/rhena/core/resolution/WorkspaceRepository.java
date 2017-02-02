@@ -85,7 +85,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 					lifecycleExecutable.addProcessorExecutable(new ProcessorExecutable(DefaultManifestProcessor.class.getName()));
 					lifecycleExecutable.setGenerator(new ProcessorExecutable(DefaultGenerator.class.getName()));
 				} else {
-					ILifecycleReference lifecycleReference = module.getLifecycleDeclarations().get(module.getLifecycleName());
+					ILifecycleReference lifecycleReference = module.getMergedLifecycleDeclarations(cache).get(module.getLifecycleName());
 					ILifecycleProcessorReference context = lifecycleReference.getContext();
 					lifecycleExecutable.setContextExecutable(new CustomProcessorExecutable(context, getLifecycleDependencies(context.getModuleEdge())));
 					for (ILifecycleProcessorReference processor : lifecycleReference.getProcessors()) {

@@ -2,10 +2,7 @@
 package com.unnsvc.rhena.core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
@@ -66,21 +63,10 @@ public class CascadingModelResolver {
 					}
 
 					/**
-					 * @TODO really shouldn't perform model merge right in the
-					 *       middle of the model resolution cascade, but
-					 *       necessary at present to make this work.
-					 */
-					if (currentModule.getParent() != null && !cache.getMerged().contains(currentModule.getIdentifier())) {
-						IRhenaModule parentModule = materialiseModel(currentModule.getParent().getEntryPoint().getTarget());
-						merge(currentModule, parentModule);
-						cache.getMerged().add(currentModule.getIdentifier());
-					}
-
-					/**
 					 * Resolve lifecycle from here after we've merged parents
 					 */
 					if (!currentModule.getLifecycleName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
-						ILifecycleReference lifecycle = currentModule.getLifecycleDeclarations().get(currentModule.getLifecycleName());
+						ILifecycleReference lifecycle = currentModule.getMergedLifecycleDeclarations(cache).get(currentModule.getLifecycleName());
 						if (lifecycle == null) {
 							throw new RhenaException("Could not find lifecycle " + currentModule.getLifecycleName() + " in " + currentModule.getIdentifier());
 						}
@@ -97,7 +83,7 @@ public class CascadingModelResolver {
 					 * Now we're dealing with the actual dependencies, for this
 					 * we will want to only enter requested dependency paths
 					 **/
-					for (IRhenaEdge dependency : currentModule.getDependencies()) {
+					for (IRhenaEdge dependency : currentModule.getMergedDependencies(cache)) {
 
 						/**
 						 * We only care about dependencies which we can use in
@@ -149,25 +135,6 @@ public class CascadingModelResolver {
 		}
 
 		return materialiseModel(entryPoint.getTarget());
-	}
-
-	private void merge(IRhenaModule currentModule, IRhenaModule parentModule) {
-
-		// merge dependencies
-		List<IRhenaEdge> dependencies = new ArrayList<IRhenaEdge>();
-		dependencies.addAll(parentModule.getDependencies());
-		dependencies.addAll(currentModule.getDependencies());
-		currentModule.setDependencies(dependencies);
-		// merge properties
-		Properties properties = new Properties();
-		properties.putAll(parentModule.getProperties());
-		properties.putAll(currentModule.getProperties());
-		currentModule.setProperties(properties);
-		// merge lifecycles
-		Map<String, ILifecycleReference> lifecycles = new HashMap<String, ILifecycleReference>();
-		lifecycles.putAll(parentModule.getLifecycleDeclarations());
-		lifecycles.putAll(currentModule.getLifecycleDeclarations());
-		currentModule.setLifecycleDeclarations(lifecycles);
 	}
 
 	public IRhenaModule materialiseModel(ModuleIdentifier identifier) throws RhenaException {

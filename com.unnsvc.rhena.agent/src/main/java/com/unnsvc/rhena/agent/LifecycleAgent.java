@@ -65,6 +65,7 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 
 		Map<Class<?>, Object> additionalInjectableTypes = new HashMap<Class<?>, Object>();
 		additionalInjectableTypes.put(List.class, new ArrayList<IProcessor>());
+		additionalInjectableTypes.put(IRhenaCache.class, cache);
 
 		try {
 			IDependencies dependencies = getDependencies(caller, cache);

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.unnsvc.rhena.common.IRepository;
+import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.common.visitors.IVisitableModel;
@@ -30,20 +31,26 @@ public interface IRhenaModule extends IVisitableModel, Serializable {
 
 	public String getLifecycleName();
 
-	public Map<String, ILifecycleReference> getLifecycleDeclarations();
+	public Map<String, ILifecycleReference> getDeclaredLifecycleDeclarations();
+
+	public Map<String, ILifecycleReference> getMergedLifecycleDeclarations(IRhenaCache cache);
 
 	public void setLifecycleDeclarations(Map<String, ILifecycleReference> lifecycleDeclarations);
 
-	public List<IRhenaEdge> getDependencies();
+	public List<IRhenaEdge> getDeclaredDependencies();
+
+	public List<IRhenaEdge> getMergedDependencies(IRhenaCache cache);
 
 	public void setDependencies(List<IRhenaEdge> dependencies);
-
-	public Properties getProperties();
 
 	public void setProperties(Properties properties);
 
 	public void setModuleType(ERhenaModuleType moduleType);
 
 	public ERhenaModuleType getModuleType();
+
+	public Properties getDeclaredProperties();
+
+	public Properties getMergedProperties(IRhenaCache cache);
 
 }

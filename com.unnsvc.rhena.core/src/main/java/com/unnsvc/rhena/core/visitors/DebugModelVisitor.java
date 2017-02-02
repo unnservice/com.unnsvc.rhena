@@ -1,6 +1,8 @@
 
 package com.unnsvc.rhena.core.visitors;
 
+import java.util.List;
+
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.RhenaConstants;
@@ -27,22 +29,22 @@ import com.unnsvc.rhena.common.visitors.IModelVisitor;
  */
 public class DebugModelVisitor implements IModelVisitor {
 
-	private IRhenaContext config;
+	private IRhenaContext context;
 	private int indents;
 	// private String prefix;
 	private IRhenaEngine engine;
 
-	public DebugModelVisitor(IRhenaContext config, int indents, IRhenaEngine context) {
+	public DebugModelVisitor(IRhenaContext context, int indents, IRhenaEngine engine) {
 
-		this(config, indents, context, "");
+		this(context, indents, engine, "");
 	}
 
-	public DebugModelVisitor(IRhenaContext config, int indents, IRhenaEngine context, String prefix) {
+	public DebugModelVisitor(IRhenaContext context, int indents, IRhenaEngine engine, String prefix) {
 
-		this.config = config;
+		this.context = context;
 		this.indents = indents;
 		// this.prefix = prefix;
-		this.engine = context;
+		this.engine = engine;
 	}
 
 	public String i(int indent) {
@@ -57,20 +59,21 @@ public class DebugModelVisitor implements IModelVisitor {
 	@Override
 	public void visit(IRhenaModule module) throws RhenaException {
 
-		if (module.getDependencies().isEmpty()) {
+		List<IRhenaEdge> mergedEdges = module.getMergedDependencies(context.getCache());
+		if (mergedEdges.isEmpty()) {
 
-			config.getLogger().debug(getClass(), getLeading(module).append(" />").toString());
+			context.getLogger().debug(getClass(), getLeading(module).append(" />").toString());
 		} else {
 
-			config.getLogger().debug(getClass(), getLeading(module).append(">").toString());
+			context.getLogger().debug(getClass(), getLeading(module).append(">").toString());
 
-			for (IRhenaEdge edge : module.getDependencies()) {
+			for (IRhenaEdge edge : mergedEdges) {
 
 				IRhenaModule dep = engine.materialiseModel(edge.getEntryPoint().getTarget());
-				dep.visit(new DebugModelVisitor(config, indents + 1, engine, edge.getEntryPoint().getExecutionType().toString()));
+				dep.visit(new DebugModelVisitor(context, indents + 1, engine, edge.getEntryPoint().getExecutionType().toString()));
 			}
 
-			config.getLogger().debug(getClass(), i(indents) + "</" + module.getIdentifier() + ">");
+			context.getLogger().debug(getClass(), i(indents) + "</" + module.getIdentifier() + ">");
 		}
 	}
 

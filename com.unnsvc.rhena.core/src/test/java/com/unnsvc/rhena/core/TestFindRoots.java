@@ -28,9 +28,9 @@ public class TestFindRoots extends AbstractRhenaTest {
 		InMemoryModule three = new InMemoryModule("test:three:0.0.1", repo);
 		InMemoryModule four = new InMemoryModule("test:four:0.0.1", repo);
 
-		one.getDependencies().add(new InMemoryEdge(one, two, EExecutionType.TEST, ESelectionType.SCOPE));
-		two.getDependencies().add(new InMemoryEdge(two, three, EExecutionType.TEST, ESelectionType.DIRECT));
-		three.getDependencies().add(new InMemoryEdge(three, four, EExecutionType.TEST, ESelectionType.SCOPE));
+		one.getDeclaredDependencies().add(new InMemoryEdge(one, two, EExecutionType.TEST, ESelectionType.SCOPE));
+		two.getDeclaredDependencies().add(new InMemoryEdge(two, three, EExecutionType.TEST, ESelectionType.DIRECT));
+		three.getDeclaredDependencies().add(new InMemoryEdge(three, four, EExecutionType.TEST, ESelectionType.SCOPE));
 
 		getContext().addAdditionalRepository(repo);
 		repo.addModule(one);
@@ -60,13 +60,13 @@ public class TestFindRoots extends AbstractRhenaTest {
 		InMemoryModule four = new InMemoryModule("test:four:0.0.1", repo);
 		InMemoryModule five = new InMemoryModule("test:five:0.0.1", repo);
 
-		one.getDependencies().add(new InMemoryEdge(one, two, EExecutionType.TEST, ESelectionType.DIRECT));
-		one.getDependencies().add(new InMemoryEdge(one, three, EExecutionType.TEST, ESelectionType.DIRECT));
+		one.getDeclaredDependencies().add(new InMemoryEdge(one, two, EExecutionType.TEST, ESelectionType.DIRECT));
+		one.getDeclaredDependencies().add(new InMemoryEdge(one, three, EExecutionType.TEST, ESelectionType.DIRECT));
 
-		two.getDependencies().add(new InMemoryEdge(two, four, EExecutionType.TEST, ESelectionType.SCOPE));
-		three.getDependencies().add(new InMemoryEdge(three, four, EExecutionType.TEST, ESelectionType.SCOPE));
+		two.getDeclaredDependencies().add(new InMemoryEdge(two, four, EExecutionType.TEST, ESelectionType.SCOPE));
+		three.getDeclaredDependencies().add(new InMemoryEdge(three, four, EExecutionType.TEST, ESelectionType.SCOPE));
 		
-		four.getDependencies().add(new InMemoryEdge(four, five, EExecutionType.TEST, ESelectionType.SCOPE));
+		four.getDeclaredDependencies().add(new InMemoryEdge(four, five, EExecutionType.TEST, ESelectionType.SCOPE));
 
 		getContext().addAdditionalRepository(repo);
 		repo.addModule(one);

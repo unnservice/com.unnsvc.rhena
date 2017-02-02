@@ -22,7 +22,6 @@ public class RhenaCache implements IRhenaCache {
 	private Map<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>> executions;
 	private Map<ModuleIdentifier, ILifecycle> lifecycles;
 	private Set<IRhenaEdge> edges;
-	private Set<ModuleIdentifier> merged;
 
 	public RhenaCache() {
 
@@ -32,7 +31,6 @@ public class RhenaCache implements IRhenaCache {
 		// trickery for efficient execution loop
 		this.executions = new HashMap<ModuleIdentifier, Map<EExecutionType, IRhenaExecution>>();
 		this.lifecycles = new HashMap<ModuleIdentifier, ILifecycle>();
-		this.merged = new HashSet<ModuleIdentifier>();
 	}
 
 	@Override
@@ -102,11 +100,5 @@ public class RhenaCache implements IRhenaCache {
 	public Set<IRhenaEdge> getEdges() {
 
 		return edges;
-	}
-
-	@Override
-	public Set<ModuleIdentifier> getMerged() {
-
-		return merged;
 	}
 }

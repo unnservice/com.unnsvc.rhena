@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.unnsvc.rhena.common.IRepository;
+import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
@@ -98,9 +99,22 @@ public class RhenaModule implements IRhenaModule {
 	}
 
 	@Override
-	public Map<String, ILifecycleReference> getLifecycleDeclarations() {
+	public Map<String, ILifecycleReference> getDeclaredLifecycleDeclarations() {
 
 		return lifecycleDeclarations;
+	}
+	
+	@Override
+	public Map<String, ILifecycleReference> getMergedLifecycleDeclarations(IRhenaCache cache) {
+
+		if(getParent() != null) {
+			IRhenaModule parentModule = cache.getModule(getParent().getEntryPoint().getTarget());
+			Map<String, ILifecycleReference> mergedLifecycleReferences = new HashMap<String, ILifecycleReference>(parentModule.getDeclaredLifecycleDeclarations());
+			mergedLifecycleReferences.putAll(getDeclaredLifecycleDeclarations());
+			return mergedLifecycleReferences;
+		}
+		
+		return getDeclaredLifecycleDeclarations();
 	}
 
 	@Override
@@ -110,9 +124,25 @@ public class RhenaModule implements IRhenaModule {
 	}
 
 	@Override
-	public List<IRhenaEdge> getDependencies() {
+	public List<IRhenaEdge> getDeclaredDependencies() {
 
 		return dependencies;
+	}
+
+	@Override
+	public List<IRhenaEdge> getMergedDependencies(IRhenaCache cache) {
+
+		if (getParent() != null) {
+
+			IRhenaModule parentModule = cache.getModule(getParent().getEntryPoint().getTarget());
+			List<IRhenaEdge> mergedEdges = new ArrayList<IRhenaEdge>(parentModule.getMergedDependencies(cache));
+			for (IRhenaEdge declared : getDeclaredDependencies()) {
+				if (!mergedEdges.contains(declared)) {
+					mergedEdges.add(declared);
+				}
+			}
+		}
+		return getDeclaredDependencies();
 	}
 
 	@Override
@@ -122,9 +152,21 @@ public class RhenaModule implements IRhenaModule {
 	}
 
 	@Override
-	public Properties getProperties() {
+	public Properties getDeclaredProperties() {
 
 		return properties;
+	}
+
+	@Override
+	public Properties getMergedProperties(IRhenaCache cache) {
+
+		if (getParent() != null) {
+			IRhenaModule parentModule = cache.getModule(getParent().getEntryPoint().getTarget());
+			Properties mergedProperties = new Properties(parentModule.getMergedProperties(cache));
+			mergedProperties.putAll(getDeclaredProperties());
+			return mergedProperties;
+		}
+		return getDeclaredProperties();
 	}
 
 	@Override
@@ -138,10 +180,10 @@ public class RhenaModule implements IRhenaModule {
 
 		this.moduleType = moduleType;
 	}
-	
+
 	@Override
 	public ERhenaModuleType getModuleType() {
-		
+
 		return moduleType;
 	}
 }

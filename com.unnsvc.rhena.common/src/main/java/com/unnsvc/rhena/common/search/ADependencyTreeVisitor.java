@@ -40,7 +40,7 @@ public abstract class ADependencyTreeVisitor implements IModelVisitor {
 		// visiting this module
 
 		// visit dependencies
-		for (IRhenaEdge edge : module.getDependencies()) {
+		for (IRhenaEdge edge : module.getMergedDependencies(cache)) {
 
 			if(edgeTracker.contains(edge)) {
 				continue;

@@ -207,7 +207,7 @@ public class Utils {
 				+ identifier.getVersion().toString();
 	}
 
-	public static List<IEntryPoint> getAllEntryPoints(IRhenaModule module, boolean lifecycles) {
+	public static List<IEntryPoint> getAllEntryPoints(IRhenaCache cache, IRhenaModule module, boolean lifecycles) {
 
 		List<IEntryPoint> eps = new ArrayList<IEntryPoint>();
 		if (module.getParent() != null) {
@@ -215,14 +215,14 @@ public class Utils {
 		}
 		if (lifecycles) {
 			if (!module.getLifecycleName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
-				ILifecycleReference lifecycle = module.getLifecycleDeclarations().get(module.getLifecycleName());
+				ILifecycleReference lifecycle = module.getMergedLifecycleDeclarations(cache).get(module.getLifecycleName());
 				eps.add(lifecycle.getContext().getModuleEdge().getEntryPoint());
 				lifecycle.getProcessors().forEach(proc -> eps.add(proc.getModuleEdge().getEntryPoint()));
 				eps.add(lifecycle.getGenerator().getModuleEdge().getEntryPoint());
 				lifecycle.getCommands().forEach(comm -> eps.add(comm.getModuleEdge().getEntryPoint()));
 			}
 		}
-		module.getDependencies().forEach(dep -> eps.add(dep.getEntryPoint()));
+		module.getMergedDependencies(cache).forEach(dep -> eps.add(dep.getEntryPoint()));
 
 		return eps;
 	}

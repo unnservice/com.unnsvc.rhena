@@ -199,7 +199,7 @@ public class RhenaModuleParser {
 			}
 		}
 
-		module.getLifecycleDeclarations().put(lifecycleReference.getName(), lifecycleReference);
+		module.getMergedLifecycleDeclarations(context.getCache()).put(lifecycleReference.getName(), lifecycleReference);
 	}
 
 	private IRhenaEdge newEdge(ModuleIdentifier source, EExecutionType type, ModuleIdentifier target, ESelectionType selection) {
@@ -232,8 +232,8 @@ public class RhenaModuleParser {
 
 		IRhenaEdge edge = newEdge(module.getIdentifier(), dependencyType, moduleIdentifier, traverseType);
 
-		if (!module.getDependencies().contains(edge)) {
-			module.getDependencies().add(edge);
+		if (!module.getDeclaredDependencies().contains(edge)) {
+			module.getDeclaredDependencies().add(edge);
 		}
 	}
 

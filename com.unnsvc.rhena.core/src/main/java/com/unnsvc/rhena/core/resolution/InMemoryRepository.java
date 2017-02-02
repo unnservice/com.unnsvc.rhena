@@ -60,10 +60,10 @@ public class InMemoryRepository implements IRepository {
 			this.context.getCache().addEdge(module.getParent());
 		}
 		if (!module.getLifecycleName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
-			ILifecycleReference lifecycleRef = module.getLifecycleDeclarations().get(module.getLifecycleName());
+			ILifecycleReference lifecycleRef = module.getDeclaredLifecycleDeclarations().get(module.getLifecycleName());
 			lifecycleRef.getAllReferences().forEach(ref -> this.context.getCache().addEdge(ref.getModuleEdge()));
 		}
-		module.getDependencies().forEach(dep -> this.context.getCache().addEdge(dep));
+		module.getDeclaredDependencies().forEach(dep -> this.context.getCache().addEdge(dep));
 
 		this.modules.put(module.getIdentifier(), module);
 	}
