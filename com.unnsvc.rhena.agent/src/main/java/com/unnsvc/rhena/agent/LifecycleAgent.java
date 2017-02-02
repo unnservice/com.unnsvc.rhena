@@ -22,8 +22,10 @@ import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.agent.ILifecycleExecutionResult;
 import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.ArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.EExecutionType;
-import com.unnsvc.rhena.common.execution.ExplodedArtifactDescriptor;
+import com.unnsvc.rhena.common.execution.ExplodedArtifact;
+import com.unnsvc.rhena.common.execution.IArtifact;
 import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.lifecycle.ICommand;
@@ -116,8 +118,12 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 						File sourceDir = new File(resource.getBaseDirectory(), resource.getRelativeSourcePath()).getCanonicalFile().getAbsoluteFile();
 						File outputDir = new File(resource.getBaseDirectory(), resource.getRelativeOutputPath()).getCanonicalFile().getAbsoluteFile();
 						if (outputDir.exists() && outputDir.list().length > 0) {
-							generated.add(new ExplodedArtifactDescriptor(IArtifactDescriptor.DEFAULT, outputDir.getName(), outputDir.toURI().toURL()));
-							generated.add(new ExplodedArtifactDescriptor(IArtifactDescriptor.SOURCES, sourceDir.getName(), sourceDir.toURI().toURL()));
+
+							IArtifact mainArtifact = new ExplodedArtifact(outputDir.getName(), outputDir.toURI().toURL());
+							IArtifact sourceArtifact = new ExplodedArtifact(sourceDir.getName(), sourceDir.toURI().toURL());
+
+							IArtifactDescriptor descriptor = new ArtifactDescriptor(IArtifactDescriptor.DEFAULT_CLASSIFIER, mainArtifact, sourceArtifact);
+							generated.add(descriptor);
 						}
 					}
 				}

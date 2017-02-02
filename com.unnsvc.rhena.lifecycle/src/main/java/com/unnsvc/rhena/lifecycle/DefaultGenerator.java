@@ -13,8 +13,9 @@ import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.ArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
-import com.unnsvc.rhena.common.execution.PackagedArtifactDescriptor;
+import com.unnsvc.rhena.common.execution.PackagedArtifact;
 import com.unnsvc.rhena.common.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.lifecycle.IGenerator;
 import com.unnsvc.rhena.common.lifecycle.IResource;
@@ -81,7 +82,6 @@ public class DefaultGenerator implements IGenerator {
 			JarHelper packagingHelper = new JarHelper(logger, compiledLocations, outputLocation);
 			packagingHelper.packageJar();
 
-			
 			logger.fireLogEvent(ELogLevel.INFO, getClass().getName(), null, "Building: " + sourceOutputLocation, null);
 			JarHelper sourcePackagingHelper = new JarHelper(logger, sourceLocations, sourceOutputLocation);
 			sourcePackagingHelper.packageJar();
@@ -95,9 +95,13 @@ public class DefaultGenerator implements IGenerator {
 			List<IArtifactDescriptor> results = new ArrayList<IArtifactDescriptor>();
 			String outputSha1 = Utils.generateSha1(outputLocation);
 			String sourceOutputSha1 = Utils.generateSha1(sourceOutputLocation);
-			
-			results.add(new PackagedArtifactDescriptor(IArtifactDescriptor.DEFAULT, outputLocation.getName(), outputLocation.toURI().toURL(), outputSha1));
-			results.add(new PackagedArtifactDescriptor(IArtifactDescriptor.SOURCES, sourceOutputLocation.getName(), sourceOutputLocation.toURI().toURL(), sourceOutputSha1));
+
+			PackagedArtifact defaultArtifact = new PackagedArtifact(outputLocation.getName(), outputLocation.toURI().toURL(), outputSha1);
+			PackagedArtifact testArtifact = new PackagedArtifact(sourceOutputLocation.getName(), sourceOutputLocation.toURI().toURL(), sourceOutputSha1);
+
+			IArtifactDescriptor descriptor = new ArtifactDescriptor(IArtifactDescriptor.DEFAULT_CLASSIFIER, defaultArtifact, testArtifact);
+
+			results.add(descriptor);
 			return results;
 		} catch (Exception ex) {
 			throw new RhenaException(ex.getMessage(), ex);

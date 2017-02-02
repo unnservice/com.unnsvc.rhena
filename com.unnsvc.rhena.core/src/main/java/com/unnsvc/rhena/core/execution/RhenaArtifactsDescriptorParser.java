@@ -20,11 +20,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.unnsvc.rhena.common.RhenaConstants;
+import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.ArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.EExecutionType;
+import com.unnsvc.rhena.common.execution.IArtifact;
 import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
-import com.unnsvc.rhena.common.execution.PackagedArtifactDescriptor;
+import com.unnsvc.rhena.common.execution.PackagedArtifact;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 
 public class RhenaArtifactsDescriptorParser {
@@ -54,7 +57,7 @@ public class RhenaArtifactsDescriptorParser {
 		}
 	}
 
-	private List<IArtifactDescriptor> artifacts = new ArrayList<IArtifactDescriptor>();
+	private List<IArtifactDescriptor> artifactDescriptors = new ArrayList<IArtifactDescriptor>();
 	private Calendar date;
 
 	private void parse(URI executionDescriptorUri) throws Exception {
@@ -74,12 +77,21 @@ public class RhenaArtifactsDescriptorParser {
 				} else if (node.getLocalName().equals("artifact")) {
 
 					String classifier = node.getAttributes().getNamedItem("classifier").getNodeValue();
-					String fileName = node.getAttributes().getNamedItem("name").getNodeValue();
-					String sha1 = node.getAttributes().getNamedItem("sha1").getNodeName();
+					
+					Node primaryNode = Utils.getChildNode(node, "primary");
+					String artifactName = primaryNode.getAttributes().getNamedItem("name").getNodeValue();
+					String sha1 = primaryNode.getAttributes().getNamedItem("sha1").getNodeValue();
+					URI location = new URI(baseUri.toString() + "/" + artifactName).normalize();
+					IArtifact primary = new PackagedArtifact(artifactName, location.toURL(), sha1);
+					
+					Node sourcesNode = Utils.getChildNode(node, "sources");
+					artifactName = sourcesNode.getAttributes().getNamedItem("name").getNodeValue();
+					sha1 = sourcesNode.getAttributes().getNamedItem("sha1").getNodeValue();
+					location = new URI(baseUri.toString() + "/" + artifactName).normalize();
+					IArtifact sources = new PackagedArtifact(artifactName, location.toURL(), sha1);
 
-					URI location = new URI(baseUri.toString() + "/" + fileName).normalize();
+					artifactDescriptors.add(new ArtifactDescriptor(classifier, primary, sources));
 
-					artifacts.add(new PackagedArtifactDescriptor(classifier, fileName, location.toURL(), sha1));
 					return;
 				}
 			}
@@ -109,7 +121,7 @@ public class RhenaArtifactsDescriptorParser {
 
 	public IRhenaExecution getExecution() {
 
-		return new RemoteExecution(identifier, type, artifacts, date);
+		return new RemoteExecution(identifier, type, artifactDescriptors, date);
 	}
 
 }

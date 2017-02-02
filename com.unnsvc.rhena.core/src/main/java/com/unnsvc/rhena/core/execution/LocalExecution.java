@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import com.unnsvc.rhena.common.execution.EExecutionType;
+import com.unnsvc.rhena.common.execution.IArtifact;
 import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 

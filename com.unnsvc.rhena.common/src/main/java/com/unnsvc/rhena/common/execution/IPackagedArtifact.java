@@ -1,7 +1,7 @@
 
 package com.unnsvc.rhena.common.execution;
 
-public interface IPackagedArtifactDescriptor extends IArtifactDescriptor {
+public interface IPackagedArtifact extends IArtifact {
 
 	public String getSha1();
 

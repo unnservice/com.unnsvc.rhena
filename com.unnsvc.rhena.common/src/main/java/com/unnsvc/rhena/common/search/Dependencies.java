@@ -50,13 +50,13 @@ public class Dependencies implements IDependencies {
 		for (IRhenaExecution exec : dependencies.get(type)) {
 			for (IArtifactDescriptor descriptor : exec.getArtifacts()) {
 				if (classifiers == null) {
-					sb.append(descriptor.getArtifactUrl().getPath());
+					sb.append(descriptor.getPrimaryArtifact().getArtifactUrl().getPath());
 					sb.append(File.pathSeparator);
 				} else {
-					for(String classifier : classifiers) {
-						
-						if(descriptor.getClassifier().equals(classifier)) {
-							sb.append(descriptor.getArtifactUrl().getPath());
+					for (String classifier : classifiers) {
+
+						if (descriptor.getClassifier().equals(classifier)) {
+							sb.append(descriptor.getPrimaryArtifact().getArtifactUrl().getPath());
 							sb.append(File.pathSeparator);
 						}
 					}
@@ -73,7 +73,7 @@ public class Dependencies implements IDependencies {
 		List<URL> urls = new ArrayList<URL>();
 		for (IRhenaExecution exec : dependencies.get(type)) {
 			for (IArtifactDescriptor descriptor : exec.getArtifacts()) {
-				urls.add(descriptor.getArtifactUrl());
+				urls.add(descriptor.getPrimaryArtifact().getArtifactUrl());
 			}
 		}
 		return urls;

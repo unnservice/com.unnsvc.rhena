@@ -3,6 +3,10 @@
 
 	<meta date="2002-05-30T09:00:00" />
 
-	<artifact classifier="default" name="somefile.file" sha1="" />
+
+	<artifact classifier="default">
+		<primary name="somefile.jar" sha1="not-implemented" />
+		<sources name="somefile-sources.jar" sha1="not-implemented" />
+	</artifact>
 
 </artifacts>

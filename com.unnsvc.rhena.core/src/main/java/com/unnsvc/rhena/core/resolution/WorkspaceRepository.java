@@ -13,8 +13,10 @@ import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.agent.ILifecycleAgent;
 import com.unnsvc.rhena.common.agent.ILifecycleExecutionResult;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.ArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.EExecutionType;
-import com.unnsvc.rhena.common.execution.ExplodedArtifactDescriptor;
+import com.unnsvc.rhena.common.execution.ExplodedArtifact;
+import com.unnsvc.rhena.common.execution.IArtifact;
 import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleProcessorReference;
@@ -57,7 +59,8 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 			File workspaceDirectory = new File(module.getLocation().getPath());
 			File moduleDescriptor = new File(workspaceDirectory, RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
 			try {
-				IArtifactDescriptor descriptor = new ExplodedArtifactDescriptor(IArtifactDescriptor.DEFAULT, caller.getIdentifier().toString(), moduleDescriptor.getCanonicalFile().toURI().toURL());
+				IArtifact primaryArtifact = new ExplodedArtifact(caller.getIdentifier().toString(), moduleDescriptor.getCanonicalFile().toURI().toURL());
+				IArtifactDescriptor descriptor = new ArtifactDescriptor(IArtifactDescriptor.DEFAULT_CLASSIFIER, primaryArtifact);
 				return new WorkspaceExecution(caller.getIdentifier(), caller.getExecutionType(), Collections.singletonList(descriptor));
 			} catch (IOException mue) {
 				throw new RhenaException(mue.getMessage(), mue);
@@ -99,18 +102,26 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 				ILifecycleExecutionResult generated = agent.executeLifecycle(getContext().getCache(), getContext().getConfig(), caller, lifecycleExecutable);
 
 				List<IArtifactDescriptor> descriptors = generated.getGeneratedArtifacts();
-//				List<IArtifactDescriptor> descriptors = new ArrayList<IArtifactDescriptor>();
-//				for (IResult generatedFile : results) {
-//					if (generatedFile instanceof IExplodedResult) {
-//						IExplodedResult explodedResult = (IExplodedResult) generatedFile;
-//						IArtifactDescriptor descriptor = new ExplodedArtifactDescriptor(explodedResult.getName(), explodedResult.getResultUrl(), explodedResult.getSourceUrl());
-//						descriptors.add(descriptor);
-//					} else {
-//						String sha1sum = Utils.generateSha1(new File(generatedFile.getResultUrl().getFile()));
-//						IArtifactDescriptor descriptor = new PackagedArtifactDescriptor(generatedFile.getName(), generatedFile.getResultUrl(), sha1sum);
-//						descriptors.add(descriptor);
-//					}
-//				}
+				// List<IArtifactDescriptor> descriptors = new
+				// ArrayList<IArtifactDescriptor>();
+				// for (IResult generatedFile : results) {
+				// if (generatedFile instanceof IExplodedResult) {
+				// IExplodedResult explodedResult = (IExplodedResult)
+				// generatedFile;
+				// IArtifactDescriptor descriptor = new
+				// ExplodedArtifactDescriptor(explodedResult.getName(),
+				// explodedResult.getResultUrl(),
+				// explodedResult.getSourceUrl());
+				// descriptors.add(descriptor);
+				// } else {
+				// String sha1sum = Utils.generateSha1(new
+				// File(generatedFile.getResultUrl().getFile()));
+				// IArtifactDescriptor descriptor = new
+				// PackagedArtifactDescriptor(generatedFile.getName(),
+				// generatedFile.getResultUrl(), sha1sum);
+				// descriptors.add(descriptor);
+				// }
+				// }
 
 				return new WorkspaceExecution(caller.getIdentifier(), caller.getExecutionType(), descriptors, generated.getInputs());
 			} catch (IOException mue) {

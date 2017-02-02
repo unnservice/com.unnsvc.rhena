@@ -2,17 +2,15 @@
 package com.unnsvc.rhena.common.execution;
 
 import java.io.Serializable;
-import java.net.URL;
 
 public interface IArtifactDescriptor extends Serializable {
 
-	public static final String DEFAULT = "default";
-	public static final String SOURCES = "sources";
-
+	public static final String DEFAULT_CLASSIFIER = "default";
+	
 	public String getClassifier();
 
-	public String getArtifactName();
+	public IArtifact getPrimaryArtifact();
 
-	public URL getArtifactUrl();
+	public IArtifact getSourceArtifact();
 
 }
