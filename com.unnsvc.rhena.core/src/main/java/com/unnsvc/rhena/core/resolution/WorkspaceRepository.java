@@ -54,80 +54,62 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 
 		IRhenaModule module = caller.getModule();
 
-		if (caller.getExecutionType().equals(EExecutionType.MODEL)) {
+		try {
+			if (caller.getExecutionType().equals(EExecutionType.MODEL)) {
 
-			File workspaceDirectory = new File(module.getLocation().getPath());
-			File moduleDescriptor = new File(workspaceDirectory, RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
-			try {
+				File workspaceDirectory = new File(module.getLocation().getPath());
+				File moduleDescriptor = new File(workspaceDirectory, RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
 				IArtifact primaryArtifact = new ExplodedArtifact(caller.getIdentifier().toString(), moduleDescriptor.getCanonicalFile().toURI().toURL());
 				IArtifactDescriptor descriptor = new ArtifactDescriptor(IArtifactDescriptor.DEFAULT_CLASSIFIER, primaryArtifact);
 				return new WorkspaceExecution(caller.getIdentifier(), caller.getExecutionType(), Collections.singletonList(descriptor));
-			} catch (IOException mue) {
-				throw new RhenaException(mue.getMessage(), mue);
-			}
-		} else {
 
-			try {
+			} else {
 
-				/**
-				 * New method of constructing the lifecycle attempts to produce
-				 * a lifecycle in an intermediate format which will make it easy
-				 * for the agent to construct and execute lifecycle
-				 */
-				LifecycleExecutable lifecycleExecutable = new LifecycleExecutable(RhenaConstants.DEFAULT_LIFECYCLE_NAME);
-				if (module.getLifecycleName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
-					lifecycleExecutable.setContextExecutable(new ProcessorExecutable(DefaultContext.class.getName()));
-					lifecycleExecutable.addProcessorExecutable(new ProcessorExecutable(DefaultJavaProcessor.class.getName()));
-					lifecycleExecutable.addProcessorExecutable(new ProcessorExecutable(DefaultManifestProcessor.class.getName()));
-					lifecycleExecutable.setGenerator(new ProcessorExecutable(DefaultGenerator.class.getName()));
-				} else {
-					ILifecycleReference lifecycleReference = module.getMergedLifecycleDeclarations(cache).get(module.getLifecycleName());
-					ILifecycleProcessorReference context = lifecycleReference.getContext();
-					lifecycleExecutable.setContextExecutable(new CustomProcessorExecutable(context, getLifecycleDependencies(context.getModuleEdge())));
-					for (ILifecycleProcessorReference processor : lifecycleReference.getProcessors()) {
-						lifecycleExecutable
-								.addProcessorExecutable(new CustomProcessorExecutable(processor, getLifecycleDependencies(processor.getModuleEdge())));
-					}
-
-					ILifecycleProcessorReference generator = lifecycleReference.getGenerator();
-					lifecycleExecutable.setGenerator(new CustomProcessorExecutable(generator, getLifecycleDependencies(generator.getModuleEdge())));
-
-					for (ILifecycleProcessorReference command : lifecycleReference.getCommands()) {
-						CommandProcessorReference commandRef = (CommandProcessorReference) command;
-						lifecycleExecutable.addCommandExecutable(new CustomCommandExecutable(commandRef, getLifecycleDependencies(commandRef.getModuleEdge())));
-					}
-				}
+				LifecycleExecutable lifecycleExecutable = toLifecycleExecutableTransferFormat(module, cache);
 
 				ILifecycleAgent agent = context.getLifecycleAgentManager().getLifecycleAgent();
 				ILifecycleExecutionResult generated = agent.executeLifecycle(getContext().getCache(), getContext().getConfig(), caller, lifecycleExecutable);
 
 				List<IArtifactDescriptor> descriptors = generated.getGeneratedArtifacts();
-				// List<IArtifactDescriptor> descriptors = new
-				// ArrayList<IArtifactDescriptor>();
-				// for (IResult generatedFile : results) {
-				// if (generatedFile instanceof IExplodedResult) {
-				// IExplodedResult explodedResult = (IExplodedResult)
-				// generatedFile;
-				// IArtifactDescriptor descriptor = new
-				// ExplodedArtifactDescriptor(explodedResult.getName(),
-				// explodedResult.getResultUrl(),
-				// explodedResult.getSourceUrl());
-				// descriptors.add(descriptor);
-				// } else {
-				// String sha1sum = Utils.generateSha1(new
-				// File(generatedFile.getResultUrl().getFile()));
-				// IArtifactDescriptor descriptor = new
-				// PackagedArtifactDescriptor(generatedFile.getName(),
-				// generatedFile.getResultUrl(), sha1sum);
-				// descriptors.add(descriptor);
-				// }
-				// }
 
 				return new WorkspaceExecution(caller.getIdentifier(), caller.getExecutionType(), descriptors, generated.getInputs());
-			} catch (IOException mue) {
-				throw new RhenaException(mue.getMessage(), mue);
+
+			}
+		} catch (IOException mue) {
+			throw new RhenaException(mue.getMessage(), mue);
+		}
+	}
+
+	/**
+	 * New method of constructing the lifecycle attempts to produce a lifecycle
+	 * in an intermediate format which will make it easy for the agent to
+	 * construct and execute lifecycle
+	 */
+	private LifecycleExecutable toLifecycleExecutableTransferFormat(IRhenaModule module, IRhenaCache cache) throws RhenaException {
+
+		LifecycleExecutable lifecycleExecutable = new LifecycleExecutable(module.getLifecycleName());
+		if (module.getLifecycleName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
+			lifecycleExecutable.setContextExecutable(new ProcessorExecutable(DefaultContext.class.getName()));
+			lifecycleExecutable.addProcessorExecutable(new ProcessorExecutable(DefaultJavaProcessor.class.getName()));
+			lifecycleExecutable.addProcessorExecutable(new ProcessorExecutable(DefaultManifestProcessor.class.getName()));
+			lifecycleExecutable.setGenerator(new ProcessorExecutable(DefaultGenerator.class.getName()));
+		} else {
+			ILifecycleReference lifecycleReference = module.getMergedLifecycleDeclarations(cache).get(module.getLifecycleName());
+			ILifecycleProcessorReference context = lifecycleReference.getContext();
+			lifecycleExecutable.setContextExecutable(new CustomProcessorExecutable(context, getLifecycleDependencies(context.getModuleEdge())));
+			for (ILifecycleProcessorReference processor : lifecycleReference.getProcessors()) {
+				lifecycleExecutable.addProcessorExecutable(new CustomProcessorExecutable(processor, getLifecycleDependencies(processor.getModuleEdge())));
+			}
+
+			ILifecycleProcessorReference generator = lifecycleReference.getGenerator();
+			lifecycleExecutable.setGenerator(new CustomProcessorExecutable(generator, getLifecycleDependencies(generator.getModuleEdge())));
+
+			for (ILifecycleProcessorReference command : lifecycleReference.getCommands()) {
+				CommandProcessorReference commandRef = (CommandProcessorReference) command;
+				lifecycleExecutable.addCommandExecutable(new CustomCommandExecutable(commandRef, getLifecycleDependencies(commandRef.getModuleEdge())));
 			}
 		}
+		return lifecycleExecutable;
 	}
 
 	private IDependencies getLifecycleDependencies(IRhenaEdge moduleEdge) throws RhenaException {

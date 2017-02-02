@@ -45,12 +45,6 @@ public class CascadingModelBuilder {
 		prefillExecutions(allEntryPoints);
 		Set<IEntryPoint> resolvableEntryPoints = new HashSet<IEntryPoint>();
 
-		/**
-		 * @TODO we want more efficient threading, instead of waiting for each n
-		 *       number of threads to complete, release the thread block after
-		 *       each thread completion so we can feed the thread pool
-		 *       continuously
-		 */
 		while (loopGuard(allEntryPoints)) {
 
 			resolvableEntryPoints = selectResolved(allEntryPoints);
