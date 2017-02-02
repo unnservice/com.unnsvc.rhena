@@ -11,14 +11,13 @@ import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
-import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
+import com.unnsvc.rhena.common.execution.ExplodedArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.core.execution.PackagedArtifactDescriptor;
 import com.unnsvc.rhena.core.execution.LocalExecution;
 import com.unnsvc.rhena.core.execution.RhenaArtifactsDescriptorParser;
 import com.unnsvc.rhena.core.model.RhenaModuleParser;
@@ -31,7 +30,6 @@ import com.unnsvc.rhena.core.model.RhenaModuleParser;
  */
 public class LocalCacheRepository implements IRepository {
 
-	private static final long serialVersionUID = 1L;
 	private IRhenaContext context;
 
 	public LocalCacheRepository(IRhenaContext context) {
@@ -63,7 +61,7 @@ public class LocalCacheRepository implements IRepository {
 
 			File moduleDescriptor = new File(moduleDirectory, RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
 			try {
-				IArtifactDescriptor descriptor = new PackagedArtifactDescriptor(caller.getIdentifier().toString(), moduleDescriptor.getCanonicalFile().toURI().toURL(), Utils.generateSha1(moduleDescriptor));
+				IArtifactDescriptor descriptor = new ExplodedArtifactDescriptor(IArtifactDescriptor.DEFAULT, caller.getIdentifier().toString(), moduleDescriptor.getCanonicalFile().toURI().toURL());
 				return new LocalExecution(caller.getIdentifier(), caller.getExecutionType(), Collections.singletonList(descriptor));
 			} catch (IOException mue) {
 				throw new RhenaException(mue.getMessage(), mue);

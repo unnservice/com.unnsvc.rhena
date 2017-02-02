@@ -1,10 +1,9 @@
 
-package com.unnsvc.rhena.core.execution;
+package com.unnsvc.rhena.common.execution;
 
 import java.net.URL;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.IPackagedArtifactDescriptor;
 
 public class PackagedArtifactDescriptor extends AbstractArtifactDescriptor implements IPackagedArtifactDescriptor {
 
@@ -12,15 +11,15 @@ public class PackagedArtifactDescriptor extends AbstractArtifactDescriptor imple
 
 	private String sha1;
 
-	public PackagedArtifactDescriptor(String name, URL artifactUrl, String sha1) {
+	public PackagedArtifactDescriptor(String classifier, String name, URL artifactUrl, String sha1) {
 
-		super(name, artifactUrl);
+		super(classifier, name, artifactUrl);
 		this.sha1 = sha1;
 	}
 
-	public PackagedArtifactDescriptor(String name, String artifactUrl, String sha1) throws RhenaException {
+	public PackagedArtifactDescriptor(String classifier, String name, String artifactUrl, String sha1) throws RhenaException {
 
-		super(name, artifactUrl);
+		super(classifier, name, artifactUrl);
 		this.sha1 = sha1;
 	}
 

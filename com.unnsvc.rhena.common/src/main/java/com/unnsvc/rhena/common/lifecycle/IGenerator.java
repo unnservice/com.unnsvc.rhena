@@ -1,13 +1,14 @@
 
 package com.unnsvc.rhena.common.lifecycle;
 
-import java.io.File;
+import java.util.List;
 
 import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 
 public interface IGenerator extends ILifecycleProcessor {
 
-	public File generate(ICaller caller) throws RhenaException;
+	public List<IArtifactDescriptor> generate(ICaller caller) throws RhenaException;
 
 }

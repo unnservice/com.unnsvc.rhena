@@ -24,6 +24,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
+import com.unnsvc.rhena.common.execution.PackagedArtifactDescriptor;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 
 public class RhenaArtifactsDescriptorParser {
@@ -72,12 +73,13 @@ public class RhenaArtifactsDescriptorParser {
 					date = DatatypeConverter.parseDateTime(dateValue);
 				} else if (node.getLocalName().equals("artifact")) {
 
+					String classifier = node.getAttributes().getNamedItem("classifier").getNodeValue();
 					String fileName = node.getAttributes().getNamedItem("name").getNodeValue();
 					String sha1 = node.getAttributes().getNamedItem("sha1").getNodeName();
 
 					URI location = new URI(baseUri.toString() + "/" + fileName).normalize();
 
-					artifacts.add(new PackagedArtifactDescriptor(fileName, location.toURL(), sha1));
+					artifacts.add(new PackagedArtifactDescriptor(classifier, fileName, location.toURL(), sha1));
 					return;
 				}
 			}

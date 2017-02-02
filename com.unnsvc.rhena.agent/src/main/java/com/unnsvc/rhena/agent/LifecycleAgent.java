@@ -10,7 +10,6 @@ import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,13 +19,12 @@ import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.ICommandCaller;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
-import com.unnsvc.rhena.common.agent.ArtifactResult;
-import com.unnsvc.rhena.common.agent.ExplodedResult;
 import com.unnsvc.rhena.common.agent.ILifecycleExecutionResult;
-import com.unnsvc.rhena.common.agent.IResult;
 import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
+import com.unnsvc.rhena.common.execution.ExplodedArtifactDescriptor;
+import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.lifecycle.ICommand;
 import com.unnsvc.rhena.common.lifecycle.ICustomLifecycleCommandExecutable;
@@ -60,8 +58,8 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public synchronized ILifecycleExecutionResult executeLifecycle(IRhenaCache cache, IRhenaConfiguration config, ICaller caller, ILifecycleExecutable lifecycleExecutable) throws RemoteException {
-
+	public synchronized ILifecycleExecutionResult executeLifecycle(IRhenaCache cache, IRhenaConfiguration config, ICaller caller,
+			ILifecycleExecutable lifecycleExecutable) throws RemoteException {
 
 		Map<Class<?>, Object> additionalInjectableTypes = new HashMap<Class<?>, Object>();
 		additionalInjectableTypes.put(List.class, new ArrayList<IProcessor>());
@@ -69,7 +67,7 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 
 		try {
 			IDependencies dependencies = getDependencies(caller, cache);
-			
+
 			// System.err.println("Executing " + caller + " with " +
 			// dependencies);
 			// ClassLoader previousClassloader = new
@@ -103,23 +101,23 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 				IGenerator generator = constructProcessor(generatorExecutable, IGenerator.class, previousClassloader, additionalInjectableTypes);
 				executeProcessor(caller, generator, generatorExecutable, dependencies);
 
-				File generatedFile = generator.generate(caller);
-				IResult result = new ArtifactResult(generatedFile.getName(), generatedFile.toURI().toURL());
+				List<IArtifactDescriptor> results = generator.generate(caller);
 
 				executeCommand(caller, lifecycleExecutable, previousClassloader, additionalInjectableTypes, dependencies);
 
-				return new LifecycleExecutionResult(Collections.singletonList(result), inputs);
+				return new LifecycleExecutionResult(results, inputs);
 			} else {
 
 				executeCommand(caller, lifecycleExecutable, previousClassloader, additionalInjectableTypes, dependencies);
 
-				List<IResult> generated = new ArrayList<IResult>();
+				List<IArtifactDescriptor> generated = new ArrayList<IArtifactDescriptor>();
 				for (IResource resource : inputs) {
 					if (resource.getResourceType().equals(caller.getExecutionType())) {
 						File sourceDir = new File(resource.getBaseDirectory(), resource.getRelativeSourcePath()).getCanonicalFile().getAbsoluteFile();
 						File outputDir = new File(resource.getBaseDirectory(), resource.getRelativeOutputPath()).getCanonicalFile().getAbsoluteFile();
 						if (outputDir.exists() && outputDir.list().length > 0) {
-							generated.add(new ExplodedResult(outputDir.getName(), outputDir.toURI().toURL(), sourceDir.toURI().toURL()));
+							generated.add(new ExplodedArtifactDescriptor(IArtifactDescriptor.DEFAULT, outputDir.getName(), outputDir.toURI().toURL()));
+							generated.add(new ExplodedArtifactDescriptor(IArtifactDescriptor.SOURCES, sourceDir.getName(), sourceDir.toURI().toURL()));
 						}
 					}
 				}

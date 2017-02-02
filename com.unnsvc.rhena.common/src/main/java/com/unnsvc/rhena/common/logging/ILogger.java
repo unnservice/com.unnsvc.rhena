@@ -31,5 +31,4 @@ public interface ILogger {
 	public void fireLogEvent(ELogLevel level, Class<?> clazz, ModuleIdentifier identifier, String message, Throwable throwable) throws RhenaException;
 
 	public void fireLogEvent(ELogLevel level, String loggerName, ModuleIdentifier identifier, String message, RemoteException exception) throws RhenaException;
-
 }

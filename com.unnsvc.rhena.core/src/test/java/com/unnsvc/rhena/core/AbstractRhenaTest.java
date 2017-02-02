@@ -10,8 +10,6 @@ import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.core.RhenaConfiguration;
-import com.unnsvc.rhena.core.RhenaContext;
 import com.unnsvc.rhena.core.logging.SystemOutLogListener;
 import com.unnsvc.rhena.core.resolution.LocalCacheRepository;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
