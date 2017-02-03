@@ -24,7 +24,7 @@ import com.unnsvc.rhena.common.lifecycle.ILifecycleReference;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.search.IDependencies;
-import com.unnsvc.rhena.common.search.URLDependencyTreeVisitor;
+import com.unnsvc.rhena.common.search.ExecutionCollectionDependencyVisitor;
 import com.unnsvc.rhena.core.execution.WorkspaceExecution;
 import com.unnsvc.rhena.core.lifecycle.CommandProcessorReference;
 import com.unnsvc.rhena.core.lifecycle.CustomCommandExecutable;
@@ -116,7 +116,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 
 		IRhenaCache cache = context.getCache();
 		IRhenaModule module = cache.getModule(moduleEdge.getEntryPoint().getTarget());
-		URLDependencyTreeVisitor coll = new URLDependencyTreeVisitor(cache, moduleEdge.getEntryPoint().getExecutionType(), moduleEdge.getTraverseType());
+		ExecutionCollectionDependencyVisitor coll = new ExecutionCollectionDependencyVisitor(cache, moduleEdge.getEntryPoint().getExecutionType(), moduleEdge.getTraverseType());
 		module.visit(coll);
 		// include the actual lifecycle dependency too
 		IRhenaExecution selfExecution = cache.getExecution(moduleEdge.getEntryPoint().getTarget()).get(moduleEdge.getEntryPoint().getExecutionType());

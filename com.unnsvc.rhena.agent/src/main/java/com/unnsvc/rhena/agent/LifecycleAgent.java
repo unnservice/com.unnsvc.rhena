@@ -41,7 +41,7 @@ import com.unnsvc.rhena.common.lifecycle.IResource;
 import com.unnsvc.rhena.common.logging.ILoggerService;
 import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.search.IDependencies;
-import com.unnsvc.rhena.common.search.URLDependencyTreeVisitor;
+import com.unnsvc.rhena.common.search.ExecutionCollectionDependencyVisitor;
 
 /**
  * This agent is executed in a separate agent JVM
@@ -142,7 +142,7 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 		// ((Dependencies)
 		// depvisitor.getDependencies()).debug(getContext().getLogger(),
 		// caller.getIdentifier(), caller.getExecutionType());
-		URLDependencyTreeVisitor depvisitor = new URLDependencyTreeVisitor(cache, caller.getExecutionType(), ESelectionType.SCOPE);
+		ExecutionCollectionDependencyVisitor depvisitor = new ExecutionCollectionDependencyVisitor(cache, caller.getExecutionType(), ESelectionType.SCOPE);
 		caller.getModule().visit(depvisitor);
 
 		/**

@@ -19,14 +19,14 @@ import com.unnsvc.rhena.common.visitors.IModelVisitor;
  * @author noname
  *
  */
-public abstract class ADependencyTreeVisitor implements IModelVisitor {
+public abstract class ADependencyVisitor implements IModelVisitor {
 
 	private IRhenaCache cache;
 	private EExecutionType type;
 	private ESelectionType selectionType;
 	private Set<IRhenaEdge> edgeTracker;
 
-	protected ADependencyTreeVisitor(IRhenaCache cache, EExecutionType requestedType, ESelectionType selectionType, Set<IRhenaEdge> edgeTracker) {
+	protected ADependencyVisitor(IRhenaCache cache, EExecutionType requestedType, ESelectionType selectionType, Set<IRhenaEdge> edgeTracker) {
 
 		this.cache = cache;
 		this.type = requestedType;

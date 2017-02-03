@@ -4,7 +4,6 @@ package com.unnsvc.rhena.common.search;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.unnsvc.rhena.common.ExecutionTypeMap;
@@ -16,17 +15,17 @@ import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
-public class URLDependencyTreeVisitor extends ADependencyTreeVisitor {
+public class ExecutionCollectionDependencyVisitor extends ADependencyVisitor {
 
-	private Map<EExecutionType, List<IRhenaExecution>> dependencies;
+	private ExecutionTypeMap dependencies;
 
-	public URLDependencyTreeVisitor(IRhenaCache cache, EExecutionType requestedType, ESelectionType selectionType) {
+	public ExecutionCollectionDependencyVisitor(IRhenaCache cache, EExecutionType requestedType, ESelectionType selectionType) {
 
 		this(cache, requestedType, new ExecutionTypeMap(), selectionType, new HashSet<IRhenaEdge>());
 	}
 
-	protected URLDependencyTreeVisitor(IRhenaCache cache, EExecutionType requestedType, Map<EExecutionType, List<IRhenaExecution>> dependencies,
-			ESelectionType selectionType, Set<IRhenaEdge> edgeTracker) {
+	protected ExecutionCollectionDependencyVisitor(IRhenaCache cache, EExecutionType requestedType, ExecutionTypeMap dependencies, ESelectionType selectionType,
+			Set<IRhenaEdge> edgeTracker) {
 
 		super(cache, requestedType, selectionType, edgeTracker);
 		this.dependencies = dependencies;
@@ -35,7 +34,7 @@ public class URLDependencyTreeVisitor extends ADependencyTreeVisitor {
 	@Override
 	protected IModelVisitor newVisitor(IRhenaCache cache, EExecutionType executionType, ESelectionType selectionType, Set<IRhenaEdge> edgeTracker) {
 
-		return new URLDependencyTreeVisitor(cache, executionType, dependencies, selectionType, edgeTracker);
+		return new ExecutionCollectionDependencyVisitor(cache, executionType, dependencies, selectionType, edgeTracker);
 	}
 
 	@Override
