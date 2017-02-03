@@ -92,6 +92,9 @@ public class CascadingModelResolver implements IModelResolver {
 						 * the requested scope
 						 */
 						if (currentEntryPoint.getExecutionType().compareTo(dependency.getEntryPoint().getExecutionType()) >= 0) {
+							/**
+							 * If it's already processed then we don't need to process it again
+							 */
 							if (!processed.contains(dependency.getEntryPoint())) {
 								tracker.pushUnique(dependency.getEntryPoint());
 								break edgeProcessing;

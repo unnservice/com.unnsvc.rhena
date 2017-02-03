@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.core.visitors;
+package com.unnsvc.rhena.common.visitors;
 
 import java.util.List;
 
@@ -9,7 +9,6 @@ import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.visitors.IModelVisitor;
 
 /**
  * Example:
