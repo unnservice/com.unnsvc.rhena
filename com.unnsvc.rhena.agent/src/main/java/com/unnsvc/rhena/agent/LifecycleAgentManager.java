@@ -48,77 +48,78 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 	}
 
 	@Override
-	public synchronized void startup() throws RhenaException, IOException, InterruptedException, NotBoundException {
+	public synchronized void startup() throws RhenaException {
 
-		createRegistry();
-		start();
+		try {
+			createRegistry();
+			start();
+		} catch (IOException | InterruptedException | NotBoundException ioe) {
+
+			throw new RhenaException(ioe.getMessage(), ioe);
+		}
 	}
 
-	private void createRegistry() throws RhenaException {
+	protected void createRegistry() throws IOException {
 
 		/**
 		 * Create registry
 		 */
-		try {
-			final ServerSocket ss = new ServerSocket(0);
-			// ss.close();
-			rmiRegistryPort = ss.getLocalPort();
+		final ServerSocket ss = new ServerSocket(0);
+		// ss.close();
+		rmiRegistryPort = ss.getLocalPort();
 
-			int timeout = 5000;
-			RMISocketFactory fact = new RMISocketFactory() {
+		int timeout = 5000;
+		RMISocketFactory fact = new RMISocketFactory() {
 
-				@Override
-				public Socket createSocket(String host, int port) throws IOException {
+			@Override
+			public Socket createSocket(String host, int port) throws IOException {
 
-					Socket socket = new Socket();
-					socket.setSoTimeout(timeout);
-					socket.setSoLinger(false, 0);
-					socket.connect(new InetSocketAddress(host, port), timeout);
-					return socket;
+				Socket socket = new Socket();
+				socket.setSoTimeout(timeout);
+				socket.setSoLinger(false, 0);
+				socket.connect(new InetSocketAddress(host, port), timeout);
+				return socket;
+			}
+
+			@Override
+			public ServerSocket createServerSocket(int port) throws IOException {
+
+				return ss;
+			}
+		};
+
+		registry = LocateRegistry.createRegistry(rmiRegistryPort, fact, fact);
+		registry.rebind(ILifecycleAgentManager.class.getName(), (ILifecycleAgentManager) this);
+		// logger.info(getClass(), "Started registry: " + registry);
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+
+			public void run() {
+
+				try {
+
+					UnicastRemoteObject.unexportObject(registry, true);
+					lifecycleAgentProcess.destroyForcibly();
+				} catch (Exception ex) {
+					// When list() fails
+					ex.printStackTrace();
 				}
-
-				@Override
-				public ServerSocket createServerSocket(int port) throws IOException {
-
-					return ss;
-				}
-			};
-			
-			registry = LocateRegistry.createRegistry(rmiRegistryPort, fact, fact);
-			registry.rebind(ILifecycleAgentManager.class.getName(), (ILifecycleAgentManager) this);
-			// logger.info(getClass(), "Started registry: " + registry);
-			Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-
-				public void run() {
-
-					try {
-
-						UnicastRemoteObject.unexportObject(registry, true);
-						lifecycleAgentProcess.destroyForcibly();
-					} catch (Exception ex) {
-						// When list() fails
-						ex.printStackTrace();
-					}
-				}
-			}));
-		} catch (Exception e) {
-			throw new RhenaException("Failed to create RMI registry", e);
-		}
+			}
+		}));
 	}
 
-	private void start() throws IOException, InterruptedException, RhenaException, NotBoundException {
+	protected void start() throws IOException, InterruptedException, RhenaException, NotBoundException {
 
 		String javaExecutable = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
 
 		List<String> cmd = new ArrayList<String>();
 		cmd.add(javaExecutable);
-		
-//		cmd.add("-Djava.rmi.server.logCalls=true");
-//		cmd.add("-Djava.rmi.server.logLevel=FINEST");
-//		cmd.add("-Dsun.rmi.transport.logLevel=FINEST");
-//		cmd.add("-Dsun.rmi.transport.tcp.logLevel=FINEST");
-//		cmd.add("-Dsun.io.serialization.extendedDebugInfo=true");
-		
+
+		// cmd.add("-Djava.rmi.server.logCalls=true");
+		// cmd.add("-Djava.rmi.server.logLevel=FINEST");
+		// cmd.add("-Dsun.rmi.transport.logLevel=FINEST");
+		// cmd.add("-Dsun.rmi.transport.tcp.logLevel=FINEST");
+		// cmd.add("-Dsun.io.serialization.extendedDebugInfo=true");
+
 		// cmd.add("-Djava.rmi.server.codebase=" +
 		// createPrefixed(config.getAgentClasspath()));
 		// cmd.add(config.getAgentClasspath());
@@ -182,10 +183,10 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 
 		registry.bind(typeName, object);
 	}
-	
+
 	@Override
 	public IDiagnosticReport getAgentReport() throws AccessException, RemoteException, NotBoundException {
-		
+
 		IClassLoaderReporting clr = (IClassLoaderReporting) registry.lookup(IClassLoaderReporting.class.getName());
 		return clr.produceRuntimeReport();
 	}
