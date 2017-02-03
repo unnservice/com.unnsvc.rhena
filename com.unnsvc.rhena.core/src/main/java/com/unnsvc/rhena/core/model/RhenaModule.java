@@ -103,17 +103,18 @@ public class RhenaModule implements IRhenaModule {
 
 		return lifecycleDeclarations;
 	}
-	
+
 	@Override
 	public Map<String, ILifecycleReference> getMergedLifecycleDeclarations(IRhenaCache cache) {
 
-		if(getParent() != null) {
+		if (getParent() != null) {
 			IRhenaModule parentModule = cache.getModule(getParent().getEntryPoint().getTarget());
-			Map<String, ILifecycleReference> mergedLifecycleReferences = new HashMap<String, ILifecycleReference>(parentModule.getDeclaredLifecycleDeclarations());
+			Map<String, ILifecycleReference> mergedLifecycleReferences = new HashMap<String, ILifecycleReference>(
+					parentModule.getDeclaredLifecycleDeclarations());
 			mergedLifecycleReferences.putAll(getDeclaredLifecycleDeclarations());
 			return mergedLifecycleReferences;
 		}
-		
+
 		return getDeclaredLifecycleDeclarations();
 	}
 

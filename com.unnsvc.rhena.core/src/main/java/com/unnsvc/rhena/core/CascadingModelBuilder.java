@@ -12,6 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import com.unnsvc.rhena.common.ICaller;
+import com.unnsvc.rhena.common.IModelBuilder;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
@@ -25,7 +26,7 @@ import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 
-public class CascadingModelBuilder {
+public class CascadingModelBuilder implements IModelBuilder {
 
 	private IRhenaContext context;
 	private IRhenaCache cache;
@@ -36,6 +37,7 @@ public class CascadingModelBuilder {
 		this.context = context;
 	}
 
+	@Override
 	public IRhenaExecution buildEntryPoint(ICaller caller) throws RhenaException {
 
 		/**
@@ -89,7 +91,8 @@ public class CascadingModelBuilder {
 								return execution;
 							}
 						} catch (Throwable t) {
-							context.getLogger().error(getClass(), resolvableEntryPoint.getTarget(), "Exception in execution materialisation: " + t.getMessage());
+							context.getLogger().error(getClass(), resolvableEntryPoint.getTarget(),
+									"Exception in execution materialisation: " + t.getMessage());
 							t.printStackTrace();
 							throw new RhenaException(t.getMessage(), t);
 						}
@@ -120,7 +123,7 @@ public class CascadingModelBuilder {
 	 * @param entryPoint
 	 * @return
 	 */
-	private ExecutionMergeEntryPoint getAllEntryPoints(IEntryPoint entryPoint) {
+	protected ExecutionMergeEntryPoint getAllEntryPoints(IEntryPoint entryPoint) {
 
 		ExecutionMergeEntryPoint allEntryPoints = new ExecutionMergeEntryPoint();
 		allEntryPoints.addEntryPoint(entryPoint);
@@ -141,7 +144,7 @@ public class CascadingModelBuilder {
 	 * @return
 	 * @throws RhenaException
 	 */
-	private boolean loopGuard(Set<IEntryPoint> allEntryPoints) throws RhenaException {
+	protected boolean loopGuard(Set<IEntryPoint> allEntryPoints) throws RhenaException {
 
 		if (!allEntryPoints.isEmpty()) {
 
@@ -159,7 +162,7 @@ public class CascadingModelBuilder {
 	 * @return
 	 * @throws RhenaException
 	 */
-	private IRhenaExecution materialiseExecution(ICaller caller) throws RhenaException {
+	protected IRhenaExecution materialiseExecution(ICaller caller) throws RhenaException {
 
 		IRhenaExecution execution = null;
 
@@ -173,7 +176,7 @@ public class CascadingModelBuilder {
 		return execution;
 	}
 
-	private IRhenaExecution produceExecution(ICaller caller) throws RhenaException {
+	protected IRhenaExecution produceExecution(ICaller caller) throws RhenaException {
 
 		context.getLogger().info(getClass(), caller.getIdentifier(), "Building: " + caller.getExecutionType().toString().toLowerCase());
 
@@ -188,7 +191,7 @@ public class CascadingModelBuilder {
 	 * @return
 	 * @throws RhenaException
 	 */
-	private Set<IEntryPoint> selectResolved(Set<IEntryPoint> alledges) throws RhenaException {
+	protected Set<IEntryPoint> selectResolved(Set<IEntryPoint> alledges) throws RhenaException {
 
 		Set<IEntryPoint> selected = new HashSet<IEntryPoint>();
 		for (Iterator<IEntryPoint> iter = alledges.iterator(); iter.hasNext();) {
@@ -202,7 +205,7 @@ public class CascadingModelBuilder {
 		return selected;
 	}
 
-	private boolean isBuildable(IEntryPoint entryPoint, IRhenaModule module, boolean debug) throws RhenaException {
+	protected boolean isBuildable(IEntryPoint entryPoint, IRhenaModule module, boolean debug) throws RhenaException {
 
 		boolean buildable = true;
 		List<String> waitingOn = new UniqueList<String>();
@@ -273,7 +276,7 @@ public class CascadingModelBuilder {
 		return buildable;
 	}
 
-	private void prefillExecutions(Set<IEntryPoint> alledges) {
+	protected void prefillExecutions(Set<IEntryPoint> alledges) {
 
 		// prefill
 		for (IEntryPoint entryPoint : alledges) {

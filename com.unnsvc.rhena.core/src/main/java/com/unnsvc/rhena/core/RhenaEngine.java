@@ -4,6 +4,8 @@ package com.unnsvc.rhena.core;
 import java.util.Set;
 
 import com.unnsvc.rhena.common.ICaller;
+import com.unnsvc.rhena.common.IModelBuilder;
+import com.unnsvc.rhena.common.IModelResolver;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -24,14 +26,14 @@ import com.unnsvc.rhena.core.model.EntryPoint;
 public class RhenaEngine implements IRhenaEngine {
 
 	private IRhenaContext context;
-	private CascadingModelResolver cascadingResolver;
-	private CascadingModelBuilder cascadingBuilder;
+	private IModelResolver modelResolver;
+	private IModelBuilder modelBuilder;
 
 	public RhenaEngine(IRhenaContext context) {
 
 		this.context = context;
-		this.cascadingResolver = new CascadingModelResolver(context, context.getCache());
-		this.cascadingBuilder = new CascadingModelBuilder(context, context.getCache());
+		this.modelResolver = new CascadingModelResolver(context, context.getCache());
+		this.modelBuilder = new CascadingModelBuilder(context, context.getCache());
 	}
 
 	@Override
@@ -39,13 +41,13 @@ public class RhenaEngine implements IRhenaEngine {
 
 		// Get maximum coverage in model resolution with test
 		IEntryPoint entryPoint = new EntryPoint(EExecutionType.TEST, identifier);
-		return cascadingResolver.resolveEntryPoint(entryPoint);
+		return modelResolver.resolveEntryPoint(entryPoint);
 	}
 
 	@Override
 	public IRhenaExecution materialiseExecution(ICaller caller) throws RhenaException {
 
-		return cascadingBuilder.buildEntryPoint(caller);
+		return modelBuilder.buildEntryPoint(caller);
 	}
 
 	@Override

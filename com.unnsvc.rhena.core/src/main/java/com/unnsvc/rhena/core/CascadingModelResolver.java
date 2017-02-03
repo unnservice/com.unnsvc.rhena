@@ -4,6 +4,7 @@ package com.unnsvc.rhena.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.unnsvc.rhena.common.IModelResolver;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
@@ -25,7 +26,7 @@ import com.unnsvc.rhena.core.execution.UniqueStack;
  * @author noname
  *
  */
-public class CascadingModelResolver {
+public class CascadingModelResolver implements IModelResolver {
 
 	private IRhenaContext context;
 	private IRhenaCache cache;
@@ -43,6 +44,7 @@ public class CascadingModelResolver {
 	 * @param entryPoint
 	 * @throws RhenaException
 	 */
+	@Override
 	public IRhenaModule resolveEntryPoint(IEntryPoint entryPoint) throws RhenaException {
 
 		List<IEntryPoint> processed = new ArrayList<IEntryPoint>();
@@ -137,7 +139,7 @@ public class CascadingModelResolver {
 		return materialiseModel(entryPoint.getTarget());
 	}
 
-	public IRhenaModule materialiseModel(ModuleIdentifier identifier) throws RhenaException {
+	protected IRhenaModule materialiseModel(ModuleIdentifier identifier) throws RhenaException {
 
 		IRhenaModule module = cache.getModule(identifier);
 		if (module == null) {
