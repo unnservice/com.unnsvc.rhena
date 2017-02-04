@@ -3,6 +3,7 @@ package com.unnsvc.rhena.common.search;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.RhenaConstants;
@@ -150,9 +151,34 @@ public abstract class AFlatTreeVisitor {
 				/**
 				 * We're finished with this node so we can pop it
 				 */
-				processed.add(tracker.pop().getEntryPoint());
+				IEntryPoint resolvedEntryPoint = tracker.pop().getEntryPoint();
+				processed.add(resolvedEntryPoint);
+				onResolvedEntryPoint(resolvedEntryPoint);
 			}
 		}
+
+		onAllResolvedEntryPoints(processed);
+	}
+
+	protected void onAllResolvedEntryPoints(List<IEntryPoint> resolvedEntryPoints) {
+		
+		/**
+		 * Enables one to hook into the tree traversal and act after each entry
+		 * point is resolved
+		 */
+		int rand = new Random().nextInt();
+		for(IEntryPoint ep : resolvedEntryPoints) {
+			
+			System.err.println(rand + " All " + ep);
+		}
+	}
+
+	protected void onResolvedEntryPoint(IEntryPoint resolvedEntryPoint) {
+
+		/**
+		 * Enables one to hook into the tree traversal and act after each entry
+		 * point is resolved
+		 */
 	}
 
 	protected IRhenaCache getCache() {
@@ -161,7 +187,7 @@ public abstract class AFlatTreeVisitor {
 	}
 
 	protected IRhenaModule resolveModel(ModuleIdentifier identifier) throws RhenaException {
-		
+
 		return cache.getModule(identifier);
 	}
 

@@ -68,7 +68,7 @@ public class DebugModelVisitor implements IModelVisitor {
 
 			for (IRhenaEdge edge : mergedEdges) {
 
-				IRhenaModule dep = engine.materialiseModel(edge.getEntryPoint().getTarget());
+				IRhenaModule dep = engine.getContext().getCache().getModule(edge.getEntryPoint().getTarget());
 				dep.visit(new DebugModelVisitor(context, indents + 1, engine, edge.getEntryPoint().getExecutionType().toString()));
 			}
 
