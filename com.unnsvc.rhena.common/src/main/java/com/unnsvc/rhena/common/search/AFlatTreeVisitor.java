@@ -3,7 +3,6 @@ package com.unnsvc.rhena.common.search;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.RhenaConstants;
@@ -20,7 +19,8 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.utils.UniqueStack;
 
 /**
- * New tree visiting mechanism that will only visit relevant tree extents
+ * The flat tree visitor is intended to visit trees in a non-recursive way to
+ * process infinitely large models
  * 
  * @author noname
  *
@@ -36,50 +36,33 @@ public abstract class AFlatTreeVisitor {
 		this.cache = cache;
 	}
 
+	/**
+	 * Will visit entry point and its dependencies
+	 * @param entryPoint
+	 * @param selectionType
+	 * @return
+	 * @throws RhenaException
+	 */
 	public IRhenaModule visitTree(IEntryPoint entryPoint, ESelectionType selectionType) throws RhenaException {
 
 		List<IEntryPoint> processed = new ArrayList<IEntryPoint>();
-		UniqueStack<CollectionFrame> tracker = new UniqueStack<CollectionFrame>();
-		tracker.push(new CollectionFrame(entryPoint, selectionType));
+		UniqueStack<FlatTreeFrame> tracker = new UniqueStack<FlatTreeFrame>();
+		tracker.push(new FlatTreeFrame(entryPoint, selectionType));
 
 		try {
 			processTracker(tracker, processed);
 		} catch (NotUniqueException nue) {
-			debugCyclic(entryPoint.getTarget(), tracker, nue);
+			debugCyclic(entryPoint.getTarget(), tracker);
+			throw new RhenaException(nue.getMessage(), nue);
 		}
 		return resolveModel(entryPoint.getTarget());
 	}
 
-	protected void debugCyclic(ModuleIdentifier identifier, UniqueStack<CollectionFrame> tracker, NotUniqueException nue) throws RhenaException {
-
-		logger.error(getClass(), identifier, "Cyclic dependency path detected:");
-		boolean shift = false;
-
-		/**
-		 * Print something coherent so we can resolve the cycle
-		 */
-		IEntryPoint ofInterest = tracker.peek().getEntryPoint();
-		boolean startlog = false;
-		for (CollectionFrame collectionFrame : tracker) {
-			IEntryPoint entryPoint = collectionFrame.getEntryPoint();
-			if (entryPoint.equals(ofInterest)) {
-				startlog = true;
-			}
-			if (startlog) {
-				// @TODO
-				logger.error(getClass(), identifier,
-						"Cycle: " + (shift ? "↓" : "↓") + " " + resolveModel(entryPoint.getTarget()).getIdentifier().toTag(entryPoint.getExecutionType()));
-				shift = !shift;
-			}
-		}
-		throw new RhenaException(nue.getMessage(), nue);
-	}
-
-	private void processTracker(UniqueStack<CollectionFrame> tracker, List<IEntryPoint> processed) throws RhenaException {
+	private void processTracker(UniqueStack<FlatTreeFrame> tracker, List<IEntryPoint> processed) throws RhenaException {
 
 		while (!tracker.isEmpty()) {
 			edgeProcessing: {
-				CollectionFrame currentFrame = tracker.peek();
+				FlatTreeFrame currentFrame = tracker.peek();
 				IEntryPoint currentEntryPoint = currentFrame.getEntryPoint();
 				ESelectionType currentSelectionType = currentFrame.getSelectionType();
 				IRhenaModule currentModule = resolveModel(currentEntryPoint.getTarget());
@@ -88,7 +71,7 @@ public abstract class AFlatTreeVisitor {
 				if (currentModule.getParent() != null && !processed.contains(currentModule.getParent().getEntryPoint())) {
 
 					IRhenaEdge parentEdge = currentModule.getParent();
-					tracker.pushUnique(new CollectionFrame(parentEdge.getEntryPoint(), parentEdge.getTraverseType()));
+					tracker.pushUnique(new FlatTreeFrame(parentEdge.getEntryPoint(), parentEdge.getTraverseType()));
 					break edgeProcessing;
 				}
 
@@ -104,7 +87,7 @@ public abstract class AFlatTreeVisitor {
 					for (ILifecycleProcessorReference ref : lifecycle.getAllReferences()) {
 						if (!processed.contains(ref.getModuleEdge().getEntryPoint())) {
 							IRhenaEdge lifecycleEdge = ref.getModuleEdge();
-							tracker.pushUnique(new CollectionFrame(lifecycleEdge.getEntryPoint(), lifecycleEdge.getTraverseType()));
+							tracker.pushUnique(new FlatTreeFrame(lifecycleEdge.getEntryPoint(), lifecycleEdge.getTraverseType()));
 							break edgeProcessing;
 						}
 					}
@@ -130,16 +113,16 @@ public abstract class AFlatTreeVisitor {
 
 								if (currentSelectionType.equals(ESelectionType.SCOPE)) {
 
-									tracker.pushUnique(new CollectionFrame(dependency.getEntryPoint(), dependency.getTraverseType(), currentSelectionType));
+									tracker.pushUnique(new FlatTreeFrame(dependency.getEntryPoint(), dependency.getTraverseType(), currentSelectionType));
 									break edgeProcessing;
 								} else if (currentSelectionType.equals(ESelectionType.DIRECT)) {
 
-									tracker.pushUnique(new CollectionFrame(dependency.getEntryPoint(), dependency.getTraverseType(), currentSelectionType));
+									tracker.pushUnique(new FlatTreeFrame(dependency.getEntryPoint(), dependency.getTraverseType(), currentSelectionType));
 									break edgeProcessing;
 								} else if (currentSelectionType.equals(ESelectionType.COMPONENT)) {
 
 									if (currentModule.getIdentifier().getComponentName().equals(dependency.getEntryPoint().getTarget().getComponentName())) {
-										tracker.pushUnique(new CollectionFrame(dependency.getEntryPoint(), dependency.getTraverseType(), currentSelectionType));
+										tracker.pushUnique(new FlatTreeFrame(dependency.getEntryPoint(), dependency.getTraverseType(), currentSelectionType));
 										break edgeProcessing;
 									}
 								}
@@ -151,7 +134,8 @@ public abstract class AFlatTreeVisitor {
 				/**
 				 * We're finished with this node so we can pop it
 				 */
-				IEntryPoint resolvedEntryPoint = tracker.pop().getEntryPoint();
+				FlatTreeFrame frame = tracker.pop();
+				IEntryPoint resolvedEntryPoint = frame.getEntryPoint();
 				processed.add(resolvedEntryPoint);
 				onResolvedEntryPoint(resolvedEntryPoint);
 			}
@@ -160,25 +144,22 @@ public abstract class AFlatTreeVisitor {
 		onAllResolvedEntryPoints(processed);
 	}
 
+	/**
+	 * This method is called after all entry points have been processed
+	 * 
+	 * @param resolvedEntryPoints
+	 */
 	protected void onAllResolvedEntryPoints(List<IEntryPoint> resolvedEntryPoints) {
-		
-		/**
-		 * Enables one to hook into the tree traversal and act after each entry
-		 * point is resolved
-		 */
-		int rand = new Random().nextInt();
-		for(IEntryPoint ep : resolvedEntryPoints) {
-			
-			System.err.println(rand + " All " + ep);
-		}
+
 	}
 
+	/**
+	 * This method is called for each processed entry point
+	 * 
+	 * @param resolvedEntryPoint
+	 */
 	protected void onResolvedEntryPoint(IEntryPoint resolvedEntryPoint) {
 
-		/**
-		 * Enables one to hook into the tree traversal and act after each entry
-		 * point is resolved
-		 */
 	}
 
 	protected IRhenaCache getCache() {
@@ -191,4 +172,27 @@ public abstract class AFlatTreeVisitor {
 		return cache.getModule(identifier);
 	}
 
+	protected void debugCyclic(ModuleIdentifier identifier, UniqueStack<FlatTreeFrame> tracker) throws RhenaException {
+
+		logger.error(getClass(), identifier, "Cyclic dependency path detected:");
+		boolean shift = false;
+
+		/**
+		 * Print something coherent so we can resolve the cycle
+		 */
+		IEntryPoint ofInterest = tracker.peek().getEntryPoint();
+		boolean startlog = false;
+		for (FlatTreeFrame collectionFrame : tracker) {
+			IEntryPoint entryPoint = collectionFrame.getEntryPoint();
+			if (entryPoint.equals(ofInterest)) {
+				startlog = true;
+			}
+			if (startlog) {
+				// @TODO
+				logger.error(getClass(), identifier,
+						"Cycle: " + (shift ? "↓" : "↓") + " " + resolveModel(entryPoint.getTarget()).getIdentifier().toTag(entryPoint.getExecutionType()));
+				shift = !shift;
+			}
+		}
+	}
 }

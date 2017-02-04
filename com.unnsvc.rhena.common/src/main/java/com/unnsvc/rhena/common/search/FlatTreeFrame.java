@@ -11,18 +11,18 @@ import com.unnsvc.rhena.common.model.IEntryPoint;
  * @author noname
  *
  */
-public class CollectionFrame {
+public class FlatTreeFrame {
 
 	private IEntryPoint entryPoint;
 	private ESelectionType selectionType;
 	private ESelectionType previousSelectionType;
 
-	public CollectionFrame(IEntryPoint entryPoint, ESelectionType selectionType) {
+	public FlatTreeFrame(IEntryPoint entryPoint, ESelectionType selectionType) {
 
 		this(entryPoint, selectionType, ESelectionType.SCOPE);
 	}
 
-	public CollectionFrame(IEntryPoint entryPoint, ESelectionType selectionType, ESelectionType previousSelectionType) {
+	public FlatTreeFrame(IEntryPoint entryPoint, ESelectionType selectionType, ESelectionType previousSelectionType) {
 
 		this.entryPoint = entryPoint;
 		this.selectionType = selectionType;
@@ -62,7 +62,7 @@ public class CollectionFrame {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		CollectionFrame other = (CollectionFrame) obj;
+		FlatTreeFrame other = (FlatTreeFrame) obj;
 		if (entryPoint == null) {
 			if (other.entryPoint != null)
 				return false;
