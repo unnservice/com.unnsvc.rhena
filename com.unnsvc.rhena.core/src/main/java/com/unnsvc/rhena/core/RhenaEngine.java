@@ -40,7 +40,7 @@ public class RhenaEngine implements IRhenaEngine {
 	public IRhenaModule materialiseModel(ModuleIdentifier identifier) throws RhenaException {
 
 		// Get maximum coverage in model resolution with test
-		IEntryPoint entryPoint = new EntryPoint(EExecutionType.TEST, identifier);
+		IEntryPoint entryPoint = new EntryPoint(EExecutionType.PROTO, identifier);
 		return modelResolver.resolveEntryPoint(entryPoint);
 	}
 

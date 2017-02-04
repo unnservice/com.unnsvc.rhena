@@ -1,154 +1,42 @@
 
 package com.unnsvc.rhena.core;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.unnsvc.rhena.common.IModelResolver;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
-import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.NotExistsException;
-import com.unnsvc.rhena.common.exceptions.NotUniqueException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.lifecycle.ILifecycleProcessorReference;
-import com.unnsvc.rhena.common.lifecycle.ILifecycleReference;
+import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IEntryPoint;
-import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.core.execution.UniqueStack;
+import com.unnsvc.rhena.common.search.AFlatTreeVisitor;
 
-/**
- * This class will also check whether there are any cyclic relationships
- * 
- * @author noname
- *
- */
-public class CascadingModelResolver implements IModelResolver {
+public class CascadingModelResolver extends AFlatTreeVisitor implements IModelResolver {
 
 	private IRhenaContext context;
-	private IRhenaCache cache;
 
 	public CascadingModelResolver(IRhenaContext context, IRhenaCache cache) {
 
+		super(context.getLogger(), cache);
 		this.context = context;
-		this.cache = cache;
 	}
 
-	/**
-	 * Cascading resolver which performs cyclic checking.
-	 * 
-	 * @TODO make bolognese out of this pasta, factor out the break
-	 * @param entryPoint
-	 * @throws RhenaException
-	 */
 	@Override
 	public IRhenaModule resolveEntryPoint(IEntryPoint entryPoint) throws RhenaException {
 
-		List<IEntryPoint> processed = new ArrayList<IEntryPoint>();
-		UniqueStack<IEntryPoint> tracker = new UniqueStack<IEntryPoint>();
-		tracker.push(entryPoint);
-
-		try {
-			while (!tracker.isEmpty()) {
-				edgeProcessing: {
-					IEntryPoint currentEntryPoint = tracker.peek();
-					IRhenaModule currentModule = materialiseModel(currentEntryPoint.getTarget());
-
-					// if has parent and parent isn't already processed
-					if (currentModule.getParent() != null && !processed.contains(currentModule.getParent().getEntryPoint())) {
-
-						tracker.pushUnique(currentModule.getParent().getEntryPoint());
-						break edgeProcessing;
-					}
-
-					/**
-					 * Resolve lifecycle from here after we've merged parents
-					 */
-					if (!currentModule.getLifecycleName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
-						ILifecycleReference lifecycle = currentModule.getMergedLifecycleDeclarations(cache).get(currentModule.getLifecycleName());
-						if (lifecycle == null) {
-							throw new RhenaException("Could not find lifecycle " + currentModule.getLifecycleName() + " in " + currentModule.getIdentifier());
-						}
-
-						for (ILifecycleProcessorReference ref : lifecycle.getAllReferences()) {
-							if (!processed.contains(ref.getModuleEdge().getEntryPoint())) {
-								tracker.pushUnique(ref.getModuleEdge().getEntryPoint());
-								break edgeProcessing;
-							}
-						}
-					}
-
-					/**
-					 * Now we're dealing with the actual dependencies, for this
-					 * we will want to only enter requested dependency paths
-					 **/
-					for (IRhenaEdge dependency : currentModule.getMergedDependencies(cache)) {
-
-						/**
-						 * We only care about dependencies which we can use in
-						 * the requested scope
-						 */
-						if (currentEntryPoint.getExecutionType().compareTo(dependency.getEntryPoint().getExecutionType()) >= 0) {
-							/**
-							 * If it's already processed then we don't need to process it again
-							 */
-							if (!processed.contains(dependency.getEntryPoint())) {
-								tracker.pushUnique(dependency.getEntryPoint());
-								break edgeProcessing;
-							}
-						}
-					}
-
-					/**
-					 * We're finished with this node so we can pop it
-					 */
-					processed.add(tracker.pop());
-				}
-			}
-
-			// debug. This shouldn't be needed but might useful for evaluating
-			// bugs in the cyclic check
-			// System.err.println("Processing: " + processed.size());
-			// for(IEntryPoint ep : processed) {
-			// System.err.println(" ep " + ep);
-			// }
-
-		} catch (NotUniqueException nue) {
-			context.getLogger().error(getClass(), entryPoint.getTarget(), "Cyclic dependency path detected:");
-			boolean shift = false;
-
-			/**
-			 * Print something coherent so we can resolve the cycle
-			 */
-			IEntryPoint ofInterest = tracker.peek();
-			boolean startlog = false;
-			for (IEntryPoint edge : tracker) {
-				if (edge.equals(ofInterest)) {
-					startlog = true;
-				}
-				if (startlog) {
-					// @TODO
-					context.getLogger().error(getClass(), entryPoint.getTarget(),
-							"Cycle: " + (shift ? "↓" : "↓") + " " + materialiseModel(edge.getTarget()).getIdentifier().toTag(edge.getExecutionType()));
-					shift = !shift;
-				}
-			}
-			throw new RhenaException(nue.getMessage(), nue);
-		}
-
-		return materialiseModel(entryPoint.getTarget());
+		return visitTree(entryPoint, ESelectionType.SCOPE);
 	}
 
-	protected IRhenaModule materialiseModel(ModuleIdentifier identifier) throws RhenaException {
+	@Override
+	protected IRhenaModule resolveModel(ModuleIdentifier identifier) throws RhenaException {
 
-		IRhenaModule module = cache.getModule(identifier);
+		IRhenaModule module = getCache().getModule(identifier);
 		if (module == null) {
 
 			// initial module resolve
-			for (IRepository repository : context.getWorkspaceRepositories()) {
+			for (IRepository repository : getContext().getWorkspaceRepositories()) {
 
 				try {
 					module = repository.materialiseModel(identifier);
@@ -161,12 +49,12 @@ public class CascadingModelResolver implements IModelResolver {
 			}
 
 			if (module == null) {
-				IRepository localRepo = context.getLocalCacheRepository();
+				IRepository localRepo = getContext().getLocalCacheRepository();
 				module = localRepo.materialiseModel(identifier);
 			}
 
 			if (module == null) {
-				for (IRepository additionalRepo : context.getAdditionalRepositories()) {
+				for (IRepository additionalRepo : getContext().getAdditionalRepositories()) {
 					module = additionalRepo.materialiseModel(identifier);
 					if (module != null) {
 						break;
@@ -182,9 +70,14 @@ public class CascadingModelResolver implements IModelResolver {
 				throw new RhenaException(identifier.toString() + " not found");
 			}
 
-			cache.addModule(identifier, module);
-			context.getLogger().info(getClass(), identifier, "Materialised model");
+			getCache().addModule(identifier, module);
+			getContext().getLogger().info(getClass(), identifier, "Materialised model");
 		}
 		return module;
+	}
+
+	protected IRhenaContext getContext() {
+
+		return context;
 	}
 }

@@ -24,8 +24,7 @@ public class ExecutionCollectionDependencyVisitor extends ADependencyVisitor {
 		this(cache, requestedType, new ExecutionTypeMap(), selectionType, new HashSet<IRhenaEdge>());
 	}
 
-	protected ExecutionCollectionDependencyVisitor(IRhenaCache cache, EExecutionType requestedType, ExecutionTypeMap dependencies, ESelectionType selectionType,
-			Set<IRhenaEdge> edgeTracker) {
+	protected ExecutionCollectionDependencyVisitor(IRhenaCache cache, EExecutionType requestedType, ExecutionTypeMap dependencies, ESelectionType selectionType, Set<IRhenaEdge> edgeTracker) {
 
 		super(cache, requestedType, selectionType, edgeTracker);
 		this.dependencies = dependencies;
