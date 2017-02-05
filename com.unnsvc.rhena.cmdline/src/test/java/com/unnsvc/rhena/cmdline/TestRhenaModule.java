@@ -32,7 +32,7 @@ public class TestRhenaModule extends AbstractRhenaTest {
 
 		IRhenaEngine engine = new RhenaEngine(getContext());
 
-		IRhenaModule entryPointModule = engine.materialiseModel(ModuleIdentifier.valueOf("com.unnsvc.rhena:core:0.0.1"));
+		IRhenaModule entryPointModule = engine.materialiseModel(ModuleIdentifier.valueOf("com.unnsvc.rhena:core:1.0.0"));
 		Assert.assertNotNull(entryPointModule);
 
 		debugContext(engine);

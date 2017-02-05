@@ -34,10 +34,6 @@
 
 	</meta>
 
-	<!-- <dependency:main module="component2:module1:0.0.1" /> -->
-	<!-- <dependency:test module="component2:module1:0.0.1" traverse="scope" /> -->
-	<!-- <dependency:test module="org.junit:junit:4.12" /> -->
-
 </module>
 
 
