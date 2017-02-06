@@ -15,6 +15,7 @@ import com.unnsvc.rhena.common.config.RepositoryDefinition;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.logging.ILogger;
 import com.unnsvc.rhena.common.logging.ILoggerService;
+import com.unnsvc.rhena.common.process.IProcessListener;
 import com.unnsvc.rhena.core.logging.LogFacade;
 import com.unnsvc.rhena.core.resolution.RemoteRepository;
 
@@ -34,6 +35,9 @@ public class RhenaContext implements IRhenaContext {
 	private ILogger logFacade;
 	private ILifecycleAgentManager lifecycleAgentManager;
 
+	private List<IProcessListener> agentExitListeners;
+	private List<IProcessListener> agentStartListeners;
+
 	/**
 	 * @throws RhenaException
 	 * @TODO this remains from old code
@@ -47,6 +51,9 @@ public class RhenaContext implements IRhenaContext {
 			this.additionalRepositories = new ArrayList<IRepository>();
 			this.listenerConfig = new ListenerConfiguration();
 			this.logFacade = new LogFacade(listenerConfig);
+			this.agentExitListeners = new ArrayList<IProcessListener>();
+			this.agentStartListeners = new ArrayList<IProcessListener>();
+
 			initialConfiguration();
 			startupContext();
 		} catch (Throwable t) {
@@ -67,14 +74,14 @@ public class RhenaContext implements IRhenaContext {
 	private void startupContext() throws RhenaException {
 
 		try {
-			lifecycleAgentManager = new LifecycleAgentManager(getLogger(), config);
+			lifecycleAgentManager = new LifecycleAgentManager(config, this);
 			lifecycleAgentManager.startup();
 			/**
 			 * @TODO export relevant objects
 			 */
 			lifecycleAgentManager.export(ILoggerService.class.getName(), (ILoggerService) logFacade);
 		} catch (Exception ex) {
-			throw new RhenaException(ex.getMessage(), ex);
+			throw new RhenaException("Failed to start lifecycle agent", ex);
 		}
 	}
 
@@ -135,6 +142,18 @@ public class RhenaContext implements IRhenaContext {
 	public void addAdditionalRepository(IRepository repository) {
 
 		this.additionalRepositories.add(repository);
+	}
+
+	@Override
+	public List<IProcessListener> getAgentExitListeners() {
+
+		return agentExitListeners;
+	}
+
+	@Override
+	public List<IProcessListener> getAgentStartListeners() {
+
+		return agentStartListeners;
 	}
 
 	/**

@@ -2,16 +2,19 @@
 package com.unnsvc.rhena.common.process;
 
 import com.unnsvc.rhena.common.IRhenaConfiguration;
+import com.unnsvc.rhena.common.IRhenaContext;
 
 public class ProcessExitTracker extends Thread {
 
 	private Process process;
 	private IRhenaConfiguration config;
+	private IRhenaContext context;
 
-	public ProcessExitTracker(Process process, IRhenaConfiguration config) {
+	public ProcessExitTracker(IRhenaContext context, Process process, IRhenaConfiguration config) {
 
 		this.process = process;
 		this.config = config;
+		this.context = context;
 	}
 
 	public Process getProcess() {
@@ -23,7 +26,7 @@ public class ProcessExitTracker extends Thread {
 
 		try {
 			process.waitFor();
-			for (IProcessListener listener : config.getAgentExitListeners()) {
+			for (IProcessListener listener : context.getAgentExitListeners()) {
 				listener.onProcess(process);
 			}
 		} catch (InterruptedException e) {

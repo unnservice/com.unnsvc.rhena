@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.unnsvc.rhena.common.IRhenaConfiguration;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.agent.ILifecycleAgent;
 import com.unnsvc.rhena.common.agent.ILifecycleAgentManager;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -39,12 +40,14 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 	private ProcessExitTracker lifecycleAgentProcessExitTracker;
 	private IRhenaConfiguration config;
 	private ILogger logger;
+	private IRhenaContext context;
 
-	public LifecycleAgentManager(ILogger logger, IRhenaConfiguration config) throws RemoteException, RhenaException {
+	public LifecycleAgentManager(IRhenaConfiguration config, IRhenaContext context) throws RemoteException, RhenaException {
 
 		super();
-		this.logger = logger;
 		this.config = config;
+		this.context = context;
+		this.logger = context.getLogger();
 	}
 
 	@Override
@@ -139,7 +142,7 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 		// logger.info(getClass(), "Building process: " + builder.command());
 
 		lifecycleAgentProcess = builder.inheritIO().start();
-		lifecycleAgentProcessExitTracker = new ProcessExitTracker(lifecycleAgentProcess, config);
+		lifecycleAgentProcessExitTracker = new ProcessExitTracker(context, lifecycleAgentProcess, config);
 		lifecycleAgentProcessExitTracker.start();
 
 		/**
@@ -150,7 +153,7 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 		if (!notifiedByAgent) {
 			throw new RhenaException("Timeout reached, failed to start lifecycle agent");
 		} else {
-			for (IProcessListener listener : config.getAgentStartListeners()) {
+			for (IProcessListener listener : context.getAgentStartListeners()) {
 
 				listener.onProcess(lifecycleAgentProcess);
 			}

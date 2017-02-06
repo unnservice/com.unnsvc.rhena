@@ -2,13 +2,10 @@
 package com.unnsvc.rhena.core;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.config.IRhenaSettings;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.process.IProcessListener;
 import com.unnsvc.rhena.core.config.RhenaSettingsParser;
 
 public class RhenaConfiguration implements IRhenaConfiguration {
@@ -22,17 +19,7 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	private String profilerClasspath;
 	private IRhenaSettings settings;
 
-	/**
-	 * As the configuration needs to be passed into the lifecycle agent, we
-	 * can't serialize the listeners with whatever they may implement
-	 */
-	private transient List<IProcessListener> agentExitListeners;
-	private transient List<IProcessListener> agentStartListeners;
-
 	public RhenaConfiguration() throws RhenaException {
-
-		this.agentExitListeners = new ArrayList<IProcessListener>();
-		this.agentStartListeners = new ArrayList<IProcessListener>();
 		
 		this.settings = new RhenaSettingsParser();
 	}
@@ -107,18 +94,6 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	public String getProfilerClasspath() {
 
 		return profilerClasspath;
-	}
-
-	@Override
-	public List<IProcessListener> getAgentExitListeners() {
-
-		return agentExitListeners;
-	}
-
-	@Override
-	public List<IProcessListener> getAgentStartListeners() {
-
-		return agentStartListeners;
 	}
 	
 	@Override
