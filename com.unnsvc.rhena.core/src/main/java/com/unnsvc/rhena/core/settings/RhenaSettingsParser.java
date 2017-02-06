@@ -1,12 +1,10 @@
 
-package com.unnsvc.rhena.core.config;
+package com.unnsvc.rhena.core.settings;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,18 +18,13 @@ import org.xml.sax.SAXException;
 
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
-import com.unnsvc.rhena.common.config.IRhenaSettings;
-import com.unnsvc.rhena.common.config.RepositoryDefinition;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.settings.IRhenaSettings;
 
 public class RhenaSettingsParser implements IRhenaSettings {
 
-	private static final long serialVersionUID = 1L;
-	private List<RepositoryDefinition> repositoryDefinitions;
-
 	public RhenaSettingsParser() throws RhenaException {
 
-		this.repositoryDefinitions = new ArrayList<RepositoryDefinition>();
 		try {
 			File homeDir = new File(System.getProperty("user.home"));
 			File rhenaHome = new File(homeDir, ".rhena");
@@ -65,16 +58,9 @@ public class RhenaSettingsParser implements IRhenaSettings {
 					String type = node.getLocalName();
 					String name = node.getAttributes().getNamedItem("name").getNodeValue();
 					URI uri = new URI(node.getAttributes().getNamedItem("url").getNodeValue());
-					RepositoryDefinition repoDef = new RepositoryDefinition(name, uri, type);
-					repositoryDefinitions.add(repoDef);
+
 				}
 			}
 		}
-	}
-
-	@Override
-	public List<RepositoryDefinition> getRepositoryDefinitions() {
-
-		return repositoryDefinitions;
 	}
 }

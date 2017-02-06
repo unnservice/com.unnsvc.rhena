@@ -7,14 +7,10 @@ import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
-import com.unnsvc.rhena.common.RhenaConstants;
-import com.unnsvc.rhena.common.Utils;
-import com.unnsvc.rhena.common.config.RepositoryDefinition;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.IRhenaExecution;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.core.model.RhenaModuleParser;
 
 /**
  * 
@@ -34,28 +30,27 @@ import com.unnsvc.rhena.core.model.RhenaModuleParser;
 public class RemoteRepository implements IRepository {
 
 	private IRhenaContext context;
-	private RepositoryDefinition repoDef;
 
-	public RemoteRepository(IRhenaContext context, RepositoryDefinition repoDef) {
+	public RemoteRepository(IRhenaContext context) {
 
 		this.context = context;
-		this.repoDef = repoDef;
 	}
 
 	@Override
 	public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
 
-		StringBuilder moduleDescriptorPath = new StringBuilder(getModuleBase(moduleIdentifier));
-		moduleDescriptorPath.append(RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
-		URI moduleDescriptor = Utils.toUri(moduleDescriptorPath.toString());
-
-		if (Utils.exists(moduleDescriptor)) {
-
-			return new RhenaModuleParser(context, this, moduleIdentifier, moduleDescriptor).getModel();
-		} else {
-
-			return null;
-		}
+//		StringBuilder moduleDescriptorPath = new StringBuilder(getModuleBase(moduleIdentifier));
+//		moduleDescriptorPath.append(RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
+//		URI moduleDescriptor = Utils.toUri(moduleDescriptorPath.toString());
+//
+//		if (Utils.exists(moduleDescriptor)) {
+//
+//			return new RhenaModuleParser(context, this, moduleIdentifier, moduleDescriptor).getModel();
+//		} else {
+//
+//			return null;
+//		}
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	@Override
@@ -68,21 +63,22 @@ public class RemoteRepository implements IRepository {
 		throw new UnsupportedOperationException("Not implemented");
 	}
 
-	private String getModuleBase(ModuleIdentifier moduleIdentifier) {
-
-		StringBuilder moduleBase = new StringBuilder();
-		moduleBase.append(repoDef.getUri().toString()).append("/");
-		moduleBase.append("main").append("/");
-		moduleBase.append(moduleIdentifier.getComponentName().toString().replaceAll("\\.", "/")).append("/");
-		moduleBase.append(moduleIdentifier.getModuleName()).append("/");
-		moduleBase.append(moduleIdentifier.getVersion()).append("/");
-		return moduleBase.toString();
-	}
+//	private String getModuleBase(ModuleIdentifier moduleIdentifier) {
+//
+//		StringBuilder moduleBase = new StringBuilder();
+//		moduleBase.append(repoDef.getUri().toString()).append("/");
+//		moduleBase.append("main").append("/");
+//		moduleBase.append(moduleIdentifier.getComponentName().toString().replaceAll("\\.", "/")).append("/");
+//		moduleBase.append(moduleIdentifier.getModuleName()).append("/");
+//		moduleBase.append(moduleIdentifier.getVersion()).append("/");
+//		return moduleBase.toString();
+//	}
 
 	@Override
 	public URI getLocation() {
 
-		return repoDef.getUri();
+//		return repoDef.getUri();
+		throw new UnsupportedOperationException("Not implemented");
 	}
 }
 // extends AbstractRepository {

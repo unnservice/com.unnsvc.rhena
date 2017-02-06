@@ -4,13 +4,13 @@ Bundle-Name: Core
 Bundle-SymbolicName: com.unnsvc.rhena.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Export-Package: com.unnsvc.rhena.core,
- com.unnsvc.rhena.core.config,
  com.unnsvc.rhena.core.events,
  com.unnsvc.rhena.core.execution,
  com.unnsvc.rhena.core.lifecycle,
  com.unnsvc.rhena.core.logging,
  com.unnsvc.rhena.core.model,
- com.unnsvc.rhena.core.resolution
+ com.unnsvc.rhena.core.resolution,
+ com.unnsvc.rhena.core.settings
 Require-Bundle: com.unnsvc.rhena.agent,
  com.unnsvc.rhena.common,
  com.unnsvc.rhena.lifecycle,

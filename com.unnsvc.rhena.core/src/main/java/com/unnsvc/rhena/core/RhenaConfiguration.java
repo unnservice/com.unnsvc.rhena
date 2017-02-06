@@ -4,9 +4,9 @@ package com.unnsvc.rhena.core;
 import java.io.File;
 
 import com.unnsvc.rhena.common.IRhenaConfiguration;
-import com.unnsvc.rhena.common.config.IRhenaSettings;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.core.config.RhenaSettingsParser;
+import com.unnsvc.rhena.common.settings.IRhenaSettings;
+import com.unnsvc.rhena.core.settings.RhenaSettingsParser;
 
 public class RhenaConfiguration implements IRhenaConfiguration {
 

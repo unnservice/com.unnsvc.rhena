@@ -4,7 +4,7 @@ package com.unnsvc.rhena.common;
 import java.io.File;
 import java.io.Serializable;
 
-import com.unnsvc.rhena.common.config.IRhenaSettings;
+import com.unnsvc.rhena.common.settings.IRhenaSettings;
 
 public interface IRhenaConfiguration extends Serializable {
 
