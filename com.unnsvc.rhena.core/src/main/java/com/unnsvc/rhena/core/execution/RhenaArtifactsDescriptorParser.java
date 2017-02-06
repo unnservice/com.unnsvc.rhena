@@ -77,20 +77,32 @@ public class RhenaArtifactsDescriptorParser {
 				} else if (node.getLocalName().equals("artifact")) {
 
 					String classifier = node.getAttributes().getNamedItem("classifier").getNodeValue();
-					
+
 					Node primaryNode = Utils.getChildNode(node, "primary");
 					String artifactName = primaryNode.getAttributes().getNamedItem("name").getNodeValue();
 					String sha1 = primaryNode.getAttributes().getNamedItem("sha1").getNodeValue();
 					URI location = new URI(baseUri.toString() + "/" + artifactName).normalize();
 					IArtifact primary = new PackagedArtifact(artifactName, location.toURL(), sha1);
-					
-					Node sourcesNode = Utils.getChildNode(node, "sources");
-					artifactName = sourcesNode.getAttributes().getNamedItem("name").getNodeValue();
-					sha1 = sourcesNode.getAttributes().getNamedItem("sha1").getNodeValue();
-					location = new URI(baseUri.toString() + "/" + artifactName).normalize();
-					IArtifact sources = new PackagedArtifact(artifactName, location.toURL(), sha1);
 
-					artifactDescriptors.add(new ArtifactDescriptor(classifier, primary, sources));
+					Node sourcesNode = Utils.getChildNode(node, "sources");
+					IArtifact sourcesArtifact = null;
+					if (sourcesNode != null) {
+						artifactName = sourcesNode.getAttributes().getNamedItem("name").getNodeValue();
+						sha1 = sourcesNode.getAttributes().getNamedItem("sha1").getNodeValue();
+						location = new URI(baseUri.toString() + "/" + artifactName).normalize();
+						sourcesArtifact = new PackagedArtifact(artifactName, location.toURL(), sha1);
+					}
+
+					Node javadocNode = Utils.getChildNode(node, "javadoc");
+					IArtifact javadocArtifact = null;
+					if (javadocNode != null) {
+						artifactName = javadocNode.getAttributes().getNamedItem("name").getNodeValue();
+						sha1 = javadocNode.getAttributes().getNamedItem("sha1").getNodeValue();
+						location = new URI(baseUri.toString() + "/" + artifactName).normalize();
+						javadocArtifact = new PackagedArtifact(artifactName, location.toURL(), sha1);
+					}
+
+					artifactDescriptors.add(new ArtifactDescriptor(classifier, primary, sourcesArtifact, javadocArtifact));
 
 					return;
 				}

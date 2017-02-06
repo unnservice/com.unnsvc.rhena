@@ -40,8 +40,8 @@ import com.unnsvc.rhena.common.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.lifecycle.IResource;
 import com.unnsvc.rhena.common.logging.ILoggerService;
 import com.unnsvc.rhena.common.model.ESelectionType;
-import com.unnsvc.rhena.common.search.IDependencies;
 import com.unnsvc.rhena.common.search.ExecutionCollectionDependencyVisitor;
+import com.unnsvc.rhena.common.search.IDependencies;
 
 /**
  * This agent is executed in a separate agent JVM
@@ -122,7 +122,7 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 							IArtifact mainArtifact = new ExplodedArtifact(outputDir.getName(), outputDir.toURI().toURL());
 							IArtifact sourceArtifact = new ExplodedArtifact(sourceDir.getName(), sourceDir.toURI().toURL());
 
-							IArtifactDescriptor descriptor = new ArtifactDescriptor(IArtifactDescriptor.DEFAULT_CLASSIFIER, mainArtifact, sourceArtifact);
+							IArtifactDescriptor descriptor = new ArtifactDescriptor(IArtifactDescriptor.DEFAULT_CLASSIFIER, mainArtifact, sourceArtifact, null);
 							generated.add(descriptor);
 						}
 					}

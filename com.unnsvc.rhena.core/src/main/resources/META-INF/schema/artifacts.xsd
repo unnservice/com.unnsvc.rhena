@@ -16,6 +16,7 @@
 		<xs:sequence>
 			<xs:element name="primary" type="tns:artifactType" minOccurs="1" maxOccurs="1" />
 			<xs:element name="sources" type="tns:artifactType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="javadoc" type="tns:artifactType" minOccurs="0" maxOccurs="1" />
 		</xs:sequence>
 		<xs:attribute name="classifier" type="xs:string" use="required" />
 	</xs:complexType>

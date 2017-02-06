@@ -96,10 +96,10 @@ public class DefaultGenerator implements IGenerator {
 			String outputSha1 = Utils.generateSha1(outputLocation);
 			String sourceOutputSha1 = Utils.generateSha1(sourceOutputLocation);
 
-			PackagedArtifact defaultArtifact = new PackagedArtifact(outputLocation.getName(), outputLocation.toURI().toURL(), outputSha1);
-			PackagedArtifact testArtifact = new PackagedArtifact(sourceOutputLocation.getName(), sourceOutputLocation.toURI().toURL(), sourceOutputSha1);
+			PackagedArtifact primaryArtifact = new PackagedArtifact(outputLocation.getName(), outputLocation.toURI().toURL(), outputSha1);
+			PackagedArtifact sourcesArtifact = new PackagedArtifact(sourceOutputLocation.getName(), sourceOutputLocation.toURI().toURL(), sourceOutputSha1);
 
-			IArtifactDescriptor descriptor = new ArtifactDescriptor(IArtifactDescriptor.DEFAULT_CLASSIFIER, defaultArtifact, testArtifact);
+			IArtifactDescriptor descriptor = new ArtifactDescriptor(IArtifactDescriptor.DEFAULT_CLASSIFIER, primaryArtifact, sourcesArtifact, null);
 
 			results.add(descriptor);
 			return results;
