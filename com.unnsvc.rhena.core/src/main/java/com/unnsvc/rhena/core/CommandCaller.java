@@ -5,6 +5,11 @@ import com.unnsvc.rhena.common.ICommandCaller;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 
+/**
+ * Support multiple commands
+ * @author noname
+ *
+ */
 public class CommandCaller extends Caller implements ICommandCaller {
 
 	private static final long serialVersionUID = 1L;

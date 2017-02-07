@@ -8,9 +8,9 @@ import com.unnsvc.rhena.common.settings.IRhenaSettings;
 
 public interface IRhenaConfiguration extends Serializable {
 
-	public void setRhenaHome(File rhenaHome);
+	public void setInstanceHome(File instanceHome);
 
-	public File getRhenaHome();
+	public File getInstanceHome();
 
 	public void setPackageWorkspace(boolean packageWorkspace);
 

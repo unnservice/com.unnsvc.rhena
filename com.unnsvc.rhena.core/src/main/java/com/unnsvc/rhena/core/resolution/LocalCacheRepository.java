@@ -101,7 +101,7 @@ public class LocalCacheRepository implements IRepository {
 
 	public File getLocationFile() {
 
-		return new File(context.getConfig().getRhenaHome(), "repository");
+		return new File(context.getConfig().getInstanceHome(), "repository");
 	}
 
 	@Override

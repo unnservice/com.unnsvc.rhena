@@ -22,7 +22,7 @@ public abstract class AbstractRhenaTest {
 	public void before() throws Exception {
 
 		IRhenaConfiguration config = new RhenaConfiguration();
-		config.setRhenaHome(new File(System.getProperty("user.home"), ".rhena"));
+		config.setInstanceHome(new File(System.getProperty("user.home"), ".rhena"));
 		config.setParallel(false);
 		// Produce packages or use exploded compilation
 		config.setPackageWorkspace(true);

@@ -7,12 +7,11 @@ import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.settings.IRhenaSettings;
 import com.unnsvc.rhena.core.settings.RhenaSettings;
-import com.unnsvc.rhena.core.settings.RhenaSettingsParser;
 
 public class RhenaConfiguration implements IRhenaConfiguration {
 
 	private static final long serialVersionUID = 1L;
-	private File rhenaHome;
+	private File instanceHome;
 	private boolean packageWorkspace;
 	private boolean parallel;
 	private String agentClasspath;
@@ -29,16 +28,19 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 		this.settings = settings;
 	}
 
+	/**
+	 * Used for example in local cache repository
+	 */
 	@Override
-	public void setRhenaHome(File rhenaHome) {
+	public void setInstanceHome(File instanceHome) {
 
-		this.rhenaHome = rhenaHome;
+		this.instanceHome = instanceHome;
 	}
 
 	@Override
-	public File getRhenaHome() {
+	public File getInstanceHome() {
 
-		return rhenaHome;
+		return instanceHome;
 	}
 
 	@Override

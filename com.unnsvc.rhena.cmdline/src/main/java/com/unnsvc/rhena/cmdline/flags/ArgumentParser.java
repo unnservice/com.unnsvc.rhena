@@ -64,4 +64,9 @@ public class ArgumentParser {
 		}
 		return found;
 	}
+
+	public List<String> getCommands() {
+
+		return commands;
+	}
 }
