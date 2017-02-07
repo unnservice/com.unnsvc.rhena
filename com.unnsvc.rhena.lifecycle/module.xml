@@ -10,7 +10,7 @@
 	</meta>
 
 	<dependency:main module="com.unnsvc.rhena:common:1.0.0" />
-	<dependency:main module="junit:junit:4.12" />
+	<!-- <dependency:main module="junit:junit:4.12" /> -->
 
 </module>
 
