@@ -18,7 +18,7 @@ public class TestRhenaSelfBuild extends AbstractRhenaTest {
 
 	@Test
 	public void testModule() throws Exception {
-
+		
 		getContext().addWorkspaceRepository(new WorkspaceRepository(getContext(), new File("../../")));
 		getContext().addWorkspaceRepository(new WorkspaceRepository(getContext(), new File("../")));
 
