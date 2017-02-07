@@ -16,7 +16,7 @@ public class RhenaConstants {
 	public static final String NS_RHENA_PROPERTIES = "urn:rhena:properties";
 	public static final String NS_RHENA_EXECUTION = "urn:rhena:artifacts";
 	
-	public static final String NS_RHENA_SETTINGS_REPOSITORY = "urn:rhena:settings:repository";
+	public static final String NS_RHENA_SETTINGS = "urn:rhena:settings";
 
 	public static final String DEFAULT_LIFECYCLE_NAME = "default";
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:rhena:settings" xsi:schemaLocation="urn:rhena:settings http://schema.unnsvc.com/rhena/settings.xsd">
+	<!-- <properties> -->
+	<!-- </properties> -->
+	<repositories>
+		<repository name="rhena1" location="http://dev.unnsvc.com/malmo" />
+	</repositories>
+	<workspaces>
+		<workspace name="default" location="file:///home/noname/workspaces/neon" />
+	</workspaces>
+</settings>

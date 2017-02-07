@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:rhena:settings" xmlns:tns="urn:rhena:settings" elementFormDefault="qualified">
+
+	<xs:complexType name="repositoryType">
+		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="location" type="xs:anyURI" use="required" />
+	</xs:complexType>
+
+	<xs:element name="settings">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="repositories" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="repository" type="tns:repositoryType" minOccurs="0" maxOccurs="unbounded" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="workspaces" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="workspace" type="tns:repositoryType" minOccurs="0" maxOccurs="unbounded" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

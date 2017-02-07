@@ -20,8 +20,13 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	private IRhenaSettings settings;
 
 	public RhenaConfiguration() throws RhenaException {
-		
+
 		this.settings = new RhenaSettingsParser();
+	}
+
+	public RhenaConfiguration(IRhenaSettings settings) throws RhenaException {
+
+		this.settings = settings;
 	}
 
 	@Override
@@ -95,7 +100,7 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 
 		return profilerClasspath;
 	}
-	
+
 	@Override
 	public IRhenaSettings getSettings() {
 
