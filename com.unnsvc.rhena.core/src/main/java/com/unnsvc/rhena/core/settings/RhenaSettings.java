@@ -9,6 +9,7 @@ import com.unnsvc.rhena.common.settings.IRhenaSettings;
 
 public class RhenaSettings implements IRhenaSettings {
 
+	private static final long serialVersionUID = 1L;
 	private List<IRepositoryDefinition> repositories;
 	private List<IRepositoryDefinition> workspaces;
 
