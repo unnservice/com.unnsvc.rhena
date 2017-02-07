@@ -1,6 +1,7 @@
 
 package com.unnsvc.rhena.core;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,11 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.logging.ILogger;
 import com.unnsvc.rhena.common.logging.ILoggerService;
 import com.unnsvc.rhena.common.process.IProcessListener;
+import com.unnsvc.rhena.common.settings.IRepositoryDefinition;
 import com.unnsvc.rhena.core.logging.LogFacade;
+import com.unnsvc.rhena.core.resolution.LocalCacheRepository;
+import com.unnsvc.rhena.core.resolution.RemoteRepository;
+import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
 
 /**
  * @TODO different locations for RHENA_HOME for windows and unix etc?
@@ -51,6 +56,17 @@ public class RhenaContext implements IRhenaContext {
 			this.logFacade = new LogFacade(listenerConfig);
 			this.agentExitListeners = new ArrayList<IProcessListener>();
 			this.agentStartListeners = new ArrayList<IProcessListener>();
+			this.localCacheRepository = new LocalCacheRepository(this);
+			
+			for(IRepositoryDefinition repoDef : config.getSettings().getRepositories()) {
+				
+				addAdditionalRepository(new RemoteRepository(this, repoDef.getName(), repoDef.getLocation()));
+			}
+			
+			for(IRepositoryDefinition repoDef : config.getSettings().getWorkspaces()) {
+
+				addWorkspaceRepository(new WorkspaceRepository(this, new File(repoDef.getLocation())));
+			}
 
 			initialConfiguration();
 			startupContext();

@@ -31,7 +31,7 @@ public class RemoteRepository implements IRepository {
 
 	private IRhenaContext context;
 
-	public RemoteRepository(IRhenaContext context) {
+	public RemoteRepository(IRhenaContext context, String name, URI location) {
 
 		this.context = context;
 	}

@@ -12,7 +12,6 @@ import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.visitors.DebugModelVisitor;
 import com.unnsvc.rhena.core.logging.SystemOutLogListener;
-import com.unnsvc.rhena.core.resolution.LocalCacheRepository;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
 
 public abstract class AbstractRhenaTest {
@@ -22,37 +21,17 @@ public abstract class AbstractRhenaTest {
 	@Before
 	public void before() throws Exception {
 
-		// System.setProperty("sun.rmi.client.logCalls", "true");
-		// System.setProperty("sun.rmi.server.exceptionTrace", "true");
-
 		IRhenaConfiguration config = new RhenaConfiguration();
 		config.setRhenaHome(new File(System.getProperty("user.home"), ".rhena"));
 		config.setParallel(false);
 		// Produce packages or use exploded compilation
 		config.setPackageWorkspace(true);
-		config.setInstallLocal(true);
 		config.setAgentClasspath(System.getProperty("java.class.path"));
-		// config.setProfilerClasspath(getProfilerClasspath("/META-INF/com.unnsvc.rhena.profiling"));
-		// config.setProfilerClasspath(getProfilerClasspath());
-		// context.setLogHandler(IRhenaLogHandler logHandler);
-		// context.getRepositoryConfiguration().addRepository()
-		// context.getRepositoryConfiguration().setProxyXX?
-		// context.getTestConfiguration().setXXX
-		// context.addListener...
+
 		context = new RhenaContext(config);
 		context.addWorkspaceRepository(new WorkspaceRepository(context, new File("src/test/resources/testrepo/")));
-		context.setLocalRepository(new LocalCacheRepository(context));
 		context.getListenerConfig().addListener(new SystemOutLogListener());
 	}
-
-	// private String getProfilerClasspath(String marker) {
-	//
-	// URL url = AbstractRhenaTest.class.getResource(marker);
-	// String path = url.getPath().substring(0, url.getPath().length() -
-	// marker.length()) + "/";
-	// System.err.println("Location: " + path);
-	// return path;
-	// }
 
 	protected void debugContext(IRhenaEngine engine) throws RhenaException {
 

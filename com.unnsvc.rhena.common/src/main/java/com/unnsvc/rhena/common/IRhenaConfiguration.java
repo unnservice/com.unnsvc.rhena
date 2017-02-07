@@ -14,15 +14,11 @@ public interface IRhenaConfiguration extends Serializable {
 
 	public void setPackageWorkspace(boolean packageWorkspace);
 
-	public void setInstallLocal(boolean installLocal);
-
 	public void setParallel(boolean parallel);
 
 	public boolean isParallel();
 
 	public boolean isPackageWorkspace();
-
-	public boolean isInstallLocal();
 
 	public String getAgentClasspath();
 

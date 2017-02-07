@@ -6,6 +6,7 @@ import java.io.File;
 import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.settings.IRhenaSettings;
+import com.unnsvc.rhena.core.settings.RhenaSettings;
 import com.unnsvc.rhena.core.settings.RhenaSettingsParser;
 
 public class RhenaConfiguration implements IRhenaConfiguration {
@@ -13,7 +14,6 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	private static final long serialVersionUID = 1L;
 	private File rhenaHome;
 	private boolean packageWorkspace;
-	private boolean installLocal;
 	private boolean parallel;
 	private String agentClasspath;
 	private String profilerClasspath;
@@ -21,7 +21,7 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 
 	public RhenaConfiguration() throws RhenaException {
 
-		this.settings = new RhenaSettingsParser();
+		this.settings = new RhenaSettings();
 	}
 
 	public RhenaConfiguration(IRhenaSettings settings) throws RhenaException {
@@ -51,18 +51,6 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	public boolean isPackageWorkspace() {
 
 		return packageWorkspace;
-	}
-
-	@Override
-	public void setInstallLocal(boolean installLocal) {
-
-		this.installLocal = installLocal;
-	}
-
-	@Override
-	public boolean isInstallLocal() {
-
-		return installLocal;
 	}
 
 	@Override
