@@ -60,7 +60,7 @@ public class RhenaContext implements IRhenaContext {
 			
 			for(IRepositoryDefinition repoDef : config.getSettings().getRepositories()) {
 				
-				addAdditionalRepository(new RemoteRepository(this, repoDef.getName(), repoDef.getLocation()));
+				addAdditionalRepository(new RemoteRepository(this, repoDef.getLocation()));
 			}
 			
 			for(IRepositoryDefinition repoDef : config.getSettings().getWorkspaces()) {

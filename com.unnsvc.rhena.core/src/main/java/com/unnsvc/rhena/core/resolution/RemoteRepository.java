@@ -31,7 +31,7 @@ public class RemoteRepository implements IRepository {
 
 	private IRhenaContext context;
 
-	public RemoteRepository(IRhenaContext context, String name, URI location) {
+	public RemoteRepository(IRhenaContext context, URI location) {
 
 		this.context = context;
 	}
@@ -39,17 +39,19 @@ public class RemoteRepository implements IRepository {
 	@Override
 	public IRhenaModule materialiseModel(ModuleIdentifier moduleIdentifier) throws RhenaException {
 
-//		StringBuilder moduleDescriptorPath = new StringBuilder(getModuleBase(moduleIdentifier));
-//		moduleDescriptorPath.append(RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
-//		URI moduleDescriptor = Utils.toUri(moduleDescriptorPath.toString());
-//
-//		if (Utils.exists(moduleDescriptor)) {
-//
-//			return new RhenaModuleParser(context, this, moduleIdentifier, moduleDescriptor).getModel();
-//		} else {
-//
-//			return null;
-//		}
+		// StringBuilder moduleDescriptorPath = new
+		// StringBuilder(getModuleBase(moduleIdentifier));
+		// moduleDescriptorPath.append(RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
+		// URI moduleDescriptor = Utils.toUri(moduleDescriptorPath.toString());
+		//
+		// if (Utils.exists(moduleDescriptor)) {
+		//
+		// return new RhenaModuleParser(context, this, moduleIdentifier,
+		// moduleDescriptor).getModel();
+		// } else {
+		//
+		// return null;
+		// }
 		throw new UnsupportedOperationException("Not implemented");
 	}
 
@@ -63,21 +65,22 @@ public class RemoteRepository implements IRepository {
 		throw new UnsupportedOperationException("Not implemented");
 	}
 
-//	private String getModuleBase(ModuleIdentifier moduleIdentifier) {
-//
-//		StringBuilder moduleBase = new StringBuilder();
-//		moduleBase.append(repoDef.getUri().toString()).append("/");
-//		moduleBase.append("main").append("/");
-//		moduleBase.append(moduleIdentifier.getComponentName().toString().replaceAll("\\.", "/")).append("/");
-//		moduleBase.append(moduleIdentifier.getModuleName()).append("/");
-//		moduleBase.append(moduleIdentifier.getVersion()).append("/");
-//		return moduleBase.toString();
-//	}
+	// private String getModuleBase(ModuleIdentifier moduleIdentifier) {
+	//
+	// StringBuilder moduleBase = new StringBuilder();
+	// moduleBase.append(repoDef.getUri().toString()).append("/");
+	// moduleBase.append("main").append("/");
+	// moduleBase.append(moduleIdentifier.getComponentName().toString().replaceAll("\\.",
+	// "/")).append("/");
+	// moduleBase.append(moduleIdentifier.getModuleName()).append("/");
+	// moduleBase.append(moduleIdentifier.getVersion()).append("/");
+	// return moduleBase.toString();
+	// }
 
 	@Override
 	public URI getLocation() {
 
-//		return repoDef.getUri();
+		// return repoDef.getUri();
 		throw new UnsupportedOperationException("Not implemented");
 	}
 }

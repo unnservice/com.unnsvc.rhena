@@ -3,9 +3,9 @@
 	<!-- <properties> -->
 	<!-- </properties> -->
 	<repositories>
-		<repository name="rhena1" location="http://dev.unnsvc.com/malmo" />
+		<repository location="http://dev.unnsvc.com/malmo" />
 	</repositories>
 	<workspaces>
-		<workspace name="default" location="file:///home/noname/workspaces/neon" />
+		<workspace location="file:///home/noname/workspaces/neon" />
 	</workspaces>
 </settings>

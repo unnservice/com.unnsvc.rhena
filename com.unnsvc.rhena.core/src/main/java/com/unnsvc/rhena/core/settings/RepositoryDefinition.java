@@ -7,19 +7,11 @@ import com.unnsvc.rhena.common.settings.IRepositoryDefinition;
 
 public class RepositoryDefinition implements IRepositoryDefinition {
 
-	private String name;
 	private URI location;
 
-	public RepositoryDefinition(String name, URI location) {
+	public RepositoryDefinition(URI location) {
 
-		this.name = name;
 		this.location = location;
-	}
-
-	@Override
-	public String getName() {
-
-		return name;
 	}
 
 	@Override

@@ -11,7 +11,7 @@ public class ArgumentParser {
 
 	public ArgumentParser(String[] args) throws ArgumentException {
 
-		if(args.length < 1) {
+		if (args.length < 1) {
 			throw new ArgumentException("Command requires at least one argument.");
 		}
 		this.flagArgs = new ArrayList<ArgumentFlag>();

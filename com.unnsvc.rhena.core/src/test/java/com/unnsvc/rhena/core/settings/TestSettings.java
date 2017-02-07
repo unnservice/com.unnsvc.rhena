@@ -11,7 +11,7 @@ public class TestSettings {
 	@Test
 	public void testSettings() throws RhenaException {
 
-		IRhenaSettings settings = new RhenaSettingsParser();
+		IRhenaSettings settings = new RhenaSettingsParser().parseDefault();
 		
 		
 	}
