@@ -19,6 +19,8 @@ public interface ILogger {
 	public void debug(Class<?> clazz, String message);
 
 	public void debug(Class<?> clazz, ModuleIdentifier identifier, String message);
+	
+	public void debug(Class<?> clazz, ModuleIdentifier identifier, String message, Throwable throwable);
 
 	public void warn(Class<?> clazz, String message);
 

@@ -1,6 +1,7 @@
 
 package com.unnsvc.rhena.core.model;
 
+import java.io.File;
 import java.net.URI;
 
 import javax.xml.XMLConstants;
@@ -44,7 +45,7 @@ public class RhenaModuleParser {
 
 		try {
 			this.context = context;
-			URI location = new URI(descriptorLocation.getPath().substring(0, descriptorLocation.getPath().lastIndexOf("/")));
+			URI location = new URI(descriptorLocation.getPath().substring(0, descriptorLocation.getPath().lastIndexOf(File.separator)));
 			this.module = new RhenaModule(identifier, location, repository);
 
 			parse(descriptorLocation);

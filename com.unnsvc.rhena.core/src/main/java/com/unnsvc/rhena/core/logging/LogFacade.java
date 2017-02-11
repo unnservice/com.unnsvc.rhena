@@ -64,6 +64,12 @@ public class LogFacade extends UnicastRemoteObject implements ILogger, ILoggerSe
 	}
 
 	@Override
+	public void debug(Class<?> clazz, ModuleIdentifier identifier, String message, Throwable throwable) {
+
+		fireLogEvent(ELogLevel.DEBUG, clazz, identifier, message, throwable);
+	}
+
+	@Override
 	public void warn(Class<?> clazz, String message) {
 
 		fireLogEvent(ELogLevel.WARN, clazz, null, message);
@@ -112,4 +118,5 @@ public class LogFacade extends UnicastRemoteObject implements ILogger, ILoggerSe
 
 		fireLogEvent(level, clazz, identifier, message, null);
 	}
+
 }
