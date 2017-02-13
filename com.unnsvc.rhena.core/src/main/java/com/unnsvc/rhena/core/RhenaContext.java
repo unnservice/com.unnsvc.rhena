@@ -9,14 +9,14 @@ import com.unnsvc.rhena.agent.LifecycleAgentManager;
 import com.unnsvc.rhena.common.IListenerConfiguration;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
-import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.agent.ILifecycleAgentManager;
+import com.unnsvc.rhena.common.config.IRepositoryDefinition;
+import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.logging.ILogger;
 import com.unnsvc.rhena.common.logging.ILoggerService;
 import com.unnsvc.rhena.common.process.IProcessListener;
-import com.unnsvc.rhena.common.settings.IRepositoryDefinition;
 import com.unnsvc.rhena.core.logging.LogFacade;
 import com.unnsvc.rhena.core.resolution.LocalCacheRepository;
 import com.unnsvc.rhena.core.resolution.RemoteRepository;
@@ -58,12 +58,12 @@ public class RhenaContext implements IRhenaContext {
 			this.agentStartListeners = new ArrayList<IProcessListener>();
 			this.localCacheRepository = new LocalCacheRepository(this);
 			
-			for(IRepositoryDefinition repoDef : config.getSettings().getRepositories()) {
+			for(IRepositoryDefinition repoDef : config.getRepositoryConfiguration().getRepositories()) {
 				
 				addAdditionalRepository(new RemoteRepository(this, repoDef.getLocation()));
 			}
 			
-			for(IRepositoryDefinition repoDef : config.getSettings().getWorkspaces()) {
+			for(IRepositoryDefinition repoDef : config.getRepositoryConfiguration().getWorkspaces()) {
 
 				addWorkspaceRepository(new WorkspaceRepository(this, new File(repoDef.getLocation())));
 			}

@@ -4,6 +4,7 @@ package com.unnsvc.rhena.common;
 import java.util.List;
 
 import com.unnsvc.rhena.common.agent.ILifecycleAgentManager;
+import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.logging.ILogger;
 import com.unnsvc.rhena.common.process.IProcessListener;

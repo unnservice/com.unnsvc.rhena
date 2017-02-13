@@ -18,9 +18,9 @@ import com.unnsvc.rhena.agent.lifecycle.LifecycleExecutionResult;
 import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.ICommandCaller;
 import com.unnsvc.rhena.common.IRhenaCache;
-import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.agent.ILifecycleExecutionResult;
 import com.unnsvc.rhena.common.annotation.ProcessorContext;
+import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.ArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.EExecutionType;
@@ -97,7 +97,7 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 
 			List<IResource> inputs = context.getResources();
 
-			if (config.isPackageWorkspace()) {
+			if (config.getBuildConfiguration().isPackageWorkspace()) {
 
 				ILifecycleProcessorExecutable generatorExecutable = lifecycleExecutable.getGeneratorExecutable();
 				IGenerator generator = constructProcessor(generatorExecutable, IGenerator.class, previousClassloader, additionalInjectableTypes);

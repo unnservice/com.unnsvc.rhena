@@ -13,20 +13,19 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.cmdline.flags.ArgumentException;
 import com.unnsvc.rhena.cmdline.flags.ArgumentFlag;
 import com.unnsvc.rhena.cmdline.flags.ArgumentParser;
-import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.IRhenaEngine;
+import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.settings.IRhenaSettings;
 import com.unnsvc.rhena.core.CommandCaller;
-import com.unnsvc.rhena.core.RhenaConfiguration;
 import com.unnsvc.rhena.core.RhenaContext;
 import com.unnsvc.rhena.core.RhenaEngine;
-import com.unnsvc.rhena.core.settings.RepositoryDefinition;
-import com.unnsvc.rhena.core.settings.RhenaSettingsParser;
+import com.unnsvc.rhena.core.config.RepositoryDefinition;
+import com.unnsvc.rhena.core.config.RhenaConfiguration;
+import com.unnsvc.rhena.core.config.RhenaSettingsParser;
 
 public class Main extends AbstractMain {
 
@@ -39,12 +38,13 @@ public class Main extends AbstractMain {
 	@Override
 	public void configureWithArgs(ArgumentParser parser) throws RhenaException, ArgumentException {
 
-		IRhenaSettings settings = new RhenaSettingsParser().parseDefault();
+		IRhenaConfiguration config = new RhenaConfiguration();
+		new RhenaSettingsParser().loadUserSettings(config);
 
 		for (ArgumentFlag flag : parser.getFlag("repository", "r")) {
 			try {
 				URI location = new URI(flag.getArgument());
-				settings.getRepositories().add(new RepositoryDefinition(location));
+				config.getRepositoryConfiguration().addRepository(new RepositoryDefinition(location));
 			} catch (URISyntaxException u) {
 				throw new RhenaException("Invalid repository location: " + flag.getArgument());
 			}
@@ -55,25 +55,23 @@ public class Main extends AbstractMain {
 			if (!workspaceLocation.exists() || !workspaceLocation.isDirectory()) {
 				throw new RhenaException("Workspace location does not exist: " + workspaceLocation);
 			}
-			settings.getWorkspaces().add(new RepositoryDefinition(workspaceLocation.toURI()));
+			config.getRepositoryConfiguration().addWorkspace(new RepositoryDefinition(workspaceLocation.toURI()));
 		}
 
-		IRhenaConfiguration config = new RhenaConfiguration(settings);
-
 		for (ArgumentFlag flag : parser.getFlag("agentClasspath", "a")) {
-			config.setAgentClasspath(flag.getArgument());
+			config.getAgentConfiguration().setAgentClasspath(flag.getArgument());
 		}
 
 		for (ArgumentFlag flag : parser.getFlag("profilerClasspath", "b")) {
-			config.setProfilerClasspath(flag.getArgument());
+			config.getAgentConfiguration().setProfilerClasspath(flag.getArgument());
 		}
 
 		for (ArgumentFlag flag : parser.getFlag("packageWorkspace", "p")) {
-			config.setPackageWorkspace(Boolean.valueOf(flag.getArgument()));
+			config.getBuildConfiguration().setPackageWorkspace(Boolean.valueOf(flag.getArgument()));
 		}
 
 		for (ArgumentFlag flag : parser.getFlag("parallel", "t")) {
-			config.setParallel(Boolean.valueOf(flag.getArgument()));
+			config.getBuildConfiguration().setParallel(Boolean.valueOf(flag.getArgument()));
 		}
 
 		for (ArgumentFlag flag : parser.getFlag("instanceHome", "i")) {
@@ -108,7 +106,8 @@ public class Main extends AbstractMain {
 		runWithConfiguration(config, identifier, execution, commands);
 	}
 
-	private void runWithConfiguration(IRhenaConfiguration config, ModuleIdentifier identifier, EExecutionType executionType, List<String> commands) throws RhenaException {
+	private void runWithConfiguration(IRhenaConfiguration config, ModuleIdentifier identifier, EExecutionType executionType, List<String> commands)
+			throws RhenaException {
 
 		IRhenaContext context = new RhenaContext(config);
 		IRhenaEngine engine = new RhenaEngine(context);

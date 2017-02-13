@@ -6,11 +6,12 @@ import java.io.File;
 import org.junit.After;
 import org.junit.Before;
 
-import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.IRhenaEngine;
+import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.visitors.DebugModelVisitor;
+import com.unnsvc.rhena.core.config.RhenaConfiguration;
 import com.unnsvc.rhena.core.logging.SystemOutLogListener;
 import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
 
@@ -23,10 +24,9 @@ public abstract class AbstractRhenaTest {
 
 		IRhenaConfiguration config = new RhenaConfiguration();
 		config.setInstanceHome(new File(System.getProperty("user.home"), ".rhena"));
-		config.setParallel(false);
-		// Produce packages or use exploded compilation
-		config.setPackageWorkspace(true);
-		config.setAgentClasspath(System.getProperty("java.class.path"));
+		config.getBuildConfiguration().setParallel(false);
+		config.getBuildConfiguration().setPackageWorkspace(true);
+		config.getAgentConfiguration().setAgentClasspath(System.getProperty("java.class.path"));
 
 		context = new RhenaContext(config);
 		context.addWorkspaceRepository(new WorkspaceRepository(context, new File("src/test/resources/testrepo/")));

@@ -1,8 +1,8 @@
 
 package com.unnsvc.rhena.common.process;
 
-import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 
 public class ProcessExitTracker extends Thread {
 

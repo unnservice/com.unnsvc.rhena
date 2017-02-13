@@ -1,5 +1,4 @@
-
-package com.unnsvc.rhena.common.settings;
+package com.unnsvc.rhena.common.config;
 
 import java.net.URI;
 

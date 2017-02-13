@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.core.settings;
+package com.unnsvc.rhena.core.config;
 
 import java.io.File;
 import java.net.URI;
@@ -16,8 +16,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import com.unnsvc.rhena.common.Utils;
+import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.settings.IRhenaSettings;
 
 public class RhenaSettingsParser {
 
@@ -25,18 +25,16 @@ public class RhenaSettingsParser {
 
 	}
 
-	public IRhenaSettings parseDefault() throws RhenaException {
+	public void loadUserSettings(IRhenaConfiguration config) throws RhenaException {
 
 		File homeDir = new File(System.getProperty("user.home"));
 		File rhenaHome = new File(homeDir, ".rhena");
 		File rhenaSettingsFile = new File(rhenaHome, "settings.xml");
 
-		return parseSettings(rhenaSettingsFile);
+		loadSettings(config, rhenaSettingsFile);
 	}
 
-	private IRhenaSettings parseSettings(File settingsFile) throws RhenaException {
-
-		IRhenaSettings settings = new RhenaSettings();
+	public void loadSettings(IRhenaConfiguration config, File settingsFile) throws RhenaException {
 
 		try {
 
@@ -66,14 +64,14 @@ public class RhenaSettingsParser {
 					for (Node repoNode : Utils.getNodeChildren(child)) {
 
 						String location = repoNode.getAttributes().getNamedItem("location").getNodeValue();
-						settings.getRepositories().add(new RepositoryDefinition(new URI(location)));
+						config.getRepositoryConfiguration().addRepository(new RepositoryDefinition(new URI(location)));
 					}
 				} else if (child.getLocalName().equals("workspaces")) {
 
 					for (Node workNode : Utils.getNodeChildren(child)) {
 
 						String location = workNode.getAttributes().getNamedItem("location").getNodeValue();
-						settings.getWorkspaces().add(new RepositoryDefinition(new URI(location)));
+						config.getRepositoryConfiguration().addWorkspace(new RepositoryDefinition(new URI(location)));
 					}
 				}
 			}
@@ -81,7 +79,5 @@ public class RhenaSettingsParser {
 
 			throw new RhenaException(ex.getMessage(), ex);
 		}
-
-		return settings;
 	}
 }

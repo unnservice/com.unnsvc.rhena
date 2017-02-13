@@ -18,10 +18,10 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.unnsvc.rhena.common.IRhenaConfiguration;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.agent.ILifecycleAgent;
 import com.unnsvc.rhena.common.agent.ILifecycleAgentManager;
+import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.logging.ILogger;
 import com.unnsvc.rhena.common.process.IProcessListener;
@@ -126,12 +126,12 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 		// cmd.add("-Djava.rmi.server.codebase=" +
 		// createPrefixed(config.getAgentClasspath()));
 		// cmd.add(config.getAgentClasspath());
-		if (config.getAgentClasspath() != null) {
+		if (config.getAgentConfiguration().getAgentClasspath() != null) {
 			cmd.add("-classpath");
-			cmd.add(config.getAgentClasspath());
+			cmd.add(config.getAgentConfiguration().getAgentClasspath());
 		}
-		if (config.getProfilerClasspath() != null) {
-			cmd.add("-javaagent:" + config.getProfilerClasspath() + "=\"" + rmiRegistryPort + "\"");
+		if (config.getAgentConfiguration().getProfilerClasspath() != null) {
+			cmd.add("-javaagent:" + config.getAgentConfiguration().getProfilerClasspath() + "=\"" + rmiRegistryPort + "\"");
 		}
 		cmd.add(LifecycleAgent.class.getName());
 		cmd.add(rmiRegistryPort + "");

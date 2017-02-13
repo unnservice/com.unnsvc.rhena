@@ -4,6 +4,7 @@ Bundle-Name: Core
 Bundle-SymbolicName: com.unnsvc.rhena.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Export-Package: com.unnsvc.rhena.core,
+ com.unnsvc.rhena.core.config,
  com.unnsvc.rhena.core.events,
  com.unnsvc.rhena.core.execution,
  com.unnsvc.rhena.core.lifecycle,

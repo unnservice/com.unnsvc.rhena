@@ -65,7 +65,7 @@ public class CascadingModelBuilder implements IModelBuilder {
 			}
 
 			Runtime runtime = Runtime.getRuntime();
-			int threads = context.getConfig().isParallel() ? runtime.availableProcessors() : 1;
+			int threads = context.getConfig().getBuildConfiguration().isParallel() ? runtime.availableProcessors() : 1;
 			ExecutorService executor = Executors.newFixedThreadPool(threads);
 
 			for (final IEntryPoint resolvableEntryPoint : resolvableEntryPoints) {

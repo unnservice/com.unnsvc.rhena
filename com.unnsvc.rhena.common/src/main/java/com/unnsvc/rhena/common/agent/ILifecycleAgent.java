@@ -6,7 +6,7 @@ import java.rmi.RemoteException;
 
 import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.IRhenaCache;
-import com.unnsvc.rhena.common.IRhenaConfiguration;
+import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleExecutable;
 
 public interface ILifecycleAgent extends Remote {
