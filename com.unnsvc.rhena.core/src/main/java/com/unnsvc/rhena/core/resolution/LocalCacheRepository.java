@@ -11,6 +11,7 @@ import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
+import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.ArtifactDescriptor;
 import com.unnsvc.rhena.common.execution.EExecutionType;
@@ -33,10 +34,12 @@ import com.unnsvc.rhena.core.model.RhenaModuleParser;
 public class LocalCacheRepository implements IRepository {
 
 	private IRhenaContext context;
+	private IRhenaConfiguration config;
 
-	public LocalCacheRepository(IRhenaContext context) {
+	public LocalCacheRepository(IRhenaContext context, IRhenaConfiguration config) {
 
 		this.context = context;
+		this.config = config;
 	}
 
 	@Override
@@ -101,6 +104,9 @@ public class LocalCacheRepository implements IRepository {
 
 	public File getLocationFile() {
 
+		if(config.getRepositoryConfiguration().getLocalStorageLocation() != null) {
+			return config.getRepositoryConfiguration().getLocalStorageLocation();
+		}
 		return new File(context.getConfig().getInstanceHome(), "repository");
 	}
 

@@ -1,6 +1,7 @@
 
 package com.unnsvc.rhena.core.config;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import com.unnsvc.rhena.common.config.IRepositoryDefinition;
 public class RepositoryConfiguration implements IRepositoryConfiguration {
 
 	private static final long serialVersionUID = 1L;
+	private File localStorageLocation;
 	private List<IRepositoryDefinition> repositories;
 	private List<IRepositoryDefinition> workspaces;
 
@@ -45,6 +47,23 @@ public class RepositoryConfiguration implements IRepositoryConfiguration {
 		if (!workspaces.contains(repositoryDefinition)) {
 			workspaces.add(repositoryDefinition);
 		}
+	}
+
+	@Override
+	public void addWorkspace(File workspaceLocation) {
+
+		if (workspaceLocation.exists()) {
+			IRepositoryDefinition def = new RepositoryDefinition(workspaceLocation.getAbsoluteFile().toURI());
+			if (!workspaces.contains(def)) {
+				workspaces.add(def);
+			}
+		}
+	}
+
+	@Override
+	public File getLocalStorageLocation() {
+
+		return localStorageLocation;
 	}
 
 }

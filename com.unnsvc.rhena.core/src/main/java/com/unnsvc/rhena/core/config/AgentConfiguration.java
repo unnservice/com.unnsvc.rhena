@@ -8,6 +8,11 @@ public class AgentConfiguration implements IAgentConfiguration {
 	private static final long serialVersionUID = 1L;
 	private String agentClasspath;
 	private String profilerClasspath;
+	
+	public AgentConfiguration() {
+		
+		this.agentClasspath = System.getProperty("java.class.path");
+	}
 
 	@Override
 	public void setAgentClasspath(String agentClasspath) {

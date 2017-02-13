@@ -56,7 +56,7 @@ public class RhenaContext implements IRhenaContext {
 			this.logFacade = new LogFacade(listenerConfig);
 			this.agentExitListeners = new ArrayList<IProcessListener>();
 			this.agentStartListeners = new ArrayList<IProcessListener>();
-			this.localCacheRepository = new LocalCacheRepository(this);
+			this.localCacheRepository = new LocalCacheRepository(this, config);
 			
 			for(IRepositoryDefinition repoDef : config.getRepositoryConfiguration().getRepositories()) {
 				

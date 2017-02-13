@@ -8,9 +8,11 @@ public class BuildConfiguration implements IBuildConfiguration {
 	private static final long serialVersionUID = 1L;
 	private boolean packageWorkspace;
 	private boolean parallel;
-	
+
 	public BuildConfiguration() {
-		
+
+		this.packageWorkspace = true;
+		this.parallel = true;
 	}
 
 	@Override

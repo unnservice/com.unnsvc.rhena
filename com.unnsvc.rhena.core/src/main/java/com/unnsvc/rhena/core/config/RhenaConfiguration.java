@@ -19,6 +19,7 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 
 	public RhenaConfiguration() throws RhenaException {
 
+		this.instanceHome = new File(System.getProperty("user.home"), ".rhena");
 		this.agentConfiguration = new AgentConfiguration();
 		this.repositoryConfiguration = new RepositoryConfiguration();
 		this.buildConfiguration = new BuildConfiguration();
