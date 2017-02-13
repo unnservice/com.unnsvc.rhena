@@ -1,7 +1,9 @@
 
 package com.unnsvc.rhena.common.config;
 
-public interface IAgentConfiguration {
+import java.io.Serializable;
+
+public interface IAgentConfiguration extends Serializable {
 
 	public void setAgentClasspath(String agentClasspath);
 

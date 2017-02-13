@@ -1,7 +1,8 @@
 package com.unnsvc.rhena.common.config;
 
+import java.io.Serializable;
 
-public interface IBuildConfiguration {
+public interface IBuildConfiguration extends Serializable {
 
 	public void setPackageWorkspace(boolean packageWorkspace);
 

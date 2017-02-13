@@ -5,6 +5,7 @@ import com.unnsvc.rhena.common.config.IAgentConfiguration;
 
 public class AgentConfiguration implements IAgentConfiguration {
 
+	private static final long serialVersionUID = 1L;
 	private String agentClasspath;
 	private String profilerClasspath;
 

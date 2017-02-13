@@ -5,6 +5,7 @@ import com.unnsvc.rhena.common.config.IBuildConfiguration;
 
 public class BuildConfiguration implements IBuildConfiguration {
 
+	private static final long serialVersionUID = 1L;
 	private boolean packageWorkspace;
 	private boolean parallel;
 	

@@ -9,6 +9,7 @@ import com.unnsvc.rhena.common.config.IRepositoryDefinition;
 
 public class RepositoryConfiguration implements IRepositoryConfiguration {
 
+	private static final long serialVersionUID = 1L;
 	private List<IRepositoryDefinition> repositories;
 	private List<IRepositoryDefinition> workspaces;
 
