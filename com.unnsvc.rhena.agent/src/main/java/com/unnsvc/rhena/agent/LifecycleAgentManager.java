@@ -127,6 +127,7 @@ public class LifecycleAgentManager extends UnicastRemoteObject implements ILifec
 		// createPrefixed(config.getAgentClasspath()));
 		// cmd.add(config.getAgentClasspath());
 		if (config.getAgentConfiguration().getAgentClasspath() != null) {
+			logger.debug(getClass(), "Starting agent with classpath: " + config.getAgentConfiguration().getAgentClasspath());
 			cmd.add("-classpath");
 			cmd.add(config.getAgentConfiguration().getAgentClasspath());
 		}

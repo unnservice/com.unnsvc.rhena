@@ -53,7 +53,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 
 	private void recursiveAddChildren(File location) {
 
-		System.err.println("Adding: " + location + " " + location.isDirectory());
+		context.getLogger().debug(getClass(), "Adding: " + location + " " + location.isDirectory());
 		for (File contained : location.listFiles()) {
 
 			if (new File(contained, RhenaConstants.MODULE_DESCRIPTOR_FILENAME).exists()) {

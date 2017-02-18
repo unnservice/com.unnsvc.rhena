@@ -80,7 +80,7 @@ public abstract class AbstractLifecycleAgent extends UnicastRemoteObject impleme
 
 					UnicastRemoteObject.unexportObject(AbstractLifecycleAgent.this, true);
 				} catch (Exception ex) {
-					// When list() fails
+
 					ex.printStackTrace();
 				}
 			}

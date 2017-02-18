@@ -57,16 +57,6 @@ public class RhenaContext implements IRhenaContext {
 			this.agentExitListeners = new ArrayList<IProcessListener>();
 			this.agentStartListeners = new ArrayList<IProcessListener>();
 			this.localCacheRepository = new LocalCacheRepository(this, config);
-			
-			for(IRepositoryDefinition repoDef : config.getRepositoryConfiguration().getRepositories()) {
-				
-				addAdditionalRepository(new RemoteRepository(this, repoDef.getLocation()));
-			}
-			
-			for(IRepositoryDefinition repoDef : config.getRepositoryConfiguration().getWorkspaces()) {
-
-				addWorkspaceRepository(new WorkspaceRepository(this, new File(repoDef.getLocation())));
-			}
 
 			initialConfiguration();
 			startupContext();
@@ -80,6 +70,15 @@ public class RhenaContext implements IRhenaContext {
 	 */
 	private void initialConfiguration() {
 
+		for(IRepositoryDefinition repoDef : config.getRepositoryConfiguration().getRepositories()) {
+			
+			addAdditionalRepository(new RemoteRepository(this, repoDef.getLocation()));
+		}
+		
+		for(IRepositoryDefinition repoDef : config.getRepositoryConfiguration().getWorkspaces()) {
+
+			addWorkspaceRepository(new WorkspaceRepository(this, new File(repoDef.getLocation())));
+		}
 	}
 
 	private void startupContext() throws RhenaException {
