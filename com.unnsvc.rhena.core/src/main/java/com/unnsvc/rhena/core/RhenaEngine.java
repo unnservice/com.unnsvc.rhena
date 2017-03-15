@@ -67,7 +67,8 @@ public class RhenaEngine implements IRhenaEngine {
 	@Override
 	public Set<ModuleIdentifier> findRoots(ModuleIdentifier identifier, EExecutionType type) {
 
-		RootFinder finder = new RootFinder(context.getCache(), identifier, type, identifier.getComponentName().toString(), identifier.getComponentName().toString());
+		RootFinder finder = new RootFinder(context.getCache(), identifier, type, identifier.getComponentName().toString(),
+				identifier.getComponentName().toString());
 		return finder.findRoots(0);
 	}
 

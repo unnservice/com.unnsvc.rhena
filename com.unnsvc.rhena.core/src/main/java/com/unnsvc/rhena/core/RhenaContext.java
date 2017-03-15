@@ -5,18 +5,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.unnsvc.rhena.agent.LifecycleAgentManager;
 import com.unnsvc.rhena.common.IListenerConfiguration;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
-import com.unnsvc.rhena.common.agent.ILifecycleAgentManager;
+import com.unnsvc.rhena.common.agent.IAgentClient;
 import com.unnsvc.rhena.common.config.IRepositoryDefinition;
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.logging.ILogger;
-import com.unnsvc.rhena.common.logging.ILoggerService;
-import com.unnsvc.rhena.common.process.IProcessListener;
 import com.unnsvc.rhena.core.logging.LogFacade;
 import com.unnsvc.rhena.core.resolution.LocalCacheRepository;
 import com.unnsvc.rhena.core.resolution.RemoteRepository;
@@ -36,10 +33,7 @@ public class RhenaContext implements IRhenaContext {
 	private IRepository localCacheRepository;
 	private IListenerConfiguration listenerConfig;
 	private ILogger logFacade;
-	private ILifecycleAgentManager lifecycleAgentManager;
-
-	private List<IProcessListener> agentExitListeners;
-	private List<IProcessListener> agentStartListeners;
+	private IAgentClient agent;
 
 	/**
 	 * @throws RhenaException
@@ -54,12 +48,9 @@ public class RhenaContext implements IRhenaContext {
 			this.additionalRepositories = new ArrayList<IRepository>();
 			this.listenerConfig = new ListenerConfiguration();
 			this.logFacade = new LogFacade(listenerConfig);
-			this.agentExitListeners = new ArrayList<IProcessListener>();
-			this.agentStartListeners = new ArrayList<IProcessListener>();
 			this.localCacheRepository = new LocalCacheRepository(this, config);
 
 			initialConfiguration();
-			startupContext();
 		} catch (Throwable t) {
 			throw new RhenaException(t.getMessage(), t);
 		}
@@ -78,20 +69,6 @@ public class RhenaContext implements IRhenaContext {
 		for(IRepositoryDefinition repoDef : config.getRepositoryConfiguration().getWorkspaces()) {
 
 			addWorkspaceRepository(new WorkspaceRepository(this, new File(repoDef.getLocation())));
-		}
-	}
-
-	private void startupContext() throws RhenaException {
-
-		try {
-			lifecycleAgentManager = new LifecycleAgentManager(config, this);
-			lifecycleAgentManager.startup();
-			/**
-			 * @TODO export relevant objects
-			 */
-			lifecycleAgentManager.export(ILoggerService.class.getName(), (ILoggerService) logFacade);
-		} catch (Exception ex) {
-			throw new RhenaException("Failed to start lifecycle agent", ex);
 		}
 	}
 
@@ -154,18 +131,6 @@ public class RhenaContext implements IRhenaContext {
 		this.additionalRepositories.add(repository);
 	}
 
-	@Override
-	public List<IProcessListener> getAgentExitListeners() {
-
-		return agentExitListeners;
-	}
-
-	@Override
-	public List<IProcessListener> getAgentStartListeners() {
-
-		return agentStartListeners;
-	}
-
 	/**
 	 * @TODO clean caches and everything
 	 */
@@ -182,8 +147,15 @@ public class RhenaContext implements IRhenaContext {
 	}
 
 	@Override
-	public ILifecycleAgentManager getLifecycleAgentManager() throws RhenaException {
+	public void setAgent(IAgentClient agent) {
 
-		return lifecycleAgentManager;
+		this.agent = agent;
+	}
+
+	@Override
+	public IAgentClient getAgent() {
+
+		
+		return agent;
 	}
 }

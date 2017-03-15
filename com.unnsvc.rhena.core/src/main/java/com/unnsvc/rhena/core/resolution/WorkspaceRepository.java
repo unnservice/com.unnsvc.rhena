@@ -10,7 +10,7 @@ import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
-import com.unnsvc.rhena.common.agent.ILifecycleAgent;
+import com.unnsvc.rhena.common.agent.IAgentClient;
 import com.unnsvc.rhena.common.agent.ILifecycleExecutionResult;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.ArtifactDescriptor;
@@ -82,7 +82,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 
 				LifecycleExecutable lifecycleExecutable = toLifecycleExecutableTransferFormat(module, cache);
 
-				ILifecycleAgent agent = context.getLifecycleAgentManager().getLifecycleAgent();
+				IAgentClient agent = context.getAgent();
 				ILifecycleExecutionResult generated = agent.executeLifecycle(getContext().getCache(), getContext().getConfig(), caller, lifecycleExecutable);
 
 				List<IArtifactDescriptor> descriptors = generated.getGeneratedArtifacts();
