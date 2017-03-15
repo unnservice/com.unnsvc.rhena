@@ -35,6 +35,7 @@ public class AgentServerProcess {
 		SocketChannel clientExecutionConnection = null;
 		while ((clientExecutionConnection = executionChannel.accept()) != null) {
 			
+			System.out.println("server: Accepted client execution connection");
 			AgentServerExecutionClassloader agentClassLoader = new AgentServerExecutionClassloader(AgentServerProcess.class.getClassLoader(), controlInterface);
 			AgentServerExecutionConnection conn = new AgentServerExecutionConnection(clientExecutionConnection.socket());
 			conn.setContextClassLoader(agentClassLoader);
