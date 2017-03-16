@@ -18,6 +18,8 @@ import com.unnsvc.rhena.agent.lifecycle.LifecycleExecutionResult;
 import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.ICommandCaller;
 import com.unnsvc.rhena.common.IRhenaCache;
+import com.unnsvc.rhena.common.agent.IExecutionRequest;
+import com.unnsvc.rhena.common.agent.ILifecycleAgent;
 import com.unnsvc.rhena.common.agent.ILifecycleExecutionResult;
 import com.unnsvc.rhena.common.annotation.ProcessorContext;
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
@@ -38,7 +40,6 @@ import com.unnsvc.rhena.common.lifecycle.ILifecycleProcessor;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleProcessorExecutable;
 import com.unnsvc.rhena.common.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.lifecycle.IResource;
-import com.unnsvc.rhena.common.logging.ILoggerService;
 import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.search.ExecutionCollectionDependencyVisitor;
 import com.unnsvc.rhena.common.search.IDependencies;
@@ -49,19 +50,16 @@ import com.unnsvc.rhena.common.search.IDependencies;
  * @author noname
  *
  */
-public class LifecycleAgent extends AbstractLifecycleAgent {
-
-	private static final long serialVersionUID = 1L;
-
-	public LifecycleAgent() throws RemoteException {
-
-		super();
-	}
+public class LifecycleAgent implements ILifecycleAgent {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public synchronized ILifecycleExecutionResult executeLifecycle(IRhenaCache cache, IRhenaConfiguration config, ICaller caller,
-			ILifecycleExecutable lifecycleExecutable) throws RemoteException {
+	public synchronized ILifecycleExecutionResult executeLifecycle(IExecutionRequest request) throws RemoteException {
+
+		IRhenaCache cache = request.getCache();
+		IRhenaConfiguration config = request.getConfig();
+		ICaller caller = request.getCaller();
+		ILifecycleExecutable lifecycleExecutable = request.getLifecycleExecutable();
 
 		Map<Class<?>, Object> additionalInjectableTypes = new HashMap<Class<?>, Object>();
 		additionalInjectableTypes.put(List.class, new ArrayList<IProcessor>());
@@ -237,10 +235,13 @@ public class LifecycleAgent extends AbstractLifecycleAgent {
 			if (field.isAnnotationPresent(ProcessorContext.class)) {
 				field.setAccessible(true);
 
-				if (field.getType().equals(ILoggerService.class)) {
+				// if (field.getType().equals(ILoggerService.class)) {
+				//
+				// field.set(instance,
+				// getRemoteType(ILoggerService.class.getName()));
+				// } else
 
-					field.set(instance, getRemoteType(ILoggerService.class.getName()));
-				} else if (additionalInjectableTypes.containsKey(field.getType())) {
+				if (additionalInjectableTypes.containsKey(field.getType())) {
 
 					field.set(instance, additionalInjectableTypes.get(field.getType()));
 				} else {

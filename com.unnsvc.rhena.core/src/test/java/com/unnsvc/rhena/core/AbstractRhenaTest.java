@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 
 import com.unnsvc.rhena.agent.client.AgentClient;
+import com.unnsvc.rhena.agent.server.AgentServerProcess;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
@@ -30,7 +31,7 @@ public abstract class AbstractRhenaTest {
 		context = new RhenaContext(config);
 		context.getListenerConfig().addListener(new SystemOutLogListener());
 
-		agent = new AgentClient();
+		agent = new AgentClient(AgentServerProcess.AGENT_CONTROL_PORT);
 		agent.startup();
 		context.setAgent(agent);
 	}

@@ -12,13 +12,11 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
-import com.unnsvc.rhena.common.logging.ILoggerService;
-
 public class JarHelper {
 
 	private Set<File> toPackages;
 	private File targetJar;
-	private ILoggerService logger;
+//	private ILoggerService logger;
 
 	/**
 	 * 
@@ -28,9 +26,9 @@ public class JarHelper {
 	 * @param manifestFile
 	 *            optional, can be null
 	 */
-	public JarHelper(ILoggerService logger, Set<File> toPackages, File targetJar) {
+	public JarHelper(Set<File> toPackages, File targetJar) {
 
-		this.logger = logger;
+//		this.logger = logger;
 		this.toPackages = toPackages;
 		this.targetJar = targetJar;
 	}

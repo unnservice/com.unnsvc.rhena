@@ -19,8 +19,6 @@ import com.unnsvc.rhena.common.execution.PackagedArtifact;
 import com.unnsvc.rhena.common.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.lifecycle.IGenerator;
 import com.unnsvc.rhena.common.lifecycle.IResource;
-import com.unnsvc.rhena.common.logging.ELogLevel;
-import com.unnsvc.rhena.common.logging.ILoggerService;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.lifecycle.helpers.JarHelper;
 
@@ -33,8 +31,8 @@ public class DefaultGenerator implements IGenerator {
 	private static final long serialVersionUID = 1L;
 	@ProcessorContext
 	private IExecutionContext context;
-	@ProcessorContext
-	private ILoggerService logger;
+//	@ProcessorContext
+//	private ILoggerService logger;
 
 	public DefaultGenerator() {
 
@@ -78,12 +76,12 @@ public class DefaultGenerator implements IGenerator {
 
 		try {
 
-			logger.fireLogEvent(ELogLevel.INFO, getClass().getName(), null, "Building: " + outputLocation, null);
-			JarHelper packagingHelper = new JarHelper(logger, compiledLocations, outputLocation);
+//			logger.fireLogEvent(ELogLevel.INFO, getClass().getName(), null, "Building: " + outputLocation, null);
+			JarHelper packagingHelper = new JarHelper(compiledLocations, outputLocation);
 			packagingHelper.packageJar();
 
-			logger.fireLogEvent(ELogLevel.INFO, getClass().getName(), null, "Building: " + sourceOutputLocation, null);
-			JarHelper sourcePackagingHelper = new JarHelper(logger, sourceLocations, sourceOutputLocation);
+//			logger.fireLogEvent(ELogLevel.INFO, getClass().getName(), null, "Building: " + sourceOutputLocation, null);
+			JarHelper sourcePackagingHelper = new JarHelper(sourceLocations, sourceOutputLocation);
 			sourcePackagingHelper.packageJar();
 
 		} catch (Exception ex) {

@@ -10,4 +10,8 @@ public interface IAgentClient {
 
 	public ILifecycleExecutionResult executeLifecycle(IRhenaCache cache, IRhenaConfiguration config, ICaller caller, ILifecycleExecutable lifecycleExecutable) throws RhenaException;
 
+	public void startup() throws RhenaException;
+
+	public void shutdown() throws RhenaException;
+
 }

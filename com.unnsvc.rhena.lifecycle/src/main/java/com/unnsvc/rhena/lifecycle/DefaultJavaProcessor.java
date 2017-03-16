@@ -25,8 +25,6 @@ import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.lifecycle.IExecutionContext;
 import com.unnsvc.rhena.common.lifecycle.IJavaProcessor;
 import com.unnsvc.rhena.common.lifecycle.IProcessor;
-import com.unnsvc.rhena.common.logging.ELogLevel;
-import com.unnsvc.rhena.common.logging.ILoggerService;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.search.IDependencies;
 
@@ -37,8 +35,8 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 	private IExecutionContext context;
 	// @ProcessorContext
 	// private IRhenaCache cache;
-	@ProcessorContext
-	private ILoggerService logger;
+//	@ProcessorContext
+//	private ILoggerService logger;
 
 	public DefaultJavaProcessor() {
 
@@ -60,7 +58,7 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 		EExecutionType type = caller.getExecutionType();
 		// logger.trace(getClass().getName(), "Executing " +
 		// getClass().getName());
-		logger.fireLogEvent(ELogLevel.TRACE, getClass().getName(), module.getIdentifier(), "Executing " + getClass().getName(), null);
+//		logger.fireLogEvent(ELogLevel.TRACE, getClass().getName(), module.getIdentifier(), "Executing " + getClass().getName(), null);
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(System.getProperty("java.class.path")).append(File.pathSeparator);
@@ -88,8 +86,8 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 		if (resources.isEmpty()) {
 			// logger.warn(getClass(), "No resources selected for compilation in
 			// " + module.getIdentifier() + ":" + type.literal());
-			logger.fireLogEvent(ELogLevel.TRACE, getClass().getName(), module.getIdentifier(),
-					"No resources selected for compilation in " + module.getIdentifier() + ":" + type.literal(), null);
+//			logger.fireLogEvent(ELogLevel.TRACE, getClass().getName(), module.getIdentifier(),
+//					"No resources selected for compilation in " + module.getIdentifier() + ":" + type.literal(), null);
 			return;
 		}
 
@@ -106,7 +104,7 @@ public class DefaultJavaProcessor implements IProcessor, IJavaProcessor {
 		for (Diagnostic<? extends JavaFileObject> diag : diagnostics.getDiagnostics()) {
 
 			// logger.trace(getClass(), "Compiler diagnostic: " + diag);
-			logger.fireLogEvent(ELogLevel.TRACE, getClass().getName(), module.getIdentifier(), "Compiler diagnostic: " + diag, null);
+//			logger.fireLogEvent(ELogLevel.TRACE, getClass().getName(), module.getIdentifier(), "Compiler diagnostic: " + diag, null);
 			if (diag.getKind().equals(Kind.ERROR) && firstError == null) {
 				firstError = diag;
 			}

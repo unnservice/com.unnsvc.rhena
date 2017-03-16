@@ -1,32 +1,27 @@
 
 package com.unnsvc.rhena.common.process;
 
+import java.util.List;
+
 public class ProcessExitTracker extends Thread {
 
-//	private Process process;
-//	private IRhenaConfiguration config;
-//	private IRhenaContext context;
-//
-//	public ProcessExitTracker(IRhenaContext context, Process process, IRhenaConfiguration config) {
-//
-//		this.process = process;
-//		this.config = config;
-//		this.context = context;
-//	}
-//
-//	public Process getProcess() {
-//
-//		return process;
-//	}
-//
-//	public void run() {
-//
-//		try {
-//			process.waitFor();
-//			for (IProcessListener listener : context.getAgentExitListeners()) {
-//				listener.onProcess(process);
-//			}
-//		} catch (InterruptedException e) {
-//		}
-//	}
+	private Process process;
+	private List<IProcessListener> exitListeners;
+
+	public ProcessExitTracker(Process process, List<IProcessListener> exitListeners) {
+
+		this.process = process;
+		this.exitListeners = exitListeners;
+	}
+
+	public void run() {
+
+		try {
+			process.waitFor();
+			for (IProcessListener listener : exitListeners) {
+				listener.onProcess(process);
+			}
+		} catch (InterruptedException e) {
+		}
+	}
 }
