@@ -12,7 +12,6 @@
 		<module>com.unnsvc.rhena.agent</module>
 		<module>com.unnsvc.rhena.cmdline</module>
 		<module>com.unnsvc.rhena.docs</module>
-		<module>com.unnsvc.rhena.profiling</module>
 	</modules>
 
 	<build>
