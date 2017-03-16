@@ -58,14 +58,6 @@ public class Main extends AbstractMain {
 			config.getRepositoryConfiguration().addWorkspace(new RepositoryDefinition(workspaceLocation.toURI()));
 		}
 
-		for (ArgumentFlag flag : parser.getFlag("agentClasspath", "a")) {
-			config.getAgentConfiguration().setAgentClasspath(flag.getArgument());
-		}
-
-		for (ArgumentFlag flag : parser.getFlag("profilerClasspath", "b")) {
-			config.getAgentConfiguration().setProfilerClasspath(flag.getArgument());
-		}
-
 		for (ArgumentFlag flag : parser.getFlag("packageWorkspace", "p")) {
 			config.getBuildConfiguration().setPackageWorkspace(Boolean.valueOf(flag.getArgument()));
 		}

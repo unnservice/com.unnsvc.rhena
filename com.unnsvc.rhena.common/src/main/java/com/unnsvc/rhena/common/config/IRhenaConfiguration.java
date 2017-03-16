@@ -10,8 +10,6 @@ public interface IRhenaConfiguration extends Serializable {
 
 	public File getInstanceHome();
 
-	public IAgentConfiguration getAgentConfiguration();
-
 	public IRepositoryConfiguration getRepositoryConfiguration();
 
 	public IBuildConfiguration getBuildConfiguration();

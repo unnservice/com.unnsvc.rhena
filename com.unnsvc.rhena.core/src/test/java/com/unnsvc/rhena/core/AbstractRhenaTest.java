@@ -33,6 +33,7 @@ public abstract class AbstractRhenaTest {
 
 		agent = new AgentClient(AgentServerProcess.AGENT_CONTROL_PORT);
 		agent.startup();
+		
 		context.setAgent(agent);
 	}
 
