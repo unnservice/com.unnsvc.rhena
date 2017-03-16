@@ -12,7 +12,6 @@
 	<dependency:main module="com.unnsvc.rhena:common:1.0.0" />
 	<dependency:main module="com.unnsvc.rhena:lifecycle:1.0.0" />
 	<dependency:main module="com.unnsvc.rhena:agent:1.0.0" />
-	<dependency:main module="com.unnsvc.rhena:profiling:1.0.0" />
 
 </module>
 
