@@ -14,4 +14,8 @@ public interface IRhenaConfiguration extends Serializable {
 
 	public IBuildConfiguration getBuildConfiguration();
 
+	public void setAgentConfiguration(IAgentConfiguration agentConfiguration);
+
+	public IAgentConfiguration getAgentConfiguration();
+
 }

@@ -3,6 +3,7 @@ package com.unnsvc.rhena.core.config;
 
 import java.io.File;
 
+import com.unnsvc.rhena.common.config.IAgentConfiguration;
 import com.unnsvc.rhena.common.config.IBuildConfiguration;
 import com.unnsvc.rhena.common.config.IRepositoryConfiguration;
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
@@ -14,12 +15,14 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	private File instanceHome;
 	private IRepositoryConfiguration repositoryConfiguration;
 	private IBuildConfiguration buildConfiguration;
+	private IAgentConfiguration agentConfiguration;
 
 	public RhenaConfiguration() throws RhenaException {
 
 		this.instanceHome = new File(System.getProperty("user.home"), ".rhena");
 		this.repositoryConfiguration = new RepositoryConfiguration();
 		this.buildConfiguration = new BuildConfiguration();
+		this.agentConfiguration = new AgentConfiguration();
 	}
 
 	@Override
@@ -47,5 +50,17 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	public File getInstanceHome() {
 
 		return instanceHome;
+	}
+
+	@Override
+	public void setAgentConfiguration(IAgentConfiguration agentConfiguration) {
+
+		this.agentConfiguration = agentConfiguration;
+	}
+
+	@Override
+	public IAgentConfiguration getAgentConfiguration() {
+
+		return agentConfiguration;
 	}
 }
