@@ -28,14 +28,14 @@ import com.unnsvc.rhena.common.process.IProcessListener;
  */
 public class AgentClient extends AbstractAgentClient {
 
-	public AgentClient(int port, String classpath, List<IProcessListener> agentProcessListeners) {
+	public AgentClient(int agentExecutionPort, String classpath, List<IProcessListener> agentProcessListeners) {
 
-		super(port, classpath, agentProcessListeners);
+		super(agentExecutionPort, classpath, agentProcessListeners);
 	}
 
-	public AgentClient(int port, String classpath) {
+	public AgentClient(int agentExecutionPort, String classpath) {
 
-		super(port, classpath, new ArrayList<IProcessListener>());
+		super(agentExecutionPort, classpath, new ArrayList<IProcessListener>());
 	}
 
 	public AgentClient(int port) {

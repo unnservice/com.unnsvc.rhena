@@ -18,12 +18,12 @@ public abstract class AbstractAgentClient implements IAgentClient {
 	private ProcessExitTracker agentProcessTracker;
 	private List<IProcessListener> agentProcessListeners;
 
-	private int controlPort;
+	private int agentExecutionPort;
 	private String classpath;
 
-	public AbstractAgentClient(int controlPort, String classpath, List<IProcessListener> agentProcessListeners) {
+	public AbstractAgentClient(int agentExecutionPort, String classpath, List<IProcessListener> agentProcessListeners) {
 
-		this.controlPort = controlPort;
+		this.agentExecutionPort = agentExecutionPort;
 		this.classpath = classpath;
 		this.agentProcessListeners = agentProcessListeners;
 	}
@@ -39,7 +39,7 @@ public abstract class AbstractAgentClient implements IAgentClient {
 			cmd.add("-classpath");
 			cmd.add(classpath);
 			cmd.add(AgentServerProcess.class.getName());
-			cmd.add(controlPort + "");
+			cmd.add(agentExecutionPort + "");
 
 			ProcessBuilder builder = new ProcessBuilder(cmd);
 			this.agentProcess = builder.inheritIO().start();

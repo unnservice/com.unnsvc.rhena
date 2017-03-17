@@ -31,7 +31,7 @@ public abstract class AbstractRhenaTest {
 		context = new RhenaContext(config);
 		context.getListenerConfig().addListener(new SystemOutLogListener());
 
-		agent = new AgentClient(AgentServerProcess.AGENT_CONTROL_PORT);
+		agent = new AgentClient(AgentServerProcess.AGENT_EXECUTION_PORT);
 		agent.startup();
 		
 		context.setAgent(agent);

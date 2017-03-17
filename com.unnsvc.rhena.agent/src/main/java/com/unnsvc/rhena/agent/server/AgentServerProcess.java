@@ -7,25 +7,21 @@ import java.nio.channels.SocketChannel;
 
 public class AgentServerProcess {
 
-	public static final int AGENT_CONTROL_PORT = 14231;
 	public static final int AGENT_EXECUTION_PORT = 14232;
 
 	public static void main(String... args) throws Exception {
 		
-		System.out.println("server: Server agent process start");
-		new AgentServerProcess().startServer();
+		int executionPort = Integer.valueOf(args[0]);
+		
+		System.out.println("server: Server agent process start, listening on port " + executionPort);
+		new AgentServerProcess().listenExecutions(executionPort);
 	}
 
-	protected void startServer() throws Exception {
-
-		listenExecutions();
-	}
-
-	private void listenExecutions() throws Exception {
+	private void listenExecutions(int executionPort) throws Exception {
 
 		ServerSocketChannel executionChannel = ServerSocketChannel.open();
 		executionChannel.configureBlocking(true);
-		executionChannel.socket().bind(new InetSocketAddress(AGENT_EXECUTION_PORT));
+		executionChannel.socket().bind(new InetSocketAddress(executionPort));
 
 		SocketChannel clientExecutionConnection = null;
 		while ((clientExecutionConnection = executionChannel.accept()) != null) {

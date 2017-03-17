@@ -15,7 +15,7 @@ public class TestAgentClient {
 
 		String classpath = new File("target/classes").getCanonicalFile().getAbsolutePath();
 
-		AgentClient client = new AgentClient(AgentServerProcess.AGENT_CONTROL_PORT, classpath);
+		AgentClient client = new AgentClient(AgentServerProcess.AGENT_EXECUTION_PORT, classpath);
 		client.startup();
 
 		client.shutdown();
