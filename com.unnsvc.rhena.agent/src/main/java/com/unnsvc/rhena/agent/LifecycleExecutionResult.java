@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.agent.lifecycle;
+package com.unnsvc.rhena.agent;
 
 import java.util.List;
 

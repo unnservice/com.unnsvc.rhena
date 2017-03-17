@@ -12,12 +12,10 @@ package com.unnsvc.rhena.agent.server;
 public class AgentServerExecutionClassloader extends ClassLoader {
 
 	private ClassLoader parent;
-	private AgentServerControlInterface controlInterface;
 
-	public AgentServerExecutionClassloader(ClassLoader parent, AgentServerControlInterface controlInterface) {
+	public AgentServerExecutionClassloader(ClassLoader parent) {
 
 		this.parent = parent;
-		this.controlInterface = controlInterface;
 	}
 
 	@Override

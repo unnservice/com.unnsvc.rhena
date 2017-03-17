@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.unnsvc.rhena.agent.lifecycle.LifecycleExecutionResult;
 import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.ICommandCaller;
 import com.unnsvc.rhena.common.IRhenaCache;

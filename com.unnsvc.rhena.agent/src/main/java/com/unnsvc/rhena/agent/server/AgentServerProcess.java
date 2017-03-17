@@ -2,7 +2,6 @@
 package com.unnsvc.rhena.agent.server;
 
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
@@ -19,14 +18,10 @@ public class AgentServerProcess {
 
 	protected void startServer() throws Exception {
 
-		// first wait for control socket connection
-		AgentServerControlInterface controlInterface = listenControl();
-
-		// now start execution socket connections in proxied classloader
-		listenExecutions(controlInterface);
+		listenExecutions();
 	}
 
-	private void listenExecutions(AgentServerControlInterface controlInterface) throws Exception {
+	private void listenExecutions() throws Exception {
 
 		ServerSocketChannel executionChannel = ServerSocketChannel.open();
 		executionChannel.configureBlocking(true);
@@ -36,29 +31,11 @@ public class AgentServerProcess {
 		while ((clientExecutionConnection = executionChannel.accept()) != null) {
 			
 			System.out.println("server: Accepted client execution connection");
-			AgentServerExecutionClassloader agentClassLoader = new AgentServerExecutionClassloader(AgentServerProcess.class.getClassLoader(), controlInterface);
+			AgentServerExecutionClassloader agentClassLoader = new AgentServerExecutionClassloader(AgentServerProcess.class.getClassLoader());
 			AgentServerExecutionConnection conn = new AgentServerExecutionConnection(clientExecutionConnection.socket());
 			conn.setContextClassLoader(agentClassLoader);
 			conn.setDaemon(true);
 			conn.start();
 		}
-	}
-
-	private AgentServerControlInterface listenControl() throws Exception {
-
-
-		ServerSocketChannel serverChannel = ServerSocketChannel.open();
-		serverChannel.configureBlocking(true);
-		serverChannel.socket().bind(new InetSocketAddress(AGENT_CONTROL_PORT));
-
-		SocketChannel nextChannel = null;
-		while ((nextChannel = serverChannel.accept()) != null) {
-
-			Socket socket = nextChannel.socket();
-			System.out.println("server: accepted client control connection");
-			return new AgentServerControlInterface(socket);
-		}
-
-		throw new UnsupportedOperationException("Should be unreachable code");
 	}
 }

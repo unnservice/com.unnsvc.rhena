@@ -16,7 +16,6 @@ public abstract class AbstractAgentClient implements IAgentClient {
 
 	private Process agentProcess;
 	private ProcessExitTracker agentProcessTracker;
-	private AgentClientControlThread controlThread;
 	private List<IProcessListener> agentProcessListeners;
 
 	private int controlPort;
@@ -47,10 +46,6 @@ public abstract class AbstractAgentClient implements IAgentClient {
 
 			agentProcessTracker = new ProcessExitTracker(agentProcess, agentProcessListeners);
 			agentProcessTracker.start();
-
-			controlThread = new AgentClientControlThread(AgentServerProcess.AGENT_CONTROL_PORT);
-			controlThread.start();
-
 		} catch (IOException ioe) {
 			throw new RhenaException(ioe);
 		}
