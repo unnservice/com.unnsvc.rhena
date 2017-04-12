@@ -16,6 +16,8 @@ import com.unnsvc.rhena.objectserver.IRequest;
 public class ObjectClient implements IObjectClient {
 
 	private Socket clientSocket;
+	private ObjectOutputStream oos;
+	private ObjectInputStream ois;
 
 	public ObjectClient(SocketAddress socketAddress) throws RhenaException {
 
@@ -29,6 +31,8 @@ public class ObjectClient implements IObjectClient {
 			channel.configureBlocking(true);
 			channel.connect(socketAddress);
 			clientSocket = channel.socket();
+			oos = new ObjectOutputStream(clientSocket.getOutputStream());
+			ois = new ObjectInputStream(clientSocket.getInputStream());
 		} catch (IOException ioe) {
 			throw new RhenaException(ioe.getMessage(), ioe);
 		}
@@ -38,17 +42,28 @@ public class ObjectClient implements IObjectClient {
 	public IReply executeRequest(IRequest request) throws RhenaException {
 
 		try {
-			try (ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream())) {
-				try (ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream())) {
 
-					oos.writeObject(request);
+			oos.writeObject(request);
 
-					IReply reply = (IReply) ois.readObject();
-					return reply;
-				}
-			}
+			IReply reply = (IReply) ois.readObject();
+			return reply;
 		} catch (IOException | ClassNotFoundException ex) {
 			throw new RhenaException(ex.getMessage(), ex);
+		}
+	}
+
+	@Override
+	public void close() throws RhenaException {
+
+		try {
+			if (oos != null) {
+				oos.close();
+			}
+			if (ois != null) {
+				ois.close();
+			}
+		} catch (IOException ioe) {
+			throw new RhenaException(ioe);
 		}
 	}
 

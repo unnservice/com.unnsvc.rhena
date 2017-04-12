@@ -58,7 +58,10 @@ public class TestObjectServer {
 	public void testObjectServer() throws Exception {
 
 		IObjectClient client = new ObjectClient(server.getServerAddress());
-		EchoReply reply = (EchoReply) client.executeRequest(new TestRequest());
-		Assert.assertTrue(reply.getEchoReply() instanceof TestRequest);
+
+		for (int i = 0; i < 10; i++) {
+			EchoReply reply = (EchoReply) client.executeRequest(new TestRequest());
+			Assert.assertTrue(reply.getEchoReply() instanceof TestRequest);
+		}
 	}
 }

@@ -7,4 +7,6 @@ public interface IObjectClient {
 
 	public IReply executeRequest(IRequest request) throws RhenaException;
 
+	public void close() throws RhenaException;
+
 }
