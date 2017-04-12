@@ -1,7 +1,7 @@
 
 package com.unnsvc.rhena.core.config;
 
-import com.unnsvc.rhena.agent.server.AgentServerProcess;
+import com.unnsvc.rhena.agent.AgentProcessMain;
 import com.unnsvc.rhena.common.config.IAgentConfiguration;
 
 public class AgentConfiguration implements IAgentConfiguration {
@@ -13,7 +13,7 @@ public class AgentConfiguration implements IAgentConfiguration {
 
 	public AgentConfiguration() {
 
-		this.agentPort = AgentServerProcess.AGENT_EXECUTION_PORT;
+		this.agentPort = AgentProcessMain.AGENT_DEFAULT_PORT;
 		this.agentClasspath = System.getProperty("java.class.path");
 		this.externalAgent = false;
 	}

@@ -9,12 +9,4 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.unnsvc.rhena</groupId>
-			<artifactId>com.unnsvc.rhena.common</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-	</dependencies>
-
 </project>

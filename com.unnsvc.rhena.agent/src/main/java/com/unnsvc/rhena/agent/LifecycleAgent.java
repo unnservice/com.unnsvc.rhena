@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.unnsvc.rhena.agent.requests.LifecycleExecutionResult;
 import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.ICommandCaller;
 import com.unnsvc.rhena.common.IRhenaCache;
@@ -53,7 +54,7 @@ public class LifecycleAgent implements ILifecycleAgent {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public synchronized ILifecycleExecutionResult executeLifecycle(IExecutionRequest request) throws RemoteException {
+	public synchronized ILifecycleExecutionResult executeLifecycle(IExecutionRequest request) throws RhenaException {
 
 		IRhenaCache cache = request.getCache();
 		IRhenaConfiguration config = request.getConfig();
@@ -127,7 +128,7 @@ public class LifecycleAgent implements ILifecycleAgent {
 				return new LifecycleExecutionResult(generated, inputs);
 			}
 		} catch (Throwable ex) {
-			throw new RemoteException(ex.getMessage(), ex);
+			throw new RhenaException(ex.getMessage(), ex);
 		} finally {
 			additionalInjectableTypes.clear();
 		}

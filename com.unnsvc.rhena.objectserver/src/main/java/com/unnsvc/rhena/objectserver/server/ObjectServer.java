@@ -10,9 +10,9 @@ import java.nio.channels.SocketChannel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.objectserver.IObjectServer;
 import com.unnsvc.rhena.objectserver.IObjectServerAcceptor;
+import com.unnsvc.rhena.objectserver.ObjectServerException;
 
 public class ObjectServer implements IObjectServer {
 
@@ -26,7 +26,7 @@ public class ObjectServer implements IObjectServer {
 	 * 
 	 * @throws RhenaException
 	 */
-	public ObjectServer(SocketAddress serverAddress) throws RhenaException {
+	public ObjectServer(SocketAddress serverAddress) throws ObjectServerException {
 
 		this.serverAddress = serverAddress;
 		System.err.println("Server address: " + serverAddress);
@@ -35,7 +35,7 @@ public class ObjectServer implements IObjectServer {
 	}
 
 	@Override
-	public void startServer(IObjectServerAcceptor serverAcceptor) throws RhenaException {
+	public void startServer(IObjectServerAcceptor serverAcceptor) throws ObjectServerException {
 
 		try {
 			executionChannel = ServerSocketChannel.open();
@@ -57,12 +57,12 @@ public class ObjectServer implements IObjectServer {
 			// server connection shutdown while waiting in accept(), no-op
 		} catch (IOException ex) {
 
-			throw new RhenaException("Object server entered failed state, not accepting more requests", ex);
+			throw new ObjectServerException("Object server entered failed state, not accepting more requests", ex);
 		}
 	}
 
 	@Override
-	public void close() throws RhenaException {
+	public void close() throws ObjectServerException {
 
 		try {
 			executionChannel.close();
@@ -70,7 +70,7 @@ public class ObjectServer implements IObjectServer {
 			// reads, so we can't wait for them
 			// acceptorPool.awaitTermination(5000, TimeUnit.MILLISECONDS);
 		} catch (IOException ioe) {
-			throw new RhenaException(ioe.getMessage(), ioe);
+			throw new ObjectServerException(ioe.getMessage(), ioe);
 		}
 	}
 

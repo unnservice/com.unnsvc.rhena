@@ -1,15 +1,14 @@
-
-package com.unnsvc.rhena.agent.client;
-
-import java.io.Serializable;
+package com.unnsvc.rhena.agent.requests;
 
 import com.unnsvc.rhena.common.ICaller;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.agent.IExecutionRequest;
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleExecutable;
+import com.unnsvc.rhena.objectserver.IObjectRequest;
 
-public class ExecutionRequest implements IExecutionRequest, Serializable {
+public class LifecycleExecutionRequest implements IExecutionRequest, IObjectRequest {
+
 
 	private static final long serialVersionUID = 1L;
 	private IRhenaCache cache;
@@ -17,7 +16,7 @@ public class ExecutionRequest implements IExecutionRequest, Serializable {
 	private ICaller caller;
 	private ILifecycleExecutable lifecycleExecutable;
 
-	public ExecutionRequest(IRhenaCache cache, IRhenaConfiguration config, ICaller caller, ILifecycleExecutable lifecycleExecutable) {
+	public LifecycleExecutionRequest(IRhenaCache cache, IRhenaConfiguration config, ICaller caller, ILifecycleExecutable lifecycleExecutable) {
 
 		this.cache = cache;
 		this.config = config;

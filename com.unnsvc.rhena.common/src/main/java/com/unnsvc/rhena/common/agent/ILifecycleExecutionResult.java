@@ -6,8 +6,9 @@ import java.util.List;
 
 import com.unnsvc.rhena.common.execution.IArtifactDescriptor;
 import com.unnsvc.rhena.common.lifecycle.IResource;
+import com.unnsvc.rhena.objectserver.IObjectReply;
 
-public interface ILifecycleExecutionResult extends Serializable {
+public interface ILifecycleExecutionResult extends IObjectReply, Serializable {
 
 	public List<IArtifactDescriptor> getGeneratedArtifacts();
 

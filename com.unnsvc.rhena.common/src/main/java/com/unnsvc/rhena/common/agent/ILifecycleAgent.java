@@ -2,10 +2,11 @@
 package com.unnsvc.rhena.common.agent;
 
 import java.rmi.Remote;
-import java.rmi.RemoteException;
+
+import com.unnsvc.rhena.common.exceptions.RhenaException;
 
 public interface ILifecycleAgent extends Remote {
 
-	public ILifecycleExecutionResult executeLifecycle(IExecutionRequest request) throws RemoteException;
+	public ILifecycleExecutionResult executeLifecycle(IExecutionRequest request) throws RhenaException;
 
 }

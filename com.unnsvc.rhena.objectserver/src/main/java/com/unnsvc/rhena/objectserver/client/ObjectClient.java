@@ -8,10 +8,10 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.channels.SocketChannel;
 
-import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.objectserver.IObjectClient;
-import com.unnsvc.rhena.objectserver.IReply;
-import com.unnsvc.rhena.objectserver.IRequest;
+import com.unnsvc.rhena.objectserver.IObjectReply;
+import com.unnsvc.rhena.objectserver.IObjectRequest;
+import com.unnsvc.rhena.objectserver.ObjectServerException;
 
 public class ObjectClient implements IObjectClient {
 
@@ -19,12 +19,12 @@ public class ObjectClient implements IObjectClient {
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
 
-	public ObjectClient(SocketAddress socketAddress) throws RhenaException {
+	public ObjectClient(SocketAddress socketAddress) throws ObjectServerException {
 
 		establishConnection(socketAddress);
 	}
 
-	private void establishConnection(SocketAddress socketAddress) throws RhenaException {
+	private void establishConnection(SocketAddress socketAddress) throws ObjectServerException {
 
 		try {
 			SocketChannel channel = SocketChannel.open();
@@ -34,26 +34,26 @@ public class ObjectClient implements IObjectClient {
 			oos = new ObjectOutputStream(clientSocket.getOutputStream());
 			ois = new ObjectInputStream(clientSocket.getInputStream());
 		} catch (IOException ioe) {
-			throw new RhenaException(ioe.getMessage(), ioe);
+			throw new ObjectServerException(ioe);
 		}
 	}
 
 	@Override
-	public IReply executeRequest(IRequest request) throws RhenaException {
+	public IObjectReply executeRequest(IObjectRequest request) throws ObjectServerException {
 
 		try {
 
 			oos.writeObject(request);
 
-			IReply reply = (IReply) ois.readObject();
+			IObjectReply reply = (IObjectReply) ois.readObject();
 			return reply;
 		} catch (IOException | ClassNotFoundException ex) {
-			throw new RhenaException(ex.getMessage(), ex);
+			throw new ObjectServerException(ex.getMessage(), ex);
 		}
 	}
 
 	@Override
-	public void close() throws RhenaException {
+	public void close() throws ObjectServerException {
 
 		try {
 			if (oos != null) {
@@ -63,7 +63,7 @@ public class ObjectClient implements IObjectClient {
 				ois.close();
 			}
 		} catch (IOException ioe) {
-			throw new RhenaException(ioe);
+			throw new ObjectServerException(ioe);
 		}
 	}
 

@@ -63,12 +63,12 @@ public class RhenaContext extends ARhenaContext {
 	 */
 	private void initialConfiguration() {
 
-		for(IRepositoryDefinition repoDef : config.getRepositoryConfiguration().getRepositories()) {
-			
+		for (IRepositoryDefinition repoDef : config.getRepositoryConfiguration().getRepositories()) {
+
 			addAdditionalRepository(new RemoteRepository(this, repoDef.getLocation()));
 		}
-		
-		for(IRepositoryDefinition repoDef : config.getRepositoryConfiguration().getWorkspaces()) {
+
+		for (IRepositoryDefinition repoDef : config.getRepositoryConfiguration().getWorkspaces()) {
 
 			addWorkspaceRepository(new WorkspaceRepository(this, new File(repoDef.getLocation())));
 		}
@@ -139,8 +139,6 @@ public class RhenaContext extends ARhenaContext {
 	@Override
 	public void close() throws Exception {
 
-		stopAgent();
-		
 		getCache().getExecutions().clear();
 		getCache().getLifecycles().clear();
 

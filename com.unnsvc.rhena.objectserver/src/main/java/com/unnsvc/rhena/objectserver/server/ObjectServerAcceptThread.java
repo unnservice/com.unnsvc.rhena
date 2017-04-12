@@ -6,10 +6,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.objectserver.IObjectReply;
+import com.unnsvc.rhena.objectserver.IObjectRequest;
 import com.unnsvc.rhena.objectserver.IObjectServerAcceptor;
-import com.unnsvc.rhena.objectserver.IReply;
-import com.unnsvc.rhena.objectserver.IRequest;
+import com.unnsvc.rhena.objectserver.ObjectServerException;
 
 public class ObjectServerAcceptThread implements Runnable {
 
@@ -19,7 +19,7 @@ public class ObjectServerAcceptThread implements Runnable {
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
 
-	public ObjectServerAcceptThread(Socket clientSocket, IObjectServerAcceptor serverAcceptor) throws RhenaException {
+	public ObjectServerAcceptThread(Socket clientSocket, IObjectServerAcceptor serverAcceptor) throws ObjectServerException {
 
 		this.clientSocket = clientSocket;
 		this.serverAcceptor = serverAcceptor;
@@ -28,7 +28,7 @@ public class ObjectServerAcceptThread implements Runnable {
 			this.oos = new ObjectOutputStream(clientSocket.getOutputStream());
 			this.ois = new ObjectInputStream(clientSocket.getInputStream());
 		} catch (IOException ioe) {
-			throw new RhenaException(ioe);
+			throw new ObjectServerException(ioe);
 		}
 	}
 
@@ -42,8 +42,8 @@ public class ObjectServerAcceptThread implements Runnable {
 			 */
 			while (clientSocket.isConnected()) {
 
-				IRequest request = (IRequest) ois.readObject();
-				IReply reply = serverAcceptor.onRequest(request);
+				IObjectRequest request = (IObjectRequest) ois.readObject();
+				IObjectReply reply = serverAcceptor.onRequest(request);
 				oos.writeObject(reply);
 			}
 

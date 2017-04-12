@@ -1,12 +1,14 @@
 
 package com.unnsvc.rhena.core;
 
-import com.unnsvc.rhena.agent.client.AgentClient;
-import com.unnsvc.rhena.agent.server.AgentServerProcess;
+import java.net.InetSocketAddress;
+
+import com.unnsvc.rhena.agent.AgentClient;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.agent.IAgentClient;
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.objectserver.ObjectServerException;
 
 public abstract class ARhenaContext implements IRhenaContext {
 
@@ -20,23 +22,23 @@ public abstract class ARhenaContext implements IRhenaContext {
 	public void startAgent(IRhenaConfiguration config) throws RhenaException {
 
 		if (agent != null) {
-			
+
 			throw new RhenaException("We already have an agent");
 		} else {
 
 			if (!config.getAgentConfiguration().isExternalAgent()) {
-				IAgentClient agent = new AgentClient(AgentServerProcess.AGENT_EXECUTION_PORT);
-				agent.startup();
-				setAgent(agent);
+
+				try {
+					// needs to start the server too eh?
+					AgentClient agent = new AgentClient(new InetSocketAddress(config.getAgentConfiguration().getAgentPort()));
+					setAgent(agent);
+				} catch (ObjectServerException ose) {
+					throw new RhenaException(ose);
+				}
 			} else {
 				System.err.println(getClass().getName() + " Not starting any agent");
 			}
 		}
-	}
-
-	public void stopAgent() throws RhenaException {
-
-		agent.shutdown();
 	}
 
 	@Override

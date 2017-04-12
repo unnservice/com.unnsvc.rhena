@@ -1,16 +1,16 @@
 
 package com.unnsvc.rhena.objectserver;
 
-public class EchoReply implements IReply {
+public class EchoReply implements IObjectReply {
 
-	private IRequest request;
+	private IObjectRequest request;
 
-	public EchoReply(IRequest request) {
+	public EchoReply(IObjectRequest request) {
 
 		this.request = request;
 	}
 
-	public IRequest getEchoReply() {
+	public IObjectRequest getEchoReply() {
 
 		return request;
 	}

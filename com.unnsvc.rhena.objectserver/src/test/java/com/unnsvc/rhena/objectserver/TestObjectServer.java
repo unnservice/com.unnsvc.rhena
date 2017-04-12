@@ -6,7 +6,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.objectserver.client.ObjectClient;
 import com.unnsvc.rhena.objectserver.server.ObjectServer;
 import com.unnsvc.rhena.objectserver.server.ObjectServerHelper;
@@ -29,7 +28,7 @@ public class TestObjectServer {
 					server.startServer(new IObjectServerAcceptor() {
 
 						@Override
-						public IReply onRequest(IRequest request) {
+						public IObjectReply onRequest(IObjectRequest request) {
 
 							return new EchoReply(request);
 						}
@@ -49,7 +48,7 @@ public class TestObjectServer {
 	}
 
 	@After
-	public void after() throws RhenaException {
+	public void after() throws ObjectServerException {
 
 		server.close();
 	}

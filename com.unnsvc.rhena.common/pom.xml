@@ -12,7 +12,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.unnsvc.rhena</groupId>
-			<artifactId>com.unnsvc.rhena.profiling</artifactId>
+			<artifactId>com.unnsvc.rhena.objectserver</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
