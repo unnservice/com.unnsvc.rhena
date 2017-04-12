@@ -6,6 +6,7 @@
 
 		<prop:someprop>somevalue</prop:someprop>
 		<prop:anotherprop>anothervalue</prop:anotherprop>
+		<prop:thirdprop>thirdvalue</prop:thirdprop>
 
 		<lifecycle name="library">
 			<!-- @TODO properties in lifecycle to override from heirarchy -->
