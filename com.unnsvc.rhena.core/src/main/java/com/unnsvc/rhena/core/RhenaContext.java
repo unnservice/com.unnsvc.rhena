@@ -8,6 +8,7 @@ import java.util.List;
 import com.unnsvc.rhena.common.IListenerConfiguration;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.agent.IAgentClient;
 import com.unnsvc.rhena.common.config.IRepositoryDefinition;
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
@@ -23,7 +24,7 @@ import com.unnsvc.rhena.core.resolution.WorkspaceRepository;
  * @author noname
  *
  */
-public class RhenaContext extends ARhenaContext {
+public class RhenaContext implements IRhenaContext {
 
 	private IRhenaConfiguration config;
 	private IRhenaCache cache;
@@ -32,19 +33,18 @@ public class RhenaContext extends ARhenaContext {
 	private IRepository localCacheRepository;
 	private IListenerConfiguration listenerConfig;
 	private ILogger logFacade;
-	private IAgentClient agent;
+	private IAgentClient agentClient;
 
 	/**
 	 * @throws RhenaException
 	 * @TODO this remains from old code
 	 */
-	public RhenaContext(IRhenaConfiguration config) throws RhenaException {
-
-		super(config);
+	public RhenaContext(IRhenaConfiguration config, IAgentClient agentClient) throws RhenaException {
 
 		try {
 
 			this.config = config;
+			this.agentClient = agentClient;
 			this.cache = new RhenaCache();
 			this.workspaceRepositories = new ArrayList<IRepository>();
 			this.additionalRepositories = new ArrayList<IRepository>();
@@ -146,5 +146,17 @@ public class RhenaContext extends ARhenaContext {
 
 		getCache().getModules().clear();
 		getCache().getEdges().clear();
+	}
+
+	@Override
+	public void setAgent(IAgentClient agentClient) {
+
+		this.agentClient = agentClient;
+	}
+
+	@Override
+	public IAgentClient getAgent() {
+
+		return agentClient;
 	}
 }

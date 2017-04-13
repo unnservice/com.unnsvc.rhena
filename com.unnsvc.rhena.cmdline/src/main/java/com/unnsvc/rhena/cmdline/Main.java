@@ -101,11 +101,13 @@ public class Main extends AbstractMain {
 	private void runWithConfiguration(IRhenaConfiguration config, ModuleIdentifier identifier, EExecutionType executionType, List<String> commands)
 			throws RhenaException {
 
-		IRhenaContext context = new RhenaContext(config);
-		IRhenaEngine engine = new RhenaEngine(context);
-		IRhenaModule module = engine.materialiseModel(identifier);
-		engine.materialiseExecution(new CommandCaller(module, executionType, commands.get(0)));
-		log.info("Built: " + identifier);
+		throw new UnsupportedOperationException("Not implemented");
+		
+//		IRhenaContext context = new RhenaContext(config);
+//		IRhenaEngine engine = new RhenaEngine(context);
+//		IRhenaModule module = engine.materialiseModel(identifier);
+//		engine.materialiseExecution(new CommandCaller(module, executionType, commands.get(0)));
+//		log.info("Built: " + identifier);
 	}
 
 }

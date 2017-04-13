@@ -15,4 +15,9 @@ public class ObjectServerException extends Exception {
 		super(message, t);
 	}
 
+	public ObjectServerException(String message) {
+
+		super(message);
+	}
+
 }

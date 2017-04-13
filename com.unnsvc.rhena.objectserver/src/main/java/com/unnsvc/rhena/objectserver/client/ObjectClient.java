@@ -4,6 +4,7 @@ package com.unnsvc.rhena.objectserver.client;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.channels.SocketChannel;
@@ -18,13 +19,26 @@ public class ObjectClient implements IObjectClient {
 	private Socket clientSocket;
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
+	private int maxConnectRetries = 5;
 
 	public ObjectClient(SocketAddress socketAddress) throws ObjectServerException {
 
-		establishConnection(socketAddress);
+		int tries = 0;
+		while (true) {
+			try {
+				establishConnection(socketAddress);
+				break;
+			} catch (ConnectException ce) {
+				tries++;
+				if (tries == maxConnectRetries) {
+
+					throw new ObjectServerException("Failed to connect after " + maxConnectRetries + " tries", ce);
+				}
+			}
+		}
 	}
 
-	private void establishConnection(SocketAddress socketAddress) throws ObjectServerException {
+	private void establishConnection(SocketAddress socketAddress) throws ObjectServerException, ConnectException {
 
 		try {
 			SocketChannel channel = SocketChannel.open();
@@ -33,6 +47,8 @@ public class ObjectClient implements IObjectClient {
 			clientSocket = channel.socket();
 			oos = new ObjectOutputStream(clientSocket.getOutputStream());
 			ois = new ObjectInputStream(clientSocket.getInputStream());
+		} catch (ConnectException ce) {
+			throw ce;
 		} catch (IOException ioe) {
 			throw new ObjectServerException(ioe);
 		}
