@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:rhena:module" xmlns:tns="urn:rhena:module" xmlns:common="urn:rhena:common"
+	xmlns:properties="urn:rhena:properties" xmlns:dependency="urn:rhena:dependency" elementFormDefault="qualified">
+
+	<xs:import namespace="urn:rhena:common" schemaLocation="./common.xsd" />
+	<xs:import namespace="urn:rhena:dependency" schemaLocation="./dependency.xsd" />
+
+	<xs:complexType name="metaType">
+		<xs:sequence>
+			<xs:any minOccurs="0" maxOccurs="unbounded" namespace="urn:rhena:properties" processContents="skip" />
+			<xs:element name="lifecycle" minOccurs="0" maxOccurs="unbounded" type="tns:lifecycleType" />
+		</xs:sequence>
+		<xs:attribute name="component" type="common:identifierType" />
+		<xs:attribute name="version" type="common:versionType" />
+		<xs:attribute name="lifecycle" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="processorType">
+		<xs:sequence>
+			<xs:any minOccurs="0" maxOccurs="unbounded" namespace="##any" processContents="skip" />
+		</xs:sequence>
+		<xs:attribute name="module" type="common:qualifiedIdentifier" use="required" />
+		<xs:attribute name="class" type="xs:string" use="required" />
+		<xs:attribute name="schema" type="xs:string" use="optional" />
+	</xs:complexType>
+
+	<xs:complexType name="commandType">
+		<xs:complexContent>
+			<xs:extension base="tns:processorType">
+				<xs:attribute name="name" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="includeExcludeType">
+		<xs:attribute name="pattern" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="lifecycleType">
+		<xs:sequence>
+			<xs:element name="context" type="tns:processorType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="processor" type="tns:processorType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="generator" type="tns:processorType" minOccurs="1" maxOccurs="1" />
+			<xs:element name="command" type="tns:commandType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="name" use="required" type="xs:string" />
+	</xs:complexType>
+
+	<xs:element name="module">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="meta" type="tns:metaType" minOccurs="1" maxOccurs="1" />
+				<xs:group ref="dependency:dependencyTypes" />
+			</xs:sequence>
+			<xs:attribute name="extends" type="common:qualifiedIdentifier" use="optional" />
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Additional root element used for IDE detection so it can add the appropriate classpaths -->
+	<xs:element name="framework">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="meta" type="tns:metaType" minOccurs="1" maxOccurs="1" />
+				<xs:group ref="dependency:dependencyTypes" />
+			</xs:sequence>
+			<xs:attribute name="extends" type="common:qualifiedIdentifier" use="optional" />
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

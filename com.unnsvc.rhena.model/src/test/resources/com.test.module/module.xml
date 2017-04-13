@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:rhena:module" xmlns:prop="urn:rhena:properties" xmlns:dependency="urn:rhena:dependency"
+	xsi:schemaLocation="urn:rhena:module http://schema.unnsvc.com/rhena/module.xsd">
+
+	<meta component="com.test" version="1.0.0">
+
+		<prop:someprop>somevalue</prop:someprop>
+		<prop:anotherprop>anothervalue</prop:anotherprop>
+		<prop:thirdprop>thirdvalue</prop:thirdprop>
+
+		<lifecycle name="library">
+			<!-- @TODO properties in lifecycle to override from heirarchy -->
+
+			<context module="com.unnsvc.rhena:lifecycle:1.0.0" class="com.unnsvc.rhena.lifecycle.DefaultContext">
+				<resources>
+					<main path="src/main/java" />
+					<main path="src/main/resources" filter="true" />
+					<test path="src/test/java" />
+					<test path="src/test/resources" filter="true" />
+				</resources>
+			</context>
+
+			<processor module="com.unnsvc.rhena:lifecycle:1.0.0" class="com.unnsvc.rhena.lifecycle.DefaultResourceFilteringProcessor" />
+			<processor module="com.unnsvc.rhena:lifecycle:1.0.0" class="com.unnsvc.rhena.lifecycle.DefaultJavaProcessor" />
+			<processor module="com.unnsvc.rhena:lifecycle:1.0.0" class="com.unnsvc.rhena.lifecycle.DefaultManifestProcessor" />
+
+			<generator module="com.unnsvc.rhena:lifecycle:1.0.0" class="com.unnsvc.rhena.lifecycle.DefaultGenerator" />
+
+			<!-- Each lifecycle can have commands -->
+			<!-- <command name="cmd1" module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.Command1" /> -->
+			<!-- <command name="cmd2" module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.Command2" /> -->
+			<!-- <command name="cmd3" module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.Command3" /> -->
+
+		</lifecycle>
+
+	</meta>
+
+	<dependency:main module="com.unnsvc.rhena:common:1.0.0" />
+	<dependency:main module="junit:junit:4.12" />
+
+</module>
+
+
+
+

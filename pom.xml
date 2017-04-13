@@ -13,6 +13,7 @@
 		<module>com.unnsvc.rhena.cmdline</module>
 		<module>com.unnsvc.rhena.docs</module>
 		<module>com.unnsvc.rhena.objectserver</module>
+		<module>com.unnsvc.rhena.model</module>
 	</modules>
 
 	<build>
