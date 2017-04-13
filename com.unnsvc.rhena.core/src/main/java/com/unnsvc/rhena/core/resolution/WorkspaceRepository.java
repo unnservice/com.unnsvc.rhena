@@ -91,7 +91,7 @@ public class WorkspaceRepository extends AbstractWorkspaceRepository {
 
 			}
 		} catch (IOException mue) {
-			throw new RhenaException(mue.getMessage(), mue);
+			throw new RhenaException(mue);
 		}
 	}
 

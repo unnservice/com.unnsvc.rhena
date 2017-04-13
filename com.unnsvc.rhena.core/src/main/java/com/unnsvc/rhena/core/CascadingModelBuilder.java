@@ -178,7 +178,7 @@ public class CascadingModelBuilder implements IModelBuilder {
 
 	protected IRhenaExecution produceExecution(ICaller caller) throws RhenaException {
 
-		context.getLogger().info(getClass(), caller.getIdentifier(), "Building: " + caller.getExecutionType().toString().toLowerCase());
+		context.getLogger().info(getClass(), caller.getIdentifier(), "Building: " + caller.getExecutionType().toString().toLowerCase() + ", " + caller);
 
 		IRhenaExecution execution = caller.getModule().getRepository().materialiseExecution(cache, caller);
 

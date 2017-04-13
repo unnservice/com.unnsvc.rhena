@@ -57,7 +57,7 @@ public class ExecutionCollectionDependencyVisitor extends ADependencyVisitor {
 	}
 
 	public IDependencies getDependencies() {
-
+		
 		return new Dependencies(getType(), dependencies);
 	}
 }

@@ -6,6 +6,8 @@
 
 	</meta>
 
-	<dependency:main module="com.unnsvc.rhena:objectserver:1.0.0" />
-
 </module>
+
+
+
+
