@@ -20,11 +20,11 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.config.RhenaConfiguration;
 import com.unnsvc.rhena.core.CommandCaller;
 import com.unnsvc.rhena.core.RhenaEngine;
 import com.unnsvc.rhena.core.RhenaEngine;
 import com.unnsvc.rhena.core.config.RepositoryDefinition;
-import com.unnsvc.rhena.core.config.RhenaConfiguration;
 import com.unnsvc.rhena.core.config.RhenaSettingsParser;
 
 public class Main extends AbstractMain {

@@ -6,7 +6,7 @@ import org.junit.Test;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.ng.IRhenaEngine;
 import com.unnsvc.rhena.common.ng.config.IRhenaConfiguration;
-import com.unnsvc.rhena.core.config.RhenaConfiguration;
+import com.unnsvc.rhena.config.RhenaConfiguration;
 
 public class TestRhenaEngine {
 

@@ -2,6 +2,7 @@
 package com.unnsvc.rhena.common;
 
 import org.junit.Before;
+
 import com.unnsvc.rhena.common.ng.IRhenaCache;
 
 public abstract class AbstractRhenaTest {
@@ -9,7 +10,7 @@ public abstract class AbstractRhenaTest {
 	private IRhenaCache mockCache;
 
 	@Before
-	public void before() {
+	public void before() throws Exception {
 
 		this.mockCache = new MockCache();
 	}

@@ -3,20 +3,20 @@ package com.unnsvc.rhena.common.ng.config;
 
 import java.util.List;
 
-import com.unnsvc.rhena.common.ng.repository.IRepository;
+import com.unnsvc.rhena.common.ng.repository.IRepositoryDefinition;
 
 public interface IRepositoryConfiguration {
 
-	public List<IRepository> getWorkspaceRepositories();
+	public List<IRepositoryDefinition> getWorkspaceRepositories();
 
-	public void addWorkspaceRepositories(IRepository workspaceRepository);
+	public void addWorkspaceRepositories(IRepositoryDefinition workspaceRepository);
 
-	public IRepository getCacheRepository();
+	public IRepositoryDefinition getCacheRepository();
 
-	public void setCacheRepository(IRepository cacheRepository);
+	public void setCacheRepository(IRepositoryDefinition cacheRepository);
 
-	public List<IRepository> getRemoteRepositories();
+	public List<IRepositoryDefinition> getRemoteRepositories();
 
-	public void addRemoteRepository(IRepository remoteRepository);
+	public void addRemoteRepository(IRepositoryDefinition remoteRepository);
 
 }

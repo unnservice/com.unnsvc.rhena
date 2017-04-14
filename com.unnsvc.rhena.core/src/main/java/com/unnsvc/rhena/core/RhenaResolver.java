@@ -8,7 +8,7 @@ import com.unnsvc.rhena.common.ng.config.IRepositoryConfiguration;
 import com.unnsvc.rhena.common.ng.model.IRhenaModule;
 import com.unnsvc.rhena.common.ng.repository.IRepository;
 import com.unnsvc.rhena.common.ng.repository.IRhenaResolver;
-import com.unnsvc.rhena.core.config.RhenaConfiguration;
+import com.unnsvc.rhena.config.RhenaConfiguration;
 
 public class RhenaResolver implements IRhenaResolver {
 

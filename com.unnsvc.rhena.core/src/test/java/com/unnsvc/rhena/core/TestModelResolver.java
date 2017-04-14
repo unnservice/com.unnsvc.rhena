@@ -7,7 +7,7 @@ import org.junit.Test;
 import com.unnsvc.rhena.common.AbstractRhenaTest;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.ng.model.IRhenaModule;
-import com.unnsvc.rhena.core.config.RhenaConfiguration;
+import com.unnsvc.rhena.config.RhenaConfiguration;
 import com.unnsvc.rhena.core.resolution.CascadingModelResolver;
 
 public class TestModelResolver extends AbstractRhenaTest {
