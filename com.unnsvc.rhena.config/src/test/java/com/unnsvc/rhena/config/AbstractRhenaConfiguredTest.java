@@ -23,10 +23,10 @@ public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 		log.info("Creating IRhenaConfiguration");
 		this.config = new RhenaConfiguration();
 
-		File thisProject = new File("").getAbsoluteFile().getCanonicalFile();
-		File repositoriesLocation = new File(thisProject, "src/test/resources/repositories");
-		File workspaceRepo = new File(repositoriesLocation, "workspaceRepo");
-		File localRepo = new File(repositoriesLocation, "localRepo");
+		File testRepositoriesLocation = new File("../test-repositories").getAbsoluteFile().getCanonicalFile();
+		
+		File localRepo = new File(testRepositoriesLocation, "localRepo");
+		File workspaceRepo = new File(testRepositoriesLocation, "workspaceRepo");
 
 		IRepositoryDefinition localRepoDef = RepositoryDefinition.newLocal(localRepo.getName(), localRepo.toURI());
 		log.info(localRepoDef.toString());

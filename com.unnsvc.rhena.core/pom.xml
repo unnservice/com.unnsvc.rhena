@@ -18,6 +18,14 @@
 		</dependency>
 		<dependency>
 			<groupId>com.unnsvc.rhena</groupId>
+			<artifactId>com.unnsvc.rhena.config</artifactId>
+			<version>${project.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.unnsvc.rhena</groupId>
 			<artifactId>com.unnsvc.rhena.repository</artifactId>
 			<version>${project.version}</version>
 		</dependency>

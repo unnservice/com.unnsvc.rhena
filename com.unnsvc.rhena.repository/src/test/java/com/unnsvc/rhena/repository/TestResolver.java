@@ -17,7 +17,7 @@ public class TestResolver extends AbstractRhenaConfiguredTest {
 
 		RhenaResolver resolver = new RhenaResolver(getConfig(), getMockCache());
 
-		ModuleIdentifier identifier = ModuleIdentifier.valueOf("com.test:module1:1.0.0");
+		ModuleIdentifier identifier = ModuleIdentifier.valueOf("com.single:module1:1.0.0");
 		IRhenaModule module = resolver.resolveModule(identifier);
 		Assert.assertNotNull(module);
 		// @TODO verify cache
