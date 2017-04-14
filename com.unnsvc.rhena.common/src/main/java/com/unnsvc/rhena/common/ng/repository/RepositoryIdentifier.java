@@ -5,20 +5,20 @@ import java.net.URI;
 
 public class RepositoryIdentifier {
 
-	private URI location;
+	private String identifier;
 
-	public RepositoryIdentifier(URI location) {
+	public RepositoryIdentifier(String identifier) {
 
-		this.location = location;
+		this.identifier = identifier;
 	}
 
-	public URI getLocation() {
+	public String getIdentifier() {
 
-		return location;
+		return identifier;
 	}
 
-	public void setLocation(URI location) {
+	public void setIdentifier(String identifier) {
 
-		this.location = location;
+		this.identifier = identifier;
 	}
 }

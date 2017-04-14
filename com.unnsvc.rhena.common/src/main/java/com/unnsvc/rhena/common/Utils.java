@@ -30,7 +30,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.unnsvc.rhena.common.exceptions.NotExistsException;
+import com.unnsvc.rhena.common.exceptions.NotFoundException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleReference;
@@ -143,7 +143,7 @@ public class Utils {
 
 		File moduleDescriptor = new File(workspaceProject, RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
 		if (!moduleDescriptor.isFile()) {
-			throw new NotExistsException("No module descriptor for: " + workspaceProject);
+			throw new NotFoundException("No module descriptor for: " + workspaceProject);
 		}
 		try {
 			// @TODO obs, we skip module validation to make it faster, so we

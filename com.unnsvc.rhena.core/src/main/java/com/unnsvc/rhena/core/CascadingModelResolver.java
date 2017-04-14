@@ -5,7 +5,7 @@ import com.unnsvc.rhena.common.IModelResolver;
 import com.unnsvc.rhena.common.IRepository;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.IRhenaContext;
-import com.unnsvc.rhena.common.exceptions.NotExistsException;
+import com.unnsvc.rhena.common.exceptions.NotFoundException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ESelectionType;
@@ -43,7 +43,7 @@ public class CascadingModelResolver extends AFlatTreeVisitor implements IModelRe
 					if (module != null) {
 						break;
 					}
-				} catch (NotExistsException nee) {
+				} catch (NotFoundException nee) {
 					// no-op
 				}
 			}

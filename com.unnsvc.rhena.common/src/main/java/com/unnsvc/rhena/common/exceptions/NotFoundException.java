@@ -1,16 +1,16 @@
 
 package com.unnsvc.rhena.common.exceptions;
 
-public class NotExistsException extends RhenaException {
+public class NotFoundException extends RhenaException {
 
 	private static final long serialVersionUID = 1L;
 
-	public NotExistsException(Throwable t) {
+	public NotFoundException(Throwable t) {
 
 		super(t.getMessage(), t);
 	}
 
-	public NotExistsException(String message) {
+	public NotFoundException(String message) {
 		
 		super(message);
 	}
