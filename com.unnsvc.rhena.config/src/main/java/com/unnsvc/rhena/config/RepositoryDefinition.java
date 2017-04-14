@@ -52,4 +52,10 @@ public class RepositoryDefinition implements IRepositoryDefinition {
 
 		return location;
 	}
+
+	@Override
+	public String toString() {
+
+		return "RepositoryDefinition [repositoryType=" + repositoryType + ", identifier=" + identifier + ", location=" + location + "]";
+	}
 }

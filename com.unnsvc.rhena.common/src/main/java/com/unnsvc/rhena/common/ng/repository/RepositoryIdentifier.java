@@ -21,4 +21,10 @@ public class RepositoryIdentifier {
 
 		this.identifier = identifier;
 	}
+
+	@Override
+	public String toString() {
+
+		return "RepositoryIdentifier [identifier=" + identifier + "]";
+	}
 }
