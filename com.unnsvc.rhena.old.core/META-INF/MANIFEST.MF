@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: com.unnsvc.rhena.core;singleton:=true
+Bundle-SymbolicName: com.unnsvc.rhena.old.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: UNNSVC
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
