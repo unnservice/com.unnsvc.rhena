@@ -7,10 +7,10 @@ import com.unnsvc.rhena.common.ng.model.IRhenaModule;
 
 public interface IRepository {
 
-	public void setIdentifier(RepositoryIdentifier identifier);
-
-	public RepositoryIdentifier getIdentifier();
-
 	public IRhenaModule resolveModule(ModuleIdentifier moduleIdentifier) throws RhenaException;
+
+	public IRepositoryDefinition getDefinition();
+
+	public void setDefinition(IRepositoryDefinition definition);
 
 }

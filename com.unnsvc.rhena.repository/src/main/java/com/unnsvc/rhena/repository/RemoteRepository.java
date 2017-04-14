@@ -4,13 +4,13 @@ package com.unnsvc.rhena.repository;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.ng.IRhenaCache;
 import com.unnsvc.rhena.common.ng.model.IRhenaModule;
-import com.unnsvc.rhena.common.ng.repository.RepositoryIdentifier;
+import com.unnsvc.rhena.common.ng.repository.IRepositoryDefinition;
 
 public class RemoteRepository extends AbstractRepository {
 
-	public RemoteRepository(RepositoryIdentifier identifier, IRhenaCache cache) {
+	public RemoteRepository(IRepositoryDefinition definition, IRhenaCache cache) {
 
-		super(identifier, cache);
+		super(definition, cache);
 	}
 
 	@Override

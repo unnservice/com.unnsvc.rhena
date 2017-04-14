@@ -19,6 +19,8 @@ public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 	@Before
 	public void before() throws Exception {
 
+		super.before();
+		log.info("Creating IRhenaConfiguration");
 		this.config = new RhenaConfiguration();
 
 		File thisProject = new File("").getAbsoluteFile().getCanonicalFile();

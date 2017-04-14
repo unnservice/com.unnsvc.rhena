@@ -3,29 +3,29 @@ package com.unnsvc.rhena.repository;
 
 import com.unnsvc.rhena.common.ng.IRhenaCache;
 import com.unnsvc.rhena.common.ng.repository.IRepository;
-import com.unnsvc.rhena.common.ng.repository.RepositoryIdentifier;
+import com.unnsvc.rhena.common.ng.repository.IRepositoryDefinition;
 
 public abstract class AbstractRepository implements IRepository {
 
-	private RepositoryIdentifier identifier;
+	private IRepositoryDefinition definition;
 	private IRhenaCache cache;
 
-	public AbstractRepository(RepositoryIdentifier identifier, IRhenaCache cache) {
+	public AbstractRepository(IRepositoryDefinition definition, IRhenaCache cache) {
 
-		this.identifier = identifier;
+		this.definition = definition;
 		this.cache = cache;
 	}
 
 	@Override
-	public void setIdentifier(RepositoryIdentifier identifier) {
+	public IRepositoryDefinition getDefinition() {
 
-		this.identifier = identifier;
+		return definition;
 	}
 
 	@Override
-	public RepositoryIdentifier getIdentifier() {
+	public void setDefinition(IRepositoryDefinition definition) {
 
-		return identifier;
+		this.definition = definition;
 	}
 
 	public void setCache(IRhenaCache cache) {

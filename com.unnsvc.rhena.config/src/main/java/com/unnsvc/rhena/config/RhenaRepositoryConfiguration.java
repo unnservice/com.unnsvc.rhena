@@ -16,6 +16,7 @@ public class RhenaRepositoryConfiguration implements IRepositoryConfiguration {
 	public RhenaRepositoryConfiguration() {
 
 		this.workspaceRepositories = new ArrayList<IRepositoryDefinition>();
+		this.remoteRepositories = new ArrayList<IRepositoryDefinition>();
 	}
 
 	@Override
