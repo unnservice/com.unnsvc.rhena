@@ -21,7 +21,7 @@ import com.unnsvc.rhena.common.execution.EExecutionType;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.CommandCaller;
-import com.unnsvc.rhena.core.RhenaContext;
+import com.unnsvc.rhena.core.RhenaEngine;
 import com.unnsvc.rhena.core.RhenaEngine;
 import com.unnsvc.rhena.core.config.RepositoryDefinition;
 import com.unnsvc.rhena.core.config.RhenaConfiguration;
