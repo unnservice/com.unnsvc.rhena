@@ -3,7 +3,9 @@
 	xsi:schemaLocation="urn:rhena:module http://schema.unnsvc.com/rhena/module.xsd">
 
 	<meta component="com.multi" version="1.0.0" />
-
+	
+	<dependency:main module="com.multi:module2:1.0.0" />
+	
 </module>
 
 

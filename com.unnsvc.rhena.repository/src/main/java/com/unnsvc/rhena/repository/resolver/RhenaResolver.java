@@ -34,49 +34,49 @@ public class RhenaResolver implements IRhenaResolver {
 	@Override
 	public IRhenaModule resolveModule(ModuleIdentifier identifier) throws RhenaException {
 
-		// first try workspace resolvers
-		try {
+		IRhenaModule resolved = null;
+
+		if (resolved == null) {
 			for (IRepositoryDefinition definition : repositoryConfiguration.getWorkspaceRepositories()) {
-
-				log.debug("Try resolve " + identifier + " in " + definition);
-				IRepository repository = createRepository(definition);
-				return repository.resolveModule(identifier);
+				resolved = resolve(identifier, definition);
+				if (resolved != null) {
+					return resolved;
+				}
 			}
-		} catch (NotFoundException nfe) {
-
-			log.debug(identifier + " not found in WorkspaceRepositories");
 		}
 
-		try {
-
-			IRepositoryDefinition definition = repositoryConfiguration.getCacheRepository();
-			if (definition != null) {
-				
-				log.debug("Try resolve " + identifier + " in " + definition);
-				IRepository repository = createRepository(definition);
-				return repository.resolveModule(identifier);
+		if (resolved == null && repositoryConfiguration.getCacheRepository() != null) {
+			resolved = resolve(identifier, repositoryConfiguration.getCacheRepository());
+			if (resolved != null) {
+				return resolved;
 			}
-		} catch (NotFoundException nfe) {
-
-			log.debug(identifier + " not found in CacheRepository");
 		}
 
-		// after try remote resolvers
-
-		try {
-
+		if (resolved == null) {
 			for (IRepositoryDefinition definition : repositoryConfiguration.getRemoteRepositories()) {
-				
-				log.debug("Try resolve " + identifier + " in " + definition);
-				IRepository repository = createRepository(definition);
-				return repository.resolveModule(identifier);
-			}
-		} catch (NotFoundException nfe) {
 
-			log.debug(identifier + " not found in RemoteRepositories");
+				resolved = resolve(identifier, definition);
+				if (resolved != null) {
+					return resolved;
+				}
+			}
 		}
 
 		throw new NotFoundException("Failed to resolve " + identifier);
+	}
+
+	private IRhenaModule resolve(ModuleIdentifier identifier, IRepositoryDefinition definition) throws RhenaException {
+
+		IRepository repository = createRepository(definition);
+
+		try {
+			IRhenaModule module = repository.resolveModule(identifier);
+			log.info("Resolved " + identifier + " from " + repository);
+			return module;
+		} catch (NotFoundException nfe) {
+			log.debug(identifier + " not found in " + repository);
+			return null;
+		}
 	}
 
 	public IRepository createRepository(IRepositoryDefinition definition) throws RhenaException {

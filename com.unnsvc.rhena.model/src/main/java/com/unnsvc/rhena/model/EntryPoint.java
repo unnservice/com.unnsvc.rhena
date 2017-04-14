@@ -16,21 +16,25 @@ public class EntryPoint implements IEntryPoint {
 		this.target = target;
 	}
 
+	@Override
 	public EExecutionType getExecutionType() {
 
 		return executionType;
 	}
 
+	@Override
 	public void setExecutionType(EExecutionType executionType) {
 
 		this.executionType = executionType;
 	}
 
+	@Override
 	public ModuleIdentifier getTarget() {
 
 		return target;
 	}
 
+	@Override
 	public void setTarget(ModuleIdentifier target) {
 
 		this.target = target;

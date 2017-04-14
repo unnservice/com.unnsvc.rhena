@@ -20,7 +20,7 @@ public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 	public void before() throws Exception {
 
 		super.before();
-		log.info("Creating IRhenaConfiguration");
+		log.debug("Creating IRhenaConfiguration");
 		this.config = new RhenaConfiguration();
 
 		File testRepositoriesLocation = new File("../test-repositories").getAbsoluteFile().getCanonicalFile();
@@ -29,11 +29,11 @@ public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 		File workspaceRepo = new File(testRepositoriesLocation, "workspaceRepo");
 
 		IRepositoryDefinition localRepoDef = RepositoryDefinition.newLocal(localRepo.getName(), localRepo.toURI());
-		log.info(localRepoDef.toString());
+		log.debug(localRepoDef.toString());
 		this.config.getRepositoryConfiguration().setCacheRepository(localRepoDef);
 
 		IRepositoryDefinition workspaceRepoDef = RepositoryDefinition.newWorkspace(workspaceRepo.getName(), workspaceRepo.toURI());
-		log.info(workspaceRepoDef.toString());
+		log.debug(workspaceRepoDef.toString());
 		this.config.getRepositoryConfiguration().addWorkspaceRepositories(workspaceRepoDef);
 	}
 

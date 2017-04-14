@@ -31,11 +31,13 @@ public class RhenaModule implements IRhenaModule {
 		this.properties = new HashMap<String, String>();
 	}
 
+	@Override
 	public ModuleIdentifier getIdentifier() {
 
 		return identifier;
 	}
 
+	@Override
 	public void setIdentifier(ModuleIdentifier identifier) {
 
 		this.identifier = identifier;
@@ -53,11 +55,13 @@ public class RhenaModule implements IRhenaModule {
 		this.moduleType = moduleType;
 	}
 
+	@Override
 	public RepositoryIdentifier getRepositoryIdentifier() {
 
 		return repositoryIdentifier;
 	}
 
+	@Override
 	public void setRepositoryIdentifier(RepositoryIdentifier repositoryIdentifier) {
 
 		this.repositoryIdentifier = repositoryIdentifier;
@@ -87,31 +91,43 @@ public class RhenaModule implements IRhenaModule {
 		return lifecycleConfiguration;
 	}
 
+	@Override
 	public void addDependency(IRhenaEdge dependency) {
 
 		this.dependencies.add(dependency);
 	}
 
+	@Override
 	public List<IRhenaEdge> getDependencies() {
 
 		return dependencies;
 	}
 
+	@Override
 	public void setDependencies(List<IRhenaEdge> dependencies) {
 
 		this.dependencies = dependencies;
 	}
 
+	@Override
 	public void setProperty(String name, String value) {
 
 		this.properties.put(name, value);
 	}
 
+	@Override
 	public String getProperty(String name) {
 
 		return properties.get(name);
 	}
+	
+	@Override
+	public void setProperties(Map<String, String> properties) {
 
+		this.properties = properties;
+	}
+
+	@Override
 	public Map<String, String> getProperties() {
 
 		return properties;
