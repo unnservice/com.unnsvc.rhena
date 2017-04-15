@@ -3,22 +3,29 @@ package com.unnsvc.rhena.model.lifecycle;
 
 import org.w3c.dom.Document;
 
+import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.ng.model.ESelectionType;
+import com.unnsvc.rhena.common.ng.model.IEntryPoint;
 import com.unnsvc.rhena.common.ng.model.ILifecycleReference;
-import com.unnsvc.rhena.common.ng.model.IRhenaEdge;
 
 public abstract class AbstractLifecycleReference implements ILifecycleReference {
 
 	private String schema;
 	private String clazz;
 	private Document config;
-	private IRhenaEdge edge;
+	
+	private ModuleIdentifier source;
+	private ESelectionType selectionType;
+	private IEntryPoint entryPoint;
 
-	public AbstractLifecycleReference(String schema, String clazz, Document config, IRhenaEdge edge) {
+	public AbstractLifecycleReference(String schema, String clazz, Document config, ModuleIdentifier source, ESelectionType selectionType, IEntryPoint entryPoint) {
 
 		this.schema = schema;
 		this.clazz = clazz;
 		this.config = config;
-		this.edge = edge;
+		this.source = source;
+		this.selectionType = selectionType;
+		this.entryPoint = entryPoint;
 	}
 
 	public String getSchema() {
@@ -51,14 +58,43 @@ public abstract class AbstractLifecycleReference implements ILifecycleReference 
 		this.config = config;
 	}
 
-	public IRhenaEdge getEdge() {
+	@Override
+	public ModuleIdentifier getSource() {
 
-		return edge;
+		
+		return source;
 	}
 
-	public void setEdge(IRhenaEdge edge) {
+	@Override
+	public void setSource(ModuleIdentifier source) {
 
-		this.edge = edge;
+		this.source = source;
+	}
+
+	@Override
+	public ESelectionType getTraverseType() {
+
+		
+		return selectionType;
+	}
+
+	@Override
+	public void setTraverseType(ESelectionType selectionType) {
+
+		this.selectionType = selectionType;
+	}
+
+	@Override
+	public IEntryPoint getEntryPoint() {
+
+		
+		return entryPoint;
+	}
+
+	@Override
+	public void setEntryPoint(IEntryPoint entryPoint) {
+
+		this.entryPoint = entryPoint;
 	}
 
 }

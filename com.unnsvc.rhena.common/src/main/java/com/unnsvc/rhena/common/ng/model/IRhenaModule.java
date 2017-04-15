@@ -4,10 +4,10 @@ package com.unnsvc.rhena.common.ng.model;
 import java.util.List;
 import java.util.Map;
 
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.ng.repository.RepositoryIdentifier;
 
-public interface IRhenaModule {
+public interface IRhenaModule extends Iterable<IRhenaEdge> {
 
 	public IRhenaEdge getParent();
 

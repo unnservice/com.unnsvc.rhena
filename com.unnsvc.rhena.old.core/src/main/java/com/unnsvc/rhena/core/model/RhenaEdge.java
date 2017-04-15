@@ -1,10 +1,10 @@
 
 package com.unnsvc.rhena.core.model;
 
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
+import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
 
 public class RhenaEdge implements IRhenaEdge {
 

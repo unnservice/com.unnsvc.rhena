@@ -3,10 +3,11 @@ package com.unnsvc.rhena.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.ng.model.ERhenaModuleType;
 import com.unnsvc.rhena.common.ng.model.ILifecycleConfiguration;
 import com.unnsvc.rhena.common.ng.model.IRhenaEdge;
@@ -120,7 +121,7 @@ public class RhenaModule implements IRhenaModule {
 
 		return properties.get(name);
 	}
-	
+
 	@Override
 	public void setProperties(Map<String, String> properties) {
 
@@ -131,6 +132,12 @@ public class RhenaModule implements IRhenaModule {
 	public Map<String, String> getProperties() {
 
 		return properties;
+	}
+
+	@Override
+	public Iterator<IRhenaEdge> iterator() {
+
+		return dependencies.iterator();
 	}
 
 }

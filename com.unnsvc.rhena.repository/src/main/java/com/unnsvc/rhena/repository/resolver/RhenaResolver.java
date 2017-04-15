@@ -6,10 +6,10 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.exceptions.NotFoundException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.ng.IRhenaCache;
 import com.unnsvc.rhena.common.ng.config.IRepositoryConfiguration;
 import com.unnsvc.rhena.common.ng.config.IRhenaConfiguration;
+import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.ng.model.IRhenaModule;
 import com.unnsvc.rhena.common.ng.repository.ERepositoryType;
 import com.unnsvc.rhena.common.ng.repository.IRepository;

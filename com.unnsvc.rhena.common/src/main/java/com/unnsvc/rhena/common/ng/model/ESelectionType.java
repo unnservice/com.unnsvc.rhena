@@ -3,5 +3,5 @@ package com.unnsvc.rhena.common.ng.model;
 
 public enum ESelectionType {
 	
-	HIERARCHY, SCOPE
+	HIERARCHY, SCOPE, DIRECT, COMPONENT
 }

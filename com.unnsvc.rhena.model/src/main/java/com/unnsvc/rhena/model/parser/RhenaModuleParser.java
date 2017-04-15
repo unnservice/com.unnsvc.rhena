@@ -19,11 +19,12 @@ import org.w3c.dom.NodeList;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.ng.IRhenaCache;
+import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.ng.model.EExecutionType;
 import com.unnsvc.rhena.common.ng.model.ERhenaModuleType;
 import com.unnsvc.rhena.common.ng.model.ESelectionType;
+import com.unnsvc.rhena.common.ng.model.IEntryPoint;
 import com.unnsvc.rhena.common.ng.model.ILifecycleConfiguration;
 import com.unnsvc.rhena.common.ng.model.IRhenaEdge;
 import com.unnsvc.rhena.common.ng.repository.RepositoryIdentifier;
@@ -194,27 +195,30 @@ public class RhenaModuleParser {
 				EExecutionType et = EExecutionType.MAIN;
 				ESelectionType tt = ESelectionType.SCOPE;
 
-				IRhenaEdge edge = newEdge(module.getIdentifier(), et, ModuleIdentifier.valueOf(moduleAttrStr), tt);
+				ModuleIdentifier source = module.getIdentifier();
+				ModuleIdentifier target = ModuleIdentifier.valueOf(moduleAttrStr);
+				IEntryPoint entryPoint = new EntryPoint(et, target);
+
 				/**
 				 * @TODO perform caching on edge
 				 */
 
 				if (child.getLocalName().equals("context")) {
 
-					ContextReference configurator = new ContextReference(schemaAttrStr, clazzAttrStr, config, edge);
+					ContextReference configurator = new ContextReference(schemaAttrStr, clazzAttrStr, config, source, tt, entryPoint);
 					lifecycleConfiguration.setContext(configurator);
 				} else if (child.getLocalName().equals("processor")) {
 
-					ProcessorReference processor = new ProcessorReference(schemaAttrStr, clazzAttrStr, config, edge);
+					ProcessorReference processor = new ProcessorReference(schemaAttrStr, clazzAttrStr, config, source, tt, entryPoint);
 					lifecycleConfiguration.addProcessor(processor);
 				} else if (child.getLocalName().equals("generator")) {
 
-					GeneratorReference generator = new GeneratorReference(schemaAttrStr, clazzAttrStr, config, edge);
+					GeneratorReference generator = new GeneratorReference(schemaAttrStr, clazzAttrStr, config, source, tt, entryPoint);
 					lifecycleConfiguration.setGenerator(generator);
 				} else if (child.getLocalName().equals("command")) {
 
 					String commandName = child.getAttributes().getNamedItem("name").getNodeValue();
-					CommandReference command = new CommandReference(schemaAttrStr, clazzAttrStr, config, edge, commandName);
+					CommandReference command = new CommandReference(schemaAttrStr, clazzAttrStr, config, commandName, source, tt, entryPoint);
 					lifecycleConfiguration.addCommand(command);
 				}
 			}

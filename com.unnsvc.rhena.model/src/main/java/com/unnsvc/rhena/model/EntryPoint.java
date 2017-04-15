@@ -1,7 +1,7 @@
 
 package com.unnsvc.rhena.model;
 
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.ng.model.EExecutionType;
 import com.unnsvc.rhena.common.ng.model.IEntryPoint;
 

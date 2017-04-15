@@ -3,15 +3,17 @@ package com.unnsvc.rhena.model.lifecycle;
 
 import org.w3c.dom.Document;
 
-import com.unnsvc.rhena.common.ng.model.IRhenaEdge;
+import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.ng.model.ESelectionType;
+import com.unnsvc.rhena.common.ng.model.IEntryPoint;
 
 public class CommandReference extends AbstractLifecycleReference {
 
 	private String commandName;
 
-	public CommandReference(String schema, String clazz, Document config, IRhenaEdge edge, String commandName) {
+	public CommandReference(String schema, String clazz, Document config, String commandName, ModuleIdentifier source, ESelectionType selectionType, IEntryPoint entryPoint) {
 
-		super(schema, clazz, config, edge);
+		super(schema, clazz, config, source, selectionType, entryPoint);
 		this.commandName = commandName;
 	}
 
@@ -24,4 +26,5 @@ public class CommandReference extends AbstractLifecycleReference {
 
 		this.commandName = commandName;
 	}
+
 }

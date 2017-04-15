@@ -1,6 +1,6 @@
 package com.unnsvc.rhena.common.ng.model;
 
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
 
 public interface IRhenaEdge {
 

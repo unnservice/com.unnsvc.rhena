@@ -2,9 +2,11 @@
 package com.unnsvc.rhena.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.unnsvc.rhena.common.ng.model.ILifecycleConfiguration;
+import com.unnsvc.rhena.common.ng.model.ILifecycleReference;
 import com.unnsvc.rhena.model.lifecycle.CommandReference;
 import com.unnsvc.rhena.model.lifecycle.ContextReference;
 import com.unnsvc.rhena.model.lifecycle.GeneratorReference;
@@ -55,6 +57,17 @@ public class LifecycleConfiguration implements ILifecycleConfiguration {
 	public void addCommand(CommandReference commandReference) {
 
 		this.commandReferences.add(commandReference);
+	}
+
+	@Override
+	public Iterator<ILifecycleReference> iterator() {
+
+		List<ILifecycleReference> refs = new ArrayList<ILifecycleReference>();
+		refs.add(contextReference);
+		refs.addAll(processorReferences);
+		refs.add(generatorReference);
+		refs.addAll(commandReferences);
+		return refs.iterator();
 	}
 
 }

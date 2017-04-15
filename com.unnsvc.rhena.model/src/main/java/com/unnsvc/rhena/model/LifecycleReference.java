@@ -3,7 +3,7 @@ package com.unnsvc.rhena.model;
 
 import org.w3c.dom.Document;
 
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.ng.model.ESelectionType;
 import com.unnsvc.rhena.common.ng.model.IEntryPoint;
 import com.unnsvc.rhena.common.ng.model.ILifecycleReference;
@@ -52,5 +52,4 @@ public class LifecycleReference extends RhenaEdge implements ILifecycleReference
 
 		this.configuration = configuration;
 	}
-
 }

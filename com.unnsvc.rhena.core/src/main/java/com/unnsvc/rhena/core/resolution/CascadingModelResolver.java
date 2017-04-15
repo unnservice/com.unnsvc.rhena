@@ -1,12 +1,14 @@
 
 package com.unnsvc.rhena.core.resolution;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.ng.IRhenaCache;
 import com.unnsvc.rhena.common.ng.config.IRhenaConfiguration;
+import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.ng.model.IRhenaModule;
 import com.unnsvc.rhena.common.ng.repository.IRhenaResolver;
 import com.unnsvc.rhena.model.RhenaMergedModule;
@@ -16,6 +18,12 @@ public class CascadingModelResolver {
 	private IRhenaConfiguration config;
 	private IRhenaResolver resolver;
 	private IRhenaCache cache;
+	private Map<ModuleIdentifier, RhenaMergedModule> mergedModules;
+
+	public CascadingModelResolver() {
+
+		this.mergedModules = new HashMap<ModuleIdentifier, RhenaMergedModule>();
+	}
 
 	public CascadingModelResolver(IRhenaConfiguration config, IRhenaResolver resolver, IRhenaCache cache) {
 
@@ -26,15 +34,21 @@ public class CascadingModelResolver {
 
 	public IRhenaModule resolveModule(ModuleIdentifier identifier) throws RhenaException {
 
-		IRhenaModule mergedModule = resolveMergedModule(identifier);
+		RhenaMergedModule mergedModule = mergedModules.get(identifier);
+		if (mergedModule == null) {
+			mergedModule = resolveMergedModule(identifier);
+			mergedModules.put(mergedModule.getIdentifier(), mergedModule);
+		}
 
+		
+		
 		return mergedModule;
 	}
 
 	/**
 	 * This method resolves a merged module that has all of its parents merged
 	 */
-	private IRhenaModule resolveMergedModule(ModuleIdentifier identifier) throws RhenaException {
+	private RhenaMergedModule resolveMergedModule(ModuleIdentifier identifier) throws RhenaException {
 
 		/**
 		 * First element is the child, second the parent, third the parent of

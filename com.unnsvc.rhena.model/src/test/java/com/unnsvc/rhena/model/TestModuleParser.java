@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import com.unnsvc.rhena.common.AbstractRhenaTest;
 import com.unnsvc.rhena.common.RhenaConstants;
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.ng.model.IRhenaModule;
 import com.unnsvc.rhena.common.ng.repository.RepositoryIdentifier;
 import com.unnsvc.rhena.model.parser.RhenaModuleParser;
