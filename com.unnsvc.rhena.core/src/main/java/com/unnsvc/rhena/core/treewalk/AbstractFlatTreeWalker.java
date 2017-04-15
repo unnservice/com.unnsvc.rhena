@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.exceptions.NotUniqueException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.ng.IRhenaCache;
 import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.ng.model.ESelectionType;
 import com.unnsvc.rhena.common.ng.model.IEntryPoint;
@@ -21,11 +20,9 @@ import com.unnsvc.rhena.common.utils.UniqueStack;
 public abstract class AbstractFlatTreeWalker {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
-	private IRhenaCache cache;
 
-	public AbstractFlatTreeWalker(IRhenaCache cache) {
+	public AbstractFlatTreeWalker() {
 
-		this.cache = cache;
 	}
 
 	/**
@@ -48,7 +45,7 @@ public abstract class AbstractFlatTreeWalker {
 			debugCyclic(entryPoint.getTarget(), tracker);
 			throw new RhenaException(nue.getMessage(), nue);
 		}
-		return resolveModel(entryPoint.getTarget());
+		return _resolveModule(entryPoint.getTarget());
 	}
 
 	private void processTracker(UniqueStack<FlatTreeFrame> tracker, List<IEntryPoint> processed) throws RhenaException {
@@ -58,7 +55,7 @@ public abstract class AbstractFlatTreeWalker {
 				FlatTreeFrame currentFrame = tracker.peek();
 				IEntryPoint currentEntryPoint = currentFrame.getEntryPoint();
 				ESelectionType currentSelectionType = currentFrame.getSelectionType();
-				IRhenaModule currentModule = resolveModel(currentEntryPoint.getTarget());
+				IRhenaModule currentModule = _resolveModule(currentEntryPoint.getTarget());
 
 				// if has parent and parent isn't already processed
 				if (currentModule.getParent() != null && !processed.contains(currentModule.getParent().getEntryPoint())) {
@@ -125,39 +122,8 @@ public abstract class AbstractFlatTreeWalker {
 				FlatTreeFrame frame = tracker.pop();
 				IEntryPoint resolvedEntryPoint = frame.getEntryPoint();
 				processed.add(resolvedEntryPoint);
-				onResolvedEntryPoint(resolvedEntryPoint);
 			}
 		}
-
-		onAllResolvedEntryPoints(processed);
-	}
-
-	/**
-	 * This method is called after all entry points have been processed
-	 * 
-	 * @param resolvedEntryPoints
-	 */
-	protected void onAllResolvedEntryPoints(List<IEntryPoint> resolvedEntryPoints) {
-
-	}
-
-	/**
-	 * This method is called for each processed entry point
-	 * 
-	 * @param resolvedEntryPoint
-	 */
-	protected void onResolvedEntryPoint(IEntryPoint resolvedEntryPoint) {
-
-	}
-
-	protected IRhenaCache getCache() {
-
-		return cache;
-	}
-
-	protected IRhenaModule resolveModel(ModuleIdentifier identifier) throws RhenaException {
-
-		return cache.getModule(identifier);
 	}
 
 	protected void debugCyclic(ModuleIdentifier identifier, UniqueStack<FlatTreeFrame> tracker) throws RhenaException {
@@ -177,9 +143,13 @@ public abstract class AbstractFlatTreeWalker {
 			}
 			if (startlog) {
 				// @TODO
-				logger.error("Cycle: " + (shift ? "↓" : "↓") + " " + resolveModel(entryPoint.getTarget()).getIdentifier().toTag(entryPoint.getExecutionType()));
+				logger.error(
+						"Cycle: " + (shift ? "↓" : "↓") + " " + _resolveModule(entryPoint.getTarget()).getIdentifier().toTag(entryPoint.getExecutionType()));
 				shift = !shift;
 			}
 		}
 	}
+
+	protected abstract IRhenaModule _resolveModule(ModuleIdentifier identifier) throws RhenaException;
+
 }

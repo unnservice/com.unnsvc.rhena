@@ -1,32 +1,27 @@
 
 package com.unnsvc.rhena.core.resolution;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
-
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.ng.IRhenaCache;
 import com.unnsvc.rhena.common.ng.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.ng.model.EExecutionType;
+import com.unnsvc.rhena.common.ng.model.ESelectionType;
+import com.unnsvc.rhena.common.ng.model.IEntryPoint;
 import com.unnsvc.rhena.common.ng.model.IRhenaModule;
 import com.unnsvc.rhena.common.ng.repository.IRhenaResolver;
-import com.unnsvc.rhena.model.RhenaMergedModule;
+import com.unnsvc.rhena.core.treewalk.AbstractFlatTreeWalker;
+import com.unnsvc.rhena.model.EntryPoint;
 
-public class CascadingModelResolver {
+public class CascadingModelResolver extends AbstractFlatTreeWalker {
 
 	private IRhenaConfiguration config;
 	private IRhenaResolver resolver;
 	private IRhenaCache cache;
-	private Map<ModuleIdentifier, RhenaMergedModule> mergedModules;
-
-	public CascadingModelResolver() {
-
-		this.mergedModules = new HashMap<ModuleIdentifier, RhenaMergedModule>();
-	}
 
 	public CascadingModelResolver(IRhenaConfiguration config, IRhenaResolver resolver, IRhenaCache cache) {
 
+		super();
 		this.config = config;
 		this.resolver = resolver;
 		this.cache = cache;
@@ -34,54 +29,11 @@ public class CascadingModelResolver {
 
 	public IRhenaModule resolveModule(ModuleIdentifier identifier) throws RhenaException {
 
-		RhenaMergedModule mergedModule = mergedModules.get(identifier);
-		if (mergedModule == null) {
-			mergedModule = resolveMergedModule(identifier);
-			mergedModules.put(mergedModule.getIdentifier(), mergedModule);
-		}
+		IEntryPoint entryPoint = new EntryPoint(EExecutionType.TEST, identifier);
 
-		
-		
-		return mergedModule;
-	}
+		IRhenaModule module = visitTree(entryPoint, ESelectionType.SCOPE);
 
-	/**
-	 * This method resolves a merged module that has all of its parents merged
-	 */
-	private RhenaMergedModule resolveMergedModule(ModuleIdentifier identifier) throws RhenaException {
-
-		/**
-		 * First element is the child, second the parent, third the parent of
-		 * parent, ...
-		 */
-		Stack<IRhenaModule> parentStack = new Stack<IRhenaModule>();
-
-		IRhenaModule currentModule = _resolveModule(identifier);
-		parentStack.push(currentModule);
-
-		while (currentModule.getParent() != null) {
-
-			currentModule = _resolveModule(currentModule.getParent().getEntryPoint().getTarget());
-			parentStack.push(currentModule);
-		}
-
-		RhenaMergedModule mergedModule = null;
-		// we start with the greatest parent, and merge each module into that
-		for (int i = parentStack.size() - 1; i >= 0; i--) {
-			mergedModule = mergeInto(parentStack.get(i), mergedModule);
-		}
-
-		return mergedModule;
-	}
-
-	private RhenaMergedModule mergeInto(IRhenaModule from, RhenaMergedModule into) {
-
-		if (into == null) {
-			return new RhenaMergedModule(from);
-		}
-
-		into.mergeOverwrite(from);
-		return into;
+		return module;
 	}
 
 	/**
@@ -91,7 +43,8 @@ public class CascadingModelResolver {
 	 * @return
 	 * @throws RhenaException
 	 */
-	private IRhenaModule _resolveModule(ModuleIdentifier identifier) throws RhenaException {
+	@Override
+	protected IRhenaModule _resolveModule(ModuleIdentifier identifier) throws RhenaException {
 
 		IRhenaModule module = cache.getModule(identifier);
 		if (module == null) {
@@ -100,5 +53,4 @@ public class CascadingModelResolver {
 		}
 		return module;
 	}
-
 }
