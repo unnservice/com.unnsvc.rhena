@@ -10,12 +10,13 @@
 		<module>com.unnsvc.rhena.lifecycle</module>
 		<module>com.unnsvc.rhena.common</module>
 		<module>com.unnsvc.rhena.agent</module>
-		<module>com.unnsvc.rhena.cmdline</module>
-		<module>com.unnsvc.rhena.docs</module>
+		<!-- <module>com.unnsvc.rhena.cmdline</module> -->
+		<!-- <module>com.unnsvc.rhena.docs</module> -->
 		<module>com.unnsvc.rhena.objectserver</module>
 		<module>com.unnsvc.rhena.model</module>
 		<module>com.unnsvc.rhena.repository</module>
 		<module>com.unnsvc.rhena.config</module>
+		<module>com.unnsvc.rhena.execution</module>
 	</modules>
 
 	<build>

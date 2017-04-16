@@ -33,7 +33,7 @@ public class TestCascadingResolverPerformance extends AbstractRhenaConfiguredTes
 		long totalTime = 0;
 		for (int i = 0; i < iterations; i++) {
 			long start = System.currentTimeMillis();
-			CascadingModelResolver resolver = new CascadingModelResolver(getConfig(), rhenaResolver, getMockCache());
+			CascadingModelResolver resolver = new CascadingModelResolver(rhenaResolver, getMockCache());
 			IRhenaModule module = resolver.resolveModuleTree(ModuleIdentifier.valueOf("com.multi:module1:1.0.0"));
 			Assert.assertNotNull(module);
 			totalTime += (System.currentTimeMillis() - start);

@@ -23,7 +23,7 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.unnsvc.rhena</groupId>
 			<artifactId>com.unnsvc.rhena.repository</artifactId>
@@ -32,6 +32,11 @@
 		<dependency>
 			<groupId>com.unnsvc.rhena</groupId>
 			<artifactId>com.unnsvc.rhena.agent</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.unnsvc.rhena</groupId>
+			<artifactId>com.unnsvc.rhena.execution</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

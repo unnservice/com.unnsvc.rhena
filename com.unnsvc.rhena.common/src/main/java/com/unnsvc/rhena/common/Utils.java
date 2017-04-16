@@ -194,19 +194,6 @@ public class Utils {
 		}
 	}
 
-	/**
-	 * To file name without extension
-	 * 
-	 * @param identifier
-	 * @param type
-	 * @return
-	 */
-	public static String toFileName(ModuleIdentifier identifier, EExecutionType type) {
-
-		return identifier.getComponentName().toString() + "." + identifier.getModuleName().toString() + "-" + type.toString().toLowerCase() + "-"
-				+ identifier.getVersion().toString();
-	}
-
 	public static List<IEntryPoint> getAllEntryPoints(IRhenaCache cache, IRhenaModule module, boolean lifecycles) {
 
 		List<IEntryPoint> eps = new ArrayList<IEntryPoint>();
