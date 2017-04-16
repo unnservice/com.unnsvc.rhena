@@ -159,9 +159,7 @@ public class RhenaModuleParser {
 				} else if (metaChild.getNamespaceURI().equals(RhenaConstants.NS_RHENA_MODULE)) {
 					if (metaChild.getLocalName().equals("lifecycle")) {
 						ILifecycleConfiguration declaredConfiguration = processLifecycleNode(metaChild);
-						/**
-						 * @TODO add to cache
-						 */
+						module.addDeclaredConfiguration(declaredConfiguration);
 					}
 				}
 			}
@@ -173,9 +171,6 @@ public class RhenaModuleParser {
 		String lifecycleName = lifecycleNode.getAttributes().getNamedItem("name").getNodeValue();
 		LifecycleConfiguration lifecycleConfiguration = new LifecycleConfiguration(lifecycleName);
 
-		// LifecycleReference lifecycleReference = new
-		// LifecycleReference(lifecycleNode.getAttributes().getNamedItem("name").getNodeValue());
-
 		NodeList children = lifecycleNode.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
 
@@ -185,6 +180,7 @@ public class RhenaModuleParser {
 				String moduleAttrStr = child.getAttributes().getNamedItem("module").getNodeValue();
 				String clazzAttrStr = child.getAttributes().getNamedItem("class").getNodeValue();
 				String schemaAttrStr = null;
+				
 				if (child.getAttributes().getNamedItem("schema") != null) {
 					schemaAttrStr = child.getAttributes().getNamedItem("schema").getNodeValue();
 				}

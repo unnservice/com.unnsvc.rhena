@@ -27,7 +27,7 @@ public class CascadingModelResolver extends AbstractFlatTreeWalker {
 		this.cache = cache;
 	}
 
-	public IRhenaModule resolveModule(ModuleIdentifier identifier) throws RhenaException {
+	public IRhenaModule resolveModuleTree(ModuleIdentifier identifier) throws RhenaException {
 
 		IEntryPoint entryPoint = new EntryPoint(EExecutionType.TEST, identifier);
 
@@ -44,7 +44,7 @@ public class CascadingModelResolver extends AbstractFlatTreeWalker {
 	 * @throws RhenaException
 	 */
 	@Override
-	protected IRhenaModule _resolveModule(ModuleIdentifier identifier) throws RhenaException {
+	protected IRhenaModule resolveModule(ModuleIdentifier identifier) throws RhenaException {
 
 		IRhenaModule module = cache.getModule(identifier);
 		if (module == null) {

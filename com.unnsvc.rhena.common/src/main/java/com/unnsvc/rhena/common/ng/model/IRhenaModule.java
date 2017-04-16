@@ -43,4 +43,7 @@ public interface IRhenaModule extends Iterable<IRhenaEdge> {
 
 	public void setProperties(Map<String, String> properties);
 
+	public void addDeclaredConfiguration(ILifecycleConfiguration declaredConfiguration);
+
+	public List<ILifecycleConfiguration> getDeclaredConfigurations();
 }

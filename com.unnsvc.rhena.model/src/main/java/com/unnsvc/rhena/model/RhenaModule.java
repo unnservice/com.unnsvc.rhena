@@ -23,6 +23,7 @@ public class RhenaModule implements IRhenaModule {
 	private ILifecycleConfiguration lifecycleConfiguration;
 	private List<IRhenaEdge> dependencies;
 	private Map<String, String> properties;
+	private List<ILifecycleConfiguration> declaredConfigurations;
 
 	public RhenaModule(ModuleIdentifier identifier, RepositoryIdentifier repositoryIdentifier) {
 
@@ -30,6 +31,7 @@ public class RhenaModule implements IRhenaModule {
 		this.repositoryIdentifier = repositoryIdentifier;
 		this.dependencies = new ArrayList<IRhenaEdge>();
 		this.properties = new HashMap<String, String>();
+		this.declaredConfigurations = new ArrayList<ILifecycleConfiguration>();
 	}
 
 	@Override
@@ -138,6 +140,18 @@ public class RhenaModule implements IRhenaModule {
 	public Iterator<IRhenaEdge> iterator() {
 
 		return dependencies.iterator();
+	}
+
+	@Override
+	public void addDeclaredConfiguration(ILifecycleConfiguration declaredConfiguration) {
+
+		this.declaredConfigurations.add(declaredConfiguration);
+	}
+
+	@Override
+	public List<ILifecycleConfiguration> getDeclaredConfigurations() {
+
+		return declaredConfigurations;
 	}
 
 }

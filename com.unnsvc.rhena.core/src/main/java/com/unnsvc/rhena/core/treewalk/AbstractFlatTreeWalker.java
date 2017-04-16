@@ -45,7 +45,7 @@ public abstract class AbstractFlatTreeWalker {
 			debugCyclic(entryPoint.getTarget(), tracker);
 			throw new RhenaException(nue.getMessage(), nue);
 		}
-		return _resolveModule(entryPoint.getTarget());
+		return resolveModule(entryPoint.getTarget());
 	}
 
 	private void processTracker(UniqueStack<FlatTreeFrame> tracker, List<IEntryPoint> processed) throws RhenaException {
@@ -55,7 +55,7 @@ public abstract class AbstractFlatTreeWalker {
 				FlatTreeFrame currentFrame = tracker.peek();
 				IEntryPoint currentEntryPoint = currentFrame.getEntryPoint();
 				ESelectionType currentSelectionType = currentFrame.getSelectionType();
-				IRhenaModule currentModule = _resolveModule(currentEntryPoint.getTarget());
+				IRhenaModule currentModule = resolveModule(currentEntryPoint.getTarget());
 
 				// if has parent and parent isn't already processed
 				if (currentModule.getParent() != null && !processed.contains(currentModule.getParent().getEntryPoint())) {
@@ -144,12 +144,12 @@ public abstract class AbstractFlatTreeWalker {
 			if (startlog) {
 				// @TODO
 				logger.error(
-						"Cycle: " + (shift ? "↓" : "↓") + " " + _resolveModule(entryPoint.getTarget()).getIdentifier().toTag(entryPoint.getExecutionType()));
+						"Cycle: " + (shift ? "↓" : "↓") + " " + resolveModule(entryPoint.getTarget()).getIdentifier().toTag(entryPoint.getExecutionType()));
 				shift = !shift;
 			}
 		}
 	}
 
-	protected abstract IRhenaModule _resolveModule(ModuleIdentifier identifier) throws RhenaException;
+	protected abstract IRhenaModule resolveModule(ModuleIdentifier identifier) throws RhenaException;
 
 }
