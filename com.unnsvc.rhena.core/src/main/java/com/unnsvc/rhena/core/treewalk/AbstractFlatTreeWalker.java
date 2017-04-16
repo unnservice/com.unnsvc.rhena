@@ -7,15 +7,18 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.NotUniqueException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.ng.model.ESelectionType;
 import com.unnsvc.rhena.common.ng.model.IEntryPoint;
+import com.unnsvc.rhena.common.ng.model.ILifecycleConfiguration;
 import com.unnsvc.rhena.common.ng.model.ILifecycleReference;
 import com.unnsvc.rhena.common.ng.model.IRhenaEdge;
 import com.unnsvc.rhena.common.ng.model.IRhenaModule;
 import com.unnsvc.rhena.common.utils.UniqueStack;
+import com.unnsvc.rhena.model.UnresolvedLifecycleConfiguration;
 
 public abstract class AbstractFlatTreeWalker {
 
@@ -45,7 +48,7 @@ public abstract class AbstractFlatTreeWalker {
 			debugCyclic(entryPoint.getTarget(), tracker);
 			throw new RhenaException(nue.getMessage(), nue);
 		}
-		return resolveModule(entryPoint.getTarget());
+		return onResolveModule(entryPoint.getTarget());
 	}
 
 	private void processTracker(UniqueStack<FlatTreeFrame> tracker, List<IEntryPoint> processed) throws RhenaException {
@@ -55,7 +58,7 @@ public abstract class AbstractFlatTreeWalker {
 				FlatTreeFrame currentFrame = tracker.peek();
 				IEntryPoint currentEntryPoint = currentFrame.getEntryPoint();
 				ESelectionType currentSelectionType = currentFrame.getSelectionType();
-				IRhenaModule currentModule = resolveModule(currentEntryPoint.getTarget());
+				IRhenaModule currentModule = onResolveModule(currentEntryPoint.getTarget());
 
 				/**
 				 * Check parent relationship
@@ -67,11 +70,12 @@ public abstract class AbstractFlatTreeWalker {
 					break edgeProcessing;
 				}
 
+				onParentResolved(currentModule);
+
 				/**
 				 * Check lifecycle relationships
 				 */
-				if (currentModule.getLifecycleConfiguration() != null) {
-
+				if (!currentModule.getLifecycleConfiguration().getName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
 					for (ILifecycleReference ref : currentModule.getLifecycleConfiguration()) {
 						if (!processed.contains(ref.getEntryPoint())) {
 							tracker.pushUnique(new FlatTreeFrame(ref.getEntryPoint(), ref.getTraverseType()));
@@ -130,6 +134,49 @@ public abstract class AbstractFlatTreeWalker {
 		}
 	}
 
+	/**
+	 * On parent resolved but before lifecycles, lifecycle declarations, and
+	 * dependencies
+	 * 
+	 * @param currentModule
+	 * @throws RhenaException
+	 */
+	protected void onParentResolved(IRhenaModule currentModule) throws RhenaException {
+
+		/**
+		 * Resolve its lifecycle
+		 * 
+		 */
+		if (currentModule.getLifecycleConfiguration() instanceof UnresolvedLifecycleConfiguration) {
+
+			ILifecycleConfiguration config = null;
+			IRhenaModule cursorModule = currentModule;
+			while (config == null && cursorModule != null) {
+
+				/**
+				 * It's a custom lifecycle so we want to search for its
+				 * declaration in the hierarchy
+				 */
+				for (ILifecycleConfiguration declaredConfig : currentModule.getDeclaredConfigurations()) {
+
+					if (declaredConfig.getName().equals(currentModule.getLifecycleConfiguration().getName())) {
+						config = declaredConfig;
+						break;
+					}
+				}
+
+				cursorModule = onResolveModule(cursorModule.getParent().getEntryPoint().getTarget());
+			}
+
+			if (config == null) {
+				throw new RhenaException(
+						"Lifecycle " + currentModule.getLifecycleConfiguration().getName() + " not found for " + currentModule.getIdentifier());
+			}
+
+			currentModule.setLifecycleConfiguration(config);
+		}
+	}
+
 	protected void debugCyclic(ModuleIdentifier identifier, UniqueStack<FlatTreeFrame> tracker) throws RhenaException {
 
 		logger.error("Cyclic dependency path detected:");
@@ -146,7 +193,7 @@ public abstract class AbstractFlatTreeWalker {
 				startlog = true;
 			}
 			if (startlog) {
-				IRhenaModule module = resolveModule(entryPoint.getTarget());
+				IRhenaModule module = onResolveModule(entryPoint.getTarget());
 				// @TODO more coherent debugging of cyclig model error
 				logger.error("Cycle: " + (shift ? "↓" : "↓") + " " + module.getIdentifier().toTag(entryPoint.getExecutionType()));
 				shift = !shift;
@@ -154,6 +201,6 @@ public abstract class AbstractFlatTreeWalker {
 		}
 	}
 
-	protected abstract IRhenaModule resolveModule(ModuleIdentifier identifier) throws RhenaException;
+	protected abstract IRhenaModule onResolveModule(ModuleIdentifier identifier) throws RhenaException;
 
 }

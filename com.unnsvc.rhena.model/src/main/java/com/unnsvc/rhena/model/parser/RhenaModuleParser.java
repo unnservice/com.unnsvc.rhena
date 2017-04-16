@@ -27,6 +27,7 @@ import com.unnsvc.rhena.common.ng.model.IEntryPoint;
 import com.unnsvc.rhena.common.ng.model.ILifecycleConfiguration;
 import com.unnsvc.rhena.common.ng.model.IRhenaEdge;
 import com.unnsvc.rhena.common.ng.repository.RepositoryIdentifier;
+import com.unnsvc.rhena.lifecycle.ng.DefaultLifecycleConfiguration;
 import com.unnsvc.rhena.model.EntryPoint;
 import com.unnsvc.rhena.model.LifecycleConfiguration;
 import com.unnsvc.rhena.model.RhenaEdge;
@@ -127,17 +128,13 @@ public class RhenaModuleParser {
 		String componentNameStr = moduleChild.getAttributes().getNamedItem("component").getNodeValue();
 		String versionStr = moduleChild.getAttributes().getNamedItem("version").getNodeValue();
 
-		if (moduleChild.getAttributes().getNamedItem("lifecycle") != null) {
+		Node lifecycleAttrNode = moduleChild.getAttributes().getNamedItem("lifecycle");
+		if (lifecycleAttrNode == null || lifecycleAttrNode.getNodeValue().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
 
-			String lifecycleName = moduleChild.getAttributes().getNamedItem("lifecycle").getNodeValue();
-			if (lifecycleName.toLowerCase().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
-				throw new RhenaException("Invalid lifecycle name \"" + lifecycleName + "\".");
-			}
-			UnresolvedLifecycleConfiguration lifecycleConfiguration = new UnresolvedLifecycleConfiguration(lifecycleName);
-			module.setLifecycleConfiguration(lifecycleConfiguration);
+			ILifecycleConfiguration defaultConfig = new DefaultLifecycleConfiguration(RhenaConstants.DEFAULT_LIFECYCLE_NAME);
+			module.setLifecycleConfiguration(defaultConfig);
 		} else {
-			// no lifecycle declared, declare default
-			UnresolvedLifecycleConfiguration lifecycleConfiguration = new UnresolvedLifecycleConfiguration(RhenaConstants.DEFAULT_LIFECYCLE_NAME);
+			UnresolvedLifecycleConfiguration lifecycleConfiguration = new UnresolvedLifecycleConfiguration(lifecycleAttrNode.getNodeValue());
 			module.setLifecycleConfiguration(lifecycleConfiguration);
 		}
 

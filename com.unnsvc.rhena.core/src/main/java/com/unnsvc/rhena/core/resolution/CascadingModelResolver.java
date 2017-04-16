@@ -44,7 +44,7 @@ public class CascadingModelResolver extends AbstractFlatTreeWalker {
 	 * @throws RhenaException
 	 */
 	@Override
-	protected IRhenaModule resolveModule(ModuleIdentifier identifier) throws RhenaException {
+	protected IRhenaModule onResolveModule(ModuleIdentifier identifier) throws RhenaException {
 
 		IRhenaModule module = cache.getModule(identifier);
 		if (module == null) {
