@@ -18,7 +18,7 @@ public class TestLocalRepository extends AbstractRhenaConfiguredTest {
 
 		File location = new File(new File("").getCanonicalFile(), "../test-repositories/localRepo/");
 
-		LocalRepository local = new LocalRepository(RepositoryDefinition.newLocal("test", location.toURI()), getMockCache());
+		LocalRepository local = new LocalRepository(RepositoryDefinition.newLocal("test", location.toURI()));
 		IRhenaModule module1 = local.resolveModule(ModuleIdentifier.valueOf("com.single:module1:1.0.0"));
 		Assert.assertNotNull(module1);
 	}

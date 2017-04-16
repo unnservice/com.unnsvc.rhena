@@ -7,7 +7,6 @@ import java.net.URI;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.NotFoundException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.ng.IRhenaCache;
 import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.ng.model.IRhenaModule;
 import com.unnsvc.rhena.common.ng.repository.IRepositoryDefinition;
@@ -17,9 +16,9 @@ public class LocalRepository extends AbstractRepository {
 
 	private File location;
 
-	public LocalRepository(IRepositoryDefinition definition, IRhenaCache cache) {
+	public LocalRepository(IRepositoryDefinition definition) {
 
-		super(definition, cache);
+		super(definition);
 		this.location = new File(definition.getLocation().getPath());
 	}
 
@@ -42,7 +41,7 @@ public class LocalRepository extends AbstractRepository {
 			throw new NotFoundException(moduleIdentifier + " descriptor not found in repository at location: " + moduleDescriptorLocation);
 		}
 
-		RhenaModuleParser parser = new RhenaModuleParser(getCache(), getDefinition().getIdentifier(), moduleIdentifier, moduleDescriptorLocation.toURI());
+		RhenaModuleParser parser = new RhenaModuleParser(getDefinition().getIdentifier(), moduleIdentifier, moduleDescriptorLocation.toURI());
 		return parser.getModule();
 	}
 

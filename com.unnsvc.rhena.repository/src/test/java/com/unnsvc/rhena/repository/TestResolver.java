@@ -14,7 +14,7 @@ public class TestResolver extends AbstractRhenaConfiguredTest {
 	@Test
 	public void testResolver() throws Exception {
 
-		RhenaResolver resolver = new RhenaResolver(getConfig(), getMockCache());
+		RhenaResolver resolver = new RhenaResolver(getConfig());
 
 		ModuleIdentifier identifier = ModuleIdentifier.valueOf("com.single:module1:1.0.0");
 		IRhenaModule module = resolver.resolveModule(identifier);

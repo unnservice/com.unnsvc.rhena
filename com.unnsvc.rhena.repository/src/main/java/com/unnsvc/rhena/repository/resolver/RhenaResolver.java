@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.exceptions.NotFoundException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.ng.IRhenaCache;
 import com.unnsvc.rhena.common.ng.config.IRepositoryConfiguration;
 import com.unnsvc.rhena.common.ng.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
@@ -23,12 +22,10 @@ public class RhenaResolver implements IRhenaResolver {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private IRepositoryConfiguration repositoryConfiguration;
-	private IRhenaCache cache;
 
-	public RhenaResolver(IRhenaConfiguration config, IRhenaCache cache) {
+	public RhenaResolver(IRhenaConfiguration config) {
 
 		this.repositoryConfiguration = config.getRepositoryConfiguration();
-		this.cache = cache;
 	}
 
 	@Override
@@ -83,13 +80,13 @@ public class RhenaResolver implements IRhenaResolver {
 
 		if (definition.getRepositoryType().equals(ERepositoryType.LOCAL)) {
 
-			return new LocalRepository(definition, cache);
+			return new LocalRepository(definition);
 		} else if (definition.getRepositoryType().equals(ERepositoryType.WORKSPACE)) {
 
-			return new WorkspaceRepository(definition, cache);
+			return new WorkspaceRepository(definition);
 		} else if (definition.getRepositoryType().equals(ERepositoryType.REMOTE)) {
 
-			return new RemoteRepository(definition, cache);
+			return new RemoteRepository(definition);
 		}
 
 		throw new RhenaException("Unknown repository type: " + definition.getRepositoryType());

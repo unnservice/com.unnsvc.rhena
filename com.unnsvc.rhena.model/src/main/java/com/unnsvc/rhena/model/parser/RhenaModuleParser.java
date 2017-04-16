@@ -19,7 +19,6 @@ import org.w3c.dom.NodeList;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.ng.IRhenaCache;
 import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.ng.model.EExecutionType;
 import com.unnsvc.rhena.common.ng.model.ERhenaModuleType;
@@ -45,14 +44,12 @@ import com.unnsvc.rhena.model.lifecycle.ProcessorReference;
  */
 public class RhenaModuleParser {
 
-	private IRhenaCache cache;
 	private RhenaModule module;
 
-	public RhenaModuleParser(IRhenaCache cache, RepositoryIdentifier repositoryIdentifier, ModuleIdentifier identifier, URI moduleDescriptorLocation)
+	public RhenaModuleParser(RepositoryIdentifier repositoryIdentifier, ModuleIdentifier identifier, URI moduleDescriptorLocation)
 			throws RhenaException {
 
 		try {
-			this.cache = cache;
 			this.module = new RhenaModule(identifier, repositoryIdentifier);
 
 			parse(moduleDescriptorLocation);

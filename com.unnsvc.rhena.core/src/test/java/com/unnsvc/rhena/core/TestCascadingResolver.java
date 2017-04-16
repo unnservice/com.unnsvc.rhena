@@ -16,7 +16,7 @@ public class TestCascadingResolver extends AbstractRhenaConfiguredTest {
 	@Test
 	public void testEngine() throws RhenaException {
 
-		RhenaResolver rhenaResolver = new RhenaResolver(getConfig(), getMockCache());
+		RhenaResolver rhenaResolver = new RhenaResolver(getConfig());
 
 		CascadingModelResolver resolver = new CascadingModelResolver(getConfig(), rhenaResolver, getMockCache());
 		IRhenaModule module = resolver.resolveModuleTree(ModuleIdentifier.valueOf("com.multi:module1:1.0.0"));

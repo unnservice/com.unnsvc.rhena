@@ -4,6 +4,7 @@ package com.unnsvc.rhena.model;
 import java.io.File;
 import java.net.URI;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.unnsvc.rhena.common.AbstractRhenaTest;
@@ -23,7 +24,8 @@ public class TestModuleParser extends AbstractRhenaTest {
 		URI moduleDescriptorLocation = new File(moduleLocation, RhenaConstants.MODULE_DESCRIPTOR_FILENAME).toURI();
 		ModuleIdentifier identifier = ModuleIdentifier.valueOf("com.test:module:1.0.0");
 
-		RhenaModuleParser parser = new RhenaModuleParser(getMockCache(), new RepositoryIdentifier("test"), identifier, moduleDescriptorLocation);
+		RhenaModuleParser parser = new RhenaModuleParser(new RepositoryIdentifier("test"), identifier, moduleDescriptorLocation);
 		IRhenaModule module = parser.getModule();
+		Assert.assertNotNull(module);
 	}
 }

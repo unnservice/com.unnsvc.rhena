@@ -57,7 +57,9 @@ public abstract class AbstractFlatTreeWalker {
 				ESelectionType currentSelectionType = currentFrame.getSelectionType();
 				IRhenaModule currentModule = resolveModule(currentEntryPoint.getTarget());
 
-				// if has parent and parent isn't already processed
+				/**
+				 * Check parent relationship
+				 */
 				if (currentModule.getParent() != null && !processed.contains(currentModule.getParent().getEntryPoint())) {
 
 					IRhenaEdge parentEdge = currentModule.getParent();
@@ -66,7 +68,7 @@ public abstract class AbstractFlatTreeWalker {
 				}
 
 				/**
-				 * Resolve lifecycle from here after we've merged parents
+				 * Check lifecycle relationships
 				 */
 				if (currentModule.getLifecycleConfiguration() != null) {
 
@@ -79,6 +81,8 @@ public abstract class AbstractFlatTreeWalker {
 				}
 
 				/**
+				 * Check dependencies
+				 * 
 				 * If previous requested a direct, then we don't concern
 				 * oursselves with the direct dependencies on the second level
 				 */
@@ -117,7 +121,7 @@ public abstract class AbstractFlatTreeWalker {
 				}
 
 				/**
-				 * We're finished with this node so we can pop it
+				 * We're finished with this node so we can consider it processed
 				 */
 				FlatTreeFrame frame = tracker.pop();
 				IEntryPoint resolvedEntryPoint = frame.getEntryPoint();
@@ -142,9 +146,9 @@ public abstract class AbstractFlatTreeWalker {
 				startlog = true;
 			}
 			if (startlog) {
-				// @TODO
-				logger.error(
-						"Cycle: " + (shift ? "↓" : "↓") + " " + resolveModule(entryPoint.getTarget()).getIdentifier().toTag(entryPoint.getExecutionType()));
+				IRhenaModule module = resolveModule(entryPoint.getTarget());
+				// @TODO more coherent debugging of cyclig model error
+				logger.error("Cycle: " + (shift ? "↓" : "↓") + " " + module.getIdentifier().toTag(entryPoint.getExecutionType()));
 				shift = !shift;
 			}
 		}
