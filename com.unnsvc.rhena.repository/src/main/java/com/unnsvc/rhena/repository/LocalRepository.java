@@ -14,12 +14,12 @@ import com.unnsvc.rhena.model.parser.RhenaModuleParser;
 
 public class LocalRepository extends AbstractRepository {
 
-	private File location;
+	// private File location;
 
 	public LocalRepository(IRepositoryDefinition definition) {
 
 		super(definition);
-		this.location = new File(definition.getLocation().getPath());
+		// this.location = new File(definition.getLocation().getPath());
 	}
 
 	@Override
