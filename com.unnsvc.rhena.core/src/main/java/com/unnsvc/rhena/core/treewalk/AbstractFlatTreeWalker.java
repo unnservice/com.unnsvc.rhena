@@ -3,6 +3,7 @@ package com.unnsvc.rhena.core.treewalk;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,7 +96,7 @@ public abstract class AbstractFlatTreeWalker {
 					 * Now we're dealing with the actual dependencies, for this
 					 * we will want to only enter requested dependency paths
 					 **/
-					for (IRhenaEdge dependency : currentModule) {
+					for (IRhenaEdge dependency : getMergedDependencies(currentModule)) {
 
 						/**
 						 * We only care about dependencies which we can use in
@@ -132,6 +133,29 @@ public abstract class AbstractFlatTreeWalker {
 				processed.add(resolvedEntryPoint);
 			}
 		}
+	}
+
+	protected List<IRhenaEdge> getMergedDependencies(IRhenaModule currentModule) throws RhenaException {
+
+		Stack<IRhenaModule> moduleChain = new Stack<IRhenaModule>();
+		IRhenaModule cursorModule = currentModule;
+		while (cursorModule != null) {
+			moduleChain.push(cursorModule);
+			IRhenaEdge parent = cursorModule.getParent();
+			
+			if(parent != null) {
+				cursorModule = onResolveModule(parent.getEntryPoint().getTarget());
+			} else {
+				break;
+			}
+		}
+
+		// now merge dependencies
+		List<IRhenaEdge> dependencies = new ArrayList<IRhenaEdge>();
+		while (!moduleChain.isEmpty()) {
+			dependencies.addAll(moduleChain.pop().getDependencies());
+		}
+		return dependencies;
 	}
 
 	/**
