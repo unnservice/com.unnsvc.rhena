@@ -77,7 +77,7 @@ public class RhenaModuleParser {
 			if (extendsAttribute != null) {
 				String extendsModuleIdentifierStr = extendsAttribute.getNodeValue();
 				ModuleIdentifier extendsModuleIdentifier = ModuleIdentifier.valueOf(extendsModuleIdentifierStr);
-				IRhenaEdge edge = newEdge(module.getIdentifier(), EExecutionType.MODEL, extendsModuleIdentifier, ESelectionType.HIERARCHY);
+				IRhenaEdge edge = newEdge(module.getIdentifier(), null, extendsModuleIdentifier, ESelectionType.HIERARCHY);
 				module.setParent(edge);
 			}
 		}
