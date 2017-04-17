@@ -1,30 +1,30 @@
 
 package com.unnsvc.rhena.execution;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
 
+import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.ng.execution.IExecutionEdge;
-import com.unnsvc.rhena.common.ng.execution.IExecutionModule;
 import com.unnsvc.rhena.execution.threading.LimitedQueue;
 
 public class ModuleExecutor extends ThreadPoolExecutor {
 
-	private List<IExecutionModule> executed;
-	private List<IExecutionEdge> edges;
+	private Set<IExecutionEdge> executed;
+	private Set<IExecutionEdge> edges;
 	private Object lock;
 
 	public ModuleExecutor(int threads) {
 
 		super(threads, threads, 0L, TimeUnit.MILLISECONDS, new LimitedQueue<Runnable>(threads));
 
-		this.lock = new ReentrantLock();
-		this.executed = new ArrayList<IExecutionModule>();
-		this.edges = new ArrayList<IExecutionEdge>();
+		this.lock = new Object();
+		this.executed = Collections.synchronizedSet(new HashSet<IExecutionEdge>());
+		this.edges = new HashSet<IExecutionEdge>();
 	}
 
 	@Override
@@ -35,17 +35,40 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 		}
 	}
 
-	public void execute() throws InterruptedException {
+	public void execute() throws RhenaException {
+
+		try {
+			innerExecute();
+		} catch (Throwable t) {
+			throw new RhenaException(t);
+		}
+	}
+
+	protected void innerExecute() throws InterruptedException {
 
 		while (!edges.isEmpty()) {
 			for (Iterator<IExecutionEdge> iter = edges.iterator(); iter.hasNext();) {
 				IExecutionEdge edge = iter.next();
 
-				if (edge.getTarget().isBuildable()) {
+				if (executed.contains(edge)) {
+
 					iter.remove();
-					preSubmit(edge.getTarget());
+				} else if (edge.getTarget().isBuildable()) {
+
+					iter.remove();
+					preSubmit(edge);
 				}
+
+				// here by the time it goes through t remainder of the iterator
+				// for a very large list, the threads might finish before we
+				// reach wait()
+				// wait blocks forever
 			}
+
+			/**
+			 * @TODO need an additional guard here before wait() so it doesn't
+			 *       block forever
+			 */
 
 			/**
 			 * Lock and wait for a completion to wake us up
@@ -61,17 +84,22 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 	 * 
 	 * @param execmod
 	 */
-	protected void preSubmit(IExecutionModule execmod) {
+	protected void preSubmit(IExecutionEdge edge) {
 
 		/**
 		 * It will either complete or throw an error, either way it must wake up
 		 * the main thread
 		 */
-		submit(execmod);
+		submit(edge);
 	}
 
 	public void addEdge(IExecutionEdge edge) {
 
 		this.edges.add(edge);
+	}
+
+	public Set<IExecutionEdge> getEdges() {
+
+		return edges;
 	}
 }

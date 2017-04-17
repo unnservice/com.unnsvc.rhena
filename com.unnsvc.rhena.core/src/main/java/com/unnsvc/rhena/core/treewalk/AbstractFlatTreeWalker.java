@@ -79,6 +79,7 @@ public abstract class AbstractFlatTreeWalker {
 				if (!currentModule.getLifecycleConfiguration().getName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
 					for (ILifecycleReference ref : currentModule.getLifecycleConfiguration()) {
 						if (!processed.contains(ref.getEntryPoint())) {
+							onRelationship(currentModule, ref.getEntryPoint());
 							tracker.pushUnique(new FlatTreeFrame(ref.getEntryPoint(), ref.getTraverseType()));
 							break edgeProcessing;
 						}
@@ -107,15 +108,18 @@ public abstract class AbstractFlatTreeWalker {
 
 								if (currentSelectionType.equals(ESelectionType.SCOPE)) {
 
+									onRelationship(currentModule, dependency.getEntryPoint());
 									tracker.pushUnique(new FlatTreeFrame(dependency.getEntryPoint(), dependency.getTraverseType(), currentSelectionType));
 									break edgeProcessing;
 								} else if (currentSelectionType.equals(ESelectionType.DIRECT)) {
 
+									onRelationship(currentModule, dependency.getEntryPoint());
 									tracker.pushUnique(new FlatTreeFrame(dependency.getEntryPoint(), dependency.getTraverseType(), currentSelectionType));
 									break edgeProcessing;
 								} else if (currentSelectionType.equals(ESelectionType.COMPONENT)) {
 
 									if (currentModule.getIdentifier().getComponentName().equals(dependency.getEntryPoint().getTarget().getComponentName())) {
+										onRelationship(currentModule, dependency.getEntryPoint());
 										tracker.pushUnique(new FlatTreeFrame(dependency.getEntryPoint(), dependency.getTraverseType(), currentSelectionType));
 										break edgeProcessing;
 									}
@@ -133,6 +137,10 @@ public abstract class AbstractFlatTreeWalker {
 				processed.add(resolvedEntryPoint);
 			}
 		}
+	}
+
+	protected void onRelationship(IRhenaModule source, IEntryPoint target) {
+
 	}
 
 	protected List<IRhenaEdge> getMergedDependencies(IRhenaModule currentModule) throws RhenaException {

@@ -19,6 +19,17 @@ public class ExecutionEdge implements IExecutionEdge {
 	}
 
 	@Override
+	public void run() {
+		
+		// collect dependencies from target
+		// submit target to agent will all exeuction information
+		// removal from of edge from source
+		source.removeExecuted(this);
+		
+		throw new UnsupportedOperationException("Not implemented");
+	}
+
+	@Override
 	public IExecutionModule getSource() {
 
 		return source;
