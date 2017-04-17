@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,8 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 	private Set<IExecutionEdge> executed;
 	private Set<IExecutionEdge> edges;
 	private Object lock;
-	private Throwable errorState;
+	private AtomicReference<Throwable> errorState;
+	// private Throwable errorState;
 
 	public ModuleExecutor(int threads) {
 
@@ -31,30 +33,7 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 		this.lock = new Object();
 		this.executed = Collections.synchronizedSet(new HashSet<IExecutionEdge>());
 		this.edges = new HashSet<IExecutionEdge>();
-	}
-
-	@Override
-	protected void afterExecute(Runnable runnable, Throwable throwable) {
-
-		if (throwable != null) {
-			log.error(throwable.getMessage(), throwable);
-			errorState = throwable;
-		}
-
-		if (runnable instanceof Future<?>) {
-			try {
-				Object result = ((Future<?>) runnable).get();
-				/**
-				 * @TODO result eneds to be an execution result which we add to the cache?
-				 */
-			} catch (Exception ex) {
-				errorState = ex;
-			}
-		}
-
-		synchronized (lock) {
-			lock.notifyAll();
-		}
+		this.errorState = new AtomicReference<Throwable>();
 	}
 
 	public void execute() throws RhenaException {
@@ -77,7 +56,7 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 
 	protected void innerExecute() throws InterruptedException, RhenaException {
 
-		while (!edges.isEmpty() && errorState == null) {
+		while (!edges.isEmpty() && errorState.get() == null) {
 			for (Iterator<IExecutionEdge> iter = edges.iterator(); iter.hasNext();) {
 				IExecutionEdge edge = iter.next();
 
@@ -88,6 +67,13 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 
 					iter.remove();
 					preSubmit(edge);
+				}
+
+				/**
+				 * Don't continue submitting work for execution if error state
+				 */
+				if (errorState.get() != null) {
+					break;
 				}
 
 				// here by the time it goes through t remainder of the iterator
@@ -112,8 +98,35 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 		shutdown();
 		awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
 
-		if (errorState != null) {
-			throw new RhenaException("Worker execution resulted in error state", errorState);
+		if (errorState.get() != null) {
+			throw new RhenaException("Worker execution resulted in error state", errorState.get());
+		}
+	}
+
+	@Override
+	protected void afterExecute(Runnable runnable, Throwable throwable) {
+
+		if (throwable != null) {
+			log.error(throwable.getMessage(), throwable);
+			// errorState = throwable;
+			errorState.set(throwable);
+		}
+
+		if (runnable instanceof Future<?>) {
+			try {
+				Object result = ((Future<?>) runnable).get();
+				/**
+				 * @TODO result eneds to be an execution result which we add to
+				 *       the cache?
+				 */
+			} catch (Exception ex) {
+
+				errorState.set(ex);
+			}
+		}
+
+		synchronized (lock) {
+			lock.notifyAll();
 		}
 	}
 
@@ -126,7 +139,8 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 
 		/**
 		 * It will either complete or throw an error, either way it must wake up
-		 * the main thread
+		 * the main thread once the submit() has completed, this is achieved
+		 * through afterExecute()
 		 */
 		submit(edge);
 	}

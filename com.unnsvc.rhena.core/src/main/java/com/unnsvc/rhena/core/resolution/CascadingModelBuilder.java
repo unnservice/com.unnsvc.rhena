@@ -56,7 +56,7 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 		IExecutionModule execTarget = new ExecutionModule(targetModule);
 
 		ModuleIdentifier sourceIdentifier = execSource.getModule() == null ? null : execSource.getModule().getIdentifier();
-		log.debug("onRelationship " + sourceIdentifier + " -> " + execTarget.getModule().getIdentifier());
+		log.debug("relationship " + sourceIdentifier + " -> " + execTarget.getModule().getIdentifier());
 
 		/**
 		 * Add all up to
