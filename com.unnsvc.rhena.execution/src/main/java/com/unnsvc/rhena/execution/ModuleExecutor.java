@@ -127,13 +127,15 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 		}
 
 		if (runnable instanceof Future<?>) {
+
 			try {
 				Future<IExecutionResult> future = (Future<IExecutionResult>) runnable;
 
 				IExecutionResult result = future.get();
+
 				IEntryPoint entryPoint = new EntryPoint(result.getType(), result.getIdentifier());
 				cache.cacheExecution(entryPoint, result);
-
+				
 				/**
 				 * @TODO result eneds to be an execution result which we add to
 				 *       the cache?
@@ -161,7 +163,7 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 		 * the main thread once the submit() has completed, this is achieved
 		 * through afterExecute()
 		 */
-		submit(new RhenaFutureTask(edge));
+		submit(edge);
 	}
 
 	public void addEdge(IExecutionEdge edge) {

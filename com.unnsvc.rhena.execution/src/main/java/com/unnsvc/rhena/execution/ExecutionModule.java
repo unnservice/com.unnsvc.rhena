@@ -33,7 +33,7 @@ public class ExecutionModule implements IExecutionModule {
 
 		return edges.isEmpty();
 	}
-	
+
 	@Override
 	public IRhenaModule getModule() {
 
@@ -47,5 +47,11 @@ public class ExecutionModule implements IExecutionModule {
 	public synchronized void removeExecuted(IExecutionEdge edge) {
 
 		this.edges.remove(edge);
+	}
+
+	@Override
+	public void addEdge(IExecutionEdge edge) {
+
+		this.edges.add(edge);
 	}
 }

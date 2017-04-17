@@ -43,11 +43,11 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 	public IExecutionResult executeModel(EExecutionType type, ModuleIdentifier identifier) throws RhenaException {
 
 		IEntryPoint entryPoint = new EntryPoint(type, identifier);
-		
+
 		visitTree(entryPoint, ESelectionType.SCOPE);
 
 		moduleExecutor.execute();
-		
+
 		return getCache().getCachedExecution(entryPoint);
 	}
 
@@ -63,13 +63,20 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 		log.debug("relationship " + sourceIdentifier + " -> " + execTarget.getModule().getIdentifier());
 
 		/**
-		 * Add all up to
+		 * If the requested execution type is greater than MAIN, add
+		 * dependencies on execution types that go first
 		 */
 		for (EExecutionType type : EExecutionType.values()) {
-			IExecutionEdge execEdge = new ExecutionEdgeWorker(execSource, type, execTarget);
-			moduleExecutor.addEdge(execEdge);
-			if (type == target.getExecutionType()) {
+
+			if (type.equals(target.getExecutionType())) {
+				IExecutionEdge execEdge = new ExecutionEdgeWorker(execSource, type, execTarget);
+				execSource.addEdge(execEdge);
+				moduleExecutor.addEdge(execEdge);
 				break;
+			} else {
+				IExecutionEdge execEdge = new ExecutionEdgeWorker(execSource, type, execTarget);
+				execSource.addEdge(execEdge);
+				moduleExecutor.addEdge(execEdge);
 			}
 		}
 	}

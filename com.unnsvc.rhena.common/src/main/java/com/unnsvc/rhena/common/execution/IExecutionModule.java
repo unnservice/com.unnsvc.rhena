@@ -11,4 +11,6 @@ public interface IExecutionModule {
 
 	public IRhenaModule getModule();
 
+	public void addEdge(IExecutionEdge edge);
+
 }
