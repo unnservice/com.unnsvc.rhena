@@ -1,16 +1,13 @@
 
-package com.unnsvc.rhena.model;
+package com.unnsvc.rhena.model.lifecycle;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.model.ILifecycleConfiguration;
 import com.unnsvc.rhena.common.model.ILifecycleReference;
-import com.unnsvc.rhena.model.lifecycle.CommandReference;
-import com.unnsvc.rhena.model.lifecycle.ContextReference;
-import com.unnsvc.rhena.model.lifecycle.GeneratorReference;
-import com.unnsvc.rhena.model.lifecycle.ProcessorReference;
 
 public class LifecycleConfiguration implements ILifecycleConfiguration {
 
@@ -19,12 +16,31 @@ public class LifecycleConfiguration implements ILifecycleConfiguration {
 	private List<ProcessorReference> processorReferences;
 	private GeneratorReference generatorReference;
 	private List<CommandReference> commandReferences;
+	private boolean resolved;
 
 	public LifecycleConfiguration(String name) {
 
 		this.name = name;
+		this.resolved = false;
 		this.processorReferences = new ArrayList<ProcessorReference>();
 		this.commandReferences = new ArrayList<CommandReference>();
+	}
+
+	/**
+	 * Default lifecycle configuration instance
+	 */
+	public LifecycleConfiguration() {
+
+		this.name = RhenaConstants.DEFAULT_LIFECYCLE_NAME;
+		this.resolved = true;
+		this.processorReferences = new ArrayList<ProcessorReference>();
+		this.commandReferences = new ArrayList<CommandReference>();
+	}
+
+	@Override
+	public boolean isResolved() {
+
+		return resolved;
 	}
 
 	@Override

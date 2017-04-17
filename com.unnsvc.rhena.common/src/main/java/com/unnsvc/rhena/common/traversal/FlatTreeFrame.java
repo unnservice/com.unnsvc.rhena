@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.core.treewalk;
+package com.unnsvc.rhena.common.traversal;
 
 import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IEntryPoint;

@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.core.treewalk;
+package com.unnsvc.rhena.common.traversal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,6 @@ import com.unnsvc.rhena.common.model.ILifecycleReference;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.utils.UniqueStack;
-import com.unnsvc.rhena.model.UnresolvedLifecycleConfiguration;
 
 /**
  * Flat tree walker walks the tree without recursion and provides API hooks
@@ -136,7 +135,7 @@ public abstract class AbstractFlatTreeWalker {
 								}
 							}
 						} else {
-							
+
 							traceSelector("-/>", currentEntryPoint, dependency);
 						}
 					}
@@ -199,7 +198,7 @@ public abstract class AbstractFlatTreeWalker {
 		 * Resolve its lifecycle
 		 * 
 		 */
-		if (currentModule.getLifecycleConfiguration() instanceof UnresolvedLifecycleConfiguration) {
+		if (!currentModule.getLifecycleConfiguration().isResolved()) {
 
 			ILifecycleConfiguration config = null;
 			IRhenaModule cursorModule = currentModule;

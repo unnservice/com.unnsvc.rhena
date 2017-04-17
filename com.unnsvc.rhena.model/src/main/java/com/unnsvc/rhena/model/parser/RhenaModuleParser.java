@@ -27,15 +27,13 @@ import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.ILifecycleConfiguration;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.repository.RepositoryIdentifier;
-import com.unnsvc.rhena.lifecycle.DefaultLifecycleConfiguration;
 import com.unnsvc.rhena.model.EntryPoint;
-import com.unnsvc.rhena.model.LifecycleConfiguration;
 import com.unnsvc.rhena.model.RhenaEdge;
 import com.unnsvc.rhena.model.RhenaModule;
-import com.unnsvc.rhena.model.UnresolvedLifecycleConfiguration;
 import com.unnsvc.rhena.model.lifecycle.CommandReference;
 import com.unnsvc.rhena.model.lifecycle.ContextReference;
 import com.unnsvc.rhena.model.lifecycle.GeneratorReference;
+import com.unnsvc.rhena.model.lifecycle.LifecycleConfiguration;
 import com.unnsvc.rhena.model.lifecycle.ProcessorReference;
 
 /**
@@ -47,8 +45,7 @@ public class RhenaModuleParser {
 
 	private RhenaModule module;
 
-	public RhenaModuleParser(RepositoryIdentifier repositoryIdentifier, ModuleIdentifier identifier, URI moduleDescriptorLocation)
-			throws RhenaException {
+	public RhenaModuleParser(RepositoryIdentifier repositoryIdentifier, ModuleIdentifier identifier, URI moduleDescriptorLocation) throws RhenaException {
 
 		try {
 			this.module = new RhenaModule(identifier, repositoryIdentifier);
@@ -131,10 +128,10 @@ public class RhenaModuleParser {
 		Node lifecycleAttrNode = moduleChild.getAttributes().getNamedItem("lifecycle");
 		if (lifecycleAttrNode == null || lifecycleAttrNode.getNodeValue().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
 
-			ILifecycleConfiguration defaultConfig = new DefaultLifecycleConfiguration(RhenaConstants.DEFAULT_LIFECYCLE_NAME);
+			ILifecycleConfiguration defaultConfig = new LifecycleConfiguration();
 			module.setLifecycleConfiguration(defaultConfig);
 		} else {
-			UnresolvedLifecycleConfiguration lifecycleConfiguration = new UnresolvedLifecycleConfiguration(lifecycleAttrNode.getNodeValue());
+			ILifecycleConfiguration lifecycleConfiguration = new LifecycleConfiguration(lifecycleAttrNode.getNodeValue());
 			module.setLifecycleConfiguration(lifecycleConfiguration);
 		}
 
@@ -174,7 +171,7 @@ public class RhenaModuleParser {
 				String moduleAttrStr = child.getAttributes().getNamedItem("module").getNodeValue();
 				String clazzAttrStr = child.getAttributes().getNamedItem("class").getNodeValue();
 				String schemaAttrStr = null;
-				
+
 				if (child.getAttributes().getNamedItem("schema") != null) {
 					schemaAttrStr = child.getAttributes().getNamedItem("schema").getNodeValue();
 				}

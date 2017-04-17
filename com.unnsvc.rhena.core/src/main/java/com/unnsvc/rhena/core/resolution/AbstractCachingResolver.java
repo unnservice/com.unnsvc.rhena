@@ -6,7 +6,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.repository.IRhenaResolver;
-import com.unnsvc.rhena.core.treewalk.AbstractFlatTreeWalker;
+import com.unnsvc.rhena.common.traversal.AbstractFlatTreeWalker;
 
 public abstract class AbstractCachingResolver extends AbstractFlatTreeWalker {
 
