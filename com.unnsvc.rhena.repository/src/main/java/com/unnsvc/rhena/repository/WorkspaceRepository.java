@@ -25,7 +25,7 @@ public class WorkspaceRepository extends LocalRepository {
 
 		URI location = getDefinition().getLocation();
 		File locationFile = new File(location.getPath());
-		
+
 		try {
 			locationFile = locationFile.getCanonicalFile();
 		} catch (Exception ex) {
@@ -38,11 +38,11 @@ public class WorkspaceRepository extends LocalRepository {
 		File modulePath = new File(locationFile, component + "." + moduleName);
 		File descriptorPath = new File(modulePath, RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
 
-		RhenaModuleParser parser = new RhenaModuleParser(getDefinition().getIdentifier(), moduleIdentifier, descriptorPath.toURI());
-
 		if (!descriptorPath.isFile()) {
 			throw new NotFoundException(moduleIdentifier + " descriptor not found in repository at location: " + descriptorPath);
 		}
+		
+		RhenaModuleParser parser = new RhenaModuleParser(getDefinition().getIdentifier(), moduleIdentifier, descriptorPath.toURI());
 
 		IRhenaModule module = parser.getModule();
 		module.setModuleType(EModuleType.WORKSPACE);
