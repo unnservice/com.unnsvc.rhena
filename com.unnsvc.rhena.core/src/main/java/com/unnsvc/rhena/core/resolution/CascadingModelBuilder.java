@@ -15,7 +15,7 @@ import com.unnsvc.rhena.common.ng.model.ESelectionType;
 import com.unnsvc.rhena.common.ng.model.IEntryPoint;
 import com.unnsvc.rhena.common.ng.model.IRhenaModule;
 import com.unnsvc.rhena.common.ng.repository.IRhenaResolver;
-import com.unnsvc.rhena.execution.ExecutionEdge;
+import com.unnsvc.rhena.execution.ExecutionEdgeWorker;
 import com.unnsvc.rhena.execution.ExecutionModule;
 import com.unnsvc.rhena.execution.ModuleExecutor;
 import com.unnsvc.rhena.model.EntryPoint;
@@ -43,19 +43,31 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 
 		IEntryPoint entryPoint = new EntryPoint(type, identifier);
 		visitTree(entryPoint, ESelectionType.SCOPE);
-		
-		
-		log.info("Executing: " + moduleExecutor.getEdges().size() + " relationships.");
+
 		moduleExecutor.execute();
 	}
 
 	@Override
 	protected void onRelationship(IRhenaModule source, IEntryPoint target) {
 
+		IRhenaModule targetModule = getCache().getModule(target.getTarget());
+
 		IExecutionModule execSource = new ExecutionModule(source);
-		IExecutionModule execTarget = new ExecutionModule(getCache().getModule(target.getTarget()));
-		IExecutionEdge execEdge = new ExecutionEdge(execSource, target.getExecutionType(), execTarget);
-		moduleExecutor.addEdge(execEdge);
+		IExecutionModule execTarget = new ExecutionModule(targetModule);
+
+		ModuleIdentifier sourceIdentifier = execSource.getModule() == null ? null : execSource.getModule().getIdentifier();
+		log.debug("onRelationship " + sourceIdentifier + " -> " + execTarget.getModule().getIdentifier());
+
+		/**
+		 * Add all up to
+		 */
+		for (EExecutionType type : EExecutionType.values()) {
+			IExecutionEdge execEdge = new ExecutionEdgeWorker(execSource, type, execTarget);
+			moduleExecutor.addEdge(execEdge);
+			if (type == target.getExecutionType()) {
+				break;
+			}
+		}
 	}
 
 }

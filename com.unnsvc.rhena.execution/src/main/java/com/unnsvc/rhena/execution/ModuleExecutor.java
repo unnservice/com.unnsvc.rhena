@@ -8,12 +8,16 @@ import java.util.Set;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.ng.execution.IExecutionEdge;
 import com.unnsvc.rhena.execution.threading.LimitedQueue;
 
 public class ModuleExecutor extends ThreadPoolExecutor {
 
+	private Logger log = LoggerFactory.getLogger(getClass());
 	private Set<IExecutionEdge> executed;
 	private Set<IExecutionEdge> edges;
 	private Object lock;
@@ -38,9 +42,18 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 	public void execute() throws RhenaException {
 
 		try {
+			debug();
 			innerExecute();
 		} catch (Throwable t) {
 			throw new RhenaException(t);
+		}
+	}
+
+	private void debug() {
+
+		log.debug("Relationships in executor: " + edges.size());
+		for(IExecutionEdge edge : edges) {
+			log.debug(edge.toString());
 		}
 	}
 
@@ -98,8 +111,4 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 		this.edges.add(edge);
 	}
 
-	public Set<IExecutionEdge> getEdges() {
-
-		return edges;
-	}
 }

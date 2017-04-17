@@ -3,9 +3,10 @@ package com.unnsvc.rhena.execution;
 
 import com.unnsvc.rhena.common.ng.execution.IExecutionEdge;
 import com.unnsvc.rhena.common.ng.execution.IExecutionModule;
+import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.ng.model.EExecutionType;
 
-public class ExecutionEdge implements IExecutionEdge {
+public abstract class ExecutionEdge implements IExecutionEdge {
 
 	private IExecutionModule source;
 	private EExecutionType type;
@@ -16,17 +17,6 @@ public class ExecutionEdge implements IExecutionEdge {
 		this.source = source;
 		this.type = type;
 		this.target = target;
-	}
-
-	@Override
-	public void run() {
-		
-		// collect dependencies from target
-		// submit target to agent will all exeuction information
-		// removal from of edge from source
-		source.removeExecuted(this);
-		
-		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	@Override
@@ -45,5 +35,12 @@ public class ExecutionEdge implements IExecutionEdge {
 	public IExecutionModule getTarget() {
 
 		return target;
+	}
+
+	@Override
+	public String toString() {
+
+		ModuleIdentifier sourceIdentifier = source.getModule() == null ? null : source.getModule().getIdentifier();
+		return "ExecutionEdge [source=" + sourceIdentifier + ", type=" + type + ", target=" + target.getModule().getIdentifier() + "]";
 	}
 }

@@ -33,6 +33,12 @@ public class ExecutionModule implements IExecutionModule {
 
 		return edges.isEmpty();
 	}
+	
+	@Override
+	public IRhenaModule getModule() {
+
+		return module;
+	}
 
 	/**
 	 * Called from children

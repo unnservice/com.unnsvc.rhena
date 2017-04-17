@@ -49,7 +49,9 @@ public abstract class AbstractFlatTreeWalker {
 			debugCyclic(entryPoint.getTarget(), tracker);
 			throw new RhenaException(nue.getMessage(), nue);
 		}
-		return onResolveModule(entryPoint.getTarget());
+		IRhenaModule module = onResolveModule(entryPoint.getTarget());
+		onRelationship(null, entryPoint);
+		return module;
 	}
 
 	private void processTracker(UniqueStack<FlatTreeFrame> tracker, List<IEntryPoint> processed) throws RhenaException {
@@ -150,8 +152,8 @@ public abstract class AbstractFlatTreeWalker {
 		while (cursorModule != null) {
 			moduleChain.push(cursorModule);
 			IRhenaEdge parent = cursorModule.getParent();
-			
-			if(parent != null) {
+
+			if (parent != null) {
 				cursorModule = onResolveModule(parent.getEntryPoint().getTarget());
 			} else {
 				break;

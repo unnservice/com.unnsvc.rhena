@@ -4,6 +4,8 @@
 
 	<meta component="com.multi" version="1.0.0" />
 
+	<dependency:test module="com.multi:module3:1.0.0" />
+
 </module>
 
 
