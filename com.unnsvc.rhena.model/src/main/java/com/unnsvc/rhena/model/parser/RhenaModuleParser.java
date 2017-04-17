@@ -21,7 +21,6 @@ import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.EExecutionType;
-import com.unnsvc.rhena.common.model.ERhenaModuleType;
 import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.ILifecycleConfiguration;
@@ -52,7 +51,7 @@ public class RhenaModuleParser {
 
 			parse(moduleDescriptorLocation);
 		} catch (Exception re) {
-			throw new RhenaException(re.getMessage(), re);
+			throw new RhenaException(re);
 		}
 	}
 
@@ -64,9 +63,9 @@ public class RhenaModuleParser {
 		Node moduleNode = children.item(0);
 
 		if (moduleNode.getLocalName().equals("module")) {
-			module.setModuleType(ERhenaModuleType.MODULE);
+			module.setFramework(false);
 		} else if (moduleNode.getLocalName().equals("framework")) {
-			module.setModuleType(ERhenaModuleType.FRAMEWORK);
+			module.setFramework(true);
 		}
 
 		if (moduleNode.getAttributes().getNamedItem("extends") != null) {

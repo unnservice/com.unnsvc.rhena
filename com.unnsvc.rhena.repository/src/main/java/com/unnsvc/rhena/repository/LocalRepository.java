@@ -8,6 +8,7 @@ import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.NotFoundException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.EModuleType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.repository.IRepositoryDefinition;
 import com.unnsvc.rhena.model.parser.RhenaModuleParser;
@@ -29,10 +30,10 @@ public class LocalRepository extends AbstractRepository {
 		File locationFile = new File(location.getPath());
 
 		String component = moduleIdentifier.getComponentName().toString();
-		String module = moduleIdentifier.getModuleName().toString();
+		String moduleName = moduleIdentifier.getModuleName().toString();
 		String version = moduleIdentifier.getVersion().toString();
 
-		String modulePath = component + File.separator + module + File.separator + version;
+		String modulePath = component + File.separator + moduleName + File.separator + version;
 
 		File moduleLocation = new File(locationFile, modulePath);
 		File moduleDescriptorLocation = new File(moduleLocation, RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
@@ -42,7 +43,9 @@ public class LocalRepository extends AbstractRepository {
 		}
 
 		RhenaModuleParser parser = new RhenaModuleParser(getDefinition().getIdentifier(), moduleIdentifier, moduleDescriptorLocation.toURI());
-		return parser.getModule();
+		IRhenaModule module = parser.getModule();
+		module.setModuleType(EModuleType.REMOTE);
+		return module;
 	}
 
 }

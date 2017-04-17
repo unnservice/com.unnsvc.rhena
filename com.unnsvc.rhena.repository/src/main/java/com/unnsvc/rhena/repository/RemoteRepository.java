@@ -15,6 +15,7 @@ public class RemoteRepository extends AbstractRepository {
 	@Override
 	public IRhenaModule resolveModule(ModuleIdentifier moduleIdentifier) {
 
+		// @TODO must also set the module type after parsing
 		throw new UnsupportedOperationException("Not implemented");
 	}
 

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.ERhenaModuleType;
+import com.unnsvc.rhena.common.model.EModuleType;
 import com.unnsvc.rhena.common.model.ILifecycleConfiguration;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
@@ -17,7 +17,8 @@ import com.unnsvc.rhena.common.repository.RepositoryIdentifier;
 public class RhenaModule implements IRhenaModule {
 
 	private ModuleIdentifier identifier;
-	private ERhenaModuleType moduleType;
+	private EModuleType moduleType;
+	private boolean framework;
 	private RepositoryIdentifier repositoryIdentifier;
 	private IRhenaEdge parent;
 	private ILifecycleConfiguration lifecycleConfiguration;
@@ -28,10 +29,12 @@ public class RhenaModule implements IRhenaModule {
 	public RhenaModule(ModuleIdentifier identifier, RepositoryIdentifier repositoryIdentifier) {
 
 		this.identifier = identifier;
+		this.framework = false;
 		this.repositoryIdentifier = repositoryIdentifier;
 		this.dependencies = new ArrayList<IRhenaEdge>();
 		this.properties = new HashMap<String, String>();
 		this.declaredConfigurations = new ArrayList<ILifecycleConfiguration>();
+		this.moduleType = EModuleType.REMOTE;
 	}
 
 	@Override
@@ -44,18 +47,6 @@ public class RhenaModule implements IRhenaModule {
 	public void setIdentifier(ModuleIdentifier identifier) {
 
 		this.identifier = identifier;
-	}
-
-	@Override
-	public ERhenaModuleType getModuleType() {
-
-		return moduleType;
-	}
-
-	@Override
-	public void setModuleType(ERhenaModuleType moduleType) {
-
-		this.moduleType = moduleType;
 	}
 
 	@Override
@@ -154,4 +145,27 @@ public class RhenaModule implements IRhenaModule {
 		return declaredConfigurations;
 	}
 
+	@Override
+	public EModuleType getModuleType() {
+
+		return moduleType;
+	}
+
+	@Override
+	public void setModuleType(EModuleType moduleType) {
+
+		this.moduleType = moduleType;
+	}
+
+	@Override
+	public void setFramework(boolean framework) {
+
+		this.framework = framework;
+	}
+
+	@Override
+	public boolean isFramework() {
+
+		return framework;
+	}
 }

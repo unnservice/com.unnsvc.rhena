@@ -13,10 +13,6 @@ public interface IRhenaModule extends Iterable<IRhenaEdge> {
 
 	public void setParent(IRhenaEdge parent);
 
-	public ERhenaModuleType getModuleType();
-
-	public void setModuleType(ERhenaModuleType moduleType);
-
 	public void setLifecycleConfiguration(ILifecycleConfiguration lifecycleConfiguration);
 
 	public ILifecycleConfiguration getLifecycleConfiguration();
@@ -46,4 +42,12 @@ public interface IRhenaModule extends Iterable<IRhenaEdge> {
 	public void addDeclaredConfiguration(ILifecycleConfiguration declaredConfiguration);
 
 	public List<ILifecycleConfiguration> getDeclaredConfigurations();
+
+	public EModuleType getModuleType();
+
+	public void setModuleType(EModuleType moduleType);
+
+	public void setFramework(boolean framework);
+
+	public boolean isFramework();
 }
