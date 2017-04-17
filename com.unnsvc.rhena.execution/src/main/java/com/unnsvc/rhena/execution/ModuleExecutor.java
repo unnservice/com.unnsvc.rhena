@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.ng.execution.IExecutionEdge;
+import com.unnsvc.rhena.common.execution.IExecutionEdge;
 import com.unnsvc.rhena.execution.threading.LimitedQueue;
 
 public class ModuleExecutor extends ThreadPoolExecutor {

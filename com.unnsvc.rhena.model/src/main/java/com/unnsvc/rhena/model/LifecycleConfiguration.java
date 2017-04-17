@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.unnsvc.rhena.common.ng.model.ILifecycleConfiguration;
-import com.unnsvc.rhena.common.ng.model.ILifecycleReference;
+import com.unnsvc.rhena.common.model.ILifecycleConfiguration;
+import com.unnsvc.rhena.common.model.ILifecycleReference;
 import com.unnsvc.rhena.model.lifecycle.CommandReference;
 import com.unnsvc.rhena.model.lifecycle.ContextReference;
 import com.unnsvc.rhena.model.lifecycle.GeneratorReference;

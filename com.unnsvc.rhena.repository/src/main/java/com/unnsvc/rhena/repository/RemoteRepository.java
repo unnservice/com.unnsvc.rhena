@@ -1,9 +1,9 @@
 
 package com.unnsvc.rhena.repository;
 
-import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.ng.model.IRhenaModule;
-import com.unnsvc.rhena.common.ng.repository.IRepositoryDefinition;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.repository.IRepositoryDefinition;
 
 public class RemoteRepository extends AbstractRepository {
 

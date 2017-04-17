@@ -1,7 +1,7 @@
 
-package com.unnsvc.rhena.common.ng.execution;
+package com.unnsvc.rhena.common.execution;
 
-import com.unnsvc.rhena.common.ng.model.IRhenaModule;
+import com.unnsvc.rhena.common.model.IRhenaModule;
 
 public interface IExecutionModule {
 

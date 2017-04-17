@@ -4,9 +4,9 @@ package com.unnsvc.rhena.execution;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.unnsvc.rhena.common.ng.execution.IExecutionEdge;
-import com.unnsvc.rhena.common.ng.execution.IExecutionModule;
-import com.unnsvc.rhena.common.ng.model.IRhenaModule;
+import com.unnsvc.rhena.common.execution.IExecutionEdge;
+import com.unnsvc.rhena.common.execution.IExecutionModule;
+import com.unnsvc.rhena.common.model.IRhenaModule;
 
 /**
  * Execution module is a work unit that can be executed

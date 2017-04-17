@@ -1,4 +1,4 @@
-package com.unnsvc.rhena.common.ng.config;
+package com.unnsvc.rhena.common.config;
 
 
 public interface IRhenaConfiguration {

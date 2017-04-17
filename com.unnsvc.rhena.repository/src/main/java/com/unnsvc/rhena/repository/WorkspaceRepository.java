@@ -1,7 +1,7 @@
 
 package com.unnsvc.rhena.repository;
 
-import com.unnsvc.rhena.common.ng.repository.IRepositoryDefinition;
+import com.unnsvc.rhena.common.repository.IRepositoryDefinition;
 
 public class WorkspaceRepository extends LocalRepository {
 

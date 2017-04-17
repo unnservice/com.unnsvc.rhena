@@ -1,4 +1,4 @@
-package com.unnsvc.rhena.common.ng;
+package com.unnsvc.rhena.common;
 
 
 public interface IRhenaEngine {

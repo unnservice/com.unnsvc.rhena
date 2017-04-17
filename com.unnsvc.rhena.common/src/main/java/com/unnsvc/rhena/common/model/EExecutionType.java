@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.common.ng.model;
+package com.unnsvc.rhena.common.model;
 
 /**
  * Ordering is important here

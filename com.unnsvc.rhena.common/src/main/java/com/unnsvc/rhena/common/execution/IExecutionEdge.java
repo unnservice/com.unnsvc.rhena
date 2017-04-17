@@ -1,7 +1,7 @@
 
-package com.unnsvc.rhena.common.ng.execution;
+package com.unnsvc.rhena.common.execution;
 
-import com.unnsvc.rhena.common.ng.model.EExecutionType;
+import com.unnsvc.rhena.common.model.EExecutionType;
 
 public interface IExecutionEdge extends Runnable {
 

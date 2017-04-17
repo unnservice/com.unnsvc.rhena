@@ -4,7 +4,7 @@ package com.unnsvc.rhena.common;
 import java.rmi.registry.Registry;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 
 public class RhenaConstants {
 

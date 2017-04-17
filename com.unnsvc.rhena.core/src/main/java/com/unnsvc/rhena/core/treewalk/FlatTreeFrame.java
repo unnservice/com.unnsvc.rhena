@@ -1,8 +1,8 @@
 
 package com.unnsvc.rhena.core.treewalk;
 
-import com.unnsvc.rhena.common.ng.model.ESelectionType;
-import com.unnsvc.rhena.common.ng.model.IEntryPoint;
+import com.unnsvc.rhena.common.model.ESelectionType;
+import com.unnsvc.rhena.common.model.IEntryPoint;
 
 public class FlatTreeFrame {
 

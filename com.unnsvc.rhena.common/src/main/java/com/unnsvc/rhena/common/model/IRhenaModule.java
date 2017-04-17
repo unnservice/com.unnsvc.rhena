@@ -1,11 +1,11 @@
 
-package com.unnsvc.rhena.common.ng.model;
+package com.unnsvc.rhena.common.model;
 
 import java.util.List;
 import java.util.Map;
 
-import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.ng.repository.RepositoryIdentifier;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.repository.RepositoryIdentifier;
 
 public interface IRhenaModule extends Iterable<IRhenaEdge> {
 

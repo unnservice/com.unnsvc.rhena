@@ -1,4 +1,4 @@
-package com.unnsvc.rhena.common.ng.repository;
+package com.unnsvc.rhena.common.repository;
 
 import java.net.URI;
 

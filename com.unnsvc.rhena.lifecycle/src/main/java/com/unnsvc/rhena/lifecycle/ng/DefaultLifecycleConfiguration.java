@@ -3,8 +3,8 @@ package com.unnsvc.rhena.lifecycle.ng;
 
 import java.util.Iterator;
 
-import com.unnsvc.rhena.common.ng.model.ILifecycleConfiguration;
-import com.unnsvc.rhena.common.ng.model.ILifecycleReference;
+import com.unnsvc.rhena.common.model.ILifecycleConfiguration;
+import com.unnsvc.rhena.common.model.ILifecycleReference;
 
 public class DefaultLifecycleConfiguration implements ILifecycleConfiguration {
 

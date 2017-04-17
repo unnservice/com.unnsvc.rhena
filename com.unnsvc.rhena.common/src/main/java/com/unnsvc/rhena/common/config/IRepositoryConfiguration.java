@@ -1,9 +1,9 @@
 
-package com.unnsvc.rhena.common.ng.config;
+package com.unnsvc.rhena.common.config;
 
 import java.util.List;
 
-import com.unnsvc.rhena.common.ng.repository.IRepositoryDefinition;
+import com.unnsvc.rhena.common.repository.IRepositoryDefinition;
 
 public interface IRepositoryConfiguration {
 

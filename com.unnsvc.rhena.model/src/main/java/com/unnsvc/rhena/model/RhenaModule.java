@@ -7,12 +7,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.ng.model.ERhenaModuleType;
-import com.unnsvc.rhena.common.ng.model.ILifecycleConfiguration;
-import com.unnsvc.rhena.common.ng.model.IRhenaEdge;
-import com.unnsvc.rhena.common.ng.model.IRhenaModule;
-import com.unnsvc.rhena.common.ng.repository.RepositoryIdentifier;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.ERhenaModuleType;
+import com.unnsvc.rhena.common.model.ILifecycleConfiguration;
+import com.unnsvc.rhena.common.model.IRhenaEdge;
+import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.repository.RepositoryIdentifier;
 
 public class RhenaModule implements IRhenaModule {
 

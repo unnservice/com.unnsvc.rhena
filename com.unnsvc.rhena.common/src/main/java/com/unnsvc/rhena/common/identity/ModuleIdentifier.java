@@ -1,10 +1,10 @@
 
-package com.unnsvc.rhena.common.ng.identity;
+package com.unnsvc.rhena.common.identity;
 
 import java.io.Serializable;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.ng.model.EExecutionType;
+import com.unnsvc.rhena.common.model.EExecutionType;
 
 public class ModuleIdentifier implements Serializable {
 

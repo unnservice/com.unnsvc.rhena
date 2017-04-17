@@ -3,9 +3,9 @@ package com.unnsvc.rhena.config;
 
 import java.net.URI;
 
-import com.unnsvc.rhena.common.ng.repository.ERepositoryType;
-import com.unnsvc.rhena.common.ng.repository.IRepositoryDefinition;
-import com.unnsvc.rhena.common.ng.repository.RepositoryIdentifier;
+import com.unnsvc.rhena.common.repository.ERepositoryType;
+import com.unnsvc.rhena.common.repository.IRepositoryDefinition;
+import com.unnsvc.rhena.common.repository.RepositoryIdentifier;
 
 public class RepositoryDefinition implements IRepositoryDefinition {
 

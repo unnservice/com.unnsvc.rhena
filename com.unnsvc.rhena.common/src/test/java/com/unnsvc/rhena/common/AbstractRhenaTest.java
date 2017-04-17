@@ -5,8 +5,6 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.common.ng.IRhenaCache;
-
 public abstract class AbstractRhenaTest {
 
 	private Logger log = LoggerFactory.getLogger(getClass());

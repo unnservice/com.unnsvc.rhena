@@ -1,9 +1,9 @@
 
 package com.unnsvc.rhena.model;
 
-import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.ng.model.IRhenaModule;
-import com.unnsvc.rhena.common.ng.repository.RepositoryIdentifier;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.repository.RepositoryIdentifier;
 
 /**
  * Merged module represents a module that has had all of its parents merged,

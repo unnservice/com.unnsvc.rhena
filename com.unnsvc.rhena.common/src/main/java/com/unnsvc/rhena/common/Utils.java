@@ -29,7 +29,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.ng.model.EExecutionType;
+import com.unnsvc.rhena.common.model.EExecutionType;
 
 public class Utils {
 

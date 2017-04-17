@@ -3,7 +3,7 @@ package com.unnsvc.rhena.model;
 
 import java.util.Iterator;
 
-import com.unnsvc.rhena.common.ng.model.ILifecycleReference;
+import com.unnsvc.rhena.common.model.ILifecycleReference;
 
 public class UnresolvedLifecycleConfiguration extends LifecycleConfiguration {
 

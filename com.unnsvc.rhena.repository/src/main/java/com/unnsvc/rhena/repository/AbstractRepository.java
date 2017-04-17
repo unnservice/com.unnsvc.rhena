@@ -1,8 +1,8 @@
 
 package com.unnsvc.rhena.repository;
 
-import com.unnsvc.rhena.common.ng.repository.IRepository;
-import com.unnsvc.rhena.common.ng.repository.IRepositoryDefinition;
+import com.unnsvc.rhena.common.repository.IRepository;
+import com.unnsvc.rhena.common.repository.IRepositoryDefinition;
 
 public abstract class AbstractRepository implements IRepository {
 

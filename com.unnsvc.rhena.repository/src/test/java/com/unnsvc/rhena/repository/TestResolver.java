@@ -4,8 +4,8 @@ package com.unnsvc.rhena.repository;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.ng.model.IRhenaModule;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.config.AbstractRhenaConfiguredTest;
 import com.unnsvc.rhena.repository.resolver.RhenaResolver;
 

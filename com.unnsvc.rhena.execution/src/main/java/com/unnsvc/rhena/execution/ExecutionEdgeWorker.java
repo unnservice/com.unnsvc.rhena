@@ -1,8 +1,8 @@
 
 package com.unnsvc.rhena.execution;
 
-import com.unnsvc.rhena.common.ng.execution.IExecutionModule;
-import com.unnsvc.rhena.common.ng.model.EExecutionType;
+import com.unnsvc.rhena.common.execution.IExecutionModule;
+import com.unnsvc.rhena.common.model.EExecutionType;
 
 /**
  * Edge worker implements the execution of the edge

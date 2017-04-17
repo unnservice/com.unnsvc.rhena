@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.AbstractRhenaTest;
-import com.unnsvc.rhena.common.ng.config.IRhenaConfiguration;
-import com.unnsvc.rhena.common.ng.repository.IRepositoryDefinition;
+import com.unnsvc.rhena.common.config.IRhenaConfiguration;
+import com.unnsvc.rhena.common.repository.IRepositoryDefinition;
 
 public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 

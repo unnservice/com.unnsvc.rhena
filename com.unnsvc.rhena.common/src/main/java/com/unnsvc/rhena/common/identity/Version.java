@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.common.ng.identity;
+package com.unnsvc.rhena.common.identity;
 
 import java.io.Serializable;
 import java.util.regex.Matcher;

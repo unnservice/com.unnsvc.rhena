@@ -1,9 +1,9 @@
 
-package com.unnsvc.rhena.common.ng.repository;
+package com.unnsvc.rhena.common.repository;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.ng.model.IRhenaModule;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.IRhenaModule;
 
 public interface IRepository {
 

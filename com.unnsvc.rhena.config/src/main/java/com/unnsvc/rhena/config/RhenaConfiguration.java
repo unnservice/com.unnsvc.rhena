@@ -1,8 +1,8 @@
 
 package com.unnsvc.rhena.config;
 
-import com.unnsvc.rhena.common.ng.config.IRepositoryConfiguration;
-import com.unnsvc.rhena.common.ng.config.IRhenaConfiguration;
+import com.unnsvc.rhena.common.config.IRepositoryConfiguration;
+import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 
 public class RhenaConfiguration implements IRhenaConfiguration {
 

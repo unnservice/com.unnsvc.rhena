@@ -1,11 +1,11 @@
 
 package com.unnsvc.rhena.core.resolution;
 
+import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.ng.IRhenaCache;
-import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.ng.model.IRhenaModule;
-import com.unnsvc.rhena.common.ng.repository.IRhenaResolver;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.repository.IRhenaResolver;
 import com.unnsvc.rhena.core.treewalk.AbstractFlatTreeWalker;
 
 public abstract class AbstractCachingResolver extends AbstractFlatTreeWalker {

@@ -7,8 +7,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.common.ng.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.ng.model.IRhenaModule;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.config.AbstractRhenaConfiguredTest;
 import com.unnsvc.rhena.core.resolution.CascadingModelResolver;
 import com.unnsvc.rhena.repository.resolver.RhenaResolver;

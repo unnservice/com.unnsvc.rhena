@@ -4,8 +4,8 @@ package com.unnsvc.rhena.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.unnsvc.rhena.common.ng.config.IRepositoryConfiguration;
-import com.unnsvc.rhena.common.ng.repository.IRepositoryDefinition;
+import com.unnsvc.rhena.common.config.IRepositoryConfiguration;
+import com.unnsvc.rhena.common.repository.IRepositoryDefinition;
 
 public class RhenaRepositoryConfiguration implements IRepositoryConfiguration {
 
