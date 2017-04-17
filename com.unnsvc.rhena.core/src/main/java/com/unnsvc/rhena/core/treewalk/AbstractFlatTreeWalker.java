@@ -21,6 +21,12 @@ import com.unnsvc.rhena.common.ng.model.IRhenaModule;
 import com.unnsvc.rhena.common.utils.UniqueStack;
 import com.unnsvc.rhena.model.UnresolvedLifecycleConfiguration;
 
+/**
+ * Flat tree walker walks the tree without recursion and provides API hooks
+ * 
+ * @author noname
+ *
+ */
 public abstract class AbstractFlatTreeWalker {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
