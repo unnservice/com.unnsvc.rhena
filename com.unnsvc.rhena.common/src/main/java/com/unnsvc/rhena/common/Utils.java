@@ -20,8 +20,6 @@ import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -30,12 +28,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.unnsvc.rhena.common.exceptions.NotFoundException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.lifecycle.ILifecycleReference;
-import com.unnsvc.rhena.common.model.IEntryPoint;
-import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.ng.model.EExecutionType;
 
 public class Utils {
@@ -139,42 +132,6 @@ public class Utils {
 		}
 	}
 
-	public static ModuleIdentifier readModuleIdentifier(File workspaceProject) throws RhenaException {
-
-		File moduleDescriptor = new File(workspaceProject, RhenaConstants.MODULE_DESCRIPTOR_FILENAME);
-		if (!moduleDescriptor.isFile()) {
-			throw new NotFoundException("No module descriptor for: " + workspaceProject);
-		}
-		try {
-			// @TODO obs, we skip module validation to make it faster, so we
-			// will need
-			// to check for nulls on undeclared values
-			SAXParserFactory fact = SAXParserFactory.newInstance();
-			fact.setNamespaceAware(true);
-			SAXParser parser = fact.newSAXParser();
-
-			ModuleHandler handler = new ModuleHandler();
-			parser.parse(moduleDescriptor, handler);
-
-			String componentName = handler.componentStr;
-			String version = handler.versionStr;
-
-			String projectName = workspaceProject.getName();
-
-			if (!projectName.startsWith(componentName + ".") || !(projectName.length() > componentName.length() + 2)) {
-				throw new RhenaException("Invalid module declaration, module identifier not well formed");
-			}
-
-			projectName = projectName.substring(componentName.length() + 1);
-
-			return new ModuleIdentifier(componentName, projectName, version);
-
-		} catch (IOException | SAXException | ParserConfigurationException iae) {
-
-			throw new RhenaException(iae);
-		}
-	}
-
 	private static class ModuleHandler extends DefaultHandler {
 
 		private String componentStr;
@@ -192,26 +149,6 @@ public class Utils {
 				versionStr = attributes.getValue("version");
 			}
 		}
-	}
-
-	public static List<IEntryPoint> getAllEntryPoints(IRhenaCache cache, IRhenaModule module, boolean lifecycles) {
-
-		List<IEntryPoint> eps = new ArrayList<IEntryPoint>();
-		if (module.getParent() != null) {
-			eps.add(module.getParent().getEntryPoint());
-		}
-		if (lifecycles) {
-			if (!module.getLifecycleName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
-				ILifecycleReference lifecycle = module.getMergedLifecycleDeclarations(cache).get(module.getLifecycleName());
-				eps.add(lifecycle.getContext().getModuleEdge().getEntryPoint());
-				lifecycle.getProcessors().forEach(proc -> eps.add(proc.getModuleEdge().getEntryPoint()));
-				eps.add(lifecycle.getGenerator().getModuleEdge().getEntryPoint());
-				lifecycle.getCommands().forEach(comm -> eps.add(comm.getModuleEdge().getEntryPoint()));
-			}
-		}
-		module.getMergedDependencies(cache).forEach(dep -> eps.add(dep.getEntryPoint()));
-
-		return eps;
 	}
 
 	public static String generateSha1(File generated) throws RhenaException {

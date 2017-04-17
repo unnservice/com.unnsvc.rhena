@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-SymbolicName: com.unnsvc.rhena.lifecycle;singleton:=true
-Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: UNNSVC
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-ActivationPolicy: lazy
