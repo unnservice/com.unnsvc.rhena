@@ -27,7 +27,7 @@ import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.ILifecycleConfiguration;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.repository.RepositoryIdentifier;
-import com.unnsvc.rhena.lifecycle.ng.DefaultLifecycleConfiguration;
+import com.unnsvc.rhena.lifecycle.DefaultLifecycleConfiguration;
 import com.unnsvc.rhena.model.EntryPoint;
 import com.unnsvc.rhena.model.LifecycleConfiguration;
 import com.unnsvc.rhena.model.RhenaEdge;

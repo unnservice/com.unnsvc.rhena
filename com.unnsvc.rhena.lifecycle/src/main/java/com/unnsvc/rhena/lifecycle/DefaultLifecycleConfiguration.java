@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.lifecycle.ng;
+package com.unnsvc.rhena.lifecycle;
 
 import java.util.Iterator;
 
