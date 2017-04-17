@@ -6,15 +6,15 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>com.unnsvc.rhena.core</module>
-		<module>com.unnsvc.rhena.lifecycle</module>
-		<module>com.unnsvc.rhena.common</module>
 		<module>com.unnsvc.rhena.agent</module>
-		<module>com.unnsvc.rhena.objectserver</module>
-		<module>com.unnsvc.rhena.model</module>
-		<module>com.unnsvc.rhena.repository</module>
+		<module>com.unnsvc.rhena.common</module>
 		<module>com.unnsvc.rhena.config</module>
+		<module>com.unnsvc.rhena.core</module>
 		<module>com.unnsvc.rhena.execution</module>
+		<module>com.unnsvc.rhena.lifecycle</module>
+		<module>com.unnsvc.rhena.model</module>
+		<module>com.unnsvc.rhena.objectserver</module>
+		<module>com.unnsvc.rhena.repository</module>
 	</modules>
 
 	<build>

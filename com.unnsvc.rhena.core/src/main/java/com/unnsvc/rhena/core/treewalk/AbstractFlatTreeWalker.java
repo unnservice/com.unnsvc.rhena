@@ -29,7 +29,7 @@ import com.unnsvc.rhena.model.UnresolvedLifecycleConfiguration;
  */
 public abstract class AbstractFlatTreeWalker {
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
+	private Logger log = LoggerFactory.getLogger(getClass());
 
 	public AbstractFlatTreeWalker() {
 
@@ -111,7 +111,9 @@ public abstract class AbstractFlatTreeWalker {
 						 * We only care about dependencies which we can use in
 						 * the requested scope
 						 */
-						if (currentEntryPoint.getExecutionType().compareTo(dependency.getEntryPoint().getExecutionType()) >= 0) {
+						if (dependency.getEntryPoint().getExecutionType().lessOrEqualTo(currentEntryPoint.getExecutionType())) {
+							traceSelector("->", currentEntryPoint, dependency);
+
 							if (!processed.contains(dependency.getEntryPoint())) {
 
 								if (currentSelectionType.equals(ESelectionType.SCOPE)) {
@@ -133,6 +135,9 @@ public abstract class AbstractFlatTreeWalker {
 									}
 								}
 							}
+						} else {
+							
+							traceSelector("-/>", currentEntryPoint, dependency);
 						}
 					}
 				}
@@ -145,6 +150,13 @@ public abstract class AbstractFlatTreeWalker {
 				processed.add(resolvedEntryPoint);
 			}
 		}
+	}
+
+	private void traceSelector(String string, IEntryPoint currentEntryPoint, IRhenaEdge dependency) {
+
+		String src = currentEntryPoint.getTarget().toString() + ":" + currentEntryPoint.getExecutionType().toString().toLowerCase();
+		String dep = dependency.getEntryPoint().getTarget().toString() + ":" + dependency.getEntryPoint().getExecutionType().toString().toLowerCase();
+		log.trace("relationship: " + src + " " + string + " dependency " + dep);
 	}
 
 	protected void onRelationship(IRhenaModule source, IEntryPoint target) {
@@ -219,7 +231,7 @@ public abstract class AbstractFlatTreeWalker {
 
 	protected void debugCyclic(ModuleIdentifier identifier, UniqueStack<FlatTreeFrame> tracker) throws RhenaException {
 
-		logger.error("Cyclic dependency path detected:");
+		log.error("Cyclic dependency path detected:");
 		boolean shift = false;
 
 		/**
@@ -235,7 +247,7 @@ public abstract class AbstractFlatTreeWalker {
 			if (startlog) {
 				IRhenaModule module = onResolveModule(entryPoint.getTarget());
 				// @TODO more coherent debugging of cyclig model error
-				logger.error("Cycle: " + (shift ? "↓" : "↓") + " " + module.getIdentifier().toTag(entryPoint.getExecutionType()));
+				log.error("Cycle: " + (shift ? "↓" : "↓") + " " + module.getIdentifier().toTag(entryPoint.getExecutionType()));
 				shift = !shift;
 			}
 		}

@@ -24,7 +24,7 @@ public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 		this.config = new RhenaConfiguration();
 
 		File testRepositoriesLocation = new File("../test-repositories").getAbsoluteFile().getCanonicalFile();
-		
+
 		File localRepo = new File(testRepositoriesLocation, "localRepo");
 		File workspaceRepo = new File(testRepositoriesLocation, "workspaceRepo");
 
@@ -35,6 +35,12 @@ public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 		IRepositoryDefinition workspaceRepoDef = RepositoryDefinition.newWorkspace(workspaceRepo.getName(), workspaceRepo.toURI());
 		log.debug(workspaceRepoDef.toString());
 		this.config.getRepositoryConfiguration().addWorkspaceRepositories(workspaceRepoDef);
+
+		/**
+		 * During testing, we'd want predictable sequential execution unless
+		 * specified otherwise
+		 */
+		this.config.setThreads(1);
 	}
 
 	public IRhenaConfiguration getConfig() {

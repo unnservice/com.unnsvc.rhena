@@ -17,7 +17,7 @@ public class TestCascadingBuilder extends AbstractRhenaConfiguredTest {
 	public void testBuilder() throws Exception {
 
 		RhenaResolver resolver = new RhenaResolver(getConfig());
-		EExecutionType type = EExecutionType.MAIN;
+		EExecutionType type = EExecutionType.TEST;
 		ModuleIdentifier identifier = ModuleIdentifier.valueOf("com.multi:module1:1.0.0");
 
 		CascadingModelResolver modelResolver = new CascadingModelResolver(resolver, getMockCache());

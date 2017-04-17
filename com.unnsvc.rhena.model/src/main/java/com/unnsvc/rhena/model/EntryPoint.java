@@ -40,4 +40,10 @@ public class EntryPoint implements IEntryPoint {
 		this.target = target;
 	}
 
+	@Override
+	public String toString() {
+
+		return "EntryPoint [executionType=" + executionType + ", target=" + target + "]";
+	}
+
 }
