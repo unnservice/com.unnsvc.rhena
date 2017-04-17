@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.unnsvc.rhena.common.ng.execution.IExecutionEdge;
@@ -17,7 +16,7 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 
 	private List<IExecutionModule> executed;
 	private List<IExecutionEdge> edges;
-	private Lock lock;
+	private Object lock;
 
 	public ModuleExecutor(int threads) {
 
@@ -31,10 +30,12 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 	@Override
 	protected void afterExecute(Runnable runnable, Throwable throwable) {
 
-		lock.unlock();
+		synchronized (lock) {
+			lock.notifyAll();
+		}
 	}
 
-	public void execute() {
+	public void execute() throws InterruptedException {
 
 		while (!edges.isEmpty()) {
 			for (Iterator<IExecutionEdge> iter = edges.iterator(); iter.hasNext();) {
@@ -44,6 +45,13 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 					iter.remove();
 					preSubmit(edge.getTarget());
 				}
+			}
+
+			/**
+			 * Lock and wait for a completion to wake us up
+			 */
+			synchronized (lock) {
+				lock.wait();
 			}
 		}
 	}
@@ -55,6 +63,10 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 	 */
 	protected void preSubmit(IExecutionModule execmod) {
 
+		/**
+		 * It will either complete or throw an error, either way it must wake up
+		 * the main thread
+		 */
 		submit(execmod);
 	}
 
