@@ -4,6 +4,7 @@ package com.unnsvc.rhena.execution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.IExecutionModule;
 import com.unnsvc.rhena.common.model.EExecutionType;
 
@@ -23,7 +24,7 @@ public class ExecutionEdgeWorker extends ExecutionEdge {
 	}
 
 	@Override
-	public void run() {
+	public Object call() throws Exception {
 
 		log.info("Executing: " + getTarget().getModule().getIdentifier() + ":" + getType().toString().toLowerCase());
 
@@ -39,7 +40,7 @@ public class ExecutionEdgeWorker extends ExecutionEdge {
 			getSource().removeExecuted(this);
 		}
 
-		throw new UnsupportedOperationException("Not implemented");
+		throw new RhenaException("Not implemented");
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -21,6 +22,7 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 	private Set<IExecutionEdge> executed;
 	private Set<IExecutionEdge> edges;
 	private Object lock;
+	private Throwable errorState;
 
 	public ModuleExecutor(int threads) {
 
@@ -34,6 +36,22 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 	@Override
 	protected void afterExecute(Runnable runnable, Throwable throwable) {
 
+		if (throwable != null) {
+			log.error(throwable.getMessage(), throwable);
+			errorState = throwable;
+		}
+
+		if (runnable instanceof Future<?>) {
+			try {
+				Object result = ((Future<?>) runnable).get();
+				/**
+				 * @TODO result eneds to be an execution result which we add to the cache?
+				 */
+			} catch (Exception ex) {
+				errorState = ex;
+			}
+		}
+
 		synchronized (lock) {
 			lock.notifyAll();
 		}
@@ -44,7 +62,7 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 		try {
 			debug();
 			innerExecute();
-		} catch (Throwable t) {
+		} catch (InterruptedException t) {
 			throw new RhenaException(t);
 		}
 	}
@@ -52,14 +70,14 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 	private void debug() {
 
 		log.debug("Relationships in executor: " + edges.size());
-		for(IExecutionEdge edge : edges) {
+		for (IExecutionEdge edge : edges) {
 			log.debug(edge.toString());
 		}
 	}
 
-	protected void innerExecute() throws InterruptedException {
+	protected void innerExecute() throws InterruptedException, RhenaException {
 
-		while (!edges.isEmpty()) {
+		while (!edges.isEmpty() && errorState == null) {
 			for (Iterator<IExecutionEdge> iter = edges.iterator(); iter.hasNext();) {
 				IExecutionEdge edge = iter.next();
 
@@ -89,6 +107,13 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 			synchronized (lock) {
 				lock.wait();
 			}
+		}
+
+		shutdown();
+		awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+
+		if (errorState != null) {
+			throw new RhenaException("Worker execution resulted in error state", errorState);
 		}
 	}
 
