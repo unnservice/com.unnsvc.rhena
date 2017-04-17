@@ -41,7 +41,8 @@ public abstract class ExecutionEdge implements IExecutionEdge {
 	public String toString() {
 
 		/**
-		 * Source may be null at the root of the tree as the caller is the source
+		 * Source may be null at the root of the tree as the caller is the
+		 * source
 		 */
 		ModuleIdentifier sourceIdentifier = source.getModule() == null ? null : source.getModule().getIdentifier();
 		return "ExecutionEdge [source=" + sourceIdentifier + ", type=" + type + ", target=" + target.getModule().getIdentifier() + "]";

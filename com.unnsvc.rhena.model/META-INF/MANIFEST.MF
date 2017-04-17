@@ -5,5 +5,4 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: UNNSVC
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Export-Package: com.unnsvc.rhena.core,
- com.unnsvc.rhena.core.config
+Export-Package: com.unnsvc.rhena.model

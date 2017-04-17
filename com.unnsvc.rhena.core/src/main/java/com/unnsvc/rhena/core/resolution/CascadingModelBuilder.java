@@ -9,6 +9,7 @@ import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.IExecutionEdge;
 import com.unnsvc.rhena.common.execution.IExecutionModule;
+import com.unnsvc.rhena.common.execution.IExecutionResult;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.EExecutionType;
 import com.unnsvc.rhena.common.model.ESelectionType;
@@ -36,15 +37,18 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 
 		super(cache, resolver);
 
-		this.moduleExecutor = new ModuleExecutor(config.getThreads());
+		this.moduleExecutor = new ModuleExecutor(config, cache);
 	}
 
-	public void executeModel(EExecutionType type, ModuleIdentifier identifier) throws RhenaException {
+	public IExecutionResult executeModel(EExecutionType type, ModuleIdentifier identifier) throws RhenaException {
 
 		IEntryPoint entryPoint = new EntryPoint(type, identifier);
+		
 		visitTree(entryPoint, ESelectionType.SCOPE);
 
 		moduleExecutor.execute();
+		
+		return getCache().getCachedExecution(entryPoint);
 	}
 
 	@Override

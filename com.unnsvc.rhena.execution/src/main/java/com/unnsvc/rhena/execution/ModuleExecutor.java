@@ -13,23 +13,36 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.unnsvc.rhena.common.IRhenaCache;
+import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.IExecutionEdge;
+import com.unnsvc.rhena.common.execution.IExecutionResult;
+import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.execution.threading.LimitedQueue;
+import com.unnsvc.rhena.execution.threading.RhenaFutureTask;
+import com.unnsvc.rhena.model.EntryPoint;
 
+/**
+ * This class is considered consumed after one execution
+ * 
+ * @author noname
+ *
+ */
 public class ModuleExecutor extends ThreadPoolExecutor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
+	private IRhenaCache cache;
 	private Set<IExecutionEdge> executed;
 	private Set<IExecutionEdge> edges;
 	private Object lock;
 	private AtomicReference<Throwable> errorState;
-	// private Throwable errorState;
 
-	public ModuleExecutor(int threads) {
+	public ModuleExecutor(IRhenaConfiguration config, IRhenaCache cache) {
 
-		super(threads, threads, 0L, TimeUnit.MILLISECONDS, new LimitedQueue<Runnable>(threads));
+		super(config.getThreads(), config.getThreads(), 0L, TimeUnit.MILLISECONDS, new LimitedQueue<Runnable>(config.getThreads()));
 
+		this.cache = cache;
 		this.lock = new Object();
 		this.executed = Collections.synchronizedSet(new HashSet<IExecutionEdge>());
 		this.edges = new HashSet<IExecutionEdge>();
@@ -101,20 +114,26 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 		if (errorState.get() != null) {
 			throw new RhenaException("Worker execution resulted in error state", errorState.get());
 		}
+
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	protected void afterExecute(Runnable runnable, Throwable throwable) {
 
 		if (throwable != null) {
 			log.error(throwable.getMessage(), throwable);
-			// errorState = throwable;
 			errorState.set(throwable);
 		}
 
 		if (runnable instanceof Future<?>) {
 			try {
-				Object result = ((Future<?>) runnable).get();
+				Future<IExecutionResult> future = (Future<IExecutionResult>) runnable;
+
+				IExecutionResult result = future.get();
+				IEntryPoint entryPoint = new EntryPoint(result.getType(), result.getIdentifier());
+				cache.cacheExecution(entryPoint, result);
+
 				/**
 				 * @TODO result eneds to be an execution result which we add to
 				 *       the cache?
@@ -142,12 +161,11 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 		 * the main thread once the submit() has completed, this is achieved
 		 * through afterExecute()
 		 */
-		submit(edge);
+		submit(new RhenaFutureTask(edge));
 	}
 
 	public void addEdge(IExecutionEdge edge) {
 
 		this.edges.add(edge);
 	}
-
 }
