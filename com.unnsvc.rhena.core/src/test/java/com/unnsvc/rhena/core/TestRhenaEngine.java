@@ -16,7 +16,7 @@ public class TestRhenaEngine extends AbstractRhenaConfiguredTest {
 	@Test
 	public void testEngine() throws Exception {
 
-		ModuleIdentifier identifier = ModuleIdentifier.valueOf("com.test:simple:1.0.0");
+		ModuleIdentifier identifier = ModuleIdentifier.valueOf("com.test:complex:1.0.0");
 
 		IRhenaEngine engine = new RhenaEngine(getConfig());
 		IRhenaModule module = engine.resolveModule(identifier);

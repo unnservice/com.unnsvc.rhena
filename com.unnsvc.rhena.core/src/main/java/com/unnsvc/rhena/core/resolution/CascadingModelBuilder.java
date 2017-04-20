@@ -50,17 +50,21 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 
 		return getCache().getCachedExecution(entryPoint);
 	}
-
+	
 	@Override
 	protected void onRelationship(IRhenaModule source, IEntryPoint target) {
+	
+		
+		log.debug("Relationship: " + (source == null ? "(caller)" : source.getIdentifier()) + " -> " + target);
+	}
+
+	protected void onRelationship2(IRhenaModule source, IEntryPoint target) {
 
 		IRhenaModule targetModule = getCache().getModule(target.getTarget());
 
-		IExecutionModule execSource = new ExecutionModule(source);
-		IExecutionModule execTarget = new ExecutionModule(targetModule);
-
-		ModuleIdentifier sourceIdentifier = execSource.getModule() == null ? null : execSource.getModule().getIdentifier();
-		log.debug("relationship " + sourceIdentifier + " -> " + execTarget.getModule().getIdentifier());
+		// sources reused, targets always new
+		IExecutionModule execSource = moduleExecutor.executionModule(source);
+		// new ExecutionModule(source);
 
 		/**
 		 * If the requested execution type is greater than MAIN, add
@@ -68,14 +72,18 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 		 */
 		for (EExecutionType type : EExecutionType.values()) {
 
+			// sources reused, targets always new
+			IExecutionModule execTarget = new ExecutionModule(targetModule);
+
 			if (type.equals(target.getExecutionType())) {
 				IExecutionEdge execEdge = new ExecutionEdgeWorker(execSource, type, execTarget);
 				execSource.addEdge(execEdge);
 				moduleExecutor.addEdge(execEdge);
 				break;
 			} else {
-				IExecutionEdge execEdge = new ExecutionEdgeWorker(execSource, type, execTarget);
-				execSource.addEdge(execEdge);
+				IExecutionModule newSource = moduleExecutor.executionModule(execTarget.getModule());
+				IExecutionEdge execEdge = new ExecutionEdgeWorker(newSource, type, execTarget);
+				execTarget.addEdge(execEdge);
 				moduleExecutor.addEdge(execEdge);
 			}
 		}

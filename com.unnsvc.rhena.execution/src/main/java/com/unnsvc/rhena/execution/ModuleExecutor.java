@@ -2,8 +2,10 @@
 package com.unnsvc.rhena.execution;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -17,10 +19,12 @@ import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.IExecutionEdge;
+import com.unnsvc.rhena.common.execution.IExecutionModule;
 import com.unnsvc.rhena.common.execution.IExecutionResult;
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IEntryPoint;
+import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.execution.threading.LimitedQueue;
-import com.unnsvc.rhena.execution.threading.RhenaFutureTask;
 import com.unnsvc.rhena.model.EntryPoint;
 
 /**
@@ -37,6 +41,7 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 	private Set<IExecutionEdge> edges;
 	private Object lock;
 	private AtomicReference<Throwable> errorState;
+	private Map<ModuleIdentifier, IExecutionModule> executionModules;
 
 	public ModuleExecutor(IRhenaConfiguration config, IRhenaCache cache) {
 
@@ -47,6 +52,7 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 		this.executed = Collections.synchronizedSet(new HashSet<IExecutionEdge>());
 		this.edges = new HashSet<IExecutionEdge>();
 		this.errorState = new AtomicReference<Throwable>();
+		this.executionModules = new HashMap<ModuleIdentifier, IExecutionModule>();
 	}
 
 	public void execute() throws RhenaException {
@@ -104,7 +110,9 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 			 * Lock and wait for a completion to wake us up
 			 */
 			synchronized (lock) {
+				log.debug("Blocking on wait");
 				lock.wait();
+				log.debug("Released wait");
 			}
 		}
 
@@ -135,7 +143,7 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 
 				IEntryPoint entryPoint = new EntryPoint(result.getType(), result.getIdentifier());
 				cache.cacheExecution(entryPoint, result);
-				
+
 				/**
 				 * @TODO result eneds to be an execution result which we add to
 				 *       the cache?
@@ -158,6 +166,7 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 	 */
 	protected void preSubmit(IExecutionEdge edge) {
 
+		log.debug("Submitting for execution: " + edge);
 		/**
 		 * It will either complete or throw an error, either way it must wake up
 		 * the main thread once the submit() has completed, this is achieved
@@ -169,5 +178,16 @@ public class ModuleExecutor extends ThreadPoolExecutor {
 	public void addEdge(IExecutionEdge edge) {
 
 		this.edges.add(edge);
+	}
+
+	public IExecutionModule executionModule(IRhenaModule module) {
+
+		IExecutionModule executionModule = executionModules.get(module == null ? null : module.getIdentifier());
+		if(executionModule == null) {
+			
+			executionModule = new ExecutionModule(module);
+			executionModules.put(module == null ? null : module.getIdentifier(), executionModule);
+		}
+		return executionModule;
 	}
 }

@@ -147,6 +147,7 @@ public abstract class AbstractFlatTreeWalker {
 				FlatTreeFrame frame = tracker.pop();
 				IEntryPoint resolvedEntryPoint = frame.getEntryPoint();
 				processed.add(resolvedEntryPoint);
+				onModuleResolved(resolvedEntryPoint);
 			}
 		}
 	}
@@ -157,8 +158,12 @@ public abstract class AbstractFlatTreeWalker {
 		String dep = dependency.getEntryPoint().getTarget().toString() + ":" + dependency.getEntryPoint().getExecutionType().toString().toLowerCase();
 		log.trace("relationship: " + src + " " + string + " dependency " + dep);
 	}
+	
+	protected void onModuleResolved(IEntryPoint resolvedEntryPoint) {
+		
+	}
 
-	protected void onRelationship(IRhenaModule source, IEntryPoint target) {
+	protected void onRelationship(IRhenaModule source, IEntryPoint entryPoint) {
 
 	}
 
