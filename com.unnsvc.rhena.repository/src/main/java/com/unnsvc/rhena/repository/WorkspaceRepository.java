@@ -41,11 +41,12 @@ public class WorkspaceRepository extends LocalRepository {
 		if (!descriptorPath.isFile()) {
 			throw new NotFoundException(moduleIdentifier + " descriptor not found in repository at location: " + descriptorPath);
 		}
-		
+
 		RhenaModuleParser parser = new RhenaModuleParser(getDefinition().getIdentifier(), moduleIdentifier, descriptorPath.toURI());
 
 		IRhenaModule module = parser.getModule();
 		module.setModuleType(EModuleType.WORKSPACE);
+
 		return module;
 	}
 }

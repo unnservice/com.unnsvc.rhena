@@ -9,7 +9,7 @@ import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.config.AbstractRhenaConfiguredTest;
 import com.unnsvc.rhena.core.resolution.CascadingModelResolver;
-import com.unnsvc.rhena.repository.resolver.RhenaResolver;
+import com.unnsvc.rhena.repository.RhenaResolver;
 
 public class TestCascadingResolver extends AbstractRhenaConfiguredTest {
 

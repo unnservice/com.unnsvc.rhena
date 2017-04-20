@@ -12,7 +12,7 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.repository.IRhenaResolver;
 import com.unnsvc.rhena.core.resolution.CascadingModelBuilder2;
 import com.unnsvc.rhena.core.resolution.CascadingModelResolver;
-import com.unnsvc.rhena.repository.resolver.RhenaResolver;
+import com.unnsvc.rhena.repository.RhenaResolver;
 
 public class RhenaEngine implements IRhenaEngine {
 
