@@ -18,6 +18,15 @@ public class CascadingModelResolver extends AbstractCachingResolver {
 		super(cache, resolver);
 	}
 
+	/**
+	 * Cache entry points
+	 */
+	@Override
+	protected void onRelationship(IRhenaModule source, IEntryPoint entryPoint) {
+
+		getCache().cacheEntryPoint(entryPoint);
+	}
+
 	public IRhenaModule resolveModuleTree(ModuleIdentifier identifier) throws RhenaException {
 
 		IEntryPoint entryPoint = new EntryPoint(EExecutionType.TEST, identifier);

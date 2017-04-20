@@ -1,6 +1,8 @@
 
 package com.unnsvc.rhena.common;
 
+import java.util.Set;
+
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.IExecutionResult;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
@@ -16,4 +18,8 @@ public interface IRhenaCache {
 	public void cacheExecution(IEntryPoint entryPoint, IExecutionResult result);
 
 	public IExecutionResult getCachedExecution(IEntryPoint entryPoint);
+
+	public Set<IEntryPoint> getEntryPoints();
+
+	public void cacheEntryPoint(IEntryPoint entryPoint);
 }

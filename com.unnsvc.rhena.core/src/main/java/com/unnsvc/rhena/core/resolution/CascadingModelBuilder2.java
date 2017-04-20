@@ -26,27 +26,24 @@ public class CascadingModelBuilder2 extends AbstractCachingResolver {
 	}
 
 	@Override
-	protected void onModuleResolved(IEntryPoint resolvedEntryPoint) {
+	protected void onModuleResolved(IRhenaModule resolvedModule) {
 
-		log.info("onModuleResolved: " + resolvedEntryPoint);
+		log.info("onModuleResolved: " + resolvedModule.getIdentifier());
+
+		// all entry points are in cache because of the model resolution
+		// determine the highest entry point to target this resolved module
+		IEntryPoint targeting = null;
+		for(IEntryPoint cached : getCache().getEntryPoints()) {
+			if(cached.getTarget().equals(resolvedModule.getIdentifier())) {
+				if(targeting == null) {
+					targeting = cached;
+				} else if(cached.getExecutionType().greaterOrEqualTo(targeting.getExecutionType())) {
+					targeting = cached;
+				}
+			}
+		}
 		
-		/**
-		 * By the time this is called, all of its relationships will have been
-		 * resolved already and onRelationship() calls issued
-		 * 
-		 * But what we really want, are the relationships of the modules
-		 * targeting this module, so we know which execution type we want to
-		 * build.
-		 */
-	}
-
-	@Override
-	protected void onRelationship(IRhenaModule source, IEntryPoint entryPoint) {
-
-		/**
-		 * 
-		 */
-		log.info("\tonRelationship " + entryPoint.getTarget());
+		log.info("Submitting for execution: " + targeting);
 	}
 
 	public IExecutionResult executeModel(EExecutionType type, ModuleIdentifier identifier) throws RhenaException {
