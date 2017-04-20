@@ -2,24 +2,24 @@
 package com.unnsvc.rhena.execution.requests;
 
 import com.unnsvc.rhena.common.execution.IExecutionResult;
-import com.unnsvc.rhena.common.model.EExecutionType;
+import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 
 public class ExecutionResult implements IExecutionResult {
 
-	private EExecutionType type;
+	private IEntryPoint entryPoint;
 	private IRhenaModule module;
 
-	public ExecutionResult(EExecutionType type, IRhenaModule module) {
+	public ExecutionResult(IEntryPoint entryPoint, IRhenaModule module) {
 
-		this.type = type;
+		this.entryPoint = entryPoint;
 		this.module = module;
 	}
 
 	@Override
-	public EExecutionType getType() {
+	public IEntryPoint getEntryPoint() {
 
-		return type;
+		return entryPoint;
 	}
 
 	@Override

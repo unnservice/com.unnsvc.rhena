@@ -56,6 +56,12 @@ public abstract class AbstractFlatTreeWalker {
 		}
 		IRhenaModule module = onResolveModule(entryPoint.getTarget());
 		onRelationship(null, entryPoint);
+
+		/**
+		 * 
+		 */
+		onTraversalComplete();
+
 		return module;
 	}
 
@@ -86,9 +92,14 @@ public abstract class AbstractFlatTreeWalker {
 				if (!currentModule.getLifecycleConfiguration().getName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
 					for (ILifecycleReference ref : currentModule.getLifecycleConfiguration()) {
 						if (!processed.contains(ref.getEntryPoint())) {
-							onRelationship(currentModule, ref.getEntryPoint());
 							tracker.pushUnique(new FlatTreeFrame(ref.getEntryPoint(), ref.getTraverseType()));
 							break edgeProcessing;
+						} else {
+							/**
+							 * Call this once we know this relationship has been
+							 * processed
+							 */
+							onRelationship(currentModule, ref.getEntryPoint());
 						}
 					}
 				}
@@ -117,22 +128,25 @@ public abstract class AbstractFlatTreeWalker {
 
 								if (currentSelectionType.equals(ESelectionType.SCOPE)) {
 
-									onRelationship(currentModule, dependency.getEntryPoint());
 									tracker.pushUnique(new FlatTreeFrame(dependency.getEntryPoint(), dependency.getTraverseType(), currentSelectionType));
 									break edgeProcessing;
 								} else if (currentSelectionType.equals(ESelectionType.DIRECT)) {
 
-									onRelationship(currentModule, dependency.getEntryPoint());
 									tracker.pushUnique(new FlatTreeFrame(dependency.getEntryPoint(), dependency.getTraverseType(), currentSelectionType));
 									break edgeProcessing;
 								} else if (currentSelectionType.equals(ESelectionType.COMPONENT)) {
 
 									if (currentModule.getIdentifier().getComponentName().equals(dependency.getEntryPoint().getTarget().getComponentName())) {
-										onRelationship(currentModule, dependency.getEntryPoint());
 										tracker.pushUnique(new FlatTreeFrame(dependency.getEntryPoint(), dependency.getTraverseType(), currentSelectionType));
 										break edgeProcessing;
 									}
 								}
+							} else {
+								/**
+								 * Callthis when the relationship target is
+								 * processed
+								 */
+								onRelationship(currentModule, dependency.getEntryPoint());
 							}
 						} else {
 
@@ -158,12 +172,32 @@ public abstract class AbstractFlatTreeWalker {
 		String dep = dependency.getEntryPoint().getTarget().toString() + ":" + dependency.getEntryPoint().getExecutionType().toString().toLowerCase();
 		log.trace("relationship: " + src + " " + string + " dependency " + dep);
 	}
-	
-	protected void onModuleResolved(IRhenaModule resolvedModule) throws RhenaException {
-		
+
+	/**
+	 * This is called once the traversal of all nodes and relationships is
+	 * complete
+	 */
+	protected void onTraversalComplete() {
+
 	}
 
-	protected void onRelationship(IRhenaModule source, IEntryPoint entryPoint) {
+	/**
+	 * This is called once after each module is resolved in that it has all of
+	 * its outgoing modules processed nd in cache
+	 */
+	protected void onModuleResolved(IRhenaModule resolvedModule) throws RhenaException {
+
+	}
+
+	/**
+	 * This is called after a found relationship is known to be in a processed
+	 * state, may be called multiple times for the same relationship as it is
+	 * found in the model
+	 * 
+	 * @param source
+	 * @param entryPoint
+	 */
+	protected void onRelationship(IRhenaModule source, IEntryPoint outgoing) {
 
 	}
 

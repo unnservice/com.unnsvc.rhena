@@ -21,14 +21,14 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 public class RhenaCache implements IRhenaCache {
 
 	private Map<ModuleIdentifier, IRhenaModule> cachedModules;
-	private Map<ModuleIdentifier, IExecutionResult> cachedExecutions;
 	private Set<IEntryPoint> entryPoints;
+	private Map<ModuleIdentifier, IExecutionResult> cachedExecutions;
 
 	public RhenaCache() {
 
 		this.cachedModules = new HashMap<ModuleIdentifier, IRhenaModule>();
-		this.cachedExecutions = new HashMap<ModuleIdentifier, IExecutionResult>();
 		this.entryPoints = new HashSet<IEntryPoint>();
+		this.cachedExecutions = new HashMap<ModuleIdentifier, IExecutionResult>();
 	}
 
 	@Override
@@ -44,9 +44,15 @@ public class RhenaCache implements IRhenaCache {
 	}
 
 	@Override
-	public void cacheExecution(ModuleIdentifier identifier, IExecutionResult result) {
+	public Set<IEntryPoint> getEntryPoints() {
 
-		this.cachedExecutions.put(identifier, result);
+		return entryPoints;
+	}
+
+	@Override
+	public void cacheEntryPoint(IEntryPoint entryPoint) {
+
+		this.entryPoints.add(entryPoint);
 	}
 
 	@Override
@@ -54,16 +60,10 @@ public class RhenaCache implements IRhenaCache {
 
 		return cachedExecutions.get(identifier);
 	}
-	
-	@Override
-	public Set<IEntryPoint> getEntryPoints() {
 
-		return entryPoints;
-	}
-	
 	@Override
-	public void cacheEntryPoint(IEntryPoint entryPoint) {
-		
-		this.entryPoints.add(entryPoint);
+	public void cacheExecution(ModuleIdentifier identifier, IExecutionResult result) {
+
+		this.cachedExecutions.put(identifier, result);
 	}
 }
