@@ -1,16 +1,10 @@
 
 package com.unnsvc.rhena.execution;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,176 +12,49 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.IExecutionEdge;
-import com.unnsvc.rhena.common.execution.IExecutionModule;
 import com.unnsvc.rhena.common.execution.IExecutionResult;
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.IEntryPoint;
-import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.execution.threading.LimitedQueue;
-import com.unnsvc.rhena.model.EntryPoint;
 
-/**
- * This class is considered consumed after one execution
- * 
- * @author noname
- *
- */
 public class ModuleExecutor extends ThreadPoolExecutor {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private IRhenaCache cache;
-	private Set<IExecutionEdge> executed;
-	private Set<IExecutionEdge> edges;
-	private Object lock;
-	private AtomicReference<Throwable> errorState;
-	private Map<ModuleIdentifier, IExecutionModule> executionModules;
 
 	public ModuleExecutor(IRhenaConfiguration config, IRhenaCache cache) {
 
 		super(config.getThreads(), config.getThreads(), 0L, TimeUnit.MILLISECONDS, new LimitedQueue<Runnable>(config.getThreads()));
-
 		this.cache = cache;
-		this.lock = new Object();
-		this.executed = Collections.synchronizedSet(new HashSet<IExecutionEdge>());
-		this.edges = new HashSet<IExecutionEdge>();
-		this.errorState = new AtomicReference<Throwable>();
-		this.executionModules = new HashMap<ModuleIdentifier, IExecutionModule>();
-	}
-
-	public void execute() throws RhenaException {
-
-		try {
-			debug();
-			innerExecute();
-		} catch (InterruptedException t) {
-			throw new RhenaException(t);
-		}
-	}
-
-	private void debug() {
-
-		log.debug("Relationships in executor: " + edges.size());
-		for (IExecutionEdge edge : edges) {
-			log.debug(edge.toString());
-		}
-	}
-
-	protected void innerExecute() throws InterruptedException, RhenaException {
-
-		while (!edges.isEmpty() && errorState.get() == null) {
-			for (Iterator<IExecutionEdge> iter = edges.iterator(); iter.hasNext();) {
-				IExecutionEdge edge = iter.next();
-
-				if (executed.contains(edge)) {
-
-					iter.remove();
-				} else if (edge.getTarget().isBuildable()) {
-
-					iter.remove();
-					preSubmit(edge);
-				}
-
-				/**
-				 * Don't continue submitting work for execution if error state
-				 */
-				if (errorState.get() != null) {
-					break;
-				}
-
-				// here by the time it goes through t remainder of the iterator
-				// for a very large list, the threads might finish before we
-				// reach wait()
-				// wait blocks forever
-			}
-
-			/**
-			 * @TODO need an additional guard here before wait() so it doesn't
-			 *       block forever
-			 */
-
-			/**
-			 * Lock and wait for a completion to wake us up
-			 */
-			synchronized (lock) {
-				log.debug("Blocking on wait");
-				lock.wait();
-				log.debug("Released wait");
-			}
-		}
-
-		shutdown();
-		awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
-
-		if (errorState.get() != null) {
-			throw new RhenaException("Worker execution resulted in error state", errorState.get());
-		}
-
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	protected void afterExecute(Runnable runnable, Throwable throwable) {
+	protected void afterExecute(Runnable runnable, Throwable t) {
 
-		if (throwable != null) {
-			log.error(throwable.getMessage(), throwable);
-			errorState.set(throwable);
+		if (t != null) {
+			log.error("Exception found in execution result, this shouldn't happen in theory, report bug", t);
 		}
 
 		if (runnable instanceof Future<?>) {
 
 			try {
 				Future<IExecutionResult> future = (Future<IExecutionResult>) runnable;
-
 				IExecutionResult result = future.get();
+				cache.cacheExecution(result.getModule().getIdentifier(), result);
+			} catch (ExecutionException | InterruptedException e) {
 
-				IEntryPoint entryPoint = new EntryPoint(result.getType(), result.getIdentifier());
-				cache.cacheExecution(entryPoint, result);
-
-				/**
-				 * @TODO result eneds to be an execution result which we add to
-				 *       the cache?
-				 */
-			} catch (Exception ex) {
-
-				errorState.set(ex);
+				// Abort all executions
+				log.error(e.getMessage(), e);
 			}
 		}
+	}
 
-		synchronized (lock) {
-			lock.notifyAll();
+	public void close() throws RhenaException {
+
+		try {
+			shutdown();
+			awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException ex) {
+			throw new RhenaException(ex);
 		}
-	}
-
-	/**
-	 * When the executor is full, the submit method will block
-	 * 
-	 * @param execmod
-	 */
-	protected void preSubmit(IExecutionEdge edge) {
-
-		log.debug("Submitting for execution: " + edge);
-		/**
-		 * It will either complete or throw an error, either way it must wake up
-		 * the main thread once the submit() has completed, this is achieved
-		 * through afterExecute()
-		 */
-		submit(edge);
-	}
-
-	public void addEdge(IExecutionEdge edge) {
-
-		this.edges.add(edge);
-	}
-
-	public IExecutionModule executionModule(IRhenaModule module) {
-
-		IExecutionModule executionModule = executionModules.get(module == null ? null : module.getIdentifier());
-		if(executionModule == null) {
-			
-			executionModule = new ExecutionModule(module);
-			executionModules.put(module == null ? null : module.getIdentifier(), executionModule);
-		}
-		return executionModule;
 	}
 }

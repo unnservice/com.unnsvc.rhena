@@ -159,7 +159,7 @@ public abstract class AbstractFlatTreeWalker {
 		log.trace("relationship: " + src + " " + string + " dependency " + dep);
 	}
 	
-	protected void onModuleResolved(IRhenaModule resolvedModule) {
+	protected void onModuleResolved(IRhenaModule resolvedModule) throws RhenaException {
 		
 	}
 

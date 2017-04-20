@@ -15,9 +15,9 @@ public interface IRhenaCache {
 
 	public void cacheModule(IRhenaModule module) throws RhenaException;
 
-	public void cacheExecution(IEntryPoint entryPoint, IExecutionResult result);
+	public void cacheExecution(ModuleIdentifier identifier, IExecutionResult result);
 
-	public IExecutionResult getCachedExecution(IEntryPoint entryPoint);
+	public IExecutionResult getCachedExecution(ModuleIdentifier identifier);
 
 	public Set<IEntryPoint> getEntryPoints();
 

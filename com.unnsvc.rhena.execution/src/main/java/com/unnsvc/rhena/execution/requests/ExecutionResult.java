@@ -2,18 +2,18 @@
 package com.unnsvc.rhena.execution.requests;
 
 import com.unnsvc.rhena.common.execution.IExecutionResult;
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.EExecutionType;
+import com.unnsvc.rhena.common.model.IRhenaModule;
 
 public class ExecutionResult implements IExecutionResult {
 
-	private ModuleIdentifier identifier;
 	private EExecutionType type;
+	private IRhenaModule module;
 
-	public ExecutionResult(EExecutionType type, ModuleIdentifier identifier) {
+	public ExecutionResult(EExecutionType type, IRhenaModule module) {
 
 		this.type = type;
-		this.identifier = identifier;
+		this.module = module;
 	}
 
 	@Override
@@ -23,9 +23,8 @@ public class ExecutionResult implements IExecutionResult {
 	}
 
 	@Override
-	public ModuleIdentifier getIdentifier() {
+	public IRhenaModule getModule() {
 
-		return identifier;
+		return module;
 	}
-
 }
