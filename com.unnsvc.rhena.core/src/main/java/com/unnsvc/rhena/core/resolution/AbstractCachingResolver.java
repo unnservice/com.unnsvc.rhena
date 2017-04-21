@@ -43,4 +43,9 @@ public abstract class AbstractCachingResolver extends AbstractFlatTreeWalker {
 
 		return cache;
 	}
+
+	public IRhenaResolver getResolver() {
+
+		return resolver;
+	}
 }

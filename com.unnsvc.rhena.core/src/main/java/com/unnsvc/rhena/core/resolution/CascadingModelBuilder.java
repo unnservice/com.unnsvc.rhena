@@ -32,6 +32,7 @@ import com.unnsvc.rhena.model.EntryPoint;
 public class CascadingModelBuilder extends AbstractCachingResolver {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
+	private IRhenaConfiguration config;
 	private IModuleExecutor moduleExecutor;
 	private Set<ExecutionFrame> executionFrames;
 	private Throwable exceptionState;
@@ -40,6 +41,7 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 
 		super(cache, resolver);
 
+		this.config = config;
 		this.moduleExecutor = new ModuleExecutor(config);
 		this.executionFrames = new HashSet<ExecutionFrame>();
 
@@ -162,7 +164,7 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 		log.info("Create builder for: " + entryPoint + " module: " + module);
 		if (module.getModuleType() == EModuleType.WORKSPACE) {
 
-			return new WorkspaceBuilder(entryPoint, module);
+			return new WorkspaceBuilder(getCache(), config, getResolver(), entryPoint, module);
 		} else if (module.getModuleType() == EModuleType.REMOTE) {
 
 			return new RemoteBuilder(entryPoint, module);
