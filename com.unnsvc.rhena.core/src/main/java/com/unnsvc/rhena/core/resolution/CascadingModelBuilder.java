@@ -34,6 +34,7 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private IModuleExecutor moduleExecutor;
 	private Set<ExecutionFrame> executionFrames;
+	private Throwable exceptionState;
 
 	public CascadingModelBuilder(IRhenaConfiguration config, IRhenaCache cache, IRhenaResolver resolver) {
 
@@ -47,9 +48,7 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 			@Override
 			public void onExecuted(IExecutionResult executionResult) {
 
-				IRhenaModule module = executionResult.getModule();
 				IEntryPoint entryPoint = executionResult.getEntryPoint();
-				EExecutionType incomingType = entryPoint.getExecutionType();
 
 				synchronized (executionFrames) {
 
@@ -60,24 +59,23 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 					for (Iterator<ExecutionFrame> iter = executionFrames.iterator(); iter.hasNext();) {
 
 						ExecutionFrame frame = iter.next();
-						if (frame.isFor(module) && frame.isFor(incomingType)) {
-							iter.remove();
-
-							/**
-							 * Here we need to cache the execution
-							 */
-							getCache().cacheExecution(entryPoint.getTarget(), executionResult);
-							
-						} else {
-							frame.removeOutgoing(entryPoint);
-						}
+						frame.removeOutgoing(entryPoint);
 					}
 
+					getCache().cacheExecution(entryPoint, executionResult);
 					executionFrames.notifyAll();
 				}
 			}
-		});
 
+			@Override
+			public void onException(Exception ex) {
+
+				synchronized (executionFrames) {
+
+					exceptionState = ex;
+				}
+			}
+		});
 	}
 
 	@Override
@@ -92,11 +90,11 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 			boolean targetExisted = false;
 
 			for (ExecutionFrame executionFrame : executionFrames) {
-				if (executionFrame.isFor(source)) {
+				if (executionFrame.isForModule(source)) {
 					executionFrame.addOutgoing(outgoing);
 					sourceExisted = true;
-				} else if (executionFrame.isFor(targetModule)) {
-					executionFrame.setIncoming(outgoing);
+				} else if (executionFrame.isForModule(targetModule)) {
+					executionFrame.setIncomingIfGreater(outgoing);
 					targetExisted = true;
 				}
 			}
@@ -112,7 +110,7 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 
 			if (!targetExisted) {
 				ExecutionFrame targetFrame = new ExecutionFrame(targetModule);
-				targetFrame.setIncoming(outgoing);
+				targetFrame.setIncomingIfGreater(outgoing);
 				executionFrames.add(targetFrame);
 			}
 		}
@@ -129,6 +127,11 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 			while (!executionFrames.isEmpty()) {
 
 				synchronized (executionFrames) {
+
+					if (exceptionState != null) {
+
+						throw new RhenaException(exceptionState);
+					}
 
 					for (Iterator<ExecutionFrame> iter = executionFrames.iterator(); iter.hasNext();) {
 						ExecutionFrame next = iter.next();
@@ -147,7 +150,6 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 						}
 					}
 
-					log.info("Wait, frames in executionFrames: " + executionFrames);
 					executionFrames.wait();
 				}
 			}
@@ -158,7 +160,7 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 
 	private IRhenaBuilder createBuilder(IEntryPoint entryPoint, IRhenaModule module) throws RhenaException {
 
-		log.info("Create builder for: " + entryPoint + " module " + module);
+		log.info("Create builder for: " + entryPoint + " module: " + module);
 		if (module.getModuleType() == EModuleType.WORKSPACE) {
 
 			return new WorkspaceBuilder(entryPoint, module);
@@ -182,7 +184,7 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 
 		visitTree(entryPoint, ESelectionType.SCOPE);
 
-		return getCache().getCachedExecution(identifier);
+		return getCache().getCachedExecution(entryPoint);
 	}
 
 }

@@ -49,6 +49,7 @@ public class ModuleExecutor extends ThreadPoolExecutor implements IModuleExecuto
 
 				// Abort all executions
 				log.error(e.getMessage(), e);
+				callbacks.forEach(callback -> callback.onException(e));
 			}
 		}
 	}

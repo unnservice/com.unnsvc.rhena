@@ -25,7 +25,7 @@ public class WorkspaceBuilder extends AbstractBuilder {
 	public IExecutionResult call() throws Exception {
 
 		log.info("Executing: " + module.getIdentifier());
-
+		// throw new Exception("Exception");
 		return new ExecutionResult(entryPoint, module);
 	}
 
