@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -17,7 +18,6 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.IExecutionResult;
 import com.unnsvc.rhena.common.execution.IModuleExecutor;
 import com.unnsvc.rhena.common.execution.IModuleExecutorCallback;
-import com.unnsvc.rhena.execution.threading.LimitedQueue;
 
 public class ModuleExecutor extends ThreadPoolExecutor implements IModuleExecutor {
 
@@ -26,7 +26,8 @@ public class ModuleExecutor extends ThreadPoolExecutor implements IModuleExecuto
 
 	public ModuleExecutor(IRhenaConfiguration config) {
 
-		super(config.getThreads(), config.getThreads(), 0L, TimeUnit.MILLISECONDS, new LimitedQueue<Runnable>(config.getThreads()));
+		super(config.getThreads(), config.getThreads(), 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+				//new LimitedQueue<Runnable>(config.getThreads()));
 		this.callbacks = new HashSet<IModuleExecutorCallback>();
 	}
 

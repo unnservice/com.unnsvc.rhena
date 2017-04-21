@@ -22,6 +22,7 @@ import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.repository.IRhenaResolver;
+import com.unnsvc.rhena.execution.CallerFrame;
 import com.unnsvc.rhena.execution.ExecutionFrame;
 import com.unnsvc.rhena.execution.ModuleExecutor;
 import com.unnsvc.rhena.execution.builders.RemoteBuilder;
@@ -47,8 +48,8 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 			public void onExecuted(IExecutionResult executionResult) {
 
 				IRhenaModule module = executionResult.getModule();
-				ModuleIdentifier moduleIdentifier = module == null ? null : module.getIdentifier();
 				IEntryPoint entryPoint = executionResult.getEntryPoint();
+				EExecutionType incomingType = entryPoint.getExecutionType();
 
 				synchronized (executionFrames) {
 
@@ -59,25 +60,19 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 					for (Iterator<ExecutionFrame> iter = executionFrames.iterator(); iter.hasNext();) {
 
 						ExecutionFrame frame = iter.next();
-						IEntryPoint frameIncoming = frame.getIncoming();
-						
-						/**
-						 * Module is null (source caller), it will not have any
-						 * incoming
-						 */
-						if (frame.isModuleIdentifier(moduleIdentifier) && frameIncoming.getExecutionType().equals(entryPoint.getExecutionType())) {
-
-							// null module caller will never be in outgoing so
-							// we can continue; loop
+						if (frame.isFor(module) && frame.isFor(incomingType)) {
 							iter.remove();
-						} else {
 
-							// remove outgoing relationship
+							/**
+							 * Here we need to cache the execution
+							 */
+							getCache().cacheExecution(entryPoint.getTarget(), executionResult);
+							
+						} else {
 							frame.removeOutgoing(entryPoint);
 						}
 					}
 
-					System.err.println("Notify all");
 					executionFrames.notifyAll();
 				}
 			}
@@ -88,50 +83,59 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 	@Override
 	protected void onRelationship(IRhenaModule source, IEntryPoint outgoing) {
 
-		ModuleIdentifier sourceIdentifier = source == null ? null : source.getIdentifier();
-		IRhenaModule sourceModule = source;
-
 		ModuleIdentifier targetIdentifier = outgoing.getTarget();
 		IRhenaModule targetModule = getCache().getModule(targetIdentifier);
 
-		boolean sourceExisted = false;
-		boolean targetExisted = false;
-		for (Iterator<ExecutionFrame> iter = executionFrames.iterator(); iter.hasNext();) {
+		synchronized (executionFrames) {
 
-			ExecutionFrame frame = iter.next();
-			if (frame.getModule() != null && frame.getModule().getIdentifier().equals(sourceIdentifier)) {
-				// add outgoing
-				sourceExisted = true;
-			} else if (frame.getModule() != null && frame.getModule().getIdentifier().equals(targetIdentifier)) {
-				// att incoming
-				targetExisted = true;
+			boolean sourceExisted = false;
+			boolean targetExisted = false;
+
+			for (ExecutionFrame executionFrame : executionFrames) {
+				if (executionFrame.isFor(source)) {
+					executionFrame.addOutgoing(outgoing);
+					sourceExisted = true;
+				} else if (executionFrame.isFor(targetModule)) {
+					executionFrame.setIncoming(outgoing);
+					targetExisted = true;
+				}
 			}
-		}
 
-		if (!sourceExisted) {
-			ExecutionFrame frame = new ExecutionFrame(sourceModule);
-			frame.addOutgoing(outgoing);
-			executionFrames.add(frame);
-		}
+			if (!sourceExisted) {
+				ExecutionFrame sourceFrame = new ExecutionFrame(source);
+				if (source == null) {
+					sourceFrame = new CallerFrame();
+				}
+				sourceFrame.addOutgoing(outgoing);
+				executionFrames.add(sourceFrame);
+			}
 
-		if (!targetExisted) {
-			ExecutionFrame frame = new ExecutionFrame(targetModule);
-			frame.setIncoming(outgoing);
-			executionFrames.add(frame);
+			if (!targetExisted) {
+				ExecutionFrame targetFrame = new ExecutionFrame(targetModule);
+				targetFrame.setIncoming(outgoing);
+				executionFrames.add(targetFrame);
+			}
 		}
 	}
 
+	/**
+	 * We care about incoming to determine build type, we care about outgoing to
+	 * check whether it is resolved
+	 */
 	@Override
 	protected void onTraversalComplete() throws RhenaException {
 
-//		try {
+		try {
 			while (!executionFrames.isEmpty()) {
 
 				synchronized (executionFrames) {
 
 					for (Iterator<ExecutionFrame> iter = executionFrames.iterator(); iter.hasNext();) {
 						ExecutionFrame next = iter.next();
-						if (next.getOutgoing().isEmpty()) {
+						if (next instanceof CallerFrame) {
+							iter.remove();
+
+						} else if (next.getOutgoing().isEmpty()) {
 							iter.remove();
 
 							/**
@@ -143,18 +147,18 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 						}
 					}
 
-//					System.err.println("wait");
-//					executionFrames.wait();
+					log.info("Wait, frames in executionFrames: " + executionFrames);
+					executionFrames.wait();
 				}
 			}
-//		} catch (InterruptedException ie) {
-//			throw new RhenaException(ie);
-//		}
+		} catch (InterruptedException ie) {
+			throw new RhenaException(ie);
+		}
 	}
 
 	private IRhenaBuilder createBuilder(IEntryPoint entryPoint, IRhenaModule module) throws RhenaException {
 
-		// log.info("Submitting for execution: " + targeting);
+		log.info("Create builder for: " + entryPoint + " module " + module);
 		if (module.getModuleType() == EModuleType.WORKSPACE) {
 
 			return new WorkspaceBuilder(entryPoint, module);

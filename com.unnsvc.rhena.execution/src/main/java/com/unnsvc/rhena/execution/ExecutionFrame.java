@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.model.EExecutionType;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 
@@ -27,8 +28,6 @@ public class ExecutionFrame {
 	}
 
 	/**
-	 * May be called multiple times and will only save the highest
-	 * 
 	 * @param incomingType
 	 */
 	public void setIncoming(IEntryPoint incoming) {
@@ -42,17 +41,17 @@ public class ExecutionFrame {
 			this.incoming = incoming;
 		}
 	}
-	
+
 	public boolean isModuleIdentifier(ModuleIdentifier identifier) {
-		
-		if(this.getModule() == null && identifier == null) {
-			
+
+		if (this.getModule() == null && identifier == null) {
+
 			return true;
 		} else if (this.getModule() != null && this.getModule().getIdentifier().equals(identifier)) {
-			
+
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -80,4 +79,33 @@ public class ExecutionFrame {
 			}
 		}
 	}
+
+	@Override
+	public String toString() {
+
+		return "ExecutionFrame [incoming=" + incoming + ", module=" + (module == null ? null : module.getIdentifier()) + ", outgoing=" + outgoing + "]";
+	}
+
+	public boolean isFor(IRhenaModule source) {
+
+		if (source == null && module == null) {
+			return true;
+		} else if (source != null && module != null) {
+			if (source.getIdentifier().equals(module.getIdentifier())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean isFor(EExecutionType incomingType) {
+
+		if (incoming == null && incomingType == null) {
+			return true;
+		} else if (incoming != null && incomingType != null && incoming.equals(incomingType)) {
+			return true;
+		}
+		return false;
+	}
+
 }

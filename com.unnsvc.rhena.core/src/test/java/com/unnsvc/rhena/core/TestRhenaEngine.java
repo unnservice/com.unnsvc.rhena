@@ -20,7 +20,7 @@ public class TestRhenaEngine extends AbstractRhenaConfiguredTest {
 
 		IRhenaEngine engine = new RhenaEngine(getConfig());
 		IRhenaModule module = engine.resolveModule(identifier);
-		Object result = engine.resolveExecution(EExecutionType.ITEST, module);
+		IExecutionResult result = engine.resolveExecution(EExecutionType.ITEST, module);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result instanceof IExecutionResult);
 	}
