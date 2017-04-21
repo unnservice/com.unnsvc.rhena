@@ -14,7 +14,7 @@ import com.unnsvc.rhena.objectserver.IObjectReply;
 import com.unnsvc.rhena.objectserver.IObjectRequest;
 import com.unnsvc.rhena.objectserver.ObjectServerException;
 
-public class ObjectClient implements IObjectClient {
+public class ObjectClient<REQUEST extends IObjectRequest, REPLY extends IObjectReply> implements IObjectClient<REQUEST, REPLY> {
 
 	private Socket clientSocket;
 	private ObjectOutputStream oos;
@@ -23,7 +23,7 @@ public class ObjectClient implements IObjectClient {
 	public ObjectClient(SocketAddress socketAddress) throws ObjectServerException {
 
 		try {
-			
+
 			establishConnection(socketAddress);
 		} catch (ConnectException ex) {
 
@@ -48,14 +48,14 @@ public class ObjectClient implements IObjectClient {
 	}
 
 	@Override
-	public IObjectReply executeRequest(IObjectRequest request) throws ObjectServerException {
+	@SuppressWarnings("unchecked")
+	public REPLY executeRequest(REQUEST request) throws ObjectServerException {
 
 		try {
 
 			oos.writeObject(request);
 
-			IObjectReply reply = (IObjectReply) ois.readObject();
-			return reply;
+			return (REPLY) ois.readObject();
 		} catch (IOException | ClassNotFoundException ex) {
 			throw new ObjectServerException(ex.getMessage(), ex);
 		}
