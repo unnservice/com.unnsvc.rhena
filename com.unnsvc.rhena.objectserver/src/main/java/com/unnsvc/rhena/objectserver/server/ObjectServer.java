@@ -2,13 +2,13 @@
 package com.unnsvc.rhena.objectserver.server;
 
 import java.io.IOException;
-import java.net.Socket;
 import java.net.SocketAddress;
-import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.objectserver.IObjectServer;
 import com.unnsvc.rhena.objectserver.IObjectServerAcceptor;
@@ -16,9 +16,9 @@ import com.unnsvc.rhena.objectserver.ObjectServerException;
 
 public class ObjectServer implements IObjectServer {
 
-	// private Logger log = LoggerFactory.getLogger(getClass());
+	private Logger log = LoggerFactory.getLogger(getClass());
 	private SocketAddress serverAddress;
-	private ExecutorService acceptorPool;
+	private ExecutorService mainPool;
 	private ServerSocketChannel executionChannel;
 
 	/**
@@ -29,9 +29,9 @@ public class ObjectServer implements IObjectServer {
 	public ObjectServer(SocketAddress serverAddress) throws ObjectServerException {
 
 		this.serverAddress = serverAddress;
-		System.err.println("Server address: " + serverAddress);
+		log.debug("Object server address: " + serverAddress);
 
-		this.acceptorPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		this.mainPool = Executors.newSingleThreadExecutor();
 	}
 
 	@Override
@@ -39,23 +39,19 @@ public class ObjectServer implements IObjectServer {
 
 		try {
 			executionChannel = ServerSocketChannel.open();
-			executionChannel.configureBlocking(true);
-			executionChannel.socket().bind(serverAddress);
 
-			while (executionChannel.isOpen()) {
+			synchronized (executionChannel) {
+				executionChannel.configureBlocking(true);
+				executionChannel.socket().bind(serverAddress);
 
-				SocketChannel clientChannel = executionChannel.accept();
-				System.out.println("server: Accepted client execution connection");
+				ObjectServerReaderThread reader = new ObjectServerReaderThread(executionChannel, serverAcceptor);
+				mainPool.submit(reader);
 
-				Socket clientSocket = clientChannel.socket();
-				clientSocket.setSoTimeout(serverAcceptor.getSocketReadTimeout());
-				ObjectServerAcceptThread acceptor = new ObjectServerAcceptThread(clientSocket, serverAcceptor);
-				acceptorPool.submit(acceptor);
+				// wait for start notification
+				executionChannel.wait();
 			}
 
-		} catch (AsynchronousCloseException ce) {
-			// server connection shutdown while waiting in accept(), no-op
-		} catch (IOException ex) {
+		} catch (IOException | InterruptedException ex) {
 
 			throw new ObjectServerException("Object server entered failed state, not accepting more requests", ex);
 		}
@@ -65,7 +61,9 @@ public class ObjectServer implements IObjectServer {
 	public void close() throws ObjectServerException {
 
 		try {
+			// synchronized (executionChannel) {
 			executionChannel.close();
+			// }
 			// there will be acceptors in blocking state waiting for object
 			// reads, so we can't wait for them
 			// acceptorPool.awaitTermination(5000, TimeUnit.MILLISECONDS);

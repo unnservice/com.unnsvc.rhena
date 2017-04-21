@@ -26,8 +26,7 @@ public class RhenaEngine implements IRhenaEngine {
 	public IRhenaModule resolveModule(ModuleIdentifier identifier) throws RhenaException {
 
 		CascadingModelResolver modelResolver = new CascadingModelResolver(context);
-		IRhenaModule module = modelResolver.resolveModuleTree(identifier);
-		return module;
+		return modelResolver.resolveModuleTree(identifier);
 	}
 
 	@Override

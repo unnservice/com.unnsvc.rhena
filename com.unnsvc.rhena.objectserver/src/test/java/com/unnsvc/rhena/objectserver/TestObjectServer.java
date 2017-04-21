@@ -19,32 +19,20 @@ public class TestObjectServer {
 
 		server = new ObjectServer(ObjectServerHelper.availableAddress());
 
-		new Thread(new Runnable() {
+		server.startServer(new IObjectServerAcceptor() {
 
 			@Override
-			public void run() {
+			public IObjectReply onRequest(IObjectRequest request) {
 
-				try {
-					server.startServer(new IObjectServerAcceptor() {
-
-						@Override
-						public IObjectReply onRequest(IObjectRequest request) {
-
-							return new EchoReply(request);
-						}
-
-						@Override
-						public int getSocketReadTimeout() {
-
-							return 1000;
-						}
-					});
-				} catch (Exception ex) {
-					throw new RuntimeException(ex.getMessage(), ex);
-				}
+				return new EchoReply(request);
 			}
 
-		}).start();
+			@Override
+			public int getSocketReadTimeout() {
+
+				return 1000;
+			}
+		});
 	}
 
 	@After
@@ -58,9 +46,7 @@ public class TestObjectServer {
 
 		IObjectClient client = new ObjectClient(server.getServerAddress());
 
-		for (int i = 0; i < 10; i++) {
-			EchoReply reply = (EchoReply) client.executeRequest(new TestRequest());
-			Assert.assertTrue(reply.getEchoReply() instanceof TestRequest);
-		}
+		EchoReply reply = (EchoReply) client.executeRequest(new TestRequest());
+		Assert.assertTrue(reply.getEchoReply() instanceof TestRequest);
 	}
 }

@@ -8,12 +8,11 @@ import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.EExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.config.AbstractRhenaConfiguredTest;
 import com.unnsvc.rhena.core.resolution.CascadingModelBuilder;
 import com.unnsvc.rhena.core.resolution.CascadingModelResolver;
 import com.unnsvc.rhena.repository.RhenaResolver;
 
-public class TestCascadingBuilder extends AbstractRhenaConfiguredTest {
+public class TestCascadingBuilder extends AbstractAgentTest {
 
 	@Test
 	public void testBuilder() throws Exception {

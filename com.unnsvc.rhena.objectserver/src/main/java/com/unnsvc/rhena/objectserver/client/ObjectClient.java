@@ -19,22 +19,15 @@ public class ObjectClient implements IObjectClient {
 	private Socket clientSocket;
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
-	private int maxConnectRetries = 5;
 
 	public ObjectClient(SocketAddress socketAddress) throws ObjectServerException {
 
-		int tries = 0;
-		while (true) {
-			try {
-				establishConnection(socketAddress);
-				break;
-			} catch (ConnectException ce) {
-				tries++;
-				if (tries == maxConnectRetries) {
+		try {
+			
+			establishConnection(socketAddress);
+		} catch (ConnectException ex) {
 
-					throw new ObjectServerException("Failed to connect after " + maxConnectRetries + " tries", ce);
-				}
-			}
+			throw new ObjectServerException(ex);
 		}
 	}
 
