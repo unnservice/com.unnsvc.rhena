@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IRhenaBuilder;
-import com.unnsvc.rhena.common.config.IRhenaConfiguration;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.IExecutionResult;
 import com.unnsvc.rhena.common.execution.IModuleExecutor;
@@ -24,9 +24,9 @@ public class ModuleExecutor extends ThreadPoolExecutor implements IModuleExecuto
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private Set<IModuleExecutorCallback> callbacks;
 
-	public ModuleExecutor(IRhenaConfiguration config) {
+	public ModuleExecutor(IRhenaContext context) {
 
-		super(config.getThreads(), config.getThreads(), 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+		super(context.getConfig().getThreads(), context.getConfig().getThreads(), 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
 		this.callbacks = new HashSet<IModuleExecutorCallback>();
 	}
 

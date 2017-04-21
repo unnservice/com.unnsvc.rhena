@@ -1,24 +1,20 @@
 
 package com.unnsvc.rhena.core.resolution;
 
-import com.unnsvc.rhena.common.IRhenaCache;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.repository.IRhenaResolver;
 import com.unnsvc.rhena.common.traversal.AbstractFlatTreeWalker;
 
 public abstract class AbstractCachingResolver extends AbstractFlatTreeWalker {
 
-	private IRhenaResolver resolver;
+	private IRhenaContext context;
 
-	private IRhenaCache cache;
-
-	public AbstractCachingResolver(IRhenaCache cache, IRhenaResolver resolver) {
+	public AbstractCachingResolver(IRhenaContext context) {
 
 		super();
-		this.cache = cache;
-		this.resolver = resolver;
+		this.context = context;
 	}
 
 	/**
@@ -31,21 +27,16 @@ public abstract class AbstractCachingResolver extends AbstractFlatTreeWalker {
 	@Override
 	protected IRhenaModule onResolveModule(ModuleIdentifier identifier) throws RhenaException {
 
-		IRhenaModule module = cache.getModule(identifier);
+		IRhenaModule module = context.getCache().getModule(identifier);
 		if (module == null) {
-			module = resolver.resolveModule(identifier);
-			cache.cacheModule(module);
+			module = getContext().getResolver().resolveModule(identifier);
+			getContext().getCache().cacheModule(module);
 		}
 		return module;
 	}
 
-	public IRhenaCache getCache() {
+	public IRhenaContext getContext() {
 
-		return cache;
-	}
-
-	public IRhenaResolver getResolver() {
-
-		return resolver;
+		return context;
 	}
 }

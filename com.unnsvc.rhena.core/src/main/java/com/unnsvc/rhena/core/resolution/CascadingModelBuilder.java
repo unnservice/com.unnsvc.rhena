@@ -9,8 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IRhenaBuilder;
-import com.unnsvc.rhena.common.IRhenaCache;
-import com.unnsvc.rhena.common.config.IRhenaConfiguration;
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.IExecutionResult;
 import com.unnsvc.rhena.common.execution.IModuleExecutor;
@@ -21,7 +20,6 @@ import com.unnsvc.rhena.common.model.EModuleType;
 import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.repository.IRhenaResolver;
 import com.unnsvc.rhena.execution.CallerFrame;
 import com.unnsvc.rhena.execution.ExecutionFrame;
 import com.unnsvc.rhena.execution.ModuleExecutor;
@@ -32,17 +30,15 @@ import com.unnsvc.rhena.model.EntryPoint;
 public class CascadingModelBuilder extends AbstractCachingResolver {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private IRhenaConfiguration config;
 	private IModuleExecutor moduleExecutor;
 	private Set<ExecutionFrame> executionFrames;
 	private Throwable exceptionState;
 
-	public CascadingModelBuilder(IRhenaConfiguration config, IRhenaCache cache, IRhenaResolver resolver) {
+	public CascadingModelBuilder(IRhenaContext context) {
 
-		super(cache, resolver);
+		super(context);
 
-		this.config = config;
-		this.moduleExecutor = new ModuleExecutor(config);
+		this.moduleExecutor = new ModuleExecutor(getContext());
 		this.executionFrames = new HashSet<ExecutionFrame>();
 
 		this.moduleExecutor.addCallback(new IModuleExecutorCallback() {
@@ -63,7 +59,7 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 						frame.removeOutgoing(entryPoint);
 					}
 
-					getCache().cacheExecution(entryPoint, executionResult);
+					getContext().getCache().cacheExecution(entryPoint, executionResult);
 					executionFrames.notifyAll();
 				}
 			}
@@ -83,7 +79,7 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 	protected void onRelationship(IRhenaModule source, IEntryPoint outgoing) {
 
 		ModuleIdentifier targetIdentifier = outgoing.getTarget();
-		IRhenaModule targetModule = getCache().getModule(targetIdentifier);
+		IRhenaModule targetModule = getContext().getCache().getModule(targetIdentifier);
 
 		synchronized (executionFrames) {
 
@@ -164,7 +160,7 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 		log.info("Create builder for: " + entryPoint + " module: " + module);
 		if (module.getModuleType() == EModuleType.WORKSPACE) {
 
-			return new WorkspaceBuilder(getCache(), config, getResolver(), entryPoint, module);
+			return new WorkspaceBuilder(getContext(), entryPoint, module);
 		} else if (module.getModuleType() == EModuleType.REMOTE) {
 
 			return new RemoteBuilder(entryPoint, module);
@@ -185,7 +181,7 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 
 		visitTree(entryPoint, ESelectionType.SCOPE);
 
-		return getCache().getCachedExecution(entryPoint);
+		return getContext().getCache().getCachedExecution(entryPoint);
 	}
 
 }

@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.config.AbstractRhenaConfiguredTest;
@@ -27,14 +29,16 @@ public class TestCascadingResolverPerformance extends AbstractRhenaConfiguredTes
 	@Test
 	public void testPerformance() throws Exception {
 
-		RhenaResolver rhenaResolver = new RhenaResolver(getConfig());
+		IRhenaConfiguration config = createMockConfig();
+		RhenaResolver resolver = new RhenaResolver(config);
+		IRhenaContext context = createMockContext(config, resolver);
 
 		long iterations = 1000000;
 		long totalTime = 0;
 		for (int i = 0; i < iterations; i++) {
 			long start = System.currentTimeMillis();
-			CascadingModelResolver resolver = new CascadingModelResolver(rhenaResolver, getMockCache());
-			IRhenaModule module = resolver.resolveModuleTree(ModuleIdentifier.valueOf("com.multi:module1:1.0.0"));
+			CascadingModelResolver cascadingResolver = new CascadingModelResolver(context);
+			IRhenaModule module = cascadingResolver.resolveModuleTree(ModuleIdentifier.valueOf("com.multi:module1:1.0.0"));
 			Assert.assertNotNull(module);
 			totalTime += (System.currentTimeMillis() - start);
 		}
