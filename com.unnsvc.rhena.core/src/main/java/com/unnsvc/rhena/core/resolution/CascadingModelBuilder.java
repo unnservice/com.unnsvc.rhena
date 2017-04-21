@@ -56,9 +56,8 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 					 * After it has executed, we want to remove the outgoing,
 					 * and the actual frame
 					 */
-					for (Iterator<ExecutionFrame> iter = executionFrames.iterator(); iter.hasNext();) {
+					for (ExecutionFrame frame : executionFrames) {
 
-						ExecutionFrame frame = iter.next();
 						frame.removeOutgoing(entryPoint);
 					}
 

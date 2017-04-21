@@ -27,7 +27,6 @@ public class ModuleExecutor extends ThreadPoolExecutor implements IModuleExecuto
 	public ModuleExecutor(IRhenaConfiguration config) {
 
 		super(config.getThreads(), config.getThreads(), 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
-				//new LimitedQueue<Runnable>(config.getThreads()));
 		this.callbacks = new HashSet<IModuleExecutorCallback>();
 	}
 
