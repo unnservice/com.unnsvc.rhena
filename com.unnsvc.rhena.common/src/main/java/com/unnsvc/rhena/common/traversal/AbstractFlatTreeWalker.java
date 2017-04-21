@@ -176,8 +176,9 @@ public abstract class AbstractFlatTreeWalker {
 	/**
 	 * This is called once the traversal of all nodes and relationships is
 	 * complete
+	 * @throws InterruptedException 
 	 */
-	protected void onTraversalComplete() {
+	protected void onTraversalComplete() throws RhenaException {
 
 	}
 

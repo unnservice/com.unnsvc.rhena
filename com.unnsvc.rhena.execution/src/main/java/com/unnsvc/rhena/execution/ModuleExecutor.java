@@ -43,11 +43,7 @@ public class ModuleExecutor extends ThreadPoolExecutor implements IModuleExecuto
 			try {
 				Future<IExecutionResult> future = (Future<IExecutionResult>) runnable;
 				IExecutionResult result = future.get();
-				callbacks.forEach(callback -> {
-					if (callback.getIdentifier().equals(result.getModule().getIdentifier())) {
-						callback.onExecuted(result);
-					}
-				});
+				callbacks.forEach(callback -> callback.onExecuted(result));
 			} catch (ExecutionException | InterruptedException e) {
 
 				// Abort all executions

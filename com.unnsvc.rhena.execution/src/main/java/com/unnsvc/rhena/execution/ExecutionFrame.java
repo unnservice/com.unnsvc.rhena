@@ -2,32 +2,58 @@
 package com.unnsvc.rhena.execution;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
+import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 
 public class ExecutionFrame {
 
-	private Set<IEntryPoint> incoming;
+	private IEntryPoint incoming;
 	private IRhenaModule module;
 	private Set<IEntryPoint> outgoing;
 
 	public ExecutionFrame(IRhenaModule module) {
 
-		this.incoming = new HashSet<IEntryPoint>();
 		this.module = module;
 		this.outgoing = new HashSet<IEntryPoint>();
 	}
 
-	public Set<IEntryPoint> getIncoming() {
+	public IEntryPoint getIncoming() {
 
 		return incoming;
 	}
 
-	public void addIncoming(IEntryPoint incoming) {
+	/**
+	 * May be called multiple times and will only save the highest
+	 * 
+	 * @param incomingType
+	 */
+	public void setIncoming(IEntryPoint incoming) {
 
-		this.incoming.add(incoming);
+		if (this.incoming == null) {
+			this.incoming = incoming;
+			return;
+		}
+
+		if (incoming.getExecutionType().greaterOrEqualTo(this.incoming.getExecutionType())) {
+			this.incoming = incoming;
+		}
+	}
+	
+	public boolean isModuleIdentifier(ModuleIdentifier identifier) {
+		
+		if(this.getModule() == null && identifier == null) {
+			
+			return true;
+		} else if (this.getModule() != null && this.getModule().getIdentifier().equals(identifier)) {
+			
+			return true;
+		}
+		
+		return false;
 	}
 
 	public IRhenaModule getModule() {
@@ -43,5 +69,15 @@ public class ExecutionFrame {
 	public void addOutgoing(IEntryPoint outgoing) {
 
 		this.outgoing.add(outgoing);
+	}
+
+	public void removeOutgoing(IEntryPoint entryPoint) {
+
+		for (Iterator<IEntryPoint> iter = getOutgoing().iterator(); iter.hasNext();) {
+
+			if (iter.next().equals(entryPoint)) {
+				iter.remove();
+			}
+		}
 	}
 }
