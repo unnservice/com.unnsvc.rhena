@@ -28,6 +28,7 @@ public class ObjectServerAcceptThread implements Runnable {
 			this.oos = new ObjectOutputStream(clientSocket.getOutputStream());
 			this.ois = new ObjectInputStream(clientSocket.getInputStream());
 		} catch (IOException ioe) {
+			
 			throw new ObjectServerException(ioe);
 		}
 	}

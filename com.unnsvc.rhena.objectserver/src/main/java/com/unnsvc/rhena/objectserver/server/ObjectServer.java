@@ -10,11 +10,13 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.unnsvc.rhena.objectserver.IObjectReply;
+import com.unnsvc.rhena.objectserver.IObjectRequest;
 import com.unnsvc.rhena.objectserver.IObjectServer;
 import com.unnsvc.rhena.objectserver.IObjectServerAcceptor;
 import com.unnsvc.rhena.objectserver.ObjectServerException;
 
-public class ObjectServer implements IObjectServer {
+public abstract class ObjectServer<T extends IObjectServerAcceptor<? extends IObjectRequest, ? extends IObjectReply>> implements IObjectServer<T> {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private SocketAddress serverAddress;
@@ -33,9 +35,12 @@ public class ObjectServer implements IObjectServer {
 
 		this.mainPool = Executors.newSingleThreadExecutor();
 	}
+	
+	@Override
+	public abstract T newAcceptor();
 
 	@Override
-	public void startServer(IObjectServerAcceptor serverAcceptor) throws ObjectServerException {
+	public void startServer() throws ObjectServerException {
 
 		try {
 			executionChannel = ServerSocketChannel.open();
@@ -44,7 +49,7 @@ public class ObjectServer implements IObjectServer {
 				executionChannel.configureBlocking(true);
 				executionChannel.socket().bind(serverAddress);
 
-				ObjectServerReaderThread reader = new ObjectServerReaderThread(executionChannel, serverAcceptor);
+				ObjectServerReaderThread reader = new ObjectServerReaderThread(executionChannel, newAcceptor());
 				mainPool.submit(reader);
 
 				// wait for start notification

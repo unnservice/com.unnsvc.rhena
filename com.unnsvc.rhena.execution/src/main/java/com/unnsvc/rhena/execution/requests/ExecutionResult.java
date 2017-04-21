@@ -7,6 +7,7 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 
 public class ExecutionResult implements IExecutionResult {
 
+	private static final long serialVersionUID = 1L;
 	private IEntryPoint entryPoint;
 	private IRhenaModule module;
 

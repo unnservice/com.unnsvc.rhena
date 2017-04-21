@@ -6,9 +6,9 @@ package com.unnsvc.rhena.objectserver;
  * @author noname
  *
  */
-public interface IObjectServerAcceptor {
+public interface IObjectServerAcceptor<REQUEST extends IObjectRequest, REPLY extends IObjectReply> {
 
-	public IObjectReply onRequest(IObjectRequest request);
+	public REPLY onRequest(REQUEST request);
 
 	public int getSocketReadTimeout();
 }

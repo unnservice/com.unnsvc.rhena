@@ -10,6 +10,7 @@ import com.unnsvc.rhena.objectserver.client.ObjectClient;
 import com.unnsvc.rhena.objectserver.server.ObjectServer;
 import com.unnsvc.rhena.objectserver.server.ObjectServerHelper;
 
+@SuppressWarnings("rawtypes")
 public class TestObjectServer {
 
 	private IObjectServer server;
@@ -17,22 +18,30 @@ public class TestObjectServer {
 	@Before
 	public void before() throws Exception {
 
-		server = new ObjectServer(ObjectServerHelper.availableAddress());
-
-		server.startServer(new IObjectServerAcceptor() {
+		server = new ObjectServer(ObjectServerHelper.availableAddress()) {
 
 			@Override
-			public IObjectReply onRequest(IObjectRequest request) {
+			public IObjectServerAcceptor newAcceptor() {
 
-				return new EchoReply(request);
+				return new IObjectServerAcceptor() {
+
+					@Override
+					public IObjectReply onRequest(IObjectRequest request) {
+
+						return new EchoReply(request);
+					}
+
+					@Override
+					public int getSocketReadTimeout() {
+
+						return 1000;
+					}
+				};
 			}
 
-			@Override
-			public int getSocketReadTimeout() {
+		};
 
-				return 1000;
-			}
-		});
+		server.startServer();
 	}
 
 	@After

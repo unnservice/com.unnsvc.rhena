@@ -32,6 +32,7 @@ public class ObjectServerReaderThread implements Callable<Void> {
 
 		synchronized (executionChannel) {
 
+			log.info("Object server is listening for connections");
 			executionChannel.notifyAll();
 		}
 
