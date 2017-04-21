@@ -152,6 +152,11 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 			}
 		} catch (InterruptedException ie) {
 			throw new RhenaException(ie);
+		} finally {
+
+			// release references and close executor
+			moduleExecutor.close();
+			executionFrames.clear();
 		}
 	}
 

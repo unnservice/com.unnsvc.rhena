@@ -53,6 +53,7 @@ public class ModuleExecutor extends ThreadPoolExecutor implements IModuleExecuto
 		}
 	}
 
+	@Override
 	public void close() throws RhenaException {
 
 		try {
