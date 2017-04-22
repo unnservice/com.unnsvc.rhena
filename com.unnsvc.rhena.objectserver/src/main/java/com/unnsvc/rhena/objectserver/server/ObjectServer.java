@@ -45,6 +45,9 @@ public abstract class ObjectServer<T extends IObjectServerAcceptor<? extends IOb
 		try {
 			executionChannel = ServerSocketChannel.open();
 
+			/**
+			 * The notifyAll() is called inside ObjectServerReaderThread
+			 */
 			synchronized (executionChannel) {
 				executionChannel.configureBlocking(true);
 				executionChannel.socket().bind(serverAddress);

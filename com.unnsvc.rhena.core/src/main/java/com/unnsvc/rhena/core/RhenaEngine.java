@@ -19,7 +19,12 @@ public class RhenaEngine implements IRhenaEngine {
 
 	public RhenaEngine(IRhenaConfiguration config) {
 
-		this.context = new RhenaContext(config, new RhenaCache(), new RhenaResolver(config));
+		this.context = new RhenaContext(config, new RhenaCache(), new RhenaResolver(config), new RhenaFactories());
+	}
+
+	public RhenaEngine(IRhenaContext context) {
+
+		this.context = context;
 	}
 
 	@Override
@@ -47,6 +52,7 @@ public class RhenaEngine implements IRhenaEngine {
 		return this.resolveExecution(type, module.getIdentifier());
 	}
 
+	@Override
 	public IRhenaContext getContext() {
 
 		return context;

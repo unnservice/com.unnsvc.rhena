@@ -1,7 +1,9 @@
 
 package com.unnsvc.rhena.common.model;
 
-public interface ILifecycleConfiguration extends Iterable<ILifecycleReference> {
+import java.io.Serializable;
+
+public interface ILifecycleConfiguration extends Iterable<ILifecycleReference>, Serializable {
 
 	public boolean isResolved();
 

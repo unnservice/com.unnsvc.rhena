@@ -16,6 +16,7 @@ import com.unnsvc.rhena.common.repository.RepositoryIdentifier;
 
 public class RhenaModule implements IRhenaModule {
 
+	private static final long serialVersionUID = 1L;
 	private ModuleIdentifier identifier;
 	private EModuleType moduleType;
 	private boolean framework;

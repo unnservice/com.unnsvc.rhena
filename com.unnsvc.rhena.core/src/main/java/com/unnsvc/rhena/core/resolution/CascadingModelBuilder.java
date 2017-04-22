@@ -60,6 +60,8 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 					}
 
 					getContext().getCache().cacheExecution(entryPoint, executionResult);
+
+					log.debug("Notifying all");
 					executionFrames.notifyAll();
 				}
 			}
@@ -70,6 +72,8 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 				synchronized (executionFrames) {
 
 					exceptionState = ex;
+
+					executionFrames.notifyAll();
 				}
 			}
 		});
@@ -147,14 +151,16 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 						}
 					}
 
+					log.debug("Blocking");
 					executionFrames.wait();
 				}
 			}
 		} catch (InterruptedException ie) {
-			
+
 			throw new RhenaException(ie);
 		} finally {
 
+			log.info("Complete, closing thread pools");
 			// release references and close executor
 			moduleExecutor.close();
 			executionFrames.clear();

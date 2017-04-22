@@ -4,12 +4,12 @@ package com.unnsvc.rhena.execution.builders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.unnsvc.rhena.common.IRhenaAgentClient;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.execution.IExecutionResult;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.execution.requests.ExecutionRequest;
-import com.unnsvc.rhena.execution.requests.ExecutionResult;
 
 public class WorkspaceBuilder extends AbstractBuilder {
 
@@ -28,12 +28,13 @@ public class WorkspaceBuilder extends AbstractBuilder {
 	@Override
 	public IExecutionResult call() throws Exception {
 
-		log.info("Submitting for execution: " + module.getIdentifier());
+		log.info("Builder building: " + module.getIdentifier());
 
-		ExecutionRequest request = new ExecutionRequest();
-
-		// throw new Exception("Exception");
-		return new ExecutionResult(entryPoint, module);
+		IRhenaAgentClient client = context.getFactories().getAgentClientFactory().newClient(context);
+		ExecutionRequest request = new ExecutionRequest(entryPoint, module);
+		IExecutionResult result = client.executeRequest(request);
+		client.close();
+		return result;
 	}
 
 }

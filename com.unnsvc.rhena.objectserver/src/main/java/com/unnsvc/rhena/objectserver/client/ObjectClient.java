@@ -16,6 +16,7 @@ import com.unnsvc.rhena.objectserver.ObjectServerException;
 
 public class ObjectClient<REQUEST extends IObjectRequest, REPLY extends IObjectReply> implements IObjectClient<REQUEST, REPLY> {
 
+	private SocketChannel clientChannel;
 	private Socket clientSocket;
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
@@ -34,10 +35,12 @@ public class ObjectClient<REQUEST extends IObjectRequest, REPLY extends IObjectR
 	private void establishConnection(SocketAddress socketAddress) throws ObjectServerException, ConnectException {
 
 		try {
-			SocketChannel channel = SocketChannel.open();
-			channel.configureBlocking(true);
-			channel.connect(socketAddress);
-			clientSocket = channel.socket();
+			clientChannel = SocketChannel.open();
+			clientSocket = clientChannel.socket();
+			clientSocket.setSoTimeout(5000);
+
+			clientChannel.configureBlocking(true);
+			clientChannel.connect(socketAddress);
 			oos = new ObjectOutputStream(clientSocket.getOutputStream());
 			ois = new ObjectInputStream(clientSocket.getInputStream());
 		} catch (ConnectException ce) {
@@ -70,6 +73,9 @@ public class ObjectClient<REQUEST extends IObjectRequest, REPLY extends IObjectR
 			}
 			if (ois != null) {
 				ois.close();
+			}
+			if (clientChannel != null) {
+				clientChannel.close();
 			}
 		} catch (IOException ioe) {
 			throw new ObjectServerException(ioe);

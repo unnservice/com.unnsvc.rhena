@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.execution.requests;
+package com.unnsvc.rhena.agent;
 
 import com.unnsvc.rhena.common.execution.IExecutionResult;
 import com.unnsvc.rhena.common.model.IEntryPoint;

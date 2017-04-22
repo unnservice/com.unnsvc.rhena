@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.execution.IExecutionResult;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.execution.requests.ExecutionResult;
 
 public class RemoteBuilder extends AbstractBuilder {
 
@@ -24,9 +23,37 @@ public class RemoteBuilder extends AbstractBuilder {
 	@Override
 	public IExecutionResult call() throws Exception {
 
-		log.info("Executing: " + module.getIdentifier());
+		log.info("Builder building: " + module.getIdentifier());
 
-		return new ExecutionResult(entryPoint, module);
+		return new Result(entryPoint, module);
+	}
+	
+	
+	private static class Result implements IExecutionResult {
+
+		private IEntryPoint entryPoint;
+		private IRhenaModule module;
+
+		public Result(IEntryPoint entryPoint, IRhenaModule module) {
+			
+			this.entryPoint = entryPoint;
+			this.module = module;
+		}
+		
+		@Override
+		public IEntryPoint getEntryPoint() {
+
+			
+			return entryPoint;
+		}
+
+		@Override
+		public IRhenaModule getModule() {
+
+			
+			return module;
+		}
+		
 	}
 
 }

@@ -30,6 +30,10 @@ public class ObjectServerReaderThread implements Callable<Void> {
 	@Override
 	public Void call() throws Exception {
 
+		/**
+		 * Notify after a wait() in the calling object because this object was
+		 * called inside a thread pool
+		 */
 		synchronized (executionChannel) {
 
 			log.info("Object server is listening for connections");

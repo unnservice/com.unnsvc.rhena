@@ -11,6 +11,7 @@ import com.unnsvc.rhena.common.model.ILifecycleReference;
 
 public class LifecycleConfiguration implements ILifecycleConfiguration {
 
+	private static final long serialVersionUID = 1L;
 	private String name;
 	private ContextReference contextReference;
 	private List<ProcessorReference> processorReferences;

@@ -1,3 +1,4 @@
+
 package com.unnsvc.rhena.common;
 
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
@@ -10,5 +11,7 @@ public interface IRhenaContext {
 	public IRhenaCache getCache();
 
 	public IRhenaResolver getResolver();
+
+	public IRhenaFactories getFactories();
 
 }

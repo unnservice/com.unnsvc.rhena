@@ -1,13 +1,14 @@
 
 package com.unnsvc.rhena.common.model;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.repository.RepositoryIdentifier;
 
-public interface IRhenaModule extends Iterable<IRhenaEdge> {
+public interface IRhenaModule extends Iterable<IRhenaEdge>, Serializable {
 
 	public IRhenaEdge getParent();
 

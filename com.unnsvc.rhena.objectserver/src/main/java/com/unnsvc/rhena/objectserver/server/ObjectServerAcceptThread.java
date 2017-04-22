@@ -11,7 +11,7 @@ import com.unnsvc.rhena.objectserver.IObjectRequest;
 import com.unnsvc.rhena.objectserver.IObjectServerAcceptor;
 import com.unnsvc.rhena.objectserver.ObjectServerException;
 
-public class ObjectServerAcceptThread implements Runnable {
+public class ObjectServerAcceptThread<REQUEST extends IObjectRequest, REPLY extends IObjectReply> implements Runnable {
 
 	private Socket clientSocket;
 	private IObjectServerAcceptor serverAcceptor;

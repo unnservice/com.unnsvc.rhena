@@ -14,4 +14,6 @@ public interface IRhenaEngine {
 
 	public IExecutionResult resolveExecution(EExecutionType type, IRhenaModule module) throws RhenaException;
 
+	public IRhenaContext getContext();
+
 }

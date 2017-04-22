@@ -1,10 +1,11 @@
 
 package com.unnsvc.rhena.common.repository;
 
-import java.net.URI;
+import java.io.Serializable;
 
-public class RepositoryIdentifier {
+public class RepositoryIdentifier implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private String identifier;
 
 	public RepositoryIdentifier(String identifier) {
