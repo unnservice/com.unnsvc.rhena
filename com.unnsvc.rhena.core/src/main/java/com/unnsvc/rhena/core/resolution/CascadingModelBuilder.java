@@ -20,6 +20,7 @@ import com.unnsvc.rhena.common.model.EModuleType;
 import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.traversal.AbstractCachingResolver;
 import com.unnsvc.rhena.execution.CallerFrame;
 import com.unnsvc.rhena.execution.ExecutionFrame;
 import com.unnsvc.rhena.execution.ModuleExecutor;

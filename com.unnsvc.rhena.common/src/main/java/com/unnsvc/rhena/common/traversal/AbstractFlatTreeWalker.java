@@ -124,30 +124,43 @@ public abstract class AbstractFlatTreeWalker {
 						if (dependency.getEntryPoint().getExecutionType().lessOrEqualTo(currentEntryPoint.getExecutionType())) {
 							traceSelector("->", currentEntryPoint, dependency);
 
-							if (!processed.contains(dependency.getEntryPoint())) {
+							if (currentSelectionType.equals(ESelectionType.SCOPE)) {
 
-								if (currentSelectionType.equals(ESelectionType.SCOPE)) {
-
-									tracker.pushUnique(new FlatTreeFrame(dependency.getEntryPoint(), dependency.getTraverseType(), currentSelectionType));
-									break edgeProcessing;
-								} else if (currentSelectionType.equals(ESelectionType.DIRECT)) {
+								if (!processed.contains(dependency.getEntryPoint())) {
 
 									tracker.pushUnique(new FlatTreeFrame(dependency.getEntryPoint(), dependency.getTraverseType(), currentSelectionType));
 									break edgeProcessing;
-								} else if (currentSelectionType.equals(ESelectionType.COMPONENT)) {
+								} else {
+									onRelationship(currentModule, dependency.getEntryPoint());
+								}
+							} else if (currentSelectionType.equals(ESelectionType.DIRECT)) {
 
-									if (currentModule.getIdentifier().getComponentName().equals(dependency.getEntryPoint().getTarget().getComponentName())) {
+								if (!processed.contains(dependency.getEntryPoint())) {
+
+									tracker.pushUnique(new FlatTreeFrame(dependency.getEntryPoint(), dependency.getTraverseType(), currentSelectionType));
+									break edgeProcessing;
+								} else {
+									onRelationship(currentModule, dependency.getEntryPoint());
+								}
+							} else if (currentSelectionType.equals(ESelectionType.COMPONENT)) {
+
+								/**
+								 * Need to check processed inside each if else
+								 * exactly because of this relationship which
+								 * may or may not lead to an onRelationship()
+								 * call
+								 */
+								if (currentModule.getIdentifier().getComponentName().equals(dependency.getEntryPoint().getTarget().getComponentName())) {
+									if (!processed.contains(dependency.getEntryPoint())) {
+
 										tracker.pushUnique(new FlatTreeFrame(dependency.getEntryPoint(), dependency.getTraverseType(), currentSelectionType));
 										break edgeProcessing;
+									} else {
+										onRelationship(currentModule, dependency.getEntryPoint());
 									}
 								}
-							} else {
-								/**
-								 * Callthis when the relationship target is
-								 * processed
-								 */
-								onRelationship(currentModule, dependency.getEntryPoint());
 							}
+
 						} else {
 
 							traceSelector("-/>", currentEntryPoint, dependency);
@@ -176,7 +189,8 @@ public abstract class AbstractFlatTreeWalker {
 	/**
 	 * This is called once the traversal of all nodes and relationships is
 	 * complete
-	 * @throws InterruptedException 
+	 * 
+	 * @throws InterruptedException
 	 */
 	protected void onTraversalComplete() throws RhenaException {
 

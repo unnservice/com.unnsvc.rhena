@@ -8,6 +8,7 @@ import com.unnsvc.rhena.common.model.EExecutionType;
 import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.traversal.AbstractCachingResolver;
 import com.unnsvc.rhena.model.EntryPoint;
 
 public class CascadingModelResolver extends AbstractCachingResolver {

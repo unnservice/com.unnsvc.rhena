@@ -11,6 +11,11 @@ import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.execution.requests.ExecutionRequest;
 
+/**
+ * Builders are executed inside of separate threads
+ * @author noname
+ *
+ */
 public class WorkspaceBuilder extends AbstractBuilder {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
