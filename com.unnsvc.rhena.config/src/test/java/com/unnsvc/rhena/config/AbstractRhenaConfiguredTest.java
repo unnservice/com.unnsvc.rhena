@@ -2,7 +2,6 @@
 package com.unnsvc.rhena.config;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +19,7 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.repository.IRepositoryDefinition;
 import com.unnsvc.rhena.common.repository.IRepositoryFactory;
 import com.unnsvc.rhena.common.repository.IRhenaResolver;
+import com.unnsvc.rhena.objectserver.server.ObjectServerHelper;
 
 public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 
@@ -28,7 +28,7 @@ public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 	protected IRhenaConfiguration createMockConfig() throws RhenaException {
 
 		try {
-			log.debug("Creating IRhenaConfiguration");
+			log.debug("Creating mock IRhenaConfiguration");
 			IRhenaConfiguration config = new RhenaConfiguration();
 
 			File testRepositoriesLocation = new File("../test-repositories").getAbsoluteFile().getCanonicalFile();
@@ -49,9 +49,13 @@ public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 			 * specified otherwise
 			 */
 			config.setThreads(1);
+			
+			
+			config.setAgentAddress(ObjectServerHelper.availableAddress());
+			
 			return config;
-		} catch (IOException ioe) {
-			throw new RhenaException(ioe);
+		} catch (Exception ex) {
+			throw new RhenaException(ex);
 		}
 	}
 
@@ -82,7 +86,7 @@ public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 		return createMockContext(config, createMockCache(), resolver, factories);
 	}
 
-	private IRhenaFactories createMockFactories() {
+	protected IRhenaFactories createMockFactories() {
 
 		IRhenaFactories factories = new IRhenaFactories() {
 

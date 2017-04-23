@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.core;
+package com.unnsvc.rhena.itest;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,11 +9,10 @@ import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.repository.IRhenaResolver;
-import com.unnsvc.rhena.config.AbstractRhenaConfiguredTest;
 import com.unnsvc.rhena.core.resolution.CascadingModelResolver;
 import com.unnsvc.rhena.repository.RhenaResolver;
 
-public class TestCascadingResolver extends AbstractRhenaConfiguredTest {
+public class TestCascadingResolver extends AbstractIntegrationTest {
 
 	@Test
 	public void testEngine() throws Exception {

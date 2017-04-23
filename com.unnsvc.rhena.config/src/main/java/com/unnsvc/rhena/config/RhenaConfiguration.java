@@ -6,6 +6,12 @@ import java.net.SocketAddress;
 import com.unnsvc.rhena.common.config.IRepositoryConfiguration;
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 
+/**
+ * @TODO socket address is generated in constructor so it won't be serialized
+ *       correctly on remotes
+ * @author noname
+ *
+ */
 public class RhenaConfiguration implements IRhenaConfiguration {
 
 	private IRepositoryConfiguration repositoryConfiguration;
@@ -59,7 +65,6 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	@Override
 	public int getAgentTimeout() {
 
-		
 		return agentTimeout;
 	}
 

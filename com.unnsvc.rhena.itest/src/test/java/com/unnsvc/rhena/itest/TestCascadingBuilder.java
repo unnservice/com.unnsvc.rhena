@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.core;
+package com.unnsvc.rhena.itest;
 
 import org.junit.Test;
 
@@ -12,7 +12,7 @@ import com.unnsvc.rhena.core.resolution.CascadingModelBuilder;
 import com.unnsvc.rhena.core.resolution.CascadingModelResolver;
 import com.unnsvc.rhena.repository.RhenaResolver;
 
-public class TestCascadingBuilder extends AbstractAgentTest {
+public class TestCascadingBuilder extends AbstractIntegrationTest {
 
 	@Test
 	public void testBuilder() throws Exception {

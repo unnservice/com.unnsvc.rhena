@@ -31,14 +31,14 @@ public class RhenaEngine implements IRhenaEngine {
 	@Override
 	public IRhenaModule resolveModule(ModuleIdentifier identifier) throws RhenaException {
 
-		CascadingModelResolver modelResolver = new CascadingModelResolver(context);
+		CascadingModelResolver modelResolver = new CascadingModelResolver(getContext());
 		return modelResolver.resolveModuleTree(identifier);
 	}
 
 	@Override
 	public IExecutionResult resolveExecution(EExecutionType type, ModuleIdentifier identifier) throws RhenaException {
 
-		CascadingModelBuilder modelBuilder = new StatusCascadingModelBuilder(context);
+		CascadingModelBuilder modelBuilder = new StatusCascadingModelBuilder(getContext());
 		return modelBuilder.executeModel(type, identifier);
 	}
 

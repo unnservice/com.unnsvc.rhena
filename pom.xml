@@ -15,6 +15,7 @@
 		<module>com.unnsvc.rhena.model</module>
 		<module>com.unnsvc.rhena.objectserver</module>
 		<module>com.unnsvc.rhena.repository</module>
+		<module>com.unnsvc.rhena.itest</module>
 	</modules>
 
 	<build>

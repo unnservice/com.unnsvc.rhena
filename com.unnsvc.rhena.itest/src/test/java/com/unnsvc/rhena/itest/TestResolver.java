@@ -1,5 +1,4 @@
-
-package com.unnsvc.rhena.repository;
+package com.unnsvc.rhena.itest;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -7,9 +6,9 @@ import org.junit.Test;
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.config.AbstractRhenaConfiguredTest;
+import com.unnsvc.rhena.repository.RhenaResolver;
 
-public class TestResolver extends AbstractRhenaConfiguredTest {
+public class TestResolver extends AbstractIntegrationTest {
 
 	@Test
 	public void testResolver() throws Exception {

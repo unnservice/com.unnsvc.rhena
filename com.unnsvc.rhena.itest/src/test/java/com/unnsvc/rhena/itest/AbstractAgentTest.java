@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.core;
+package com.unnsvc.rhena.itest;
 
 import java.net.SocketAddress;
 
@@ -14,11 +14,13 @@ import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.repository.IRhenaResolver;
 import com.unnsvc.rhena.config.AbstractRhenaConfiguredTest;
+import com.unnsvc.rhena.core.RhenaFactories;
 import com.unnsvc.rhena.objectserver.server.ObjectServerHelper;
 import com.unnsvc.rhena.repository.RhenaResolver;
 
-public class AbstractAgentTest extends AbstractRhenaConfiguredTest {
+public abstract class AbstractAgentTest extends AbstractRhenaConfiguredTest {
 
+	private IRhenaConfiguration config;
 	private IRhenaContext context;
 	private IRhenaAgent agent;
 
@@ -28,7 +30,7 @@ public class AbstractAgentTest extends AbstractRhenaConfiguredTest {
 		try {
 			SocketAddress agentAddress = ObjectServerHelper.availableAddress();
 
-			IRhenaConfiguration config = createMockConfig();
+			config = createMockConfig();
 			config.setAgentAddress(agentAddress);
 
 			IRhenaResolver resolver = new RhenaResolver();
@@ -56,5 +58,11 @@ public class AbstractAgentTest extends AbstractRhenaConfiguredTest {
 	public IRhenaContext getContext() {
 
 		return context;
+	}
+	
+	
+	public IRhenaConfiguration getConfig() {
+
+		return config;
 	}
 }
