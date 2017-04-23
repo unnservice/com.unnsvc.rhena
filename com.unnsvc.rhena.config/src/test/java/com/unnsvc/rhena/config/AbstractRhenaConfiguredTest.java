@@ -14,6 +14,7 @@ import com.unnsvc.rhena.common.IRhenaFactories;
 import com.unnsvc.rhena.common.MockCache;
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.IBuilderFactory;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.repository.IRepositoryDefinition;
@@ -49,10 +50,9 @@ public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 			 * specified otherwise
 			 */
 			config.setThreads(1);
-			
-			
+
 			config.setAgentAddress(ObjectServerHelper.availableAddress());
-			
+
 			return config;
 		} catch (Exception ex) {
 			throw new RhenaException(ex);
@@ -86,6 +86,11 @@ public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 		return createMockContext(config, createMockCache(), resolver, factories);
 	}
 
+	/**
+	 * @TODO provide these as an abstract method instead of this ugly empty
+	 *       implementation
+	 * @return
+	 */
 	protected IRhenaFactories createMockFactories() {
 
 		IRhenaFactories factories = new IRhenaFactories() {
@@ -99,7 +104,12 @@ public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 			@Override
 			public IRepositoryFactory getRepositoryFactory() {
 
-				
+				throw new UnsupportedOperationException("Not implemented for testing?");
+			}
+
+			@Override
+			public IBuilderFactory getBuilderFactory() {
+
 				throw new UnsupportedOperationException("Not implemented for testing?");
 			}
 

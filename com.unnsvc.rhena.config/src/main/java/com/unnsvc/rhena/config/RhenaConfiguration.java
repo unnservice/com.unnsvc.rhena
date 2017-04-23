@@ -18,12 +18,14 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	private int threads;
 	private SocketAddress agentAddress;
 	private int agentTimeout;
+	private boolean fullBuild;
 
 	public RhenaConfiguration() {
 
 		this.repositoryConfiguration = new RhenaRepositoryConfiguration();
 		this.threads = Runtime.getRuntime().availableProcessors();
 		this.agentTimeout = 1000;
+		this.fullBuild = false;
 	}
 
 	@Override
@@ -72,5 +74,11 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	public void setAgentTimeout(int agentTimeout) {
 
 		this.agentTimeout = agentTimeout;
+	}
+	
+	@Override
+	public boolean isFullBuild() {
+
+		return fullBuild;
 	}
 }

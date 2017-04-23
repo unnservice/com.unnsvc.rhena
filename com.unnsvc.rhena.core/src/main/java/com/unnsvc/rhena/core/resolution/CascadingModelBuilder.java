@@ -16,7 +16,6 @@ import com.unnsvc.rhena.common.execution.IModuleExecutor;
 import com.unnsvc.rhena.common.execution.IModuleExecutorCallback;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.EExecutionType;
-import com.unnsvc.rhena.common.model.EModuleType;
 import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
@@ -24,8 +23,6 @@ import com.unnsvc.rhena.common.traversal.AbstractCachingResolver;
 import com.unnsvc.rhena.execution.CallerFrame;
 import com.unnsvc.rhena.execution.ExecutionFrame;
 import com.unnsvc.rhena.execution.ModuleExecutor;
-import com.unnsvc.rhena.execution.builders.RemoteBuilder;
-import com.unnsvc.rhena.execution.builders.WorkspaceBuilder;
 import com.unnsvc.rhena.model.EntryPoint;
 
 public class CascadingModelBuilder extends AbstractCachingResolver {
@@ -154,7 +151,7 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 							 * Find highest incoming
 							 */
 							IEntryPoint incoming = next.getIncoming();
-							IRhenaBuilder builder = createBuilder(incoming, next.getModule());
+							IRhenaBuilder builder = getContext().getFactories().getBuilderFactory().createBuilder(getContext(), incoming, next.getModule());
 							moduleExecutor.submit(builder);
 							onSubmitted(incoming);
 						}
@@ -177,33 +174,16 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 			moduleExecutor.close();
 			executionFrames.clear();
 		}
-		
+
 		onExecutionComplete();
 	}
-	
-	
+
 	protected void onExecutionComplete() {
 
 	}
 
 	protected void onSubmitted(IEntryPoint entryPoint) {
-		
-		
-	}
 
-	private IRhenaBuilder createBuilder(IEntryPoint entryPoint, IRhenaModule module) throws RhenaException {
-
-		// log.info("Create builder for: " + entryPoint + " module: " + module);
-		if (module.getModuleType() == EModuleType.WORKSPACE) {
-
-			return new WorkspaceBuilder(getContext(), entryPoint, module);
-		} else if (module.getModuleType() == EModuleType.REMOTE) {
-
-			return new RemoteBuilder(getContext(), entryPoint, module);
-		} else {
-
-			throw new RhenaException("Framework doesn't know how to handle module of type: " + module.getModuleType());
-		}
 	}
 
 	@Override

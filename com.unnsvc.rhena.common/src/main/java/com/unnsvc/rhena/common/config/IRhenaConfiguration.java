@@ -21,4 +21,13 @@ public interface IRhenaConfiguration {
 
 	public int getAgentTimeout();
 
+	/**
+	 * Full build implies that the highest execution of the project is produced
+	 * instead of lowest necessary (for example MAIN because it is required by
+	 * model instead of ITEST)
+	 * 
+	 * @return
+	 */
+	public boolean isFullBuild();
+
 }
