@@ -10,6 +10,7 @@ import com.unnsvc.rhena.common.model.ILifecycleReference;
 
 public class LifecycleReference extends RhenaEdge implements ILifecycleReference {
 
+	private static final long serialVersionUID = 1L;
 	private String schema;
 	private String clazz;
 	private Document configuration;

@@ -61,7 +61,7 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 
 					getContext().getCache().cacheExecution(entryPoint, executionResult);
 
-					log.debug("Notifying all from " + Thread.currentThread().getName());
+					log.trace("Notifying all [" + Thread.currentThread().getName() + "]");
 					executionFrames.notifyAll();
 				}
 			}
@@ -157,9 +157,9 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 						}
 					}
 
-					log.debug("Blocking " + Thread.currentThread().getName());
+					log.trace("Blocking [" + Thread.currentThread().getName() + "]");
 					for(ExecutionFrame frame : executionFrames) {
-						log.debug("\tframe: " + frame);
+						log.trace("\tframe: " + frame);
 					}
 					executionFrames.wait();
 				}
