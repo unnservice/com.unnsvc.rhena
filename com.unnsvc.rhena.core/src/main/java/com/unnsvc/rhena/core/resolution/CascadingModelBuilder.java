@@ -156,6 +156,7 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 							IEntryPoint incoming = next.getIncoming();
 							IRhenaBuilder builder = createBuilder(incoming, next.getModule());
 							moduleExecutor.submit(builder);
+							onSubmitted(incoming);
 						}
 					}
 
@@ -176,6 +177,18 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 			moduleExecutor.close();
 			executionFrames.clear();
 		}
+		
+		onExecutionComplete();
+	}
+	
+	
+	protected void onExecutionComplete() {
+
+	}
+
+	protected void onSubmitted(IEntryPoint entryPoint) {
+		
+		
 	}
 
 	private IRhenaBuilder createBuilder(IEntryPoint entryPoint, IRhenaModule module) throws RhenaException {
@@ -186,7 +199,7 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 			return new WorkspaceBuilder(getContext(), entryPoint, module);
 		} else if (module.getModuleType() == EModuleType.REMOTE) {
 
-			return new RemoteBuilder(entryPoint, module);
+			return new RemoteBuilder(getContext(), entryPoint, module);
 		} else {
 
 			throw new RhenaException("Framework doesn't know how to handle module of type: " + module.getModuleType());

@@ -11,6 +11,7 @@ import com.unnsvc.rhena.common.model.EExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.core.resolution.CascadingModelBuilder;
 import com.unnsvc.rhena.core.resolution.CascadingModelResolver;
+import com.unnsvc.rhena.core.status.StatusCascadingModelBuilder;
 import com.unnsvc.rhena.repository.RhenaResolver;
 
 public class RhenaEngine implements IRhenaEngine {
@@ -37,7 +38,7 @@ public class RhenaEngine implements IRhenaEngine {
 	@Override
 	public IExecutionResult resolveExecution(EExecutionType type, ModuleIdentifier identifier) throws RhenaException {
 
-		CascadingModelBuilder modelBuilder = new CascadingModelBuilder(context);
+		CascadingModelBuilder modelBuilder = new StatusCascadingModelBuilder(context);
 		return modelBuilder.executeModel(type, identifier);
 	}
 
