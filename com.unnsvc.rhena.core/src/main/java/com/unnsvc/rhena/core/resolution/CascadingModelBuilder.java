@@ -140,7 +140,8 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 					for (Iterator<ExecutionFrame> iter = executionFrames.iterator(); iter.hasNext();) {
 						ExecutionFrame next = iter.next();
 						/**
-						 * Caller frame has no module or incoming so it doesn't execute
+						 * Caller frame has no module or incoming so it doesn't
+						 * execute
 						 */
 						if (next instanceof CallerFrame) {
 							iter.remove();
@@ -158,7 +159,7 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 					}
 
 					log.trace("Blocking [" + Thread.currentThread().getName() + "]");
-					for(ExecutionFrame frame : executionFrames) {
+					for (ExecutionFrame frame : executionFrames) {
 						log.trace("\tframe: " + frame);
 					}
 					executionFrames.wait();
@@ -178,7 +179,7 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 
 	private IRhenaBuilder createBuilder(IEntryPoint entryPoint, IRhenaModule module) throws RhenaException {
 
-		log.info("Create builder for: " + entryPoint + " module: " + module);
+		// log.info("Create builder for: " + entryPoint + " module: " + module);
 		if (module.getModuleType() == EModuleType.WORKSPACE) {
 
 			return new WorkspaceBuilder(getContext(), entryPoint, module);

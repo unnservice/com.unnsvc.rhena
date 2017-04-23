@@ -7,6 +7,8 @@
 	</appender>
 
 	<logger name="com.unnsvc.rhena" level="DEBUG" />
+	
+	<logger name="com.unnsvc.rhena.objectserver" level="INFO" />
 
 	<root level="INFO">
 		<appender-ref ref="STDOUT" />

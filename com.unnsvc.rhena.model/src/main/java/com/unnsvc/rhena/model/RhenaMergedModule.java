@@ -14,6 +14,8 @@ import com.unnsvc.rhena.common.repository.RepositoryIdentifier;
  */
 public class RhenaMergedModule extends RhenaModule {
 
+	private static final long serialVersionUID = 1L;
+
 	public RhenaMergedModule(ModuleIdentifier identifier, RepositoryIdentifier repositoryIdentifier) {
 
 		super(identifier, repositoryIdentifier);

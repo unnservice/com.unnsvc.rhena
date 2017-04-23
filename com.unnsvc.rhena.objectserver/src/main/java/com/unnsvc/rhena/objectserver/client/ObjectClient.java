@@ -63,11 +63,9 @@ public class ObjectClient<REQUEST extends IObjectRequest, REPLY extends IObjectR
 
 		try {
 
-			log.info("Write object to agent");
 			oos.writeObject(request);
 
 			REPLY reply = (REPLY) ois.readObject();
-			log.info("Read object from agent");
 			return reply;
 		} catch (IOException | ClassNotFoundException ex) {
 			throw new ObjectServerException(ex.getMessage(), ex);
