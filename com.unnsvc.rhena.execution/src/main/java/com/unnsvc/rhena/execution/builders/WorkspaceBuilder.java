@@ -9,10 +9,12 @@ import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.execution.IExecutionResult;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.traversal.DependencyCollector;
 import com.unnsvc.rhena.execution.requests.ExecutionRequest;
 
 /**
  * Builders are executed inside of separate threads
+ * 
  * @author noname
  *
  */
@@ -34,6 +36,11 @@ public class WorkspaceBuilder extends AbstractBuilder {
 	public IExecutionResult call() throws Exception {
 
 		log.info("Builder building: " + module.getIdentifier());
+
+		DependencyCollector collector = new DependencyCollector(context, entryPoint);
+		for (IExecutionResult dep : collector.getDependencyList()) {
+			log.info("\tdep: " + dep);
+		}
 
 		IRhenaAgentClient client = context.getFactories().getAgentClientFactory().newClient(context);
 		ExecutionRequest request = new ExecutionRequest(entryPoint, module);

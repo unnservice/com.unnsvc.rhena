@@ -43,7 +43,7 @@ public abstract class AbstractFlatTreeWalker {
 	 * @throws RhenaException
 	 */
 	public IRhenaModule visitTree(IEntryPoint entryPoint, ESelectionType selectionType) throws RhenaException {
-
+		
 		List<IEntryPoint> processed = new ArrayList<IEntryPoint>();
 		UniqueStack<FlatTreeFrame> tracker = new UniqueStack<FlatTreeFrame>();
 		tracker.push(new FlatTreeFrame(entryPoint, selectionType));
@@ -61,7 +61,6 @@ public abstract class AbstractFlatTreeWalker {
 		 * 
 		 */
 		onTraversalComplete();
-
 		return module;
 	}
 
@@ -212,8 +211,9 @@ public abstract class AbstractFlatTreeWalker {
 	 * 
 	 * @param source
 	 * @param entryPoint
+	 * @throws RhenaException 
 	 */
-	protected void onRelationship(IRhenaModule source, IEntryPoint outgoing) {
+	protected void onRelationship(IRhenaModule source, IEntryPoint outgoing) throws RhenaException {
 
 	}
 

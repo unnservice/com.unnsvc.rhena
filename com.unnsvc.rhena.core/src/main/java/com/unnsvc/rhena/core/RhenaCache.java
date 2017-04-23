@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.unnsvc.rhena.common.IRhenaCache;
+import com.unnsvc.rhena.common.exceptions.NotFoundException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.IExecutionResult;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
@@ -56,9 +57,18 @@ public class RhenaCache implements IRhenaCache {
 	}
 
 	@Override
-	public IExecutionResult getCachedExecution(IEntryPoint entryPoint) {
+	public IExecutionResult getCachedExecution(IEntryPoint entryPoint) throws NotFoundException {
 
-		return cachedExecutions.get(entryPoint);
+		for (IEntryPoint existing : cachedExecutions.keySet()) {
+
+			if (existing.getTarget().equals(entryPoint.getTarget())) {
+				if (existing.getExecutionType().greaterOrEqualTo(entryPoint.getExecutionType())) {
+					return cachedExecutions.get(existing);
+				}
+			}
+		}
+		throw new NotFoundException("Execution not found for: " + entryPoint);
+		// return cachedExecutions.get(entryPoint);
 	}
 
 	@Override
