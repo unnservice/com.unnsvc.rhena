@@ -16,4 +16,9 @@ public interface IRhenaConfiguration {
 	public void setAgentAddress(SocketAddress agentAddress);
 
 	public SocketAddress getAgentAddress();
+
+	public void setAgentTimeout(int agentTimeout);
+
+	public int getAgentTimeout();
+
 }

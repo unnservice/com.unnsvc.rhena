@@ -3,7 +3,6 @@ package com.unnsvc.rhena.execution;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -36,6 +35,7 @@ public class ModuleExecutor extends ThreadPoolExecutor implements IModuleExecuto
 
 		if (t != null) {
 			log.error("Exception found in execution result, this shouldn't happen in theory, report bug", t);
+			callbacks.forEach(callback -> callback.onException(t));
 		}
 
 		if (runnable instanceof Future<?>) {
@@ -44,7 +44,7 @@ public class ModuleExecutor extends ThreadPoolExecutor implements IModuleExecuto
 				Future<IExecutionResult> future = (Future<IExecutionResult>) runnable;
 				IExecutionResult result = future.get();
 				callbacks.forEach(callback -> callback.onExecuted(result));
-			} catch (ExecutionException | InterruptedException e) {
+			} catch (Throwable e) {
 
 				// Abort all executions
 				log.error(e.getMessage(), e);

@@ -5,6 +5,6 @@ public interface IModuleExecutorCallback {
 
 	public void onExecuted(IExecutionResult executionResult);
 
-	public void onException(Exception ex);
+	public void onException(Throwable t);
 
 }

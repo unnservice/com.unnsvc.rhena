@@ -13,7 +13,7 @@ public class RhenaAgentClientFactory implements IRhenaAgentClientFactory {
 	public IRhenaAgentClient newClient(IRhenaContext context) throws RhenaException {
 
 		try {
-			return new RhenaAgentClient(context.getConfig().getAgentAddress());
+			return new RhenaAgentClient(context.getConfig().getAgentAddress(), context.getConfig().getAgentTimeout());
 		} catch (ObjectServerException ose) {
 			throw new RhenaException(ose);
 		}

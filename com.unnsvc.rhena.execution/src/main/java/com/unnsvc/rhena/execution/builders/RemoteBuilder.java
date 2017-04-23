@@ -31,6 +31,7 @@ public class RemoteBuilder extends AbstractBuilder {
 	
 	private static class Result implements IExecutionResult {
 
+		private static final long serialVersionUID = 1L;
 		private IEntryPoint entryPoint;
 		private IRhenaModule module;
 

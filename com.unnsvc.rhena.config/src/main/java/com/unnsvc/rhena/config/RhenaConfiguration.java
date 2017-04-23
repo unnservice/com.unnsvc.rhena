@@ -11,11 +11,13 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	private IRepositoryConfiguration repositoryConfiguration;
 	private int threads;
 	private SocketAddress agentAddress;
+	private int agentTimeout;
 
 	public RhenaConfiguration() {
 
 		this.repositoryConfiguration = new RhenaRepositoryConfiguration();
 		this.threads = Runtime.getRuntime().availableProcessors();
+		this.agentTimeout = 1000;
 	}
 
 	@Override
@@ -52,5 +54,18 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	public void setRepositoryConfiguration(IRepositoryConfiguration repositoryConfiguration) {
 
 		this.repositoryConfiguration = repositoryConfiguration;
+	}
+
+	@Override
+	public int getAgentTimeout() {
+
+		
+		return agentTimeout;
+	}
+
+	@Override
+	public void setAgentTimeout(int agentTimeout) {
+
+		this.agentTimeout = agentTimeout;
 	}
 }

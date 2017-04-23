@@ -9,6 +9,9 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.channels.SocketChannel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.unnsvc.rhena.objectserver.IObjectClient;
 import com.unnsvc.rhena.objectserver.IObjectReply;
 import com.unnsvc.rhena.objectserver.IObjectRequest;
@@ -16,36 +19,40 @@ import com.unnsvc.rhena.objectserver.ObjectServerException;
 
 public class ObjectClient<REQUEST extends IObjectRequest, REPLY extends IObjectReply> implements IObjectClient<REQUEST, REPLY> {
 
+	private Logger log = LoggerFactory.getLogger(getClass());
 	private SocketChannel clientChannel;
 	private Socket clientSocket;
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
 
-	public ObjectClient(SocketAddress socketAddress) throws ObjectServerException {
+	public ObjectClient(SocketAddress socketAddress, int timeout) throws ObjectServerException {
 
 		try {
 
-			establishConnection(socketAddress);
+			establishConnection(socketAddress, timeout);
 		} catch (ConnectException ex) {
 
 			throw new ObjectServerException(ex);
 		}
 	}
 
-	private void establishConnection(SocketAddress socketAddress) throws ObjectServerException, ConnectException {
+	private void establishConnection(SocketAddress socketAddress, int timeout) throws ObjectServerException, ConnectException {
 
 		try {
 			clientChannel = SocketChannel.open();
 			clientSocket = clientChannel.socket();
-			clientSocket.setSoTimeout(5000);
+			clientSocket.setSoTimeout(timeout);
 
 			clientChannel.configureBlocking(true);
 			clientChannel.connect(socketAddress);
+
 			oos = new ObjectOutputStream(clientSocket.getOutputStream());
 			ois = new ObjectInputStream(clientSocket.getInputStream());
 		} catch (ConnectException ce) {
+
 			throw ce;
 		} catch (IOException ioe) {
+
 			throw new ObjectServerException(ioe);
 		}
 	}
@@ -56,9 +63,12 @@ public class ObjectClient<REQUEST extends IObjectRequest, REPLY extends IObjectR
 
 		try {
 
+			log.info("Write object to agent");
 			oos.writeObject(request);
 
-			return (REPLY) ois.readObject();
+			REPLY reply = (REPLY) ois.readObject();
+			log.info("Read object from agent");
+			return reply;
 		} catch (IOException | ClassNotFoundException ex) {
 			throw new ObjectServerException(ex.getMessage(), ex);
 		}

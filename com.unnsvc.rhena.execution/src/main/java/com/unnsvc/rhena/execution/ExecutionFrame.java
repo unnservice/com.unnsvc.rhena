@@ -73,7 +73,8 @@ public class ExecutionFrame {
 
 		for (Iterator<IEntryPoint> iter = getOutgoing().iterator(); iter.hasNext();) {
 
-			if (iter.next().equals(entryPoint)) {
+			IEntryPoint nextEntryPoint = iter.next();
+			if (nextEntryPoint.equals(entryPoint)) {
 				iter.remove();
 			}
 		}

@@ -61,17 +61,17 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 
 					getContext().getCache().cacheExecution(entryPoint, executionResult);
 
-					log.debug("Notifying all");
+					log.debug("Notifying all from " + Thread.currentThread().getName());
 					executionFrames.notifyAll();
 				}
 			}
 
 			@Override
-			public void onException(Exception ex) {
+			public void onException(Throwable throwable) {
 
 				synchronized (executionFrames) {
 
-					exceptionState = ex;
+					exceptionState = throwable;
 
 					executionFrames.notifyAll();
 				}
@@ -134,8 +134,14 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 						throw new RhenaException(exceptionState);
 					}
 
+					/**
+					 * Iterate over frames and submit multiple
+					 */
 					for (Iterator<ExecutionFrame> iter = executionFrames.iterator(); iter.hasNext();) {
 						ExecutionFrame next = iter.next();
+						/**
+						 * Caller frame has no module or incoming so it doesn't execute
+						 */
 						if (next instanceof CallerFrame) {
 							iter.remove();
 
@@ -151,7 +157,10 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 						}
 					}
 
-					log.debug("Blocking");
+					log.debug("Blocking " + Thread.currentThread().getName());
+					for(ExecutionFrame frame : executionFrames) {
+						log.debug("\tframe: " + frame);
+					}
 					executionFrames.wait();
 				}
 			}

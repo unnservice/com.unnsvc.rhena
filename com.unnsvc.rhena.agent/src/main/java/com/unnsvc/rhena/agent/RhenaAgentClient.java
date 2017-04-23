@@ -11,9 +11,9 @@ import com.unnsvc.rhena.objectserver.client.ObjectClient;
 
 public class RhenaAgentClient extends ObjectClient<IExecutionRequest, IExecutionResult> implements IRhenaAgentClient {
 
-	public RhenaAgentClient(SocketAddress socketAddress) throws ObjectServerException {
+	public RhenaAgentClient(SocketAddress socketAddress, int timeout) throws ObjectServerException {
 
-		super(socketAddress);
+		super(socketAddress, timeout);
 	}
 
 }
