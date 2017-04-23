@@ -4,6 +4,7 @@ package com.unnsvc.rhena.execution.requests;
 import com.unnsvc.rhena.common.execution.IExecutionRequest;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
+import com.unnsvc.rhena.common.traversal.IDependencies;
 
 public class ExecutionRequest implements IExecutionRequest {
 
@@ -11,11 +12,13 @@ public class ExecutionRequest implements IExecutionRequest {
 
 	private IEntryPoint entryPoint;
 	private IRhenaModule module;
+	private IDependencies dependencies;
 
-	public ExecutionRequest(IEntryPoint entryPoint, IRhenaModule module) {
+	public ExecutionRequest(IEntryPoint entryPoint, IRhenaModule module, IDependencies dependencies) {
 
 		this.entryPoint = entryPoint;
 		this.module = module;
+		this.dependencies = dependencies;
 	}
 
 	@Override
@@ -30,4 +33,9 @@ public class ExecutionRequest implements IExecutionRequest {
 		return module;
 	}
 
+	@Override
+	public IDependencies getDependencies() {
+
+		return dependencies;
+	}
 }

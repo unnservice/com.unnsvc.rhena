@@ -2,6 +2,7 @@
 package com.unnsvc.rhena.repository;
 
 import java.io.File;
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -72,10 +73,16 @@ public class RhenaResolver implements IRhenaResolver {
 
 		try {
 			IRhenaModule module = repository.resolveModule(identifier);
-			log.info(identifier + " resolved from: " + repository.getDefinition());
+
+			String repoType = repository.getDefinition().getRepositoryType().toString().toLowerCase();
+			URI location = repository.getDefinition().getLocation();
+			log.info(identifier + " resolved from: " + repoType + ":" + location);
 			return module;
 		} catch (NotFoundException nfe) {
-			log.debug(identifier + " not found in: " + repository.getDefinition());
+
+			String repoType = repository.getDefinition().getRepositoryType().toString().toLowerCase();
+			URI location = repository.getDefinition().getLocation();
+			log.debug(identifier + " not found in: " + repoType + ":" + location);
 			return null;
 		}
 	}

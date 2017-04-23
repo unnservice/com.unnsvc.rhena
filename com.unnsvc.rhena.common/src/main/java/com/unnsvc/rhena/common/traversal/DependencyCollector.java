@@ -18,7 +18,7 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
  */
 public class DependencyCollector extends AbstractCachingResolver {
 
-	private IEntryPoint caller;
+	// private IEntryPoint caller;
 	private List<IExecutionResult> dependencyList;
 
 	public DependencyCollector(IRhenaContext context, IEntryPoint entryPoint) throws RhenaException {
@@ -26,7 +26,7 @@ public class DependencyCollector extends AbstractCachingResolver {
 		super(context);
 
 		this.dependencyList = new ArrayList<IExecutionResult>();
-		this.caller = entryPoint;
+		// this.caller = entryPoint;
 		visitTree(entryPoint, ESelectionType.SCOPE);
 	}
 
@@ -40,8 +40,14 @@ public class DependencyCollector extends AbstractCachingResolver {
 		}
 	}
 
-	public List<IExecutionResult> getDependencyList() {
+	/**
+	 * Create a new object for results because we can't serialize the actual
+	 * collector
+	 * 
+	 * @return
+	 */
+	public IDependencies toDependencyChain() {
 
-		return dependencyList;
+		return new Dependencies(dependencyList);
 	}
 }

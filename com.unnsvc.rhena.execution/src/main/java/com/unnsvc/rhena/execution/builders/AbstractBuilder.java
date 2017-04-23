@@ -18,12 +18,13 @@ public abstract class AbstractBuilder implements IRhenaBuilder {
 
 	protected void debugBuilderRun(IRhenaModule module, IRhenaContext context, IEntryPoint entryPoint) throws RhenaException {
 
+		log.debug("Builder building: " + module.getIdentifier() + ":" + entryPoint.getExecutionType().toString().toLowerCase());
+
 		if (log.isDebugEnabled()) {
-			log.info("Builder building: " + module.getIdentifier());
 
 			DependencyCollector collector = new DependencyCollector(context, entryPoint);
-			for (IExecutionResult dep : collector.getDependencyList()) {
-				log.info("\tdependency: " + dep.getEntryPoint().getTarget() + ":" + dep.getEntryPoint().getExecutionType().toString().toLowerCase());
+			for (IExecutionResult dep : collector.toDependencyChain()) {
+				log.debug("\tdependency: " + dep.getEntryPoint().getTarget() + ":" + dep.getEntryPoint().getExecutionType().toString().toLowerCase());
 			}
 		}
 	}
