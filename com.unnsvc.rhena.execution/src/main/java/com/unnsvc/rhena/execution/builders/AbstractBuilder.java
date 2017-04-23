@@ -23,7 +23,7 @@ public abstract class AbstractBuilder implements IRhenaBuilder {
 
 			DependencyCollector collector = new DependencyCollector(context, entryPoint);
 			for (IExecutionResult dep : collector.getDependencyList()) {
-				log.info("\tdependency: " + dep.getEntryPoint());
+				log.info("\tdependency: " + dep.getEntryPoint().getTarget() + ":" + dep.getEntryPoint().getExecutionType().toString().toLowerCase());
 			}
 		}
 	}
