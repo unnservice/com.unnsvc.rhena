@@ -9,9 +9,9 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.config.IRepositoryConfiguration;
-import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.NotFoundException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
@@ -26,37 +26,37 @@ import com.unnsvc.rhena.config.RepositoryDefinition;
 public class RhenaResolver implements IRhenaResolver {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private IRepositoryConfiguration repositoryConfiguration;
 
-	public RhenaResolver(IRhenaConfiguration config) {
+	public RhenaResolver() {
 
-		this.repositoryConfiguration = config.getRepositoryConfiguration();
 	}
 
 	@Override
-	public IRhenaModule resolveModule(ModuleIdentifier identifier) throws RhenaException {
+	public IRhenaModule resolveModule(IRhenaContext context, ModuleIdentifier identifier) throws RhenaException {
+
+		IRepositoryConfiguration repoConfig = context.getConfig().getRepositoryConfiguration();
 
 		IRhenaModule resolved = null;
 
 		if (resolved == null) {
 
-			resolved = recursiveWorkspaceSearch(identifier);
+			resolved = recursiveWorkspaceSearch(context, identifier);
 			if (resolved != null) {
 				return resolved;
 			}
 		}
 
-		if (resolved == null && repositoryConfiguration.getCacheRepository() != null) {
-			resolved = resolve(identifier, repositoryConfiguration.getCacheRepository());
+		if (resolved == null && repoConfig.getCacheRepository() != null) {
+			resolved = resolve(context, identifier, repoConfig.getCacheRepository());
 			if (resolved != null) {
 				return resolved;
 			}
 		}
 
 		if (resolved == null) {
-			for (IRepositoryDefinition definition : repositoryConfiguration.getRemoteRepositories()) {
+			for (IRepositoryDefinition definition : repoConfig.getRemoteRepositories()) {
 
-				resolved = resolve(identifier, definition);
+				resolved = resolve(context, identifier, definition);
 				if (resolved != null) {
 					return resolved;
 				}
@@ -66,9 +66,9 @@ public class RhenaResolver implements IRhenaResolver {
 		throw new NotFoundException("Failed to resolve " + identifier);
 	}
 
-	private IRhenaModule resolve(ModuleIdentifier identifier, IRepositoryDefinition definition) throws RhenaException {
+	protected IRhenaModule resolve(IRhenaContext context, ModuleIdentifier identifier, IRepositoryDefinition definition) throws RhenaException {
 
-		IRepository repository = createRepository(definition);
+		IRepository repository = context.getFactories().getRepositoryFactory().createRepository(context, definition);
 
 		try {
 			IRhenaModule module = repository.resolveModule(identifier);
@@ -80,26 +80,11 @@ public class RhenaResolver implements IRhenaResolver {
 		}
 	}
 
-	public IRepository createRepository(IRepositoryDefinition definition) throws RhenaException {
+	protected IRhenaModule recursiveWorkspaceSearch(IRhenaContext context, ModuleIdentifier identifier) throws RhenaException {
 
-		if (definition.getRepositoryType().equals(ERepositoryType.LOCAL)) {
-
-			return new LocalRepository(definition);
-		} else if (definition.getRepositoryType().equals(ERepositoryType.WORKSPACE)) {
-
-			return new WorkspaceRepository(definition);
-		} else if (definition.getRepositoryType().equals(ERepositoryType.REMOTE)) {
-
-			return new RemoteRepository(definition);
-		}
-
-		throw new RhenaException("Unknown repository type: " + definition.getRepositoryType());
-	}
-
-	private IRhenaModule recursiveWorkspaceSearch(ModuleIdentifier identifier) throws RhenaException {
-
+		IRepositoryConfiguration repoConfig = context.getConfig().getRepositoryConfiguration();
 		Set<File> repositoryLocation = new HashSet<File>();
-		repositoryConfiguration.getWorkspaceRepositories().forEach(defn -> repositoryLocation.add(new File(defn.getLocation().getPath())));
+		repoConfig.getWorkspaceRepositories().forEach(defn -> repositoryLocation.add(new File(defn.getLocation().getPath())));
 
 		while (!repositoryLocation.isEmpty()) {
 
@@ -112,7 +97,7 @@ public class RhenaResolver implements IRhenaResolver {
 				IRepositoryDefinition defn = new RepositoryDefinition(ERepositoryType.WORKSPACE, repoId, location.getAbsoluteFile().toURI());
 
 				// try this location first, before trying sublocations
-				IRhenaModule resolved = resolve(identifier, defn);
+				IRhenaModule resolved = resolve(context, identifier, defn);
 				if (resolved != null) {
 					return resolved;
 				} else {

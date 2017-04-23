@@ -11,6 +11,11 @@ import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 
+/**
+ * 
+ * @author noname
+ *
+ */
 public class DependencyCollector extends AbstractCachingResolver {
 
 	private IEntryPoint caller;
@@ -28,8 +33,8 @@ public class DependencyCollector extends AbstractCachingResolver {
 	@Override
 	protected void onRelationship(IRhenaModule source, IEntryPoint outgoing) throws RhenaException {
 
-		if(source != null) {
-			
+		if (source != null) {
+
 			IExecutionResult result = getContext().getCache().getCachedExecution(outgoing);
 			dependencyList.add(result);
 		}

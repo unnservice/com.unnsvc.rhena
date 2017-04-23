@@ -18,6 +18,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.repository.IRepositoryDefinition;
+import com.unnsvc.rhena.common.repository.IRepositoryFactory;
 import com.unnsvc.rhena.common.repository.IRhenaResolver;
 
 public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
@@ -64,7 +65,7 @@ public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 		return createMockContext(createMockConfig(), createMockCache(), new IRhenaResolver() {
 
 			@Override
-			public IRhenaModule resolveModule(ModuleIdentifier identifier) throws RhenaException {
+			public IRhenaModule resolveModule(IRhenaContext context, ModuleIdentifier identifier) throws RhenaException {
 
 				throw new UnsupportedOperationException("Not implemented for testing");
 			}
@@ -88,6 +89,13 @@ public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 			@Override
 			public IRhenaAgentClientFactory getAgentClientFactory() {
 
+				throw new UnsupportedOperationException("Not implemented for testing?");
+			}
+
+			@Override
+			public IRepositoryFactory getRepositoryFactory() {
+
+				
 				throw new UnsupportedOperationException("Not implemented for testing?");
 			}
 

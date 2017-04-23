@@ -19,7 +19,7 @@ public class TestCascadingResolver extends AbstractRhenaConfiguredTest {
 	public void testEngine() throws Exception {
 
 		IRhenaConfiguration config = createMockConfig();
-		IRhenaResolver resolver = new RhenaResolver(config);
+		IRhenaResolver resolver = new RhenaResolver();
 		IRhenaContext context = createMockContext(config, resolver);
 
 		CascadingModelResolver cascadingResolver = new CascadingModelResolver(context);

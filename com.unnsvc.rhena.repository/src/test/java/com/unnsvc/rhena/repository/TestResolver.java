@@ -13,12 +13,12 @@ public class TestResolver extends AbstractRhenaConfiguredTest {
 
 	@Test
 	public void testResolver() throws Exception {
-		
+
 		IRhenaConfiguration config = createMockConfig();
-		RhenaResolver resolver = new RhenaResolver(config);
+		RhenaResolver resolver = new RhenaResolver();
 
 		ModuleIdentifier identifier = ModuleIdentifier.valueOf("com.single:module1:1.0.0");
-		IRhenaModule module = resolver.resolveModule(identifier);
+		IRhenaModule module = resolver.resolveModule(createMockContext(), identifier);
 		Assert.assertNotNull(module);
 		// @TODO verify cache
 	}

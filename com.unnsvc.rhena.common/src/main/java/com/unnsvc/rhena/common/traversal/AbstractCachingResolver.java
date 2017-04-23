@@ -28,7 +28,7 @@ public abstract class AbstractCachingResolver extends AbstractFlatTreeWalker {
 
 		IRhenaModule module = context.getCache().getModule(identifier);
 		if (module == null) {
-			module = getContext().getResolver().resolveModule(identifier);
+			module = getContext().getResolver().resolveModule(context, identifier);
 			getContext().getCache().cacheModule(module);
 		}
 		return module;

@@ -30,7 +30,7 @@ public class TestCascadingResolverPerformance extends AbstractRhenaConfiguredTes
 	public void testPerformance() throws Exception {
 
 		IRhenaConfiguration config = createMockConfig();
-		RhenaResolver resolver = new RhenaResolver(config);
+		RhenaResolver resolver = new RhenaResolver();
 		IRhenaContext context = createMockContext(config, resolver);
 
 		long iterations = 1000000;

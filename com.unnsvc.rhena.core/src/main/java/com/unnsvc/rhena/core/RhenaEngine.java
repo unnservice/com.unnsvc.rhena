@@ -20,7 +20,7 @@ public class RhenaEngine implements IRhenaEngine {
 
 	public RhenaEngine(IRhenaConfiguration config) {
 
-		this.context = new RhenaContext(config, new RhenaCache(), new RhenaResolver(config), new RhenaFactories());
+		this.context = new RhenaContext(config, new RhenaCache(), new RhenaResolver(), new RhenaFactories());
 	}
 
 	public RhenaEngine(IRhenaContext context) {

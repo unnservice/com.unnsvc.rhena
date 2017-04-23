@@ -31,7 +31,7 @@ public class AbstractAgentTest extends AbstractRhenaConfiguredTest {
 			IRhenaConfiguration config = createMockConfig();
 			config.setAgentAddress(agentAddress);
 
-			IRhenaResolver resolver = new RhenaResolver(config);
+			IRhenaResolver resolver = new RhenaResolver();
 
 			IRhenaFactories factories = new RhenaFactories();
 			context = createMockContext(config, resolver, factories);

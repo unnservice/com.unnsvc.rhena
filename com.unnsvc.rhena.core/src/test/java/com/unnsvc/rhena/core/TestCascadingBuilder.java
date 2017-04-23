@@ -18,7 +18,7 @@ public class TestCascadingBuilder extends AbstractAgentTest {
 	public void testBuilder() throws Exception {
 
 		IRhenaConfiguration config = createMockConfig();
-		RhenaResolver resolver = new RhenaResolver(config);
+		RhenaResolver resolver = new RhenaResolver();
 		IRhenaContext context = createMockContext(config, resolver);
 
 		CascadingModelResolver modelResolver = new CascadingModelResolver(context);
