@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketAddress;
 
-import com.unnsvc.rhena.objectserver.IObjectServer;
 import com.unnsvc.rhena.objectserver.ObjectServerException;
 
 public class ObjectServerHelper {
@@ -30,26 +29,5 @@ public class ObjectServerHelper {
 		} catch (IOException ioe) {
 			throw new ObjectServerException(ioe.getMessage(), ioe);
 		}
-	}
-
-	/**
-	 * Block and wait for object server to become available
-	 * 
-	 * @param objectServer
-	 * @param connectionTimeoutMs
-	 *            connection timeout milliseconds
-	 * @throws RhenaException
-	 */
-	public static void waitObjectServer(IObjectServer objectServer, int connectionTimeoutMs) throws ObjectServerException {
-
-//		try {
-//			SocketChannel channel = SocketChannel.open();
-//			channel.configureBlocking(true);
-//			channel.connect(objectServer.getServerAddress());
-//		} catch (IOException ex) {
-//			throw new RhenaException(ex.getMessage(), ex);
-//		}
-		
-		throw new UnsupportedOperationException("Not implemented");
 	}
 }

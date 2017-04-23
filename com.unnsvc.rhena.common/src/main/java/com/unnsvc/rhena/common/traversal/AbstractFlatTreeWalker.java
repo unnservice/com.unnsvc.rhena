@@ -82,9 +82,10 @@ public abstract class AbstractFlatTreeWalker {
 					IRhenaEdge parentEdge = currentModule.getParent();
 					tracker.pushUnique(new FlatTreeFrame(parentEdge.getEntryPoint(), parentEdge.getTraverseType()));
 					break edgeProcessing;
-				}
+				} else {
 
-				onParentResolved(currentModule);
+					onParentResolved(currentModule);
+				}
 
 				/**
 				 * Check lifecycle relationships
@@ -274,8 +275,7 @@ public abstract class AbstractFlatTreeWalker {
 			}
 
 			if (config == null) {
-				throw new RhenaException(
-						"Lifecycle " + currentModule.getLifecycleConfiguration().getName() + " not found for " + currentModule.getIdentifier());
+				throw new RhenaException("Lifecycle " + currentModule.getLifecycleConfiguration().getName() + " not found for " + currentModule.getIdentifier());
 			}
 
 			currentModule.setLifecycleConfiguration(config);

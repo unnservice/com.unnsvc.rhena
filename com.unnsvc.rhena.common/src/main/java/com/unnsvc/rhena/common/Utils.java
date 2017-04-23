@@ -24,9 +24,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.EExecutionType;
@@ -129,25 +126,6 @@ public class Utils {
 			return new URI(uriString).normalize();
 		} catch (URISyntaxException use) {
 			throw new RhenaException(use.getMessage(), use);
-		}
-	}
-
-	private static class ModuleHandler extends DefaultHandler {
-
-		private String componentStr;
-		private String versionStr;
-
-		public ModuleHandler() {
-
-		}
-
-		@Override
-		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-
-			if (localName.equals("meta")) {
-				componentStr = attributes.getValue("component");
-				versionStr = attributes.getValue("version");
-			}
 		}
 	}
 

@@ -8,6 +8,8 @@ import com.unnsvc.rhena.common.model.IEntryPoint;
 
 public class ContextReference extends AbstractLifecycleReference {
 
+	private static final long serialVersionUID = 1L;
+
 	public ContextReference(String schema, String clazz, Document config, ModuleIdentifier source, ESelectionType selectionType, IEntryPoint entryPoint) {
 
 		super(schema, clazz, config, source, selectionType, entryPoint);

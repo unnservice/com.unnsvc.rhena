@@ -10,6 +10,7 @@ import com.unnsvc.rhena.common.model.ILifecycleReference;
 
 public abstract class AbstractLifecycleReference implements ILifecycleReference {
 
+	private static final long serialVersionUID = 1L;
 	private String schema;
 	private String clazz;
 	private Document config;
