@@ -73,40 +73,40 @@ public class WorkspaceBuilder extends AbstractBuilder {
 
 		log.info("Lifecycle is: " + lifecycle);
 
-		/**
-		 * Processors
-		 */
-		IDependencies contextDepchain = createDepchain(lifecycle.getContextReference());
-		ContextProcessorInstance context = new ContextProcessorInstance(contextDepchain);
-
-		List<IProcessorInstance> processors = new ArrayList<IProcessorInstance>();
-		for (IProcessorSpec procref : lifecycle.getProcessorReferences()) {
-			IDependencies processorDepchain = createDepchain(procref);
-			ProcessorInstance processor = new ProcessorInstance(processorDepchain);
-			processors.add(processor);
-		}
-
-		IDependencies generatorDepchain = createDepchain(lifecycle.getGeneratorReference());
-		GeneratorProcessorInstance generator = new GeneratorProcessorInstance(generatorDepchain);
-
-		List<ICommandInstance> commands = new ArrayList<ICommandInstance>();
-		for (ICommandSpec cmdref : lifecycle.getCommandReferences()) {
-
-			IDependencies commandDepchain = createDepchain(cmdref);
-			CommandProcessorInstance command = new CommandProcessorInstance(commandDepchain);
-			commands.add(command);
-		}
-
-		/**
-		 * Lifecycle instance
-		 */
-		IDependencies dependencies = createDepchain(lifecycle);
 		ILifecycleInstance instance = null;
-		
+
 		if (lifecycle.getName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
 
-			instance = DefaultLifecycleFactory.createDefaultLifecycle(context, processors, generator, commands);
+			instance = DefaultLifecycleFactory.createDefaultLifecycle();
 		} else {
+			/**
+			 * Processors
+			 */
+			IDependencies contextDepchain = createDepchain(lifecycle.getContextReference());
+			ContextProcessorInstance context = new ContextProcessorInstance(contextDepchain);
+
+			List<IProcessorInstance> processors = new ArrayList<IProcessorInstance>();
+			for (IProcessorSpec procref : lifecycle.getProcessorReferences()) {
+				IDependencies processorDepchain = createDepchain(procref);
+				ProcessorInstance processor = new ProcessorInstance(processorDepchain);
+				processors.add(processor);
+			}
+
+			IDependencies generatorDepchain = createDepchain(lifecycle.getGeneratorReference());
+			GeneratorProcessorInstance generator = new GeneratorProcessorInstance(generatorDepchain);
+
+			List<ICommandInstance> commands = new ArrayList<ICommandInstance>();
+			for (ICommandSpec cmdref : lifecycle.getCommandReferences()) {
+
+				IDependencies commandDepchain = createDepchain(cmdref);
+				CommandProcessorInstance command = new CommandProcessorInstance(commandDepchain);
+				commands.add(command);
+			}
+
+			/**
+			 * Lifecycle instance
+			 */
+			IDependencies dependencies = createDepchain(lifecycle);
 
 			instance = new LifecycleInstance(lifecycle.getName(), dependencies, context, processors, generator, commands);
 		}

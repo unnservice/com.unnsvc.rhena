@@ -12,6 +12,10 @@ public class ProcessorInstance implements IProcessorInstance {
 
 		this.dependencies = dependencies;
 	}
+	
+	public ProcessorInstance() {
+		
+	}
 
 	@Override
 	public IDependencies getDependencies() {

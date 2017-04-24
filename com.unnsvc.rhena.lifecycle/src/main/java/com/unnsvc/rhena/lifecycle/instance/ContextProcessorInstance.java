@@ -11,4 +11,8 @@ public class ContextProcessorInstance extends ProcessorInstance implements ICont
 		super(dependencies);
 	}
 
+	public ContextProcessorInstance() {
+
+	}
+
 }

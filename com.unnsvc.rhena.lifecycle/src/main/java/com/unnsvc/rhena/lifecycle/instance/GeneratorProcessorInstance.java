@@ -11,4 +11,8 @@ public class GeneratorProcessorInstance extends ProcessorInstance implements IGe
 		super(dependencie);
 	}
 
+	public GeneratorProcessorInstance() {
+
+	}
+
 }
