@@ -13,7 +13,6 @@ import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.IExecutionRequest;
 import com.unnsvc.rhena.common.execution.IExecutionResult;
-import com.unnsvc.rhena.common.lifecycle.ICommand;
 import com.unnsvc.rhena.common.lifecycle.IContext;
 import com.unnsvc.rhena.common.lifecycle.IGenerator;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleInstance;

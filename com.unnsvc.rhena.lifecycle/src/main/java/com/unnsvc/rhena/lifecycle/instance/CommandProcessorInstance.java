@@ -6,9 +6,9 @@ import com.unnsvc.rhena.common.traversal.IDependencies;
 
 public class CommandProcessorInstance extends ProcessorInstance implements ICommandInstance {
 
-	public CommandProcessorInstance(IDependencies dependencies) {
+	public CommandProcessorInstance(IDependencies dependencies, String className) {
 
-		super(dependencies);
+		super(dependencies, className);
 	}
 
 }

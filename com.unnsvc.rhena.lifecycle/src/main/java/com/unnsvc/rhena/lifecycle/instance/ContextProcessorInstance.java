@@ -6,9 +6,9 @@ import com.unnsvc.rhena.common.traversal.IDependencies;
 
 public class ContextProcessorInstance extends ProcessorInstance implements IContextInstance {
 
-	public ContextProcessorInstance(IDependencies dependencies) {
+	public ContextProcessorInstance(IDependencies dependencies, String className) {
 
-		super(dependencies);
+		super(dependencies, className);
 	}
 
 	public ContextProcessorInstance() {

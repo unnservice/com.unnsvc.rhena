@@ -25,6 +25,7 @@ public abstract class AbstractProcessorSpec implements IProcessorSpec {
 		this.processorDeps = processorDeps;
 	}
 
+	@Override
 	public String getSchema() {
 
 		return schema;
@@ -35,6 +36,7 @@ public abstract class AbstractProcessorSpec implements IProcessorSpec {
 		this.schema = schema;
 	}
 
+	@Override
 	public String getClazz() {
 
 		return clazz;
@@ -45,6 +47,7 @@ public abstract class AbstractProcessorSpec implements IProcessorSpec {
 		this.clazz = clazz;
 	}
 
+	@Override
 	public Document getConfig() {
 
 		return config;

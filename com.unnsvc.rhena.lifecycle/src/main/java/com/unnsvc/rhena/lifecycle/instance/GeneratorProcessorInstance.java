@@ -6,9 +6,9 @@ import com.unnsvc.rhena.common.traversal.IDependencies;
 
 public class GeneratorProcessorInstance extends ProcessorInstance implements IGeneratorInstance {
 
-	public GeneratorProcessorInstance(IDependencies dependencie) {
+	public GeneratorProcessorInstance(IDependencies dependencie, String className) {
 
-		super(dependencie);
+		super(dependencie, className);
 	}
 
 	public GeneratorProcessorInstance() {
