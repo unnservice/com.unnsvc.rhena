@@ -6,39 +6,40 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.unnsvc.rhena.common.RhenaConstants;
-import com.unnsvc.rhena.common.model.ILifecycleConfiguration;
-import com.unnsvc.rhena.common.model.ILifecycleReference;
+import com.unnsvc.rhena.common.model.ICommandSpec;
+import com.unnsvc.rhena.common.model.ILifecycleSpec;
+import com.unnsvc.rhena.common.model.IProcessorSpec;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 
-public class LifecycleConfiguration implements ILifecycleConfiguration {
+public class LifecycleSpec implements ILifecycleSpec {
 
 	private static final long serialVersionUID = 1L;
 	private String name;
 	private List<IRhenaEdge> lifecycleDependencies;
-	private ContextReference contextReference;
-	private List<ProcessorReference> processorReferences;
-	private GeneratorReference generatorReference;
-	private List<CommandReference> commandReferences;
+	private ContextSpec contextReference;
+	private List<IProcessorSpec> processorReferences;
+	private GeneratorSpec generatorReference;
+	private List<ICommandSpec> commandReferences;
 	private boolean resolved;
 
-	public LifecycleConfiguration(String name) {
+	public LifecycleSpec(String name) {
 
 		this.name = name;
 		this.lifecycleDependencies = new ArrayList<IRhenaEdge>();
 		this.resolved = false;
-		this.processorReferences = new ArrayList<ProcessorReference>();
-		this.commandReferences = new ArrayList<CommandReference>();
+		this.processorReferences = new ArrayList<IProcessorSpec>();
+		this.commandReferences = new ArrayList<ICommandSpec>();
 	}
 
 	/**
 	 * Default lifecycle configuration instance
 	 */
-	public LifecycleConfiguration() {
+	public LifecycleSpec() {
 
 		this.name = RhenaConstants.DEFAULT_LIFECYCLE_NAME;
 		this.resolved = true;
-		this.processorReferences = new ArrayList<ProcessorReference>();
-		this.commandReferences = new ArrayList<CommandReference>();
+		this.processorReferences = new ArrayList<IProcessorSpec>();
+		this.commandReferences = new ArrayList<ICommandSpec>();
 	}
 
 	@Override
@@ -59,22 +60,46 @@ public class LifecycleConfiguration implements ILifecycleConfiguration {
 		this.name = name;
 	}
 
-	public void setContext(ContextReference contextReference) {
+	@Override
+	public ContextSpec getContextReference() {
+
+		return contextReference;
+	}
+
+	public void setContext(ContextSpec contextReference) {
 
 		this.contextReference = contextReference;
 	}
 
-	public void addProcessor(ProcessorReference processorReference) {
+	@Override
+	public List<IProcessorSpec> getProcessorReferences() {
+
+		return processorReferences;
+	}
+
+	public void addProcessor(ProcessorSpec processorReference) {
 
 		this.processorReferences.add(processorReference);
 	}
 
-	public void setGenerator(GeneratorReference generatorReference) {
+	@Override
+	public GeneratorSpec getGeneratorReference() {
+
+		return generatorReference;
+	}
+
+	public void setGenerator(GeneratorSpec generatorReference) {
 
 		this.generatorReference = generatorReference;
 	}
 
-	public void addCommand(CommandReference commandReference) {
+	@Override
+	public List<ICommandSpec> getCommandReferences() {
+
+		return commandReferences;
+	}
+
+	public void addCommand(CommandSpec commandReference) {
 
 		this.commandReferences.add(commandReference);
 	}
@@ -91,9 +116,9 @@ public class LifecycleConfiguration implements ILifecycleConfiguration {
 	}
 
 	@Override
-	public List<ILifecycleReference> processorIterator() {
+	public List<IProcessorSpec> processorIterator() {
 
-		List<ILifecycleReference> refs = new ArrayList<ILifecycleReference>();
+		List<IProcessorSpec> refs = new ArrayList<IProcessorSpec>();
 		refs.add(contextReference);
 		refs.addAll(processorReferences);
 		refs.add(generatorReference);

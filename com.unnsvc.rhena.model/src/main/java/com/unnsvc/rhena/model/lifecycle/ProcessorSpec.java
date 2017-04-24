@@ -7,10 +7,11 @@ import org.w3c.dom.Document;
 
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 
-public class ContextReference extends AbstractLifecycleReference {
+public class ProcessorSpec extends AbstractProcessorSpec {
 
-	public ContextReference(String schema, String clazz, Document config, List<IRhenaEdge> processorDeps) {
+	public ProcessorSpec(String schema, String clazz, Document config, List<IRhenaEdge> processorDeps) {
 
 		super(schema, clazz, config, processorDeps);
 	}
+
 }

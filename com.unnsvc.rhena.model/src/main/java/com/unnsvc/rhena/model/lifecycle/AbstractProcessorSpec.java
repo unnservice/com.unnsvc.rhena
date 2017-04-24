@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.w3c.dom.Document;
 
-import com.unnsvc.rhena.common.model.ILifecycleReference;
+import com.unnsvc.rhena.common.model.IProcessorSpec;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 
-public abstract class AbstractLifecycleReference implements ILifecycleReference {
+public abstract class AbstractProcessorSpec implements IProcessorSpec {
 
 	private String schema;
 	private String clazz;
@@ -17,7 +17,7 @@ public abstract class AbstractLifecycleReference implements ILifecycleReference 
 
 	private List<IRhenaEdge> processorDeps;
 
-	public AbstractLifecycleReference(String schema, String clazz, Document config, List<IRhenaEdge> processorDeps) {
+	public AbstractProcessorSpec(String schema, String clazz, Document config, List<IRhenaEdge> processorDeps) {
 
 		this.schema = schema;
 		this.clazz = clazz;

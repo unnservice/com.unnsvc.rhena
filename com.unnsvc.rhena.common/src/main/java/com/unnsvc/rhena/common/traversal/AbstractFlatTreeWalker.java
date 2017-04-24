@@ -14,8 +14,8 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IEntryPoint;
-import com.unnsvc.rhena.common.model.ILifecycleConfiguration;
-import com.unnsvc.rhena.common.model.ILifecycleReference;
+import com.unnsvc.rhena.common.model.ILifecycleSpec;
+import com.unnsvc.rhena.common.model.IProcessorSpec;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.utils.UniqueStack;
@@ -105,7 +105,7 @@ public abstract class AbstractFlatTreeWalker {
 						}
 					}
 
-					for (ILifecycleReference processorRef : currentModule.getLifecycleConfiguration().processorIterator()) {
+					for (IProcessorSpec processorRef : currentModule.getLifecycleConfiguration().processorIterator()) {
 
 						for (IRhenaEdge processorRefDep : processorRef) {
 
@@ -274,7 +274,7 @@ public abstract class AbstractFlatTreeWalker {
 		 */
 		if (!currentModule.getLifecycleConfiguration().isResolved()) {
 
-			ILifecycleConfiguration config = null;
+			ILifecycleSpec config = null;
 			IRhenaModule cursorModule = currentModule;
 			while (config == null && cursorModule != null) {
 
@@ -282,7 +282,7 @@ public abstract class AbstractFlatTreeWalker {
 				 * It's a custom lifecycle so we want to search for its
 				 * declaration in the hierarchy
 				 */
-				for (ILifecycleConfiguration declaredConfig : currentModule.getDeclaredConfigurations()) {
+				for (ILifecycleSpec declaredConfig : currentModule.getDeclaredConfigurations()) {
 
 					if (declaredConfig.getName().equals(currentModule.getLifecycleConfiguration().getName())) {
 						config = declaredConfig;

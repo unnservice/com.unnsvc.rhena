@@ -5,13 +5,14 @@ import java.util.List;
 
 import org.w3c.dom.Document;
 
+import com.unnsvc.rhena.common.model.ICommandSpec;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 
-public class CommandReference extends AbstractLifecycleReference {
+public class CommandSpec extends AbstractProcessorSpec implements ICommandSpec {
 
 	private String commandName;
 
-	public CommandReference(String schema, String clazz, Document config, String commandName, List<IRhenaEdge> processorDeps) {
+	public CommandSpec(String schema, String clazz, Document config, String commandName, List<IRhenaEdge> processorDeps) {
 
 		super(schema, clazz, config, processorDeps);
 		this.commandName = commandName;

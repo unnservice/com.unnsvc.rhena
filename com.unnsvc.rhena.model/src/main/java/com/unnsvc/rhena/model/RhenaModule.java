@@ -9,7 +9,7 @@ import java.util.Map;
 
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.EModuleType;
-import com.unnsvc.rhena.common.model.ILifecycleConfiguration;
+import com.unnsvc.rhena.common.model.ILifecycleSpec;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.repository.RepositoryIdentifier;
@@ -22,10 +22,10 @@ public class RhenaModule implements IRhenaModule {
 	private boolean framework;
 	private RepositoryIdentifier repositoryIdentifier;
 	private IRhenaEdge parent;
-	private ILifecycleConfiguration lifecycleConfiguration;
+	private ILifecycleSpec lifecycleConfiguration;
 	private List<IRhenaEdge> dependencies;
 	private Map<String, String> properties;
-	private List<ILifecycleConfiguration> declaredConfigurations;
+	private List<ILifecycleSpec> declaredConfigurations;
 
 	public RhenaModule(ModuleIdentifier identifier, RepositoryIdentifier repositoryIdentifier) {
 
@@ -34,7 +34,7 @@ public class RhenaModule implements IRhenaModule {
 		this.repositoryIdentifier = repositoryIdentifier;
 		this.dependencies = new ArrayList<IRhenaEdge>();
 		this.properties = new HashMap<String, String>();
-		this.declaredConfigurations = new ArrayList<ILifecycleConfiguration>();
+		this.declaredConfigurations = new ArrayList<ILifecycleSpec>();
 		this.moduleType = EModuleType.REMOTE;
 	}
 
@@ -75,13 +75,13 @@ public class RhenaModule implements IRhenaModule {
 	}
 
 	@Override
-	public void setLifecycleConfiguration(ILifecycleConfiguration lifecycleConfiguration) {
+	public void setLifecycleConfiguration(ILifecycleSpec lifecycleConfiguration) {
 
 		this.lifecycleConfiguration = lifecycleConfiguration;
 	}
 
 	@Override
-	public ILifecycleConfiguration getLifecycleConfiguration() {
+	public ILifecycleSpec getLifecycleConfiguration() {
 
 		return lifecycleConfiguration;
 	}
@@ -135,13 +135,13 @@ public class RhenaModule implements IRhenaModule {
 	}
 
 	@Override
-	public void addDeclaredConfiguration(ILifecycleConfiguration declaredConfiguration) {
+	public void addDeclaredConfiguration(ILifecycleSpec declaredConfiguration) {
 
 		this.declaredConfigurations.add(declaredConfiguration);
 	}
 
 	@Override
-	public List<ILifecycleConfiguration> getDeclaredConfigurations() {
+	public List<ILifecycleSpec> getDeclaredConfigurations() {
 
 		return declaredConfigurations;
 	}

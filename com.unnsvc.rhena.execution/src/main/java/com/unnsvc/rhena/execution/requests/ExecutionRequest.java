@@ -2,7 +2,7 @@
 package com.unnsvc.rhena.execution.requests;
 
 import com.unnsvc.rhena.common.execution.IExecutionRequest;
-import com.unnsvc.rhena.common.lifecycle.ILifecycleExecution;
+import com.unnsvc.rhena.common.lifecycle.ILifecycleInstance;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.traversal.IDependencies;
@@ -13,10 +13,10 @@ public class ExecutionRequest implements IExecutionRequest {
 
 	private IEntryPoint entryPoint;
 	private IRhenaModule module;
-	private ILifecycleExecution lifecycle;
+	private ILifecycleInstance lifecycle;
 	private IDependencies dependencies;
 
-	public ExecutionRequest(IEntryPoint entryPoint, IRhenaModule module, ILifecycleExecution lifecycle, IDependencies dependencies) {
+	public ExecutionRequest(IEntryPoint entryPoint, IRhenaModule module, ILifecycleInstance lifecycle, IDependencies dependencies) {
 
 		this.entryPoint = entryPoint;
 		this.module = module;
@@ -37,7 +37,7 @@ public class ExecutionRequest implements IExecutionRequest {
 	}
 
 	@Override
-	public ILifecycleExecution getLifecycle() {
+	public ILifecycleInstance getLifecycle() {
 
 		return lifecycle;
 	}

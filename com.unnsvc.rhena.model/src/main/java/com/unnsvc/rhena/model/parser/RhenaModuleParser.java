@@ -24,17 +24,17 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.EExecutionType;
 import com.unnsvc.rhena.common.model.ESelectionType;
-import com.unnsvc.rhena.common.model.ILifecycleConfiguration;
+import com.unnsvc.rhena.common.model.ILifecycleSpec;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.repository.RepositoryIdentifier;
 import com.unnsvc.rhena.model.EntryPoint;
 import com.unnsvc.rhena.model.RhenaEdge;
 import com.unnsvc.rhena.model.RhenaModule;
-import com.unnsvc.rhena.model.lifecycle.CommandReference;
-import com.unnsvc.rhena.model.lifecycle.ContextReference;
-import com.unnsvc.rhena.model.lifecycle.GeneratorReference;
-import com.unnsvc.rhena.model.lifecycle.LifecycleConfiguration;
-import com.unnsvc.rhena.model.lifecycle.ProcessorReference;
+import com.unnsvc.rhena.model.lifecycle.CommandSpec;
+import com.unnsvc.rhena.model.lifecycle.ContextSpec;
+import com.unnsvc.rhena.model.lifecycle.GeneratorSpec;
+import com.unnsvc.rhena.model.lifecycle.LifecycleSpec;
+import com.unnsvc.rhena.model.lifecycle.ProcessorSpec;
 
 /**
  * @TODO XSD validation once the settings.xml format is established
@@ -129,10 +129,10 @@ public class RhenaModuleParser {
 		Node lifecycleAttrNode = moduleChild.getAttributes().getNamedItem("lifecycle");
 		if (lifecycleAttrNode == null || lifecycleAttrNode.getNodeValue().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
 
-			ILifecycleConfiguration defaultConfig = new LifecycleConfiguration();
+			ILifecycleSpec defaultConfig = new LifecycleSpec();
 			module.setLifecycleConfiguration(defaultConfig);
 		} else {
-			ILifecycleConfiguration lifecycleConfiguration = new LifecycleConfiguration(lifecycleAttrNode.getNodeValue());
+			ILifecycleSpec lifecycleConfiguration = new LifecycleSpec(lifecycleAttrNode.getNodeValue());
 			module.setLifecycleConfiguration(lifecycleConfiguration);
 		}
 
@@ -150,7 +150,7 @@ public class RhenaModuleParser {
 					processPropertyNode(metaChild);
 				} else if (metaChild.getNamespaceURI().equals(RhenaConstants.NS_RHENA_MODULE)) {
 					if (metaChild.getLocalName().equals("lifecycle")) {
-						ILifecycleConfiguration declaredConfiguration = processLifecycleNode(metaChild);
+						ILifecycleSpec declaredConfiguration = processLifecycleNode(metaChild);
 						module.addDeclaredConfiguration(declaredConfiguration);
 					}
 				}
@@ -158,10 +158,10 @@ public class RhenaModuleParser {
 		}
 	}
 
-	private ILifecycleConfiguration processLifecycleNode(Node lifecycleNode) throws RhenaException {
+	private ILifecycleSpec processLifecycleNode(Node lifecycleNode) throws RhenaException {
 
 		String lifecycleName = lifecycleNode.getAttributes().getNamedItem("name").getNodeValue();
-		LifecycleConfiguration lifecycleConfiguration = new LifecycleConfiguration(lifecycleName);
+		LifecycleSpec lifecycleConfiguration = new LifecycleSpec(lifecycleName);
 
 		NodeList children = lifecycleNode.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
@@ -237,20 +237,20 @@ public class RhenaModuleParser {
 
 					if (child.getLocalName().equals("context")) {
 
-						ContextReference configurator = new ContextReference(schemaAttrStr, clazzAttrStr, processorConfig, processorDeps);
+						ContextSpec configurator = new ContextSpec(schemaAttrStr, clazzAttrStr, processorConfig, processorDeps);
 						lifecycleConfiguration.setContext(configurator);
 					} else if (child.getLocalName().equals("processor")) {
 
-						ProcessorReference processor = new ProcessorReference(schemaAttrStr, clazzAttrStr, processorConfig, processorDeps);
+						ProcessorSpec processor = new ProcessorSpec(schemaAttrStr, clazzAttrStr, processorConfig, processorDeps);
 						lifecycleConfiguration.addProcessor(processor);
 					} else if (child.getLocalName().equals("generator")) {
 
-						GeneratorReference generator = new GeneratorReference(schemaAttrStr, clazzAttrStr, processorConfig, processorDeps);
+						GeneratorSpec generator = new GeneratorSpec(schemaAttrStr, clazzAttrStr, processorConfig, processorDeps);
 						lifecycleConfiguration.setGenerator(generator);
 					} else if (child.getLocalName().equals("command")) {
 
 						String commandName = child.getAttributes().getNamedItem("name").getNodeValue();
-						CommandReference command = new CommandReference(schemaAttrStr, clazzAttrStr, processorConfig, commandName, processorDeps);
+						CommandSpec command = new CommandSpec(schemaAttrStr, clazzAttrStr, processorConfig, commandName, processorDeps);
 						lifecycleConfiguration.addCommand(command);
 					}
 				}
