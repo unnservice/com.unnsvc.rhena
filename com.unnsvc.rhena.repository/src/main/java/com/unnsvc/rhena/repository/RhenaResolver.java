@@ -106,6 +106,7 @@ public class RhenaResolver implements IRhenaResolver {
 				// try this location first, before trying sublocations
 				IRhenaModule resolved = resolve(context, identifier, defn);
 				if (resolved != null) {
+					
 					return resolved;
 				} else {
 

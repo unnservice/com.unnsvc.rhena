@@ -2,6 +2,7 @@
 package com.unnsvc.rhena.config;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,18 +33,7 @@ public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 			log.debug("Creating mock IRhenaConfiguration");
 			IRhenaConfiguration config = new RhenaConfiguration();
 
-			File testRepositoriesLocation = new File("../test-repositories").getAbsoluteFile().getCanonicalFile();
-
-			File localRepo = new File(testRepositoriesLocation, "localRepo");
-			File workspaceRepo = new File(testRepositoriesLocation, "workspaceRepo");
-
-			IRepositoryDefinition localRepoDef = RepositoryDefinition.newLocal(localRepo.getName(), localRepo.toURI());
-			log.debug(localRepoDef.toString());
-			config.getRepositoryConfiguration().setCacheRepository(localRepoDef);
-
-			IRepositoryDefinition workspaceRepoDef = RepositoryDefinition.newWorkspace(workspaceRepo.getName(), workspaceRepo.toURI());
-			log.debug(workspaceRepoDef.toString());
-			config.getRepositoryConfiguration().addWorkspaceRepositories(workspaceRepoDef);
+			configureRepositories(config);
 
 			/**
 			 * During testing, we'd want predictable sequential execution unless
@@ -57,6 +47,22 @@ public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 		} catch (Exception ex) {
 			throw new RhenaException(ex);
 		}
+	}
+
+	protected void configureRepositories(IRhenaConfiguration config) throws IOException {
+
+		File testRepositoriesLocation = new File("../test-repositories").getAbsoluteFile().getCanonicalFile();
+
+		File localRepo = new File(testRepositoriesLocation, "localRepo");
+		File workspaceRepo = new File(testRepositoriesLocation, "workspaceRepo");
+
+		IRepositoryDefinition localRepoDef = RepositoryDefinition.newLocal(localRepo.getName(), localRepo.toURI());
+		log.debug(localRepoDef.toString());
+		config.getRepositoryConfiguration().setCacheRepository(localRepoDef);
+
+		IRepositoryDefinition workspaceRepoDef = RepositoryDefinition.newWorkspace(workspaceRepo.getName(), workspaceRepo.toURI());
+		log.debug(workspaceRepoDef.toString());
+		config.getRepositoryConfiguration().addWorkspaceRepositories(workspaceRepoDef);
 	}
 
 	protected IRhenaCache createMockCache() {

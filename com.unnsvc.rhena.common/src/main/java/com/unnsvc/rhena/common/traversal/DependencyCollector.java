@@ -2,6 +2,7 @@
 package com.unnsvc.rhena.common.traversal;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.unnsvc.rhena.common.IRhenaContext;
@@ -36,6 +37,15 @@ public class DependencyCollector extends AbstractCachingResolver {
 		if (source != null) {
 
 			IExecutionResult result = getContext().getCache().getCachedExecution(outgoing);
+			
+			for(Iterator<IExecutionResult> iter = dependencyList.iterator(); iter.hasNext();) {
+				
+				IExecutionResult next = iter.next();
+				if(next.getEntryPoint().equals(outgoing)) {
+					iter.remove();
+				}
+			}
+			
 			dependencyList.add(result);
 		}
 	}

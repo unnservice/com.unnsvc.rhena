@@ -10,6 +10,7 @@ import com.unnsvc.rhena.common.execution.IExecutionResult;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.traversal.DependencyCollector;
+import com.unnsvc.rhena.common.traversal.IDependencies;
 import com.unnsvc.rhena.execution.requests.ExecutionRequest;
 
 /**
@@ -40,8 +41,9 @@ public class WorkspaceBuilder extends AbstractBuilder {
 		try (IRhenaAgentClient client = context.getFactories().getAgentClientFactory().newClient(context)) {
 			
 			DependencyCollector collector = new DependencyCollector(context, entryPoint);
+			IDependencies dependencies = collector.toDependencyChain();
 			
-			ExecutionRequest request = new ExecutionRequest(entryPoint, module, collector.toDependencyChain());
+			ExecutionRequest request = new ExecutionRequest(entryPoint, module, dependencies);
 			IExecutionResult result = client.executeRequest(request);
 			return result;
 		}

@@ -16,7 +16,15 @@ public class RhenaAgentAcceptor implements IObjectServerAcceptor<IExecutionReque
 	public IExecutionResult onRequest(IExecutionRequest request) {
 
 		log.debug("Executing in agent, returning result for " + request.getEntryPoint());
-		return new ExecutionResult(request.getEntryPoint(), request.getModule());
+		IExecutionResult result =  new ExecutionResult(request.getEntryPoint(), request.getModule());
+		
+		build(request);
+		
+		return result;
+	}
+
+	private void build(IExecutionRequest request) {
+
 	}
 
 	@Override
