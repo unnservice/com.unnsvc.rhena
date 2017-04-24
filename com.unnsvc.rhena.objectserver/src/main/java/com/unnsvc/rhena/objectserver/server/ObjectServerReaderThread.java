@@ -43,10 +43,10 @@ public class ObjectServerReaderThread implements Callable<Void> {
 		while (executionChannel.isOpen()) {
 
 			SocketChannel clientChannel = executionChannel.accept();
-			log.debug("server: Accepted client execution connection");
+			log.debug("Accepted client execution connection");
 
 			Socket clientSocket = clientChannel.socket();
-			clientSocket.setSoTimeout(serverAcceptor.getSocketReadTimeout());
+			clientSocket.setSoTimeout(serverAcceptor.getServerSocketReadTimeout());
 			ObjectServerAcceptThread acceptor = new ObjectServerAcceptThread(clientSocket, serverAcceptor);
 			acceptorPool.submit(acceptor);
 		}

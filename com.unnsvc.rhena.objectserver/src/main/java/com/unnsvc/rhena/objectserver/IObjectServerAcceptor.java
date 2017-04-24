@@ -10,5 +10,6 @@ public interface IObjectServerAcceptor<REQUEST extends IObjectRequest, REPLY ext
 
 	public REPLY onRequest(REQUEST request);
 
-	public int getSocketReadTimeout();
+	public int getServerSocketReadTimeout();
 }
+

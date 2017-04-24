@@ -23,12 +23,12 @@ public class RhenaAgentAcceptor implements IObjectServerAcceptor<IExecutionReque
 		return result;
 	}
 
-	private void build(IExecutionRequest request) {
+	protected void build(IExecutionRequest request) {
 
 	}
 
 	@Override
-	public int getSocketReadTimeout() {
+	public int getServerSocketReadTimeout() {
 
 		return 1000;
 	}
