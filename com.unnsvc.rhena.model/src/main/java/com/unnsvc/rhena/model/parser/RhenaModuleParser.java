@@ -2,6 +2,8 @@
 package com.unnsvc.rhena.model.parser;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -22,7 +24,6 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.EExecutionType;
 import com.unnsvc.rhena.common.model.ESelectionType;
-import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.ILifecycleConfiguration;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.repository.RepositoryIdentifier;
@@ -85,7 +86,8 @@ public class RhenaModuleParser {
 				if (moduleChild.getNamespaceURI().equals(RhenaConstants.NS_RHENA_MODULE)) {
 					processMetaNode(moduleChild);
 				} else if (moduleChild.getNamespaceURI().equals(RhenaConstants.NS_RHENA_DEPENDENCY)) {
-					processDepenencyNode(moduleChild);
+					IRhenaEdge edge = processDepenencyNode(moduleChild);
+					module.addDependency(edge);
 				}
 			}
 		}
@@ -167,45 +169,90 @@ public class RhenaModuleParser {
 			Node child = children.item(i);
 			if (child.getNodeType() == Node.ELEMENT_NODE) {
 
-				String moduleAttrStr = child.getAttributes().getNamedItem("module").getNodeValue();
-				String clazzAttrStr = child.getAttributes().getNamedItem("class").getNodeValue();
-				String schemaAttrStr = null;
-
-				if (child.getAttributes().getNamedItem("schema") != null) {
-					schemaAttrStr = child.getAttributes().getNamedItem("schema").getNodeValue();
-				}
-
-				// Make a document out of the entire processor node
-				Document config = nodeToDocument(child);
-
-				EExecutionType et = EExecutionType.MAIN;
-				ESelectionType tt = ESelectionType.SCOPE;
-
-				ModuleIdentifier source = module.getIdentifier();
-				ModuleIdentifier target = ModuleIdentifier.valueOf(moduleAttrStr);
-				IEntryPoint entryPoint = new EntryPoint(et, target);
-
 				/**
-				 * @TODO perform caching on edge
+				 * This is for lifecycle dependencies
 				 */
+				if (child.getNamespaceURI().equals(RhenaConstants.NS_RHENA_DEPENDENCY)) {
 
-				if (child.getLocalName().equals("context")) {
+					IRhenaEdge edge = processDepenencyNode(child);
+					lifecycleConfiguration.addLifecycleDependency(edge);
 
-					ContextReference configurator = new ContextReference(schemaAttrStr, clazzAttrStr, config, source, tt, entryPoint);
-					lifecycleConfiguration.setContext(configurator);
-				} else if (child.getLocalName().equals("processor")) {
+				} else {
 
-					ProcessorReference processor = new ProcessorReference(schemaAttrStr, clazzAttrStr, config, source, tt, entryPoint);
-					lifecycleConfiguration.addProcessor(processor);
-				} else if (child.getLocalName().equals("generator")) {
+					/**
+					 * This is for the list of processors
+					 */
 
-					GeneratorReference generator = new GeneratorReference(schemaAttrStr, clazzAttrStr, config, source, tt, entryPoint);
-					lifecycleConfiguration.setGenerator(generator);
-				} else if (child.getLocalName().equals("command")) {
+					String clazzAttrStr = child.getAttributes().getNamedItem("class").getNodeValue();
+					String schemaAttrStr = null;
 
-					String commandName = child.getAttributes().getNamedItem("name").getNodeValue();
-					CommandReference command = new CommandReference(schemaAttrStr, clazzAttrStr, config, commandName, source, tt, entryPoint);
-					lifecycleConfiguration.addCommand(command);
+					// if (child.getAttributes().getNamedItem("schema") != null)
+					// {
+					// schemaAttrStr =
+					// child.getAttributes().getNamedItem("schema").getNodeValue();
+					// }
+
+					EExecutionType et = EExecutionType.MAIN;
+					
+					// these are not added anymore to processor constructor
+					ESelectionType tt = ESelectionType.SCOPE;
+					ModuleIdentifier source = module.getIdentifier();
+
+					// processors have no module= attributes anymore as they are
+					// now declared in dependencies to the processor
+					// String moduleAttrStr =
+					// child.getAttributes().getNamedItem("module").getNodeValue();
+					// ModuleIdentifier target =
+					// ModuleIdentifier.valueOf(moduleAttrStr);
+					// IEntryPoint entryPoint = new EntryPoint(et, target);
+
+					Document processorConfig = null;
+					List<IRhenaEdge> processorDeps = new ArrayList<IRhenaEdge>();
+
+					/**
+					 * Processor children
+					 */
+					NodeList processorChildren = child.getChildNodes();
+					for (int pci = 0; pci < processorChildren.getLength(); pci++) {
+
+						Node processorChild = processorChildren.item(pci);
+
+						if (processorChild.getNodeType() == Node.ELEMENT_NODE) {
+
+							if (processorChild.getNamespaceURI().equals(RhenaConstants.NS_RHENA_DEPENDENCY)) {
+								IRhenaEdge edge = processDepenencyNode(processorChild);
+								processorDeps.add(edge);
+							} else if (processorChild.getNodeName().equals("configuration")) {
+								// is configuration node
+								// Make a document out of the entire
+								// configuration node content
+								processorConfig = nodeToDocument(processorChild);
+							}
+						}
+					}
+
+					/**
+					 * @TODO perform caching on edge
+					 */
+
+					if (child.getLocalName().equals("context")) {
+
+						ContextReference configurator = new ContextReference(schemaAttrStr, clazzAttrStr, processorConfig, processorDeps);
+						lifecycleConfiguration.setContext(configurator);
+					} else if (child.getLocalName().equals("processor")) {
+
+						ProcessorReference processor = new ProcessorReference(schemaAttrStr, clazzAttrStr, processorConfig, processorDeps);
+						lifecycleConfiguration.addProcessor(processor);
+					} else if (child.getLocalName().equals("generator")) {
+
+						GeneratorReference generator = new GeneratorReference(schemaAttrStr, clazzAttrStr, processorConfig, processorDeps);
+						lifecycleConfiguration.setGenerator(generator);
+					} else if (child.getLocalName().equals("command")) {
+
+						String commandName = child.getAttributes().getNamedItem("name").getNodeValue();
+						CommandReference command = new CommandReference(schemaAttrStr, clazzAttrStr, processorConfig, commandName, processorDeps);
+						lifecycleConfiguration.addCommand(command);
+					}
 				}
 			}
 		}
@@ -227,7 +274,7 @@ public class RhenaModuleParser {
 		return document;
 	}
 
-	private void processDepenencyNode(Node moduleChild) throws DOMException, RhenaException {
+	private IRhenaEdge processDepenencyNode(Node moduleChild) throws DOMException, RhenaException {
 
 		EExecutionType dependencyType = Utils.valueOf(moduleChild.getLocalName());
 		String dependencyTargetModuleIdentifier = moduleChild.getAttributes().getNamedItem("module").getNodeValue();
@@ -241,7 +288,7 @@ public class RhenaModuleParser {
 		}
 
 		IRhenaEdge edge = newEdge(module.getIdentifier(), dependencyType, moduleIdentifier, traverseType);
-		module.addDependency(edge);
+		return edge;
 	}
 
 	public RhenaModule getModule() {

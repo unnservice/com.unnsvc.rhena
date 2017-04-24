@@ -1,20 +1,19 @@
 
 package com.unnsvc.rhena.model.lifecycle;
 
+import java.util.List;
+
 import org.w3c.dom.Document;
 
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.ESelectionType;
-import com.unnsvc.rhena.common.model.IEntryPoint;
+import com.unnsvc.rhena.common.model.IRhenaEdge;
 
 public class CommandReference extends AbstractLifecycleReference {
 
-	private static final long serialVersionUID = 1L;
 	private String commandName;
 
-	public CommandReference(String schema, String clazz, Document config, String commandName, ModuleIdentifier source, ESelectionType selectionType, IEntryPoint entryPoint) {
+	public CommandReference(String schema, String clazz, Document config, String commandName, List<IRhenaEdge> processorDeps) {
 
-		super(schema, clazz, config, source, selectionType, entryPoint);
+		super(schema, clazz, config, processorDeps);
 		this.commandName = commandName;
 	}
 

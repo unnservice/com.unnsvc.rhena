@@ -12,12 +12,14 @@
 			<!-- @TODO properties in lifecycle to override from heirarchy -->
 
 			<context module="com.unnsvc.rhena:lifecycle:1.0.0" class="com.unnsvc.rhena.lifecycle.DefaultContext">
-				<resources>
-					<main path="src/main/java" />
-					<main path="src/main/resources" filter="true" />
-					<test path="src/test/java" />
-					<test path="src/test/resources" filter="true" />
-				</resources>
+				<configuration>
+					<resources>
+						<main path="src/main/java" />
+						<main path="src/main/resources" filter="true" />
+						<test path="src/test/java" />
+						<test path="src/test/resources" filter="true" />
+					</resources>
+				</configuration>
 			</context>
 
 			<processor module="com.unnsvc.rhena:lifecycle:1.0.0" class="com.unnsvc.rhena.lifecycle.DefaultResourceFilteringProcessor" />

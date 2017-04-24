@@ -15,11 +15,19 @@
 		<xs:attribute name="lifecycle" type="xs:string" />
 	</xs:complexType>
 
-	<xs:complexType name="processorType">
+	<xs:complexType name="configurationType">
 		<xs:sequence>
 			<xs:any minOccurs="0" maxOccurs="unbounded" namespace="##any" processContents="skip" />
 		</xs:sequence>
-		<xs:attribute name="module" type="common:qualifiedIdentifier" use="required" />
+		<xs:attribute name="schema" type="xs:string" use="optional" />
+	</xs:complexType>
+
+	<xs:complexType name="processorType">
+		<xs:sequence>
+			<xs:group ref="dependency:mainDependencyTypes" />
+			<xs:element name="configuration" type="tns:configurationType" minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+		<xs:attribute name="module" type="common:qualifiedIdentifier" use="optional" />
 		<xs:attribute name="class" type="xs:string" use="required" />
 		<xs:attribute name="schema" type="xs:string" use="optional" />
 	</xs:complexType>
@@ -38,6 +46,8 @@
 
 	<xs:complexType name="lifecycleType">
 		<xs:sequence>
+			<xs:group ref="dependency:mainDependencyTypes" />
+
 			<xs:element name="context" type="tns:processorType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="processor" type="tns:processorType" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="generator" type="tns:processorType" minOccurs="1" maxOccurs="1" />

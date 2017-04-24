@@ -43,7 +43,7 @@ public abstract class AbstractFlatTreeWalker {
 	 * @throws RhenaException
 	 */
 	public IRhenaModule visitTree(IEntryPoint entryPoint, ESelectionType selectionType) throws RhenaException {
-		
+
 		List<IEntryPoint> processed = new ArrayList<IEntryPoint>();
 		UniqueStack<FlatTreeFrame> tracker = new UniqueStack<FlatTreeFrame>();
 		tracker.push(new FlatTreeFrame(entryPoint, selectionType));
@@ -90,16 +90,35 @@ public abstract class AbstractFlatTreeWalker {
 				 * Check lifecycle relationships
 				 */
 				if (!currentModule.getLifecycleConfiguration().getName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
-					for (ILifecycleReference ref : currentModule.getLifecycleConfiguration()) {
-						if (!processed.contains(ref.getEntryPoint())) {
-							tracker.pushUnique(new FlatTreeFrame(ref.getEntryPoint(), ref.getTraverseType()));
+
+					for (IRhenaEdge lifecycleEdge : currentModule.getLifecycleConfiguration()) {
+
+						if (!processed.contains(lifecycleEdge.getEntryPoint())) {
+							tracker.pushUnique(new FlatTreeFrame(lifecycleEdge.getEntryPoint(), lifecycleEdge.getTraverseType()));
 							break edgeProcessing;
 						} else {
 							/**
 							 * Call this once we know this relationship has been
 							 * processed
 							 */
-							onRelationship(currentModule, ref.getEntryPoint());
+							onRelationship(currentModule, lifecycleEdge.getEntryPoint());
+						}
+					}
+
+					for (ILifecycleReference processorRef : currentModule.getLifecycleConfiguration().processorIterator()) {
+
+						for (IRhenaEdge processorRefDep : processorRef) {
+
+							if (!processed.contains(processorRefDep.getEntryPoint())) {
+								tracker.pushUnique(new FlatTreeFrame(processorRefDep.getEntryPoint(), processorRefDep.getTraverseType()));
+								break edgeProcessing;
+							} else {
+								/**
+								 * Call this once we know this relationship has
+								 * been processed
+								 */
+								onRelationship(currentModule, processorRefDep.getEntryPoint());
+							}
 						}
 					}
 				}
@@ -211,7 +230,7 @@ public abstract class AbstractFlatTreeWalker {
 	 * 
 	 * @param source
 	 * @param entryPoint
-	 * @throws RhenaException 
+	 * @throws RhenaException
 	 */
 	protected void onRelationship(IRhenaModule source, IEntryPoint outgoing) throws RhenaException {
 
@@ -275,7 +294,8 @@ public abstract class AbstractFlatTreeWalker {
 			}
 
 			if (config == null) {
-				throw new RhenaException("Lifecycle " + currentModule.getLifecycleConfiguration().getName() + " not found for " + currentModule.getIdentifier());
+				throw new RhenaException(
+						"Lifecycle " + currentModule.getLifecycleConfiguration().getName() + " not found for " + currentModule.getIdentifier());
 			}
 
 			currentModule.setLifecycleConfiguration(config);

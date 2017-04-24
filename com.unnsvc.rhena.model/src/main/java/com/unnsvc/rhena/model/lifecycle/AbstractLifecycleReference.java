@@ -1,32 +1,28 @@
 
 package com.unnsvc.rhena.model.lifecycle;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.w3c.dom.Document;
 
-import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.common.model.ESelectionType;
-import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.ILifecycleReference;
+import com.unnsvc.rhena.common.model.IRhenaEdge;
 
 public abstract class AbstractLifecycleReference implements ILifecycleReference {
 
-	private static final long serialVersionUID = 1L;
 	private String schema;
 	private String clazz;
 	private Document config;
-	
-	private ModuleIdentifier source;
-	private ESelectionType selectionType;
-	private IEntryPoint entryPoint;
 
-	public AbstractLifecycleReference(String schema, String clazz, Document config, ModuleIdentifier source, ESelectionType selectionType, IEntryPoint entryPoint) {
+	private List<IRhenaEdge> processorDeps;
+
+	public AbstractLifecycleReference(String schema, String clazz, Document config, List<IRhenaEdge> processorDeps) {
 
 		this.schema = schema;
 		this.clazz = clazz;
 		this.config = config;
-		this.source = source;
-		this.selectionType = selectionType;
-		this.entryPoint = entryPoint;
+		this.processorDeps = processorDeps;
 	}
 
 	public String getSchema() {
@@ -59,43 +55,19 @@ public abstract class AbstractLifecycleReference implements ILifecycleReference 
 		this.config = config;
 	}
 
-	@Override
-	public ModuleIdentifier getSource() {
+	public List<IRhenaEdge> getProcessorDeps() {
 
-		
-		return source;
+		return processorDeps;
+	}
+
+	public void setProcessorDeps(List<IRhenaEdge> processorDeps) {
+
+		this.processorDeps = processorDeps;
 	}
 
 	@Override
-	public void setSource(ModuleIdentifier source) {
+	public Iterator<IRhenaEdge> iterator() {
 
-		this.source = source;
+		return processorDeps.iterator();
 	}
-
-	@Override
-	public ESelectionType getTraverseType() {
-
-		
-		return selectionType;
-	}
-
-	@Override
-	public void setTraverseType(ESelectionType selectionType) {
-
-		this.selectionType = selectionType;
-	}
-
-	@Override
-	public IEntryPoint getEntryPoint() {
-
-		
-		return entryPoint;
-	}
-
-	@Override
-	public void setEntryPoint(IEntryPoint entryPoint) {
-
-		this.entryPoint = entryPoint;
-	}
-
 }

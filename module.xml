@@ -9,22 +9,26 @@
 		<prop:thirdprop>thirdvalue</prop:thirdprop>
 
 		<lifecycle name="library">
-			<!-- @TODO properties in lifecycle to override from heirarchy -->
-
-			<context module="com.unnsvc.rhena:lifecycle:1.0.0" class="com.unnsvc.rhena.lifecycle.DefaultContext">
-				<resources>
-					<main path="src/main/java" />
-					<main path="src/main/resources" filter="true" />
-					<test path="src/test/java" />
-					<test path="src/test/resources" filter="true" />
-				</resources>
+			<dependency:main module="com.unnsvc.rhena:lifecycle:1.0.0" />
+			
+			<context class="com.unnsvc.rhena.lifecycle.DefaultContext">
+			
+				<dependency:main module="com.unnsvc.rhena:lifecycle:1.0.0" />
+				<configuration schema="classpath:/schema/path.xsd">
+					<resources>
+						<main path="src/main/java" />
+						<main path="src/main/resources" filter="true" />
+						<test path="src/test/java" />
+						<test path="src/test/resources" filter="true" />
+					</resources>
+				</configuration>
 			</context>
 
-			<processor module="com.unnsvc.rhena:lifecycle:1.0.0" class="com.unnsvc.rhena.lifecycle.DefaultResourceFilteringProcessor" />
-			<processor module="com.unnsvc.rhena:lifecycle:1.0.0" class="com.unnsvc.rhena.lifecycle.DefaultJavaProcessor" />
-			<processor module="com.unnsvc.rhena:lifecycle:1.0.0" class="com.unnsvc.rhena.lifecycle.DefaultManifestProcessor" />
+			<processor class="com.unnsvc.rhena.lifecycle.DefaultResourceFilteringProcessor" />
+			<processor class="com.unnsvc.rhena.lifecycle.DefaultJavaProcessor" />
+			<processor class="com.unnsvc.rhena.lifecycle.DefaultManifestProcessor" />
 
-			<generator module="com.unnsvc.rhena:lifecycle:1.0.0" class="com.unnsvc.rhena.lifecycle.DefaultGenerator" />
+			<generator class="com.unnsvc.rhena.lifecycle.DefaultGenerator" />
 
 			<!-- Each lifecycle can have commands -->
 			<!-- <command name="cmd1" module="com.unnsvc.rhena:lifecycle:0.0.1" class="com.unnsvc.rhena.lifecycle.Command1" /> -->
@@ -36,6 +40,7 @@
 	</meta>
 
 </module>
+<!-- @TODO properties in lifecycle to override from heirarchy -->
 
 
 

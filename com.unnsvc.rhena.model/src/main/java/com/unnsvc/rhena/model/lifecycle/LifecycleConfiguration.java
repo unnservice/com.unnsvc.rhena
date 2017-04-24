@@ -8,11 +8,13 @@ import java.util.List;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.model.ILifecycleConfiguration;
 import com.unnsvc.rhena.common.model.ILifecycleReference;
+import com.unnsvc.rhena.common.model.IRhenaEdge;
 
 public class LifecycleConfiguration implements ILifecycleConfiguration {
 
 	private static final long serialVersionUID = 1L;
 	private String name;
+	private List<IRhenaEdge> lifecycleDependencies;
 	private ContextReference contextReference;
 	private List<ProcessorReference> processorReferences;
 	private GeneratorReference generatorReference;
@@ -22,6 +24,7 @@ public class LifecycleConfiguration implements ILifecycleConfiguration {
 	public LifecycleConfiguration(String name) {
 
 		this.name = name;
+		this.lifecycleDependencies = new ArrayList<IRhenaEdge>();
 		this.resolved = false;
 		this.processorReferences = new ArrayList<ProcessorReference>();
 		this.commandReferences = new ArrayList<CommandReference>();
@@ -76,15 +79,32 @@ public class LifecycleConfiguration implements ILifecycleConfiguration {
 		this.commandReferences.add(commandReference);
 	}
 
+	public void addLifecycleDependency(IRhenaEdge lifecycleDependency) {
+
+		this.lifecycleDependencies.add(lifecycleDependency);
+	}
+
 	@Override
-	public Iterator<ILifecycleReference> iterator() {
+	public List<IRhenaEdge> getLifecycleDependencies() {
+
+		return lifecycleDependencies;
+	}
+
+	@Override
+	public List<ILifecycleReference> processorIterator() {
 
 		List<ILifecycleReference> refs = new ArrayList<ILifecycleReference>();
 		refs.add(contextReference);
 		refs.addAll(processorReferences);
 		refs.add(generatorReference);
 		refs.addAll(commandReferences);
-		return refs.iterator();
+		return refs;
+	}
+
+	@Override
+	public Iterator<IRhenaEdge> iterator() {
+
+		return lifecycleDependencies.iterator();
 	}
 
 }
