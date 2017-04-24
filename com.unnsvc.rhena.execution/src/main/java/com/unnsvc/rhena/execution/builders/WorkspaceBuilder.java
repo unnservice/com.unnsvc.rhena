@@ -71,7 +71,7 @@ public class WorkspaceBuilder extends AbstractBuilder {
 
 	private ILifecycleInstance instantiateLifecycle(ILifecycleSpec lifecycle) throws RhenaException {
 
-		log.info("Lifecycle is: " + lifecycle);
+		log.trace("Lifecycle is: " + lifecycle);
 
 		ILifecycleInstance instance = null;
 
