@@ -6,4 +6,6 @@ public interface IProcessorInstance {
 
 	public IDependencies getDependencies();
 
+	public String getClassName();
+
 }

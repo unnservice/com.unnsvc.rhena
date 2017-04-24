@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.unnsvc.rhena.common.traversal.IDependencies;
 
-public interface ILifecycleInstance extends Serializable {
+public interface ILifecycleInstance extends Serializable, Iterable<IProcessorInstance> {
 
 	public String getLifecycleName();
 

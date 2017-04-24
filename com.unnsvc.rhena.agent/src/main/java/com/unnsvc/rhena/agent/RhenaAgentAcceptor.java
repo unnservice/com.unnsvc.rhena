@@ -10,9 +10,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.RhenaConstants;
+import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.IExecutionRequest;
 import com.unnsvc.rhena.common.execution.IExecutionResult;
+import com.unnsvc.rhena.common.lifecycle.ICommand;
+import com.unnsvc.rhena.common.lifecycle.IContext;
+import com.unnsvc.rhena.common.lifecycle.IGenerator;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleInstance;
+import com.unnsvc.rhena.common.lifecycle.IProcessor;
+import com.unnsvc.rhena.common.lifecycle.IProcessorInstance;
 import com.unnsvc.rhena.common.model.EExecutionType;
 import com.unnsvc.rhena.common.traversal.IDependencies;
 import com.unnsvc.rhena.objectserver.IObjectServerAcceptor;
@@ -22,7 +28,7 @@ public class RhenaAgentAcceptor implements IObjectServerAcceptor<IExecutionReque
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	@Override
-	public IExecutionResult onRequest(IExecutionRequest request) {
+	public IExecutionResult onRequest(IExecutionRequest request) throws RhenaException {
 
 		log.debug("Executing in agent, returning result for " + request.getEntryPoint());
 
@@ -35,17 +41,61 @@ public class RhenaAgentAcceptor implements IObjectServerAcceptor<IExecutionReque
 	 * 
 	 * @param request
 	 * @return
+	 * @throws RhenaException
 	 */
-	protected ExecutionResult build(IExecutionRequest request) {
+	protected ExecutionResult build(IExecutionRequest request) throws RhenaException {
 
-		EExecutionType executionType = EExecutionType.MAIN;
+		ClassLoader parentClassLoader = Thread.currentThread().getContextClassLoader();
+
 		ILifecycleInstance lifecycle = request.getLifecycle();
-		URLClassLoader lifecycleClassLoader = createClassLoader(executionType, lifecycle.getDependencies(), Thread.currentThread().getContextClassLoader());
+		URLClassLoader lifecycleClassLoader = createClassLoader(lifecycle.getDependencies(), parentClassLoader);
+
+		IContext context = instantiate(lifecycleClassLoader, lifecycle.getContext(), IContext.class);
+
+		for (IProcessorInstance processorInst : lifecycle.getProcessors()) {
+			IProcessor processor = instantiate(lifecycleClassLoader, processorInst, IProcessor.class);
+			// ...
+		}
+
+		IGenerator generator = instantiate(lifecycleClassLoader, lifecycle.getGenerator(), IGenerator.class);
+
+		/**
+		 * @TODO command
+		 */
+		// if(lifecycle.getCommands() != null) {
+		//
+		// ICommand command = instantiate(lifecycleClassLoader,
+		// lifecycle.getCommands(), ICommand.class);
+		//
+		// }
 
 		return new ExecutionResult(request.getEntryPoint(), request.getModule());
 	}
 
-	private URLClassLoader createClassLoader(EExecutionType executionType, IDependencies dependencies, ClassLoader contextClassLoader) {
+	@SuppressWarnings("unchecked")
+	private <T extends IProcessor> T instantiate(URLClassLoader lifecycleClassLoader, IProcessorInstance processorInst, Class<T> type) throws RhenaException {
+
+		URLClassLoader processorClassLoader = createClassLoader(processorInst.getDependencies(), lifecycleClassLoader);
+		try {
+
+			Class<T> processorType = (Class<T>) processorClassLoader.loadClass(processorInst.getClassName());
+			T processor = processorType.newInstance();
+			return processor;
+		} catch (Throwable t) {
+			throw new RhenaException(t);
+		}
+	}
+
+	/**
+	 * @TODO optimize if possible, as this is called many times
+	 * @param executionType
+	 * @param dependencies
+	 * @param contextClassLoader
+	 * @return
+	 */
+	private URLClassLoader createClassLoader(IDependencies dependencies, ClassLoader parentClassLoader) {
+
+		EExecutionType executionType = EExecutionType.MAIN;
 
 		List<URL> depchain = new ArrayList<URL>();
 		for (IExecutionResult result : dependencies) {
@@ -53,15 +103,16 @@ public class RhenaAgentAcceptor implements IObjectServerAcceptor<IExecutionReque
 			if (result.getEntryPoint().getExecutionType().lessOrEqualTo(executionType)) {
 				result.getArtifacts().forEach(artifact -> {
 
-					if (artifact.getTags().equals(RhenaConstants.DEFAULT_ARTIFACT_TAG)) {
-						depchain.add(artifact.getLocation());
+					for (String tag : artifact.getTags()) {
+						if (tag.equals(RhenaConstants.DEFAULT_ARTIFACT_TAG)) {
+							depchain.add(artifact.getLocation());
+						}
 					}
 				});
 			}
 		}
 
-		URLClassLoader urlc = new URLClassLoader(new URL[] {});
-		return urlc;
+		return new URLClassLoader(depchain.toArray(new URL[] {}), parentClassLoader);
 	}
 
 	@Override

@@ -1,7 +1,9 @@
 
 package com.unnsvc.rhena.lifecycle.execution;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import com.unnsvc.rhena.common.RhenaConstants;
@@ -30,6 +32,23 @@ public class DefaultLifecycleInstance implements ILifecycleInstance {
 		this.processors = processors;
 		this.generator = generator;
 		this.commands = commands;
+	}
+
+	@Override
+	public Iterator<IProcessorInstance> iterator() {
+
+		List<IProcessorInstance> procs = new ArrayList<IProcessorInstance>();
+		procs.add(context);
+		procs.addAll(processors);
+		procs.add(generator);
+		procs.addAll(commands);
+		return procs.iterator();
+	}
+
+	@Override
+	public List<ICommandInstance> getCommands() {
+
+		return commands;
 	}
 
 	@Override
@@ -62,9 +81,4 @@ public class DefaultLifecycleInstance implements ILifecycleInstance {
 		return generator;
 	}
 
-	@Override
-	public List<ICommandInstance> getCommands() {
-
-		return commands;
-	}
 }

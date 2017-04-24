@@ -1,6 +1,8 @@
 
 package com.unnsvc.rhena.lifecycle.execution;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.unnsvc.rhena.common.lifecycle.ICommandInstance;
@@ -73,6 +75,21 @@ public class LifecycleInstance implements ILifecycleInstance {
 	public List<ICommandInstance> getCommands() {
 
 		return commands;
+	}
+
+	@Override
+	public Iterator<IProcessorInstance> iterator() {
+
+		List<IProcessorInstance> procs = new ArrayList<IProcessorInstance>();
+		procs.add(getContext());
+		if (!getProcessors().isEmpty()) {
+			procs.addAll(getProcessors());
+		}
+		procs.add(getGenerator());
+		if (!getCommands().isEmpty()) {
+			procs.addAll(getCommands());
+		}
+		return procs.iterator();
 	}
 
 }

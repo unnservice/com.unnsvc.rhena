@@ -1,10 +1,13 @@
 
 package com.unnsvc.rhena.execution.builders;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IRhenaContext;
+import com.unnsvc.rhena.common.artifact.IArtifact;
 import com.unnsvc.rhena.common.execution.IExecutionResult;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
@@ -59,6 +62,12 @@ public class RemoteBuilder extends AbstractBuilder {
 		public IRhenaModule getModule() {
 
 			return module;
+		}
+
+		@Override
+		public List<IArtifact> getArtifacts() {
+
+			throw new UnsupportedOperationException("Not implemented");
 		}
 
 	}

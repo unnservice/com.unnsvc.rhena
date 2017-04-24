@@ -8,7 +8,7 @@ package com.unnsvc.rhena.objectserver;
  */
 public interface IObjectServerAcceptor<REQUEST extends IObjectRequest, REPLY extends IObjectReply> {
 
-	public REPLY onRequest(REQUEST request);
+	public REPLY onRequest(REQUEST request) throws Throwable;
 
 	public int getServerSocketReadTimeout();
 }
