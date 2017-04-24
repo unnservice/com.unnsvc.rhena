@@ -22,4 +22,19 @@ public class Dependencies implements IDependencies {
 		return dependencyList.iterator();
 	}
 
+	/**
+	 * @TODO merge properly, we will just append dependencies for now, nevermind
+	 *       duplicates and version selection
+	 */
+	@Override
+	public void merge(IDependencies dependencies) {
+
+		dependencyList.addAll(dependencies.getDependencyList());
+	}
+
+	@Override
+	public List<IExecutionResult> getDependencyList() {
+
+		return dependencyList;
+	}
 }

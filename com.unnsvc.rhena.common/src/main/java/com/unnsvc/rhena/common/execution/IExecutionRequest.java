@@ -1,6 +1,7 @@
 
 package com.unnsvc.rhena.common.execution;
 
+import com.unnsvc.rhena.common.lifecycle.ILifecycleInstance;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.traversal.IDependencies;
@@ -11,6 +12,8 @@ public interface IExecutionRequest extends IObjectRequest {
 	public IEntryPoint getEntryPoint();
 
 	public IRhenaModule getModule();
+
+	public ILifecycleInstance getLifecycle();
 
 	public IDependencies getDependencies();
 
