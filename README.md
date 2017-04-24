@@ -34,22 +34,21 @@ A lifecycle is the main building block for producing artifacts, it does so by fi
 A fourth type of processor can be added, a command, which executes as a final command to do anything you want it to.
 The lifecycle is executed in a classloader heirarchy which looks like this:
 ```
-+------------------------------------------------+
-| +-----------------------+                      |
-| | Agent classloader     |                      |
-| +----------+------------+                      |
-|            |                                   |
-| +----------+----------+                        |
-| | Context classloader +---------------------+  |
-| +---------------------+                     |  |
-| +-----------------------------------------+ |  |
-| | Processor/Generator/Command classloader +-+  |
-| +-----------------------------------------+    |
-+------------------------------------------------+
++--------------------------------------------------+
+| Agent classloader                                |
+|                                                  |
+| +----------------------------------------------+ |
+| | Lifecycle classloader                        | |
+| |                                              | |
+| | +-----------------------+                    | |
+| | | Processor classloader |                    | |
+| | +-----------------------+                    | |
+| +----------------------------------------------+ |
++--------------------------------------------------+
 ```
 
 # The lifecycle
-The lifecycles are written in java so you can have lifecycles in the same project!
+The lifecycles are written in java so you can have lifecycles in the same project! But will evnetually implement support for writing the lifecycles in any language (yes, any, if one is willing to implement that part)
 
 # The module
 Modules are described in a module.xml file and will look like this (Don't worry aboout all the XML, it will have schemas):

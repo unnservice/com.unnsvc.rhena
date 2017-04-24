@@ -9,7 +9,7 @@ import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.IExecutionResult;
-import com.unnsvc.rhena.common.lifecycle.ILifecycleInstance;
+import com.unnsvc.rhena.common.lifecycle.ILifecycleExecution;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.ILifecycleConfiguration;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
@@ -17,6 +17,7 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.traversal.DependencyCollector;
 import com.unnsvc.rhena.common.traversal.IDependencies;
 import com.unnsvc.rhena.execution.requests.ExecutionRequest;
+import com.unnsvc.rhena.lifecycle.execution.DefaultLifecycleExecution;
 import com.unnsvc.rhena.lifecycle.execution.LifecycleExecution;
 
 /**
@@ -49,7 +50,7 @@ public class WorkspaceBuilder extends AbstractBuilder {
 			DependencyCollector collector = new DependencyCollector(context, entryPoint);
 			IDependencies dependencies = collector.toDependencyChain();
 
-			ILifecycleInstance lifecycle = instantiateLifecycle(module.getLifecycleConfiguration());
+			ILifecycleExecution lifecycle = instantiateLifecycle(module.getLifecycleConfiguration());
 
 			ExecutionRequest request = new ExecutionRequest(entryPoint, module, lifecycle, dependencies);
 			IExecutionResult result = client.executeRequest(request);
@@ -57,18 +58,9 @@ public class WorkspaceBuilder extends AbstractBuilder {
 		}
 	}
 
-	private ILifecycleInstance instantiateLifecycle(ILifecycleConfiguration lifecycle) throws RhenaException {
+	private ILifecycleExecution instantiateLifecycle(ILifecycleConfiguration lifecycle) throws RhenaException {
 
 		log.info("Lifecycle is: " + lifecycle);
-
-		ILifecycleInstance instance = null;
-		if (module.getLifecycleConfiguration().getName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
-
-			instance = new LifecycleExecution();
-		} else {
-
-			instance = new LifecycleExecution();
-		}
 
 		IDependencies dependencies = null;
 		for (IRhenaEdge lifecycleEdge : lifecycle) {
@@ -82,6 +74,15 @@ public class WorkspaceBuilder extends AbstractBuilder {
 
 				dependencies.merge(lifecycleDeps);
 			}
+		}
+
+		ILifecycleExecution instance = null;
+		if (lifecycle.getName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
+
+			instance = new DefaultLifecycleExecution();
+		} else {
+
+			instance = new LifecycleExecution(lifecycle.getName(), dependencies);
 		}
 
 		return instance;
