@@ -32,7 +32,7 @@ public class TestObjectServer {
 					}
 
 					@Override
-					public int getSocketReadTimeout() {
+					public int getServerSocketReadTimeout() {
 
 						return 1000;
 					}
