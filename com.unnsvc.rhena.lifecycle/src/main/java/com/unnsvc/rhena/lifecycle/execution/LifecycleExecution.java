@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.lifecycle;
+package com.unnsvc.rhena.lifecycle.execution;
 
 import com.unnsvc.rhena.common.lifecycle.ILifecycleInstance;
 
@@ -9,7 +9,7 @@ import com.unnsvc.rhena.common.lifecycle.ILifecycleInstance;
  * @author noname
  *
  */
-public class LifecycleInstance implements ILifecycleInstance {
+public class LifecycleExecution implements ILifecycleInstance {
 
 	private static final long serialVersionUID = 1L;
 

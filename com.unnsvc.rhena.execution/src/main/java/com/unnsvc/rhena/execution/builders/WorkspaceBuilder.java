@@ -17,7 +17,7 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.traversal.DependencyCollector;
 import com.unnsvc.rhena.common.traversal.IDependencies;
 import com.unnsvc.rhena.execution.requests.ExecutionRequest;
-import com.unnsvc.rhena.lifecycle.LifecycleInstance;
+import com.unnsvc.rhena.lifecycle.execution.LifecycleExecution;
 
 /**
  * Builders are executed inside of separate threads
@@ -64,10 +64,10 @@ public class WorkspaceBuilder extends AbstractBuilder {
 		ILifecycleInstance instance = null;
 		if (module.getLifecycleConfiguration().getName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
 
-			instance = new LifecycleInstance();
+			instance = new LifecycleExecution();
 		} else {
 
-			instance = new LifecycleInstance();
+			instance = new LifecycleExecution();
 		}
 
 		IDependencies dependencies = null;
