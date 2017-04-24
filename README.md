@@ -67,19 +67,25 @@ Modules are described in a module.xml file and will look like this (Don't worry 
 		<prop:anotherprop>anothervalue</prop:anotherprop>
 
 		<lifecycle name="library">
+			<dependency:main module="com.test:lifecycle:0.0.1" />
 
-			<context module="com.test:lifecycle:0.0.1" class="com.test.lifecycle.CustomContext">
-				<resources>
-					<main path="src/main/java" />
-					<main path="src/main/resources" filter="true" />
-					<test path="src/test/java" />
-					<test path="src/test/resources" filter="true" />
-				</resources>
+			<context class="com.test.lifecycle.CustomContext">
+				<dependency:main module="com.test:lifecycle:0.0.1" />
+				<configuration>
+					<resources>
+						<main path="src/main/java" />
+						<main path="src/main/resources" filter="true" />
+						<test path="src/test/java" />
+						<test path="src/test/resources" filter="true" />
+					</resources>
+				</configuration>
 			</context> 
     
-			<processor module="com.test:lifecycle:0.0.1" class="com.test.lifecycle.CustomJavaProcessor" />
-			<generator module="com.test:lifecycle:0.0.1" class="com.test.lifecycle.CustomGenerator" />
-			<command module="com.test:lifecycle:0.0.1" class="com.test.lifecycle.CustomCommand" name="testCommand" />
+			<processor class="com.test.lifecycle.CustomJavaProcessor" />
+			<generator class="com.test.lifecycle.CustomGenerator">
+				<dependency:main module="com.test:lifecycle:0.0.1" />
+			</generator />
+			<command class="com.test.lifecycle.CustomCommand" name="testCommand" />
 
 		</lifecycle>
 	</meta>
