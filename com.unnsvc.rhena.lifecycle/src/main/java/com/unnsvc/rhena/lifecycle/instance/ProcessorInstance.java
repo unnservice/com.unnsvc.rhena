@@ -6,6 +6,7 @@ import com.unnsvc.rhena.common.traversal.IDependencies;
 
 public class ProcessorInstance implements IProcessorInstance {
 
+	private static final long serialVersionUID = 1L;
 	private String className;
 	private IDependencies dependencies;
 

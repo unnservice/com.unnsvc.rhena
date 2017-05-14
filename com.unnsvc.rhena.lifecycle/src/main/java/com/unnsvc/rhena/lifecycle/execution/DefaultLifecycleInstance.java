@@ -57,6 +57,7 @@ public class DefaultLifecycleInstance implements ILifecycleInstance {
 		return lifecycleName;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public IDependencies getDependencies() {
 

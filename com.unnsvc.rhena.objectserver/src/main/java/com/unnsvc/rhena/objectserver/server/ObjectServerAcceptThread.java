@@ -28,7 +28,7 @@ public class ObjectServerAcceptThread<REQUEST extends IObjectRequest, REPLY exte
 			this.oos = new ObjectOutputStream(clientSocket.getOutputStream());
 			this.ois = new ObjectInputStream(clientSocket.getInputStream());
 		} catch (IOException ioe) {
-			
+
 			throw new ObjectServerException(ioe);
 		}
 	}
@@ -50,7 +50,7 @@ public class ObjectServerAcceptThread<REQUEST extends IObjectRequest, REPLY exte
 
 			// we close it after connection exists
 			close();
-		} catch (IOException | ClassNotFoundException ex) {
+		} catch (Throwable ex) {
 			throw new RuntimeException(ex);
 		}
 	}
