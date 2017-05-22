@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.model.parser;
+package com.unnsvc.rhena.model;
 
 import java.io.File;
 

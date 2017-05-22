@@ -6,7 +6,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
-import com.unnsvc.rhena.model.parser.ModelHelper;
 
 public class TestLocationParser {
 
