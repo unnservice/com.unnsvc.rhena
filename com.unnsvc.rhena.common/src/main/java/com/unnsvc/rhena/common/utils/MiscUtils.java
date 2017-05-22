@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.common;
+package com.unnsvc.rhena.common.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,7 +28,7 @@ import org.w3c.dom.NodeList;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.model.EExecutionType;
 
-public class Utils {
+public class MiscUtils {
 
 	public static int stackTraceCount() {
 

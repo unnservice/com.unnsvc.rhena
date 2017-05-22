@@ -1,3 +1,4 @@
+
 package com.unnsvc.rhena.common;
 
 import com.unnsvc.rhena.common.exceptions.RhenaException;
@@ -15,5 +16,4 @@ public interface IRhenaEngine {
 	public IExecutionResult resolveExecution(EExecutionType type, IRhenaModule module) throws RhenaException;
 
 	public IRhenaContext getContext();
-
 }

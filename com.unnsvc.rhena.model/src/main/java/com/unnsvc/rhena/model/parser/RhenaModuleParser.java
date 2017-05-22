@@ -19,7 +19,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.unnsvc.rhena.common.RhenaConstants;
-import com.unnsvc.rhena.common.Utils;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.EExecutionType;
@@ -27,6 +26,7 @@ import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.ILifecycleSpec;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.repository.RepositoryIdentifier;
+import com.unnsvc.rhena.common.utils.MiscUtils;
 import com.unnsvc.rhena.model.EntryPoint;
 import com.unnsvc.rhena.model.RhenaEdge;
 import com.unnsvc.rhena.model.RhenaModule;
@@ -268,7 +268,7 @@ public class RhenaModuleParser {
 
 	private Document nodeToDocument(Node child) throws RhenaException {
 
-		Document document = Utils.newEmptyDocument();
+		Document document = MiscUtils.newEmptyDocument();
 		Node importedNode = document.importNode(child, true);
 		document.appendChild(importedNode);
 		return document;
@@ -276,7 +276,7 @@ public class RhenaModuleParser {
 
 	private IRhenaEdge processDepenencyNode(Node moduleChild) throws DOMException, RhenaException {
 
-		EExecutionType dependencyType = Utils.valueOf(moduleChild.getLocalName());
+		EExecutionType dependencyType = MiscUtils.valueOf(moduleChild.getLocalName());
 		String dependencyTargetModuleIdentifier = moduleChild.getAttributes().getNamedItem("module").getNodeValue();
 
 		ModuleIdentifier moduleIdentifier = ModuleIdentifier.valueOf(dependencyTargetModuleIdentifier);
