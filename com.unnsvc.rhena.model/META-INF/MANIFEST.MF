@@ -6,3 +6,4 @@ Bundle-Vendor: UNNSVC
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: com.unnsvc.rhena.model
+Require-Bundle: com.unnsvc.rhena.common

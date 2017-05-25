@@ -7,4 +7,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: com.unnsvc.rhena.core,
  com.unnsvc.rhena.core.config
-Require-Bundle: com.unnsvc.rhena.model
+Require-Bundle: com.unnsvc.rhena.common,
+ com.unnsvc.rhena.config,
+ com.unnsvc.rhena.model,
+ com.unnsvc.rhena.lifecycle
