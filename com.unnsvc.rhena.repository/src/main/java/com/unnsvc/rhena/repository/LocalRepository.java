@@ -4,6 +4,7 @@ package com.unnsvc.rhena.repository;
 import java.io.File;
 import java.net.URI;
 
+import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.NotFoundException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;

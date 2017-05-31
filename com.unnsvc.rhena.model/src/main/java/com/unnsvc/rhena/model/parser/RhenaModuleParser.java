@@ -102,7 +102,7 @@ public class RhenaModuleParser {
 
 		// validate
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource("META-INF/schema/module.xsd"));
+		Schema schema = schemaFactory.newSchema(RhenaConstants.class.getClassLoader().getResource("META-INF/schema/module.xsd"));
 
 		try {
 			Validator validator = schema.newValidator();

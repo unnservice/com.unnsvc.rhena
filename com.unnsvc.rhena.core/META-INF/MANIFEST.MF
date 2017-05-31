@@ -12,4 +12,5 @@ Require-Bundle: com.unnsvc.rhena.common,
  com.unnsvc.rhena.repository,
  com.unnsvc.rhena.agent,
  com.unnsvc.rhena.execution,
- com.unnsvc.rhena.model
+ com.unnsvc.rhena.model,
+ org.slf4j.api

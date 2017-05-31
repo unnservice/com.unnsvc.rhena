@@ -8,3 +8,4 @@ Bundle-ActivationPolicy: lazy
 Export-Package: com.unnsvc.rhena.objectserver,
  com.unnsvc.rhena.objectserver.client,
  com.unnsvc.rhena.objectserver.server
+Require-Bundle: org.slf4j.api

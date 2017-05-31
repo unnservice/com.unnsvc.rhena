@@ -9,7 +9,9 @@ Export-Package: com.unnsvc.rhena.execution,
  com.unnsvc.rhena.execution.builders,
  com.unnsvc.rhena.execution.requests,
  com.unnsvc.rhena.execution.threading
-Require-Bundle: com.unnsvc.rhena.common,
+Require-Bundle: org.slf4j.api,
+ com.unnsvc.rhena.objectserver,
+ com.unnsvc.rhena.common,
  com.unnsvc.rhena.config,
  com.unnsvc.rhena.model,
  com.unnsvc.rhena.lifecycle
