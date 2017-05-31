@@ -11,9 +11,9 @@ public interface IRepositoryConfiguration {
 
 	public void addWorkspaceRepositories(IRepositoryDefinition workspaceRepository);
 
-	public IRepositoryDefinition getCacheRepository();
+	public List<IRepositoryDefinition> getCacheRepositories();
 
-	public void setCacheRepository(IRepositoryDefinition cacheRepository);
+	public void addCacheRepository(IRepositoryDefinition cacheRepository);
 
 	public List<IRepositoryDefinition> getRemoteRepositories();
 

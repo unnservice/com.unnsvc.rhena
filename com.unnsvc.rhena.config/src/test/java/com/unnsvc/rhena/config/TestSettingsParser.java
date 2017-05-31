@@ -21,7 +21,7 @@ public class TestSettingsParser {
 		RhenaSettingsParser parser = new RhenaSettingsParser(repoConfig);
 		parser.parseSettings(new File("src/test/resources/settings.xml"));
 		
-		Assert.assertNotNull(repoConfig.getCacheRepository());
+		Assert.assertNotNull(repoConfig.getCacheRepositories().isEmpty());
 		Assert.assertEquals(1, repoConfig.getRemoteRepositories().size());
 		Assert.assertEquals(1, repoConfig.getWorkspaceRepositories().size());
 	}

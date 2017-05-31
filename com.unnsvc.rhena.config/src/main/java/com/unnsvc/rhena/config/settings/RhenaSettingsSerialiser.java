@@ -28,7 +28,9 @@ public class RhenaSettingsSerialiser {
 		sb.append("\t\t</workspace>").append(System.getProperty("line.separator"));
 
 		sb.append("\t\t<cache>").append(System.getProperty("line.separator"));
-		serialiseRepo(config.getRepositoryConfiguration().getCacheRepository(), sb);
+		config.getRepositoryConfiguration().getCacheRepositories().forEach(repo -> {
+			serialiseRepo(repo, sb);
+		});
 		sb.append("\t\t</cache>").append(System.getProperty("line.separator"));
 
 		sb.append("\t\t<remote>").append(System.getProperty("line.separator"));

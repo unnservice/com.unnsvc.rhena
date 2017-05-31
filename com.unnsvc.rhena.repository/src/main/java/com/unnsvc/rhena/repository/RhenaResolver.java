@@ -47,10 +47,13 @@ public class RhenaResolver implements IRhenaResolver {
 			}
 		}
 
-		if (resolved == null && repoConfig.getCacheRepository() != null) {
-			resolved = resolve(context, identifier, repoConfig.getCacheRepository());
-			if (resolved != null) {
-				return resolved;
+		if (resolved == null) {
+			for (IRepositoryDefinition definition : repoConfig.getCacheRepositories()) {
+
+				resolved = resolve(context, identifier, definition);
+				if (resolved != null) {
+					return resolved;
+				}
 			}
 		}
 
@@ -106,7 +109,7 @@ public class RhenaResolver implements IRhenaResolver {
 				// try this location first, before trying sublocations
 				IRhenaModule resolved = resolve(context, identifier, defn);
 				if (resolved != null) {
-					
+
 					return resolved;
 				} else {
 

@@ -58,7 +58,7 @@ public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 
 		IRepositoryDefinition localRepoDef = RepositoryDefinition.newLocal(localRepo.getName(), localRepo.toURI());
 		log.debug(localRepoDef.toString());
-		config.getRepositoryConfiguration().setCacheRepository(localRepoDef);
+		config.getRepositoryConfiguration().addCacheRepository(localRepoDef);
 
 		IRepositoryDefinition workspaceRepoDef = RepositoryDefinition.newWorkspace(workspaceRepo.getName(), workspaceRepo.toURI());
 		log.debug(workspaceRepoDef.toString());

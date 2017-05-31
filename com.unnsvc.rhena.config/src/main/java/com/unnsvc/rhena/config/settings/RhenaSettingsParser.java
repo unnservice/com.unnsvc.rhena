@@ -79,7 +79,7 @@ public class RhenaSettingsParser extends DefaultHandler {
 				} else if (cache) {
 					
 					RepositoryDefinition def = new RepositoryDefinition(ERepositoryType.CACHE, identifier, location);
-					repoConfig.setCacheRepository(def);
+					repoConfig.addCacheRepository(def);
 				} else if (remote) {
 
 					RepositoryDefinition def = new RepositoryDefinition(ERepositoryType.REMOTE, identifier, location);

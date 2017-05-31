@@ -10,13 +10,14 @@ import com.unnsvc.rhena.common.repository.IRepositoryDefinition;
 public class RhenaRepositoryConfiguration implements IRepositoryConfiguration {
 
 	private List<IRepositoryDefinition> workspaceRepositories;
-	private IRepositoryDefinition cacheRepository;
+	private List<IRepositoryDefinition> cacheRepositories;
 	private List<IRepositoryDefinition> remoteRepositories;
 
 	public RhenaRepositoryConfiguration() {
 
 		this.workspaceRepositories = new ArrayList<IRepositoryDefinition>();
 		this.remoteRepositories = new ArrayList<IRepositoryDefinition>();
+		this.cacheRepositories = new ArrayList<IRepositoryDefinition>();
 	}
 
 	@Override
@@ -31,16 +32,15 @@ public class RhenaRepositoryConfiguration implements IRepositoryConfiguration {
 		this.workspaceRepositories.add(workspaceRepository);
 	}
 
-	@Override
-	public IRepositoryDefinition getCacheRepository() {
+	public List<IRepositoryDefinition> getCacheRepositories() {
 
-		return cacheRepository;
+		return cacheRepositories;
 	}
 
 	@Override
-	public void setCacheRepository(IRepositoryDefinition cacheRepository) {
+	public void addCacheRepository(IRepositoryDefinition cacheRepository) {
 
-		this.cacheRepository = cacheRepository;
+		this.cacheRepositories.add(cacheRepository);
 	}
 
 	@Override
