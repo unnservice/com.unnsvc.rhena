@@ -8,6 +8,7 @@ Bundle-ActivationPolicy: lazy
 Export-Package: com.unnsvc.rhena.common,
  com.unnsvc.rhena.common.agent,
  com.unnsvc.rhena.common.annotation,
+ com.unnsvc.rhena.common.artifact,
  com.unnsvc.rhena.common.config,
  com.unnsvc.rhena.common.exceptions,
  com.unnsvc.rhena.common.execution,
@@ -19,5 +20,8 @@ Export-Package: com.unnsvc.rhena.common,
  com.unnsvc.rhena.common.process,
  com.unnsvc.rhena.common.repository,
  com.unnsvc.rhena.common.search,
+ com.unnsvc.rhena.common.traversal,
  com.unnsvc.rhena.common.utils,
  com.unnsvc.rhena.common.visitors
+Require-Bundle: org.slf4j.api,
+ com.unnsvc.rhena.objectserver

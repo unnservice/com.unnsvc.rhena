@@ -5,5 +5,8 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: UNNSVC
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Export-Package: com.unnsvc.rhena.model
-Require-Bundle: com.unnsvc.rhena.common
+Export-Package: com.unnsvc.rhena.model,
+ com.unnsvc.rhena.model.lifecycle,
+ com.unnsvc.rhena.model.parser
+Require-Bundle: com.unnsvc.rhena.common,
+ org.slf4j.api
