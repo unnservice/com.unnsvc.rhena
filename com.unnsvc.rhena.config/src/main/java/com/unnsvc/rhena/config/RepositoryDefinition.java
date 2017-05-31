@@ -22,7 +22,7 @@ public class RepositoryDefinition implements IRepositoryDefinition {
 
 	public static IRepositoryDefinition newLocal(String identifier, URI location) {
 
-		return new RepositoryDefinition(ERepositoryType.LOCAL, new RepositoryIdentifier(identifier), location);
+		return new RepositoryDefinition(ERepositoryType.CACHE, new RepositoryIdentifier(identifier), location);
 	}
 
 	public static IRepositoryDefinition newWorkspace(String identifier, URI location) {

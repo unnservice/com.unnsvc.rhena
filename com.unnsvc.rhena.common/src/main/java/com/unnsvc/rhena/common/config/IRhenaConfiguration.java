@@ -29,5 +29,4 @@ public interface IRhenaConfiguration {
 	 * @return
 	 */
 	public boolean isFullBuild();
-
 }

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- System-wide rhena settings -->
 <settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:rhena:settings">
+	
 	<repositories>
 		<workspace>
 			<repository location="file:/home/$USER/noname/.rhena/repository" />
@@ -11,4 +13,5 @@
 			<repository location="http://some/location" />
 		</remote>
 	</repositories>
+	
 </settings>

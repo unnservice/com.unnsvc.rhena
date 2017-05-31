@@ -13,7 +13,7 @@ public class RepositoryFactory implements IRepositoryFactory {
 	@Override
 	public IRepository createRepository(IRhenaContext context, IRepositoryDefinition definition) throws RhenaException {
 
-		if (definition.getRepositoryType().equals(ERepositoryType.LOCAL)) {
+		if (definition.getRepositoryType().equals(ERepositoryType.CACHE)) {
 
 			return new LocalRepository(definition);
 		} else if (definition.getRepositoryType().equals(ERepositoryType.WORKSPACE)) {

@@ -1,7 +1,20 @@
-package com.unnsvc.rhena.common.repository;
 
+package com.unnsvc.rhena.common.repository;
 
 public enum ERepositoryType {
 
-	WORKSPACE, LOCAL, REMOTE;
+	WORKSPACE("Workspace"), CACHE("Cache"), REMOTE("Remote");
+
+	private String title;
+
+	private ERepositoryType(String title) {
+
+		this.title = title;
+	}
+
+	@Override
+	public String toString() {
+
+		return title;
+	}
 }

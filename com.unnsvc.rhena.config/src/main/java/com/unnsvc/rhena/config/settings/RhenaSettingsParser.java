@@ -74,15 +74,15 @@ public class RhenaSettingsParser extends DefaultHandler {
 				
 				if (workspace) {
 					
-					RepositoryDefinition def = new RepositoryDefinition(ERepositoryType.LOCAL, identifier, location);
+					RepositoryDefinition def = new RepositoryDefinition(ERepositoryType.WORKSPACE, identifier, location);
 					repoConfig.addWorkspaceRepositories(def);
 				} else if (cache) {
 					
-					RepositoryDefinition def = new RepositoryDefinition(ERepositoryType.LOCAL, identifier, location);
+					RepositoryDefinition def = new RepositoryDefinition(ERepositoryType.CACHE, identifier, location);
 					repoConfig.setCacheRepository(def);
 				} else if (remote) {
 
-					RepositoryDefinition def = new RepositoryDefinition(ERepositoryType.LOCAL, identifier, location);
+					RepositoryDefinition def = new RepositoryDefinition(ERepositoryType.REMOTE, identifier, location);
 					repoConfig.addRemoteRepository(def);
 				}
 			}
