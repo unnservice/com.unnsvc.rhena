@@ -2,6 +2,7 @@
 package com.unnsvc.rhena.config;
 
 import com.unnsvc.rhena.common.config.IAgentConfiguration;
+import com.unnsvc.rhena.common.config.IBuildConfiguration;
 import com.unnsvc.rhena.common.config.IRepositoryConfiguration;
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 
@@ -15,15 +16,14 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 
 	private IRepositoryConfiguration repositoryConfiguration;
 	private IAgentConfiguration agentConfiguration;
+	private IBuildConfiguration buildConfiguration;
 
-	private boolean fullBuild;
 
 	public RhenaConfiguration() {
 
 		this.repositoryConfiguration = new RhenaRepositoryConfiguration();
 		this.agentConfiguration = new AgentConfiguration();
-
-		this.fullBuild = false;
+		this.buildConfiguration = new BuildConfiguration();
 	}
 
 	@Override
@@ -51,8 +51,15 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	}
 
 	@Override
-	public boolean isFullBuild() {
+	public IBuildConfiguration getBuildConfiguration() {
 
-		return fullBuild;
+		return buildConfiguration;
 	}
+
+	@Override
+	public void setBuildConfiguration(IBuildConfiguration buildConfiguration) {
+
+		this.buildConfiguration = buildConfiguration;
+	}
+
 }

@@ -11,12 +11,7 @@ public interface IRhenaConfiguration {
 
 	public void setAgentConfiguration(IAgentConfiguration agentConfiguration);
 
-	/**
-	 * Full build implies that the highest execution of the project is produced
-	 * instead of lowest necessary (for example MAIN because it is required by
-	 * model instead of ITEST)
-	 * 
-	 * @return
-	 */
-	public boolean isFullBuild();
+	public IBuildConfiguration getBuildConfiguration();
+
+	public void setBuildConfiguration(IBuildConfiguration buildConfiguration);
 }

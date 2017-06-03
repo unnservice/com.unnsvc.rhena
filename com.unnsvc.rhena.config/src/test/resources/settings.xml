@@ -14,4 +14,9 @@
 		</remote>
 	</repositories>
 	
+	
+	<agent>
+		<threads>4</threads>
+	</agent>
+	
 </settings>
