@@ -46,9 +46,7 @@ public class RhenaSettingsMarshall {
 	public static IRhenaConfiguration loadSettings_(IRhenaConfiguration config, URL settingsXml) throws RhenaException {
 
 		try {
-			URLConnection conn = openConn(settingsXml);
-
-			System.err.println("Conn is " + conn);
+			URLConnection conn = settingsXml.openConnection();
 
 			InputStream is = conn.getInputStream();
 			DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
@@ -60,19 +58,12 @@ public class RhenaSettingsMarshall {
 			Schema schema = schemaFactory.newSchema(RhenaConstants.class.getClassLoader().getResource("META-INF/schema/settings.xsd"));
 			Validator validator = schema.newValidator();
 			validator.validate(new DOMSource(document));
+			
+			// Now construct a configuration
 
 			return config;
 		} catch (Exception ex) {
 
-			throw new RhenaException(ex);
-		}
-	}
-
-	private static URLConnection openConn(URL settingsXml) throws RhenaException {
-
-		try {
-			return settingsXml.openConnection();
-		} catch (Exception ex) {
 			throw new RhenaException(ex);
 		}
 	}

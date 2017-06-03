@@ -13,7 +13,7 @@ public class TestSettingsSerialisation {
 	@Test
 	public void testSerialisation() throws Exception {
 
-		URL location = TestSettingsSerialisation.class.getResource("/TEST-INF/settings.xml2");
+		URL location = TestSettingsSerialisation.class.getResource("/TEST-INF/settings.xml");
 		IRhenaConfiguration config = RhenaSettingsMarshall.loadSettings(location);
 	}
 }
