@@ -31,7 +31,7 @@ public abstract class AbstractAgentTest extends AbstractRhenaConfiguredTest {
 			SocketAddress agentAddress = ObjectServerHelper.availableAddress();
 
 			config = createMockConfig();
-			config.setAgentAddress(agentAddress);
+			config.getAgentConfiguration().setAgentAddress(agentAddress);
 
 			IRhenaResolver resolver = new RhenaResolver();
 
@@ -42,7 +42,7 @@ public abstract class AbstractAgentTest extends AbstractRhenaConfiguredTest {
 			 * Agent test requires a running agent, so we set up the agent
 			 * before the test and tear it down afterward
 			 */
-			agent = new RhenaAgent(config.getAgentAddress());
+			agent = new RhenaAgent(config.getAgentConfiguration().getAgentAddress());
 			agent.start();
 		} catch (Exception ex) {
 			throw new RhenaException(ex);

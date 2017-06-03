@@ -1,8 +1,7 @@
 
 package com.unnsvc.rhena.config;
 
-import java.net.SocketAddress;
-
+import com.unnsvc.rhena.common.config.IAgentConfiguration;
 import com.unnsvc.rhena.common.config.IRepositoryConfiguration;
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 
@@ -15,41 +14,28 @@ import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 public class RhenaConfiguration implements IRhenaConfiguration {
 
 	private IRepositoryConfiguration repositoryConfiguration;
-	private int threads;
-	private SocketAddress agentAddress;
-	private int agentTimeout;
+	private IAgentConfiguration agentConfiguration;
+
 	private boolean fullBuild;
 
 	public RhenaConfiguration() {
 
 		this.repositoryConfiguration = new RhenaRepositoryConfiguration();
-		this.threads = Runtime.getRuntime().availableProcessors();
-		this.agentTimeout = 1000;
+		this.agentConfiguration = new AgentConfiguration();
+
 		this.fullBuild = false;
 	}
 
 	@Override
-	public void setAgentAddress(SocketAddress agentAddress) {
+	public IAgentConfiguration getAgentConfiguration() {
 
-		this.agentAddress = agentAddress;
+		return agentConfiguration;
 	}
 
 	@Override
-	public SocketAddress getAgentAddress() {
+	public void setAgentConfiguration(IAgentConfiguration agentConfiguration) {
 
-		return agentAddress;
-	}
-
-	@Override
-	public void setThreads(int threads) {
-
-		this.threads = threads;
-	}
-
-	@Override
-	public int getThreads() {
-
-		return threads;
+		this.agentConfiguration = agentConfiguration;
 	}
 
 	@Override
@@ -64,18 +50,6 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 		this.repositoryConfiguration = repositoryConfiguration;
 	}
 
-	@Override
-	public int getAgentTimeout() {
-
-		return agentTimeout;
-	}
-
-	@Override
-	public void setAgentTimeout(int agentTimeout) {
-
-		this.agentTimeout = agentTimeout;
-	}
-	
 	@Override
 	public boolean isFullBuild() {
 

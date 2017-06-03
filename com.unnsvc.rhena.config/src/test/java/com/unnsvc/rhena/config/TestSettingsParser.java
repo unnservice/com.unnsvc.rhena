@@ -11,7 +11,6 @@ import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.config.settings.RhenaSettingsParser;
 import com.unnsvc.rhena.config.settings.RhenaSettingsSerialiser;
 
-
 public class TestSettingsParser {
 
 	@Test

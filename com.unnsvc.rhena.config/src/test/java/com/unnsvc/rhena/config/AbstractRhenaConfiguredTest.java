@@ -39,9 +39,8 @@ public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 			 * During testing, we'd want predictable sequential execution unless
 			 * specified otherwise
 			 */
-			config.setThreads(1);
-
-			config.setAgentAddress(ObjectServerHelper.availableAddress());
+			config.getAgentConfiguration().setThreads(1);
+			config.getAgentConfiguration().setAgentAddress(ObjectServerHelper.availableAddress());
 
 			return config;
 		} catch (Exception ex) {

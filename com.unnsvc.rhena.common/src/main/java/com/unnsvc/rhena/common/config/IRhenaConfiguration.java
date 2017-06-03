@@ -1,25 +1,15 @@
 
 package com.unnsvc.rhena.common.config;
 
-import java.net.SocketAddress;
-
 public interface IRhenaConfiguration {
 
 	public IRepositoryConfiguration getRepositoryConfiguration();
 
 	public void setRepositoryConfiguration(IRepositoryConfiguration repositoryConfiguration);
 
-	public void setThreads(int threads);
+	public IAgentConfiguration getAgentConfiguration();
 
-	public int getThreads();
-
-	public void setAgentAddress(SocketAddress agentAddress);
-
-	public SocketAddress getAgentAddress();
-
-	public void setAgentTimeout(int agentTimeout);
-
-	public int getAgentTimeout();
+	public void setAgentConfiguration(IAgentConfiguration agentConfiguration);
 
 	/**
 	 * Full build implies that the highest execution of the project is produced
