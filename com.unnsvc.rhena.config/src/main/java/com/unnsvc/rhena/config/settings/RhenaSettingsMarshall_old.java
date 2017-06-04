@@ -22,7 +22,7 @@ import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.config.RhenaConfiguration;
 
-public class RhenaSettingsMarshall {
+public class RhenaSettingsMarshall_old {
 
 	public static IRhenaConfiguration loadSettings(URI location) throws RhenaException {
 

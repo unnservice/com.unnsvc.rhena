@@ -4,11 +4,11 @@ package com.unnsvc.rhena.config.settings;
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.repository.IRepositoryDefinition;
 
-public class RhenaSettingsSerialiser {
+public class RhenaSettingsSerialiser_old {
 
 	private IRhenaConfiguration config;
 
-	public RhenaSettingsSerialiser(IRhenaConfiguration config) {
+	public RhenaSettingsSerialiser_old(IRhenaConfiguration config) {
 
 		this.config = config;
 	}

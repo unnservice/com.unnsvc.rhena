@@ -20,11 +20,11 @@ import com.unnsvc.rhena.common.repository.ERepositoryType;
 import com.unnsvc.rhena.common.repository.RepositoryIdentifier;
 import com.unnsvc.rhena.config.RepositoryDefinition;
 
-public class RhenaSettingsParser extends DefaultHandler {
+public class RhenaSettingsParser_old extends DefaultHandler {
 
 	private IRepositoryConfiguration repoConfig;
 
-	public RhenaSettingsParser(IRepositoryConfiguration repoConfig) {
+	public RhenaSettingsParser_old(IRepositoryConfiguration repoConfig) {
 
 		this.repoConfig = repoConfig;
 	}

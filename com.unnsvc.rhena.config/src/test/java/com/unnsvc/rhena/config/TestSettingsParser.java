@@ -8,8 +8,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
-import com.unnsvc.rhena.config.settings.RhenaSettingsParser;
-import com.unnsvc.rhena.config.settings.RhenaSettingsSerialiser;
+import com.unnsvc.rhena.config.settings.RhenaSettingsParser_old;
+import com.unnsvc.rhena.config.settings.RhenaSettingsSerialiser_old;
 
 public class TestSettingsParser {
 
@@ -17,7 +17,7 @@ public class TestSettingsParser {
 	public void testSettingsParser() throws Exception {
 		
 		RhenaRepositoryConfiguration repoConfig = new RhenaRepositoryConfiguration();
-		RhenaSettingsParser parser = new RhenaSettingsParser(repoConfig);
+		RhenaSettingsParser_old parser = new RhenaSettingsParser_old(repoConfig);
 		parser.parseSettings(new File("src/test/resources/settings.xml"));
 		
 		Assert.assertNotNull(repoConfig.getCacheRepositories().isEmpty());
@@ -33,7 +33,7 @@ public class TestSettingsParser {
 		RhenaRepositoryConfiguration repoConfig = new RhenaRepositoryConfiguration();
 		config.setRepositoryConfiguration(repoConfig);
 		
-		RhenaSettingsParser parser = new RhenaSettingsParser(repoConfig);
+		RhenaSettingsParser_old parser = new RhenaSettingsParser_old(repoConfig);
 		parser.parseSettings(new File("src/test/resources/settings.xml"));
 		
 		
@@ -46,7 +46,7 @@ public class TestSettingsParser {
 			}
 		}
 		
-		RhenaSettingsSerialiser serialiser = new RhenaSettingsSerialiser(config);
+		RhenaSettingsSerialiser_old serialiser = new RhenaSettingsSerialiser_old(config);
 		System.err.println("Serialising to: ");
 		System.err.print(serialiser.serialise());
 		Assert.assertEquals(sb.toString(), serialiser.serialise());
