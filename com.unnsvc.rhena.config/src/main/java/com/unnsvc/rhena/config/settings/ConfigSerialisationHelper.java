@@ -141,10 +141,10 @@ public class ConfigSerialisationHelper {
 
 	public static interface SerialisationWriter {
 
-		public void write(int indent, String line);
+		public void write(int indent, String line) throws IOException;
 	}
 
-	public static void serialiseConfig(IRhenaConfiguration config, SerialisationWriter writer) {
+	public static void serialiseConfig(IRhenaConfiguration config, SerialisationWriter writer) throws IOException {
 
 		int indent = 0;
 
@@ -159,13 +159,13 @@ public class ConfigSerialisationHelper {
 		writer.write(indent, "</settings>");
 	}
 
-	private static void serialiseBuildConfig(int i, IBuildConfiguration buildConfiguration, SerialisationWriter writer) {
+	private static void serialiseBuildConfig(int i, IBuildConfiguration buildConfiguration, SerialisationWriter writer) throws IOException {
 
 		writer.write(i, "<build>");
 		writer.write(i, "</build>");
 	}
 
-	private static void serialiseRepoConfig(int i, IRepositoryConfiguration repositoryConfiguration, SerialisationWriter writer) {
+	private static void serialiseRepoConfig(int i, IRepositoryConfiguration repositoryConfiguration, SerialisationWriter writer) throws IOException {
 
 		writer.write(i, "<repositories>");
 		writer.write(i + 1, "<workspace>");
@@ -186,12 +186,12 @@ public class ConfigSerialisationHelper {
 		writer.write(i, "</repositories>");
 	}
 
-	private static void serialiseRepoDefConfig(int i, IRepositoryDefinition def, SerialisationWriter writer) {
+	private static void serialiseRepoDefConfig(int i, IRepositoryDefinition def, SerialisationWriter writer) throws IOException {
 
 		writer.write(i, "<repository location=\"" + def.getLocation().toString() + "\" />");
 	}
 
-	private static void serialiseAgentConfig(int i, IAgentConfiguration agentConfiguration, SerialisationWriter writer) {
+	private static void serialiseAgentConfig(int i, IAgentConfiguration agentConfiguration, SerialisationWriter writer) throws IOException {
 
 		writer.write(i, "<agent>");
 		writer.write(i, "</agent>");

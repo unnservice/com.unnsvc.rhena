@@ -7,7 +7,7 @@
 
 	<xs:complexType name="repositoryListType">
 		<xs:sequence>
-			<xs:element name="repository" type="tns:repositoryType" minOccurs="1" maxOccurs="1" />
+			<xs:element name="repository" type="tns:repositoryType" minOccurs="1" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 
