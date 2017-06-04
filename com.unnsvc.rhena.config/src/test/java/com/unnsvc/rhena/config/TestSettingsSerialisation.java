@@ -33,7 +33,7 @@ public class TestSettingsSerialisation {
 		StringBuilder serialised = new StringBuilder();
 
 		ConfigSerialisationHelper.serialiseConfig(config, (indent, line) -> {
-			
+
 			serialised.append(ConfigSerialisationHelper.indents(indent) + line + "\n");
 		});
 
@@ -46,10 +46,6 @@ public class TestSettingsSerialisation {
 			}
 		}
 
-		System.err.println("Original:\n" + original.toString());
-		
-		System.err.println("\nSerialised:\n" + serialised.toString() );
-		
 		Assert.assertEquals(original.toString(), serialised.toString());
 	}
 }
