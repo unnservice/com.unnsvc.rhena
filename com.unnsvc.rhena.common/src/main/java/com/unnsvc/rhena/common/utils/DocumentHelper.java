@@ -23,4 +23,17 @@ public class DocumentHelper {
 		return nodes;
 	}
 
+	public static List<Node> childNodes(Node document) {
+
+		NodeList children = document.getChildNodes();
+		List<Node> nodes = new ArrayList<Node>();
+		for (int i = 0; i < children.getLength(); i++) {
+			Node node = children.item(i);
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				nodes.add(node);
+			}
+		}
+		return nodes;
+	}
+
 }

@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- System-wide rhena settings -->
-<settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:rhena:settings" 
-	xsi:schemaLocation="urn:rhena:settings http://schema.unnsvc.com/rhena/settings.xsd">
-
+<settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:rhena:settings" xsi:schemaLocation="urn:rhena:settings http://schema.unnsvc.com/rhena/settings.xsd">
 	<repositories>
 		<workspace>
 			<repository location="file:/home/$USER/noname/.rhena/repository" />
@@ -14,13 +11,8 @@
 			<repository location="http://some/location" />
 		</remote>
 	</repositories>
-
-<!-- 	<agent> -->
-<!-- 		<threads>4</threads> -->
-<!-- 	</agent> -->
-
-<!-- 	<build> -->
-
-<!-- 	</build> -->
-
+	<agent>
+	</agent>
+	<build>
+	</build>
 </settings>

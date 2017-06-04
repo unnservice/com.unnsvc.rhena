@@ -19,10 +19,29 @@
 		</xs:sequence>
 	</xs:complexType>
 
+	<xs:complexType name="dummyType">
+		<xs:sequence>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="agentType">
+		<xs:sequence>
+			<xs:element name="dummy" type="tns:dummyType" minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="buildType">
+		<xs:sequence>
+			<xs:element name="dummy" type="tns:dummyType" minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+
 	<xs:element name="settings">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="repositories" type="tns:repositoriesType" minOccurs="0" maxOccurs="1" />
+				<xs:element name="agent" type="tns:agentType" minOccurs="0" maxOccurs="1" />
+				<xs:element name="build" type="tns:buildType" minOccurs="0" maxOccurs="1" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
