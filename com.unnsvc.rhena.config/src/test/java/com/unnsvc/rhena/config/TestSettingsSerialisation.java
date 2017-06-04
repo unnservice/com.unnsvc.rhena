@@ -9,7 +9,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
-import com.unnsvc.rhena.config.settings.ConfigSerialisationHelper;
+import com.unnsvc.rhena.config.settings.ConfigParser;
+import com.unnsvc.rhena.config.settings.ConfigSerialiser;
 
 public class TestSettingsSerialisation {
 
@@ -18,7 +19,7 @@ public class TestSettingsSerialisation {
 
 		URL location = TestSettingsSerialisation.class.getResource("/TEST-INF/settings.xml");
 
-		IRhenaConfiguration config = ConfigSerialisationHelper.parseConfig(location);
+		IRhenaConfiguration config = ConfigParser.parseConfig(location);
 		Assert.assertFalse(config.getRepositoryConfiguration().getCacheRepositories().isEmpty());
 		Assert.assertFalse(config.getRepositoryConfiguration().getRemoteRepositories().isEmpty());
 		Assert.assertFalse(config.getRepositoryConfiguration().getWorkspaceRepositories().isEmpty());
@@ -28,13 +29,13 @@ public class TestSettingsSerialisation {
 	public void testSerialisation() throws Exception {
 
 		URL location = TestSettingsSerialisation.class.getResource("/TEST-INF/settings.xml");
-		IRhenaConfiguration config = ConfigSerialisationHelper.parseConfig(location);
+		IRhenaConfiguration config = ConfigParser.parseConfig(location);
 
 		StringBuilder serialised = new StringBuilder();
 
-		ConfigSerialisationHelper.serialiseConfig(config, (indent, line) -> {
+		ConfigSerialiser.serialiseConfig(config, (indent, line) -> {
 
-			serialised.append(ConfigSerialisationHelper.indents(indent) + line + "\n");
+			serialised.append(ConfigSerialiser.indents(indent) + line + "\n");
 		});
 
 		StringBuilder original = new StringBuilder();
