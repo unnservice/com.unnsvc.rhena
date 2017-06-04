@@ -7,13 +7,13 @@ import java.util.List;
 import com.unnsvc.rhena.common.config.IRepositoryConfiguration;
 import com.unnsvc.rhena.common.repository.IRepositoryDefinition;
 
-public class RhenaRepositoryConfiguration implements IRepositoryConfiguration {
+public class RepositoryConfiguration implements IRepositoryConfiguration {
 
 	private List<IRepositoryDefinition> workspaceRepositories;
 	private List<IRepositoryDefinition> cacheRepositories;
 	private List<IRepositoryDefinition> remoteRepositories;
 
-	public RhenaRepositoryConfiguration() {
+	public RepositoryConfiguration() {
 
 		this.workspaceRepositories = new ArrayList<IRepositoryDefinition>();
 		this.remoteRepositories = new ArrayList<IRepositoryDefinition>();

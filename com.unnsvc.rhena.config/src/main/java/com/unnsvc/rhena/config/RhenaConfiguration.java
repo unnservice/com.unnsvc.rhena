@@ -18,10 +18,9 @@ public class RhenaConfiguration implements IRhenaConfiguration {
 	private IAgentConfiguration agentConfiguration;
 	private IBuildConfiguration buildConfiguration;
 
-
 	public RhenaConfiguration() {
 
-		this.repositoryConfiguration = new RhenaRepositoryConfiguration();
+		this.repositoryConfiguration = new RepositoryConfiguration();
 		this.agentConfiguration = new AgentConfiguration();
 		this.buildConfiguration = new BuildConfiguration();
 	}
