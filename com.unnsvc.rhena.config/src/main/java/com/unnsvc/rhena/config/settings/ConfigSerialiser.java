@@ -3,8 +3,6 @@ package com.unnsvc.rhena.config.settings;
 
 import java.io.IOException;
 
-import com.unnsvc.rhena.common.config.IAgentConfiguration;
-import com.unnsvc.rhena.common.config.IBuildConfiguration;
 import com.unnsvc.rhena.common.config.IRepositoryConfiguration;
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.repository.IRepositoryDefinition;
@@ -29,17 +27,27 @@ public class ConfigSerialiser {
 				"<settings xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"urn:rhena:settings\" xsi:schemaLocation=\"urn:rhena:settings http://schema.unnsvc.com/rhena/settings.xsd\">");
 
 		serialiseRepoConfig(indent + 1, config.getRepositoryConfiguration(), writer);
-		serialiseAgentConfig(indent + 1, config.getAgentConfiguration(), writer);
-		serialiseBuildConfig(indent + 1, config.getBuildConfiguration(), writer);
+		// serialiseAgentConfig(indent + 1, config.getAgentConfiguration(),
+		// writer);
+		// serialiseBuildConfig(indent + 1, config.getBuildConfiguration(),
+		// writer);
 
 		writer.write(indent, "</settings>");
 	}
 
-	private static void serialiseBuildConfig(int i, IBuildConfiguration buildConfiguration, SerialisationWriter writer) throws IOException {
+	// private static void serialiseBuildConfig(int i, IBuildConfiguration
+	// buildConfiguration, SerialisationWriter writer) throws IOException {
+	//
+	// writer.write(i, "<build>");
+	// writer.write(i, "</build>");
+	// }
 
-		writer.write(i, "<build>");
-		writer.write(i, "</build>");
-	}
+	// private static void serialiseAgentConfig(int i, IAgentConfiguration
+	// agentConfiguration, SerialisationWriter writer) throws IOException {
+	//
+	// writer.write(i, "<agent>");
+	// writer.write(i, "</agent>");
+	// }
 
 	private static void serialiseRepoConfig(int i, IRepositoryConfiguration repositoryConfiguration, SerialisationWriter writer) throws IOException {
 
@@ -65,12 +73,6 @@ public class ConfigSerialiser {
 	private static void serialiseRepoDefConfig(int i, IRepositoryDefinition def, SerialisationWriter writer) throws IOException {
 
 		writer.write(i, "<repository location=\"" + def.getLocation().toString() + "\" />");
-	}
-
-	private static void serialiseAgentConfig(int i, IAgentConfiguration agentConfiguration, SerialisationWriter writer) throws IOException {
-
-		writer.write(i, "<agent>");
-		writer.write(i, "</agent>");
 	}
 
 	public static String indents(int indents) {

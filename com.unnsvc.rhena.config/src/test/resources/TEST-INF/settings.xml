@@ -11,8 +11,4 @@
 			<repository location="http://some/location" />
 		</remote>
 	</repositories>
-	<agent>
-	</agent>
-	<build>
-	</build>
 </settings>
