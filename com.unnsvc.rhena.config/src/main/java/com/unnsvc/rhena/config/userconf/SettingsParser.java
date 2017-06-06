@@ -1,4 +1,4 @@
-package com.unnsvc.rhena.config.settings;
+package com.unnsvc.rhena.config.userconf;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,19 +30,19 @@ import com.unnsvc.rhena.common.utils.DocumentHelper;
 import com.unnsvc.rhena.config.RepositoryDefinition;
 import com.unnsvc.rhena.config.RhenaConfiguration;
 
-public class ConfigParser {
+public class SettingsParser {
 
-	public static IRhenaConfiguration parseConfig(URI location) throws RhenaException {
+	public static IRhenaConfiguration parseSettings(URI location) throws RhenaException {
 
 		try {
 			URL locationURL = location.toURL();
-			return parseConfig(locationURL);
+			return parseSettings(locationURL);
 		} catch (MalformedURLException ex) {
 			throw new RhenaException(ex);
 		}
 	}
 
-	public static IRhenaConfiguration parseConfig(URL location) throws RhenaException {
+	public static IRhenaConfiguration parseSettings(URL location) throws RhenaException {
 
 		try {
 			IRhenaConfiguration config = new RhenaConfiguration();

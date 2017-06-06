@@ -55,4 +55,59 @@ public class RepositoryConfiguration implements IRepositoryConfiguration {
 		this.remoteRepositories.add(remoteRepository);
 	}
 
+	@Override
+	public void addRepository(IRepositoryDefinition definition) {
+
+		switch (definition.getRepositoryType()) {
+			case CACHE:
+				this.cacheRepositories.add(definition);
+				break;
+			case WORKSPACE:
+				this.workspaceRepositories.add(definition);
+				break;
+			case REMOTE:
+				this.remoteRepositories.add(definition);
+				break;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cacheRepositories == null) ? 0 : cacheRepositories.hashCode());
+		result = prime * result + ((remoteRepositories == null) ? 0 : remoteRepositories.hashCode());
+		result = prime * result + ((workspaceRepositories == null) ? 0 : workspaceRepositories.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RepositoryConfiguration other = (RepositoryConfiguration) obj;
+		if (cacheRepositories == null) {
+			if (other.cacheRepositories != null)
+				return false;
+		} else if (!cacheRepositories.equals(other.cacheRepositories))
+			return false;
+		if (remoteRepositories == null) {
+			if (other.remoteRepositories != null)
+				return false;
+		} else if (!remoteRepositories.equals(other.remoteRepositories))
+			return false;
+		if (workspaceRepositories == null) {
+			if (other.workspaceRepositories != null)
+				return false;
+		} else if (!workspaceRepositories.equals(other.workspaceRepositories))
+			return false;
+		return true;
+	}
+
 }

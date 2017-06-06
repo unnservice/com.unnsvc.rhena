@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:rhena:settings" xmlns:tns="urn:rhena:settings" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:rhena:repositories" xmlns:tns="urn:rhena:repositories" elementFormDefault="qualified">
 
 	<xs:complexType name="repositoryType">
 		<xs:attribute name="location" type="xs:anyURI" />
@@ -11,19 +11,13 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="repositoriesType">
+	<xs:element name="repositories">
+		<xs:complexType>
 		<xs:sequence>
 			<xs:element name="workspace" type="tns:repositoryListType" minOccurs="1" maxOccurs="1" />
 			<xs:element name="cache" type="tns:repositoryListType" minOccurs="1" maxOccurs="1" />
 			<xs:element name="remote" type="tns:repositoryListType" minOccurs="1" maxOccurs="1" />
 		</xs:sequence>
-	</xs:complexType>
-
-	<xs:element name="settings">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="repositories" type="tns:repositoriesType" minOccurs="0" maxOccurs="1" />
-			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 

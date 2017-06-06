@@ -6,7 +6,7 @@ Bundle-Vendor: UNNSVC
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: com.unnsvc.rhena.config,
- com.unnsvc.rhena.config.settings,
+ com.unnsvc.rhena.config.userconf,
  com.unnsvc.rhena.core,
  com.unnsvc.rhena.core.config
 Require-Bundle: com.unnsvc.rhena.common

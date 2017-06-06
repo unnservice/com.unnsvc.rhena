@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.config.settings;
+package com.unnsvc.rhena.config.userconf;
 
 import java.io.IOException;
 
@@ -7,9 +7,9 @@ import com.unnsvc.rhena.common.config.IRepositoryConfiguration;
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
 import com.unnsvc.rhena.common.repository.IRepositoryDefinition;
 
-public class ConfigSerialiser {
+public class SettingsSerialiser {
 
-	private ConfigSerialiser() {
+	private SettingsSerialiser() {
 
 	}
 

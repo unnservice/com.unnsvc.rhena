@@ -19,4 +19,6 @@ public interface IRepositoryConfiguration {
 
 	public void addRemoteRepository(IRepositoryDefinition remoteRepository);
 
+	public void addRepository(IRepositoryDefinition definition);
+
 }
