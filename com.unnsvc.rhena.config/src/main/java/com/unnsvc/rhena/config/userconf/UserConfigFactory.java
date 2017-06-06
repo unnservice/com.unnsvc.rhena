@@ -10,6 +10,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -20,6 +22,7 @@ import com.unnsvc.rhena.config.RhenaConfiguration;
 
 public class UserConfigFactory {
 
+	private static Logger log  = LoggerFactory.getLogger(UserConfigFactory.class);
 	private static final String PLATFORM_NL = System.getProperty("line.separator");
 	public static final File repositoriesConfig = new File(System.getProperty("user.home"), ".rhena" + PLATFORM_NL + "repositories.xml");
 
@@ -58,9 +61,13 @@ public class UserConfigFactory {
 
 	private static void saveDocument(File configFile, byte[] content) throws RhenaException {
 
+		log.debug("Saving to: " + repositoriesConfig);
+		log.debug("\tDocument: " + new String(content));
+
 		try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(configFile))) {
 
 			bos.write(content);
+			bos.flush();
 		} catch (IOException ex) {
 
 			throw new RhenaException(ex);
@@ -69,6 +76,8 @@ public class UserConfigFactory {
 
 	private static Document loadDocument(File configFile) throws RhenaException {
 
+		log.debug("Loading: " + configFile);
+		
 		try {
 			DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
 			fact.setNamespaceAware(true);
