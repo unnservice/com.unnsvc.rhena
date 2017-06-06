@@ -10,3 +10,4 @@ Export-Package: com.unnsvc.rhena.config,
  com.unnsvc.rhena.core,
  com.unnsvc.rhena.core.config
 Require-Bundle: com.unnsvc.rhena.common
+Import-Package: org.slf4j

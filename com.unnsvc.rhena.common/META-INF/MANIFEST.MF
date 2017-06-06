@@ -23,5 +23,5 @@ Export-Package: com.unnsvc.rhena.common,
  com.unnsvc.rhena.common.traversal,
  com.unnsvc.rhena.common.utils,
  com.unnsvc.rhena.common.visitors
-Require-Bundle: org.slf4j.api,
- com.unnsvc.rhena.objectserver
+Require-Bundle: com.unnsvc.rhena.objectserver
+Import-Package: org.slf4j

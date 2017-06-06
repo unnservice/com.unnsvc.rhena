@@ -22,15 +22,17 @@ import com.unnsvc.rhena.config.RhenaConfiguration;
 
 public class UserConfigFactory {
 
-	private static Logger log  = LoggerFactory.getLogger(UserConfigFactory.class);
+	private static Logger log = LoggerFactory.getLogger(UserConfigFactory.class);
 	private static final String PLATFORM_NL = System.getProperty("line.separator");
 	public static final File repositoriesConfig = new File(System.getProperty("user.home"), ".rhena" + PLATFORM_NL + "repositories.xml");
 
 	public static IRhenaConfiguration fromUserConfig() throws RhenaException {
 
 		IRhenaConfiguration config = new RhenaConfiguration();
-		IRepositoryConfiguration repoConfig = readRepositories();
-		config.setRepositoryConfiguration(repoConfig);
+		if (repositoriesConfig.exists()) {
+			IRepositoryConfiguration repoConfig = readRepositories();
+			config.setRepositoryConfiguration(repoConfig);
+		}
 		return config;
 	}
 
@@ -77,7 +79,7 @@ public class UserConfigFactory {
 	private static Document loadDocument(File configFile) throws RhenaException {
 
 		log.debug("Loading: " + configFile);
-		
+
 		try {
 			DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
 			fact.setNamespaceAware(true);
