@@ -29,6 +29,7 @@ public class ObjectClient<REQUEST extends IObjectRequest, REPLY extends IObjectR
 
 		try {
 
+			log.info("Object client connecting to: " + socketAddress + ", timeout " + timeout);
 			establishConnection(socketAddress, timeout);
 		} catch (ConnectException ex) {
 
