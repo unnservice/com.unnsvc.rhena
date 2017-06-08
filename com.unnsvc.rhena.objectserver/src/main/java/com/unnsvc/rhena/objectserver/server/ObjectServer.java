@@ -52,6 +52,7 @@ public abstract class ObjectServer<T extends IObjectServerAcceptor<? extends IOb
 				executionChannel.configureBlocking(true);
 				executionChannel.socket().bind(serverAddress);
 
+				log.trace("Bound to server socket");
 				ObjectServerReaderThread reader = new ObjectServerReaderThread(executionChannel, newAcceptor());
 				mainPool.submit(reader);
 

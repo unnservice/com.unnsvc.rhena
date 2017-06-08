@@ -26,6 +26,7 @@ public class RhenaAgent implements IRhenaAgent {
 				@Override
 				public RhenaAgentAcceptor newAcceptor() {
 
+					log.debug("Creating new RhenaAgentAcceptor");
 					return new RhenaAgentAcceptor();
 				}
 			};
@@ -37,7 +38,7 @@ public class RhenaAgent implements IRhenaAgent {
 	}
 
 	@Override
-	public void start() throws RhenaException {
+	public void startAgent() throws RhenaException {
 
 		try {
 			

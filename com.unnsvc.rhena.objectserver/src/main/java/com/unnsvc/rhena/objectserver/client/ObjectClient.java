@@ -29,8 +29,9 @@ public class ObjectClient<REQUEST extends IObjectRequest, REPLY extends IObjectR
 
 		try {
 
-			log.info("Object client connecting to: " + socketAddress + ", timeout " + timeout);
+			log.debug("Object client connecting to: " + socketAddress + ", timeout " + timeout);
 			establishConnection(socketAddress, timeout);
+			log.debug("Established connection to agent server at " + socketAddress);
 		} catch (ConnectException ex) {
 
 			throw new ObjectServerException(ex);
@@ -64,8 +65,10 @@ public class ObjectClient<REQUEST extends IObjectRequest, REPLY extends IObjectR
 
 		try {
 
+			log.debug("Submitting to agent " + request);
 			oos.writeObject(request);
 
+			log.debug("Reading from agent");
 			REPLY reply = (REPLY) ois.readObject();
 			return reply;
 		} catch (IOException | ClassNotFoundException ex) {

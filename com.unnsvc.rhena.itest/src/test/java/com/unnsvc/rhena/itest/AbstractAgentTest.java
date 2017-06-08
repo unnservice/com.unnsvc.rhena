@@ -43,7 +43,7 @@ public abstract class AbstractAgentTest extends AbstractRhenaConfiguredTest {
 			 * before the test and tear it down afterward
 			 */
 			agent = new RhenaAgent(config.getAgentConfiguration().getAgentAddress());
-			agent.start();
+			agent.startAgent();
 		} catch (Exception ex) {
 			throw new RhenaException(ex);
 		}

@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.objectserver.IObjectServerAcceptor;
 
+@SuppressWarnings("rawtypes")
 public class ObjectServerReaderThread implements Callable<Void> {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
@@ -22,6 +23,7 @@ public class ObjectServerReaderThread implements Callable<Void> {
 
 	public ObjectServerReaderThread(ServerSocketChannel executionChannel, IObjectServerAcceptor serverAcceptor) {
 
+		log.debug("Created reader thread");
 		this.executionChannel = executionChannel;
 		this.serverAcceptor = serverAcceptor;
 		this.acceptorPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
@@ -43,13 +45,13 @@ public class ObjectServerReaderThread implements Callable<Void> {
 		while (executionChannel.isOpen()) {
 
 			SocketChannel clientChannel = executionChannel.accept();
-			log.debug("Accepted client execution connection");
+			log.debug("Accepted client execution connection from: " + clientChannel.getRemoteAddress());
 
 			Socket clientSocket = clientChannel.socket();
-			clientSocket.setSoTimeout(serverAcceptor.getServerSocketReadTimeout());
 			ObjectServerAcceptThread acceptor = new ObjectServerAcceptThread(clientSocket, serverAcceptor);
 			acceptorPool.submit(acceptor);
 		}
+
 		return null;
 	}
 

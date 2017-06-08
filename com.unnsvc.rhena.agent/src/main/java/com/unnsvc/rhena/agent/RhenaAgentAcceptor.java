@@ -113,11 +113,4 @@ public class RhenaAgentAcceptor implements IObjectServerAcceptor<IExecutionReque
 
 		return new URLClassLoader(depchain.toArray(new URL[] {}), parentClassLoader);
 	}
-
-	@Override
-	public int getServerSocketReadTimeout() {
-
-		return 1000;
-	}
-
 }

@@ -1,10 +1,12 @@
 
 package com.unnsvc.rhena.common;
 
+import java.net.SocketAddress;
+
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 
 public interface IRhenaAgentClientFactory {
 
-	public IRhenaAgentClient newClient(IRhenaContext context) throws RhenaException;
+	public IRhenaAgentClient newClient(SocketAddress address, int timeout) throws RhenaException;
 
 }

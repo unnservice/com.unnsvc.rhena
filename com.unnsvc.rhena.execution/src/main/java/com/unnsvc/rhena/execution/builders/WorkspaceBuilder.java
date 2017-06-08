@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.IRhenaAgentClient;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
+import com.unnsvc.rhena.common.config.IAgentConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.execution.IExecutionResult;
 import com.unnsvc.rhena.common.lifecycle.ICommandInstance;
@@ -54,7 +55,8 @@ public class WorkspaceBuilder extends AbstractBuilder {
 
 		debugBuilderRun(module, context, entryPoint);
 
-		try (IRhenaAgentClient client = context.getFactories().getAgentClientFactory().newClient(context)) {
+		IAgentConfiguration agentConfig = context.getConfig().getAgentConfiguration();
+		try (IRhenaAgentClient client = context.getFactories().getAgentClientFactory().newClient(agentConfig.getAgentAddress(), agentConfig.getAgentTimeout())) {
 
 			DependencyCollector collector = new DependencyCollector(context, entryPoint);
 			IDependencies dependencies = collector.toDependencyChain();

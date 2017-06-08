@@ -6,6 +6,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.unnsvc.rhena.objectserver.IObjectReply;
 import com.unnsvc.rhena.objectserver.IObjectRequest;
 import com.unnsvc.rhena.objectserver.IObjectServerAcceptor;
@@ -13,6 +16,7 @@ import com.unnsvc.rhena.objectserver.ObjectServerException;
 
 public class ObjectServerAcceptThread<REQUEST extends IObjectRequest, REPLY extends IObjectReply> implements Runnable {
 
+	private Logger log = LoggerFactory.getLogger(getClass());
 	private Socket clientSocket;
 	private IObjectServerAcceptor serverAcceptor;
 
@@ -44,6 +48,7 @@ public class ObjectServerAcceptThread<REQUEST extends IObjectRequest, REPLY exte
 			while (clientSocket.isConnected()) {
 
 				IObjectRequest request = (IObjectRequest) ois.readObject();
+				log.trace("Received object from client: " + request);
 				IObjectReply reply = serverAcceptor.onRequest(request);
 				oos.writeObject(reply);
 			}
