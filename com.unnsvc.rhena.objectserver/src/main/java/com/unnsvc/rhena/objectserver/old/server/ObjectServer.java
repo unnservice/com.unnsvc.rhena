@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.objectserver.server;
+package com.unnsvc.rhena.objectserver.old.server;
 
 import java.io.IOException;
 import java.net.SocketAddress;
@@ -10,11 +10,11 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.objectserver.IObjectReply;
-import com.unnsvc.rhena.objectserver.IObjectRequest;
-import com.unnsvc.rhena.objectserver.IObjectServer;
-import com.unnsvc.rhena.objectserver.IObjectServerAcceptor;
-import com.unnsvc.rhena.objectserver.ObjectServerException;
+import com.unnsvc.rhena.objectserver.old.IObjectReply;
+import com.unnsvc.rhena.objectserver.old.IObjectRequest;
+import com.unnsvc.rhena.objectserver.old.IObjectServer;
+import com.unnsvc.rhena.objectserver.old.IObjectServerAcceptor;
+import com.unnsvc.rhena.objectserver.old.ObjectServerException;
 
 public abstract class ObjectServer<T extends IObjectServerAcceptor<? extends IObjectRequest, ? extends IObjectReply>> implements IObjectServer<T> {
 

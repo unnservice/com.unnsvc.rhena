@@ -14,13 +14,18 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.unnsvc.rhena.objectserver.stream.protocol.IObjectProtocolHandlerFactory;
+
 public class SocketServer implements Callable<Void> {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ServerSocket socket;
 	private ExecutorService executor;
+	private IObjectProtocolHandlerFactory protocolFactory;
 
-	public SocketServer() {
+	public SocketServer(IObjectProtocolHandlerFactory protocolFactory) {
+
+		this.protocolFactory = protocolFactory;
 
 		int procs = Runtime.getRuntime().availableProcessors();
 		// at least one main thread and one worker thread need to be active
@@ -47,8 +52,7 @@ public class SocketServer implements Callable<Void> {
 				clientConnection = socket.accept();
 
 				log.info("Accepting connection from " + clientConnection);
-				SocketServerWorker worker = new SocketServerWorker(clientConnection);
-				executor.submit(worker);
+				executor.submit(new SocketServerWorker(clientConnection, protocolFactory));
 			} catch (SocketException se) {
 				// this will be something thrown in accept()
 

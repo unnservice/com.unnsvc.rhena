@@ -6,8 +6,8 @@ import java.net.SocketAddress;
 import com.unnsvc.rhena.common.IRhenaAgentClient;
 import com.unnsvc.rhena.common.execution.IExecutionRequest;
 import com.unnsvc.rhena.common.execution.IExecutionResult;
-import com.unnsvc.rhena.objectserver.ObjectServerException;
-import com.unnsvc.rhena.objectserver.client.ObjectClient;
+import com.unnsvc.rhena.objectserver.old.ObjectServerException;
+import com.unnsvc.rhena.objectserver.old.client.ObjectClient;
 
 public class RhenaAgentClient extends ObjectClient<IExecutionRequest, IExecutionResult> implements IRhenaAgentClient {
 

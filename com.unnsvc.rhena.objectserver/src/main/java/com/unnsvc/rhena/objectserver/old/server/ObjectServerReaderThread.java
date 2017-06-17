@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.objectserver.server;
+package com.unnsvc.rhena.objectserver.old.server;
 
 import java.net.Socket;
 import java.nio.channels.ServerSocketChannel;
@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.objectserver.IObjectServerAcceptor;
+import com.unnsvc.rhena.objectserver.old.IObjectServerAcceptor;
 
 @SuppressWarnings("rawtypes")
 public class ObjectServerReaderThread implements Callable<Void> {

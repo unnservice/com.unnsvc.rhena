@@ -5,7 +5,7 @@ import com.unnsvc.rhena.common.lifecycle.ILifecycleInstance;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.traversal.IDependencies;
-import com.unnsvc.rhena.objectserver.IObjectRequest;
+import com.unnsvc.rhena.objectserver.old.IObjectRequest;
 
 public interface IExecutionRequest extends IObjectRequest {
 

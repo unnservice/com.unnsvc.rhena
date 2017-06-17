@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.objectserver.server;
+package com.unnsvc.rhena.objectserver.old.server;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -9,10 +9,10 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.objectserver.IObjectReply;
-import com.unnsvc.rhena.objectserver.IObjectRequest;
-import com.unnsvc.rhena.objectserver.IObjectServerAcceptor;
-import com.unnsvc.rhena.objectserver.ObjectServerException;
+import com.unnsvc.rhena.objectserver.old.IObjectReply;
+import com.unnsvc.rhena.objectserver.old.IObjectRequest;
+import com.unnsvc.rhena.objectserver.old.IObjectServerAcceptor;
+import com.unnsvc.rhena.objectserver.old.ObjectServerException;
 
 /**
  * This class is created for each accepted connection.

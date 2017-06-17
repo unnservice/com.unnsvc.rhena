@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IRhenaAgent;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.objectserver.IObjectServer;
-import com.unnsvc.rhena.objectserver.ObjectServerException;
-import com.unnsvc.rhena.objectserver.server.ObjectServer;
+import com.unnsvc.rhena.objectserver.old.IObjectServer;
+import com.unnsvc.rhena.objectserver.old.ObjectServerException;
+import com.unnsvc.rhena.objectserver.old.server.ObjectServer;
 
 public class RhenaAgent implements IRhenaAgent {
 

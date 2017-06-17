@@ -6,7 +6,7 @@ import java.util.List;
 import com.unnsvc.rhena.common.artifact.IArtifact;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.objectserver.IObjectReply;
+import com.unnsvc.rhena.objectserver.old.IObjectReply;
 
 public interface IExecutionResult extends IObjectReply {
 

@@ -1,11 +1,9 @@
 
-package com.unnsvc.rhena.objectserver.server;
+package com.unnsvc.rhena.objectserver.old;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketAddress;
-
-import com.unnsvc.rhena.objectserver.ObjectServerException;
 
 public class ObjectServerHelper {
 

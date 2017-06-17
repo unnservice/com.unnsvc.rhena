@@ -18,8 +18,8 @@ import com.unnsvc.rhena.common.lifecycle.ILifecycleInstance;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.traversal.IDependencies;
-import com.unnsvc.rhena.objectserver.ObjectServerException;
-import com.unnsvc.rhena.objectserver.server.ObjectServerHelper;
+import com.unnsvc.rhena.objectserver.old.ObjectServerException;
+import com.unnsvc.rhena.objectserver.old.ObjectServerHelper;
 
 public class TestRhenaAgent implements Serializable {
 

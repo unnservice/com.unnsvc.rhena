@@ -4,12 +4,14 @@ package com.unnsvc.rhena.objectserver.stream;
 import java.net.InetSocketAddress;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.objectserver.stream.messaging.IResponse;
+import com.unnsvc.rhena.objectserver.stream.misc.ObjectProtocolHandlerFactory;
 
 public class TestStreamServer {
 
@@ -22,7 +24,7 @@ public class TestStreamServer {
 
 		InetSocketAddress endpoint = new InetSocketAddress("127.0.0.1", 9000);
 
-		server = new SocketServer();
+		server = new SocketServer(new ObjectProtocolHandlerFactory());
 		server.start(endpoint);
 
 		client = new SocketClient();
@@ -34,6 +36,7 @@ public class TestStreamServer {
 
 		IResponse response = client.sendRequest(new TestRequest());
 
+		Assert.assertTrue(response instanceof TestRequest);
 		log.info("Received reply: " + response);
 	}
 

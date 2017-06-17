@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.objectserver;
+package com.unnsvc.rhena.objectserver.old;
 
 public class ObjectServerException extends Exception {
 

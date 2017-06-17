@@ -68,6 +68,10 @@ public class SocketClient {
 		ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 		log.info("Opened output stream");
 		oos.writeObject(request);
+		
+		// necessary?
+		oos.flush();
+		socket.getOutputStream().flush();
 
 		log.info("Sent request");
 

@@ -20,7 +20,7 @@ import com.unnsvc.rhena.common.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.lifecycle.IProcessorInstance;
 import com.unnsvc.rhena.common.model.EExecutionType;
 import com.unnsvc.rhena.common.traversal.IDependencies;
-import com.unnsvc.rhena.objectserver.IObjectServerAcceptor;
+import com.unnsvc.rhena.objectserver.old.IObjectServerAcceptor;
 
 public class RhenaAgentAcceptor implements IObjectServerAcceptor<IExecutionRequest, IExecutionResult> {
 

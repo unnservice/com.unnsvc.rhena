@@ -1,4 +1,4 @@
-package com.unnsvc.rhena.objectserver;
+package com.unnsvc.rhena.objectserver.old;
 
 import java.io.Serializable;
 

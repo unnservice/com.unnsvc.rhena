@@ -15,7 +15,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.repository.IRhenaResolver;
 import com.unnsvc.rhena.config.AbstractRhenaConfiguredTest;
 import com.unnsvc.rhena.core.RhenaFactories;
-import com.unnsvc.rhena.objectserver.server.ObjectServerHelper;
+import com.unnsvc.rhena.objectserver.old.ObjectServerHelper;
 import com.unnsvc.rhena.repository.RhenaResolver;
 
 public abstract class AbstractAgentTest extends AbstractRhenaConfiguredTest {

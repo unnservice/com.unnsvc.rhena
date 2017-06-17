@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.objectserver.client;
+package com.unnsvc.rhena.objectserver.old.client;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,10 +12,10 @@ import java.nio.channels.SocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.objectserver.IObjectClient;
-import com.unnsvc.rhena.objectserver.IObjectReply;
-import com.unnsvc.rhena.objectserver.IObjectRequest;
-import com.unnsvc.rhena.objectserver.ObjectServerException;
+import com.unnsvc.rhena.objectserver.old.IObjectClient;
+import com.unnsvc.rhena.objectserver.old.IObjectReply;
+import com.unnsvc.rhena.objectserver.old.IObjectRequest;
+import com.unnsvc.rhena.objectserver.old.ObjectServerException;
 
 public class ObjectClient<REQUEST extends IObjectRequest, REPLY extends IObjectReply> implements IObjectClient<REQUEST, REPLY> {
 

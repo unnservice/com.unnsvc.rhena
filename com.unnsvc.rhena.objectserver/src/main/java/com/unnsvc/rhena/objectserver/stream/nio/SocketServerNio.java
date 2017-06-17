@@ -1,6 +1,7 @@
 
-package com.unnsvc.rhena.objectserver.stream;
+package com.unnsvc.rhena.objectserver.stream.nio;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketAddress;
 import java.nio.channels.SelectionKey;
@@ -12,9 +13,12 @@ import java.util.Iterator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.unnsvc.rhena.objectserver.stream.ConnectionException;
 
 public class SocketServerNio implements Callable<Void> {
 
@@ -60,34 +64,44 @@ public class SocketServerNio implements Callable<Void> {
 				selectedKeys.remove();
 
 				if (!key.isValid()) {
+					log.info("Invalid");
 					continue;
 				}
 
-				ServerSocketChannel channel = (ServerSocketChannel) key.channel();
+				ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
 
 				if (key.isAcceptable()) {
 
 					log.info("Accepting");
-					SocketChannel socket = channel.accept();
-					socket.configureBlocking(false);
-					socket.register(selector, SelectionKey.OP_READ);
-				}
-
-				if (key.isReadable()) {
-					log.info("Readable");
-
-					ServerSocket socket = channel.socket();
-					executor.submit(new SocketServerNioWorker(socket));
+					SocketChannel socketChannel = serverSocketChannel.accept();
+					socketChannel.configureBlocking(false);
+					socketChannel.socket().setTcpNoDelay(true);
+					// configure client connection...
+					socketChannel.register(selector, SelectionKey.OP_READ);
+				} else if (key.isReadable()) {
+					log.info("Reading");
+				} else if (key.isWritable()) {
+					log.info("Writing");
+				} else {
+					log.info("Unknown...");
 				}
 			}
-
 		}
 
 		return null;
 	}
 
-	public void stop() {
+	public void stop() throws ConnectionException {
 
+		try {
+			selector.close();
+			serverChannel.close();
+			executor.shutdown();
+			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException | IOException e) {
+
+			throw new ConnectionException(e);
+		}
 	}
 
 	public ServerSocket getSocket() {
