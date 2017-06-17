@@ -8,6 +8,8 @@
 
 	<logger name="com.unnsvc.rhena" level="DEBUG" />
 	
+	<!-- agent extends objectserver so logging should go together -->
+	<logger name="com.unnsvc.rhena.agent" level="TRACE" />
 	<logger name="com.unnsvc.rhena.objectserver" level="TRACE" />
 
 	<root level="INFO">

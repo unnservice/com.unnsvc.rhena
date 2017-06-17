@@ -44,8 +44,9 @@ public class ObjectClient<REQUEST extends IObjectRequest, REPLY extends IObjectR
 			clientChannel = SocketChannel.open();
 			clientSocket = clientChannel.socket();
 			clientSocket.setSoTimeout(timeout);
-
+//			clientSocket.setSoTimeout(0);
 			clientChannel.configureBlocking(true);
+			
 			clientChannel.connect(socketAddress);
 
 			oos = new ObjectOutputStream(clientSocket.getOutputStream());
@@ -65,10 +66,10 @@ public class ObjectClient<REQUEST extends IObjectRequest, REPLY extends IObjectR
 
 		try {
 
-			log.debug("Submitting to agent " + request);
+			log.trace("Submitting to agent " + request);
 			oos.writeObject(request);
 
-			log.debug("Reading from agent");
+			log.trace("Returning from writeObject(), now readObject() from server");
 			REPLY reply = (REPLY) ois.readObject();
 			return reply;
 		} catch (IOException | ClassNotFoundException ex) {

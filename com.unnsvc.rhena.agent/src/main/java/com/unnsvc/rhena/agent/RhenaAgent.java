@@ -20,7 +20,7 @@ public class RhenaAgent implements IRhenaAgent {
 	public RhenaAgent(SocketAddress agentAddress) throws RhenaException {
 
 		try {
-			
+
 			objectServer = new ObjectServer<RhenaAgentAcceptor>(agentAddress) {
 
 				@Override
@@ -41,7 +41,7 @@ public class RhenaAgent implements IRhenaAgent {
 	public void startAgent() throws RhenaException {
 
 		try {
-			
+
 			objectServer.startServer();
 		} catch (ObjectServerException ex) {
 

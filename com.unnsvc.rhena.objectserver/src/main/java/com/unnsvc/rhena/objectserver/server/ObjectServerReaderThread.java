@@ -38,7 +38,7 @@ public class ObjectServerReaderThread implements Callable<Void> {
 		 */
 		synchronized (executionChannel) {
 
-			log.info("Object server is listening for connections");
+			log.trace("Connection reader thread is up and running, waking up up caller");
 			executionChannel.notifyAll();
 		}
 

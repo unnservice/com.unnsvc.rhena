@@ -14,6 +14,14 @@ import com.unnsvc.rhena.objectserver.IObjectRequest;
 import com.unnsvc.rhena.objectserver.IObjectServerAcceptor;
 import com.unnsvc.rhena.objectserver.ObjectServerException;
 
+/**
+ * This class is created for each accepted connection.
+ * 
+ * @author noname
+ *
+ * @param <REQUEST>
+ * @param <REPLY>
+ */
 public class ObjectServerAcceptThread<REQUEST extends IObjectRequest, REPLY extends IObjectReply> implements Runnable {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
@@ -27,10 +35,10 @@ public class ObjectServerAcceptThread<REQUEST extends IObjectRequest, REPLY exte
 
 		this.clientSocket = clientSocket;
 		this.serverAcceptor = serverAcceptor;
-
+		
 		try {
-			this.oos = new ObjectOutputStream(clientSocket.getOutputStream());
 			this.ois = new ObjectInputStream(clientSocket.getInputStream());
+			this.oos = new ObjectOutputStream(clientSocket.getOutputStream());
 		} catch (IOException ioe) {
 
 			throw new ObjectServerException(ioe);

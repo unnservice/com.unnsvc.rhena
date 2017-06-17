@@ -35,7 +35,7 @@ public abstract class ObjectServer<T extends IObjectServerAcceptor<? extends IOb
 
 		this.mainPool = Executors.newSingleThreadExecutor();
 	}
-	
+
 	@Override
 	public abstract T newAcceptor();
 
@@ -52,11 +52,14 @@ public abstract class ObjectServer<T extends IObjectServerAcceptor<? extends IOb
 				executionChannel.configureBlocking(true);
 				executionChannel.socket().bind(serverAddress);
 
-				log.trace("Bound to server socket");
 				ObjectServerReaderThread reader = new ObjectServerReaderThread(executionChannel, newAcceptor());
 				mainPool.submit(reader);
 
-				// wait for start notification
+				/**
+				 * ObjectServerReaderThread calls notifyAll on executionChannel,
+				 * so caller of ObjectServer waits in this startServer method
+				 * until the acceptor is up and running
+				 **/
 				executionChannel.wait();
 			}
 
