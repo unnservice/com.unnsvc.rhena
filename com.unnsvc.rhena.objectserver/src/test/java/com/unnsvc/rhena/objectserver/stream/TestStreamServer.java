@@ -38,7 +38,7 @@ public class TestStreamServer {
 
 		for (int i = 0; i < 10; i++) {
 
-			IResponse response = client.sendRequest(new TestRequest(), ERequestChannel.APPLICATION);
+			IResponse response = client.sendRequest(new TestRequest());
 			Assert.assertTrue(response instanceof SuccessfulResponse);
 			log.info("Received reply: " + response);
 		}

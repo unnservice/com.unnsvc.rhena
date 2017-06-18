@@ -15,8 +15,8 @@ import com.unnsvc.rhena.objectserver.stream.messaging.IResponse;
 import com.unnsvc.rhena.objectserver.stream.protocol.IObjectProtocolHandlerFactory;
 
 /**
- * This worker manages the streams on the connection, subclasses manage how
- * protocols are handled
+ * This worker manages the streams on the connection and the client connection
+ * loop, subclasses manage how protocols are handled
  * 
  * @author noname
  *
@@ -26,6 +26,8 @@ public abstract class AbstractSocketServerWorker extends Thread {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private Socket clientConnection;
 	private IObjectProtocolHandlerFactory protocolFactory;
+	private ObjectInputStream ois;
+	private ObjectOutputStream oos;
 
 	public AbstractSocketServerWorker(Socket clientConnection, IObjectProtocolHandlerFactory protocolFactory) {
 
@@ -37,7 +39,7 @@ public abstract class AbstractSocketServerWorker extends Thread {
 	public void run() {
 
 		try {
-			ObjectInputStream ois = new ObjectInputStream(clientConnection.getInputStream());
+			ois = new ObjectInputStream(clientConnection.getInputStream());
 
 			while (clientConnection.isConnected()) {
 
@@ -70,7 +72,7 @@ public abstract class AbstractSocketServerWorker extends Thread {
 	public void sendReply(IResponse response) throws ConnectionException {
 
 		try {
-			ObjectOutputStream oos = new ObjectOutputStream(clientConnection.getOutputStream());
+			oos = new ObjectOutputStream(clientConnection.getOutputStream());
 			log.info("Writing exception reply");
 			oos.writeObject(response);
 			oos.flush();

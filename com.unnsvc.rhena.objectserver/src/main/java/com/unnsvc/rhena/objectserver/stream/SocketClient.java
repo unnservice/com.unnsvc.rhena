@@ -11,6 +11,8 @@ import java.net.SocketTimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.unnsvc.rhena.objectserver.stream.messaging.IApplicationRequest;
+import com.unnsvc.rhena.objectserver.stream.messaging.IControlRequest;
 import com.unnsvc.rhena.objectserver.stream.messaging.IRequest;
 import com.unnsvc.rhena.objectserver.stream.messaging.IResponse;
 
@@ -72,21 +74,21 @@ public class SocketClient implements ISocketClient {
 	}
 
 	@Override
-	public IResponse sendRequest(IRequest request, ERequestChannel channel) throws ConnectionException {
+	public IResponse sendRequest(IRequest request) throws ConnectionException {
 
 		log.info("Sending request");
 
 		Socket currentSocket = this.socket;
 
-		switch (channel) {
-			case APPLICATION:
-				currentSocket = this.socket;
-				break;
-			case CONTROL:
-				currentSocket = this.controlSocket;
-				break;
-			default:
-				throw new ConnectionException("Unknown channel");
+		if (request instanceof IControlRequest) {
+
+			currentSocket = this.socket;
+		} else if (request instanceof IApplicationRequest) {
+
+			currentSocket = this.controlSocket;
+		} else {
+
+			throw new ConnectionException("Unknown request type");
 		}
 
 		try {

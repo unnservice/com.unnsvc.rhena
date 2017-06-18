@@ -12,6 +12,6 @@ public interface ISocketClient {
 
 	public void stop() throws ConnectionException;
 
-	public IResponse sendRequest(IRequest request, ERequestChannel channel) throws ConnectionException;
+	public IResponse sendRequest(IRequest request) throws ConnectionException;
 
 }

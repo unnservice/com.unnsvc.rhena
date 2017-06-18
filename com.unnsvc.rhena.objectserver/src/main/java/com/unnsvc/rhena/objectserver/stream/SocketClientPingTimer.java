@@ -28,13 +28,13 @@ public abstract class SocketClientPingTimer extends TimerTask {
 
 		try {
 			log.info("Sending ping request");
-			IResponse response = client.sendRequest(new PingRequest(), ERequestChannel.CONTROL);
+			IResponse response = client.sendRequest(new PingRequest());
 			log.info("Received response " + response);
 			if (!(response instanceof PingResponse)) {
 				onFailure();
 			}
 		} catch (ConnectionTimeoutException cte) {
-			
+
 			log.error("Ping timeout", cte);
 		} catch (ConnectionException e) {
 
