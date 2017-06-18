@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.objectserver.stream.messaging.IResponse;
 import com.unnsvc.rhena.objectserver.stream.misc.ObjectProtocolHandlerFactory;
+import com.unnsvc.rhena.objectserver.stream.misc.SuccessfulResponse;
+import com.unnsvc.rhena.objectserver.stream.misc.TestRequest;
 
 public class TestStreamServer {
 
@@ -34,10 +36,16 @@ public class TestStreamServer {
 	@Test
 	public void test() throws Exception {
 
-		IResponse response = client.sendRequest(new TestRequest());
+		for (int i = 0; i < 10; i++) {
+			IResponse response = client.sendRequest(new TestRequest(), ERequestChannel.APPLICATION);
+			Assert.assertTrue(response instanceof SuccessfulResponse);
+			log.info("Received reply: " + response);
+		}
 
-		Assert.assertTrue(response instanceof TestRequest);
-		log.info("Received reply: " + response);
+		synchronized (this) {
+			this.wait(5000);
+		}
+
 	}
 
 	@After

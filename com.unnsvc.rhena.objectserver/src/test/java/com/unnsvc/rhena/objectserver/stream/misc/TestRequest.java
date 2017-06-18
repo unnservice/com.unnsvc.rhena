@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.objectserver.stream;
+package com.unnsvc.rhena.objectserver.stream.misc;
 
 import com.unnsvc.rhena.objectserver.stream.messaging.IRequest;
 import com.unnsvc.rhena.objectserver.stream.messaging.IResponse;

@@ -27,10 +27,11 @@ public class SocketServer implements Callable<Void> {
 
 		this.protocolFactory = protocolFactory;
 
-		int procs = Runtime.getRuntime().availableProcessors();
+		// int procs = Runtime.getRuntime().availableProcessors();
 		// at least one main thread and one worker thread need to be active
-		int moreThanTwo = procs < 2 ? 2 : procs;
-		this.executor = Executors.newFixedThreadPool(moreThanTwo);
+		// int moreThanTwo = procs < 4 ? 4 : procs;
+		// this.executor = Executors.newFixedThreadPool(moreThanTwo);
+		this.executor = Executors.newCachedThreadPool();
 	}
 
 	public void start(SocketAddress endpoint) throws IOException {
@@ -52,11 +53,11 @@ public class SocketServer implements Callable<Void> {
 				clientConnection = socket.accept();
 
 				log.info("Accepting connection from " + clientConnection);
-				executor.submit(new SocketServerWorker(clientConnection, protocolFactory));
+				executor.submit(new SocketServerApplicationWorker(clientConnection, protocolFactory));
 			} catch (SocketException se) {
 				// this will be something thrown in accept()
 
-				log.debug(se.getMessage());
+				log.error(se.getMessage());
 			} catch (IOException ioe) {
 
 				log.error(ioe.getMessage(), ioe);
@@ -69,6 +70,7 @@ public class SocketServer implements Callable<Void> {
 	public void stop() throws ConnectionException {
 
 		try {
+
 			socket.close();
 			executor.shutdown();
 			executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
