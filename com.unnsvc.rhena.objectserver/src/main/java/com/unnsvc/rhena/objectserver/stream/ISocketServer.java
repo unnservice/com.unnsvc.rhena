@@ -5,8 +5,8 @@ import java.net.SocketAddress;
 
 public interface ISocketServer {
 
-	public void start(SocketAddress endpoint) throws ConnectionException;
+	public void startServer(SocketAddress endpoint) throws ConnectionException;
 
-	public void stop() throws ConnectionException;
+	public void stopServer() throws ConnectionException;
 
 }

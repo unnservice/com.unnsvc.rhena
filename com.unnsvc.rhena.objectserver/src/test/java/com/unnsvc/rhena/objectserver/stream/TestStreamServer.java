@@ -27,7 +27,7 @@ public class TestStreamServer {
 		InetSocketAddress endpoint = new InetSocketAddress("127.0.0.1", 9000);
 
 		server = new SocketServer(new ObjectProtocolHandlerFactory());
-		server.start(endpoint);
+		server.startServer(endpoint);
 
 		client = new SocketClient();
 		client.connect(endpoint);
@@ -37,13 +37,14 @@ public class TestStreamServer {
 	public void test() throws Exception {
 
 		for (int i = 0; i < 10; i++) {
-			
+
 			IResponse response = client.sendRequest(new TestRequest(), ERequestChannel.APPLICATION);
 			Assert.assertTrue(response instanceof SuccessfulResponse);
 			log.info("Received reply: " + response);
 		}
 
 		synchronized (this) {
+			
 			this.wait(5000);
 		}
 
@@ -53,6 +54,6 @@ public class TestStreamServer {
 	public void after() throws Exception {
 
 		client.stop();
-		server.stop();
+		server.stopServer();
 	}
 }

@@ -6,7 +6,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -16,11 +15,11 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.objectserver.stream.protocol.IObjectProtocolHandlerFactory;
 
-public class SocketServer implements Callable<Void>, ISocketServer {
+public class SocketServer extends Thread implements ISocketServer {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ServerSocket socket;
-	private ExecutorService executor;
+	private ExecutorService clientConnectionExecutor;
 	private IObjectProtocolHandlerFactory protocolFactory;
 
 	public SocketServer(IObjectProtocolHandlerFactory protocolFactory) {
@@ -33,18 +32,18 @@ public class SocketServer implements Callable<Void>, ISocketServer {
 		 * and we will be able to await termination on the executor when closing
 		 * the server
 		 */
-		this.executor = Executors.newCachedThreadPool();
+		this.clientConnectionExecutor = Executors.newCachedThreadPool();
 	}
 
 	@Override
-	public void start(SocketAddress endpoint) throws ConnectionException {
+	public void startServer(SocketAddress endpoint) throws ConnectionException {
 
 		try {
 
 			socket = new ServerSocket();
 			socket.bind(endpoint);
 			log.info("Server started on " + socket.getLocalSocketAddress());
-			executor.submit(this);
+			start();
 		} catch (IOException ioe) {
 
 			throw new ConnectionException(ioe);
@@ -52,7 +51,7 @@ public class SocketServer implements Callable<Void>, ISocketServer {
 	}
 
 	@Override
-	public Void call() throws Exception {
+	public void run() {
 
 		Socket clientConnection = null;
 
@@ -62,7 +61,7 @@ public class SocketServer implements Callable<Void>, ISocketServer {
 				clientConnection = socket.accept();
 
 				log.info("Accepting connection from " + clientConnection);
-				executor.submit(new SocketServerWorker(clientConnection, protocolFactory));
+				clientConnectionExecutor.submit(new SocketServerWorker(clientConnection, protocolFactory));
 			} catch (SocketException se) {
 				// this will be something thrown in accept()
 
@@ -72,18 +71,16 @@ public class SocketServer implements Callable<Void>, ISocketServer {
 				log.error(ioe.getMessage(), ioe);
 			}
 		}
-
-		return null;
 	}
 
 	@Override
-	public void stop() throws ConnectionException {
+	public void stopServer() throws ConnectionException {
 
 		try {
 
 			socket.close();
-			executor.shutdown();
-			executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
+			clientConnectionExecutor.shutdown();
+			clientConnectionExecutor.awaitTermination(1000, TimeUnit.MILLISECONDS);
 		} catch (IOException | InterruptedException ioe) {
 			throw new ConnectionException(ioe);
 		}
