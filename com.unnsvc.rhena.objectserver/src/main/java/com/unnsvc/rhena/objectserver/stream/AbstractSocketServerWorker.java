@@ -52,8 +52,9 @@ public abstract class AbstractSocketServerWorker extends Thread {
 			/**
 			 * @TODO close connection
 			 */
-			log.info("Writing exception reply");
+
 			try {
+				// log.info("Writing exception reply");
 				sendReply(new ExceptionResponse(throwable));
 			} catch (ConnectionException ce) {
 				/**

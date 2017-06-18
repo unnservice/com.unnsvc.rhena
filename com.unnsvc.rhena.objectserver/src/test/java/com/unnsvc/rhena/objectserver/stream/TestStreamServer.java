@@ -18,8 +18,8 @@ import com.unnsvc.rhena.objectserver.stream.misc.TestRequest;
 public class TestStreamServer {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private SocketServer server;
-	private SocketClient client;
+	private ISocketServer server;
+	private ISocketClient client;
 
 	@Before
 	public void before() throws Exception {
@@ -37,6 +37,7 @@ public class TestStreamServer {
 	public void test() throws Exception {
 
 		for (int i = 0; i < 10; i++) {
+			
 			IResponse response = client.sendRequest(new TestRequest(), ERequestChannel.APPLICATION);
 			Assert.assertTrue(response instanceof SuccessfulResponse);
 			log.info("Received reply: " + response);

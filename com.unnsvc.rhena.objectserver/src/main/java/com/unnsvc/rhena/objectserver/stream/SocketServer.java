@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.objectserver.stream.protocol.IObjectProtocolHandlerFactory;
 
-public class SocketServer implements Callable<Void> {
+public class SocketServer implements Callable<Void>, ISocketServer {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ServerSocket socket;
@@ -27,19 +27,28 @@ public class SocketServer implements Callable<Void> {
 
 		this.protocolFactory = protocolFactory;
 
-		// int procs = Runtime.getRuntime().availableProcessors();
-		// at least one main thread and one worker thread need to be active
-		// int moreThanTwo = procs < 4 ? 4 : procs;
-		// this.executor = Executors.newFixedThreadPool(moreThanTwo);
+		/**
+		 * We need numerous threads for each connection, so we manage these
+		 * threads with an unbound cached executor so they can all run at once,
+		 * and we will be able to await termination on the executor when closing
+		 * the server
+		 */
 		this.executor = Executors.newCachedThreadPool();
 	}
 
-	public void start(SocketAddress endpoint) throws IOException {
+	@Override
+	public void start(SocketAddress endpoint) throws ConnectionException {
 
-		socket = new ServerSocket();
-		socket.bind(endpoint);
-		log.info("Server started on " + socket.getLocalSocketAddress());
-		executor.submit(this);
+		try {
+
+			socket = new ServerSocket();
+			socket.bind(endpoint);
+			log.info("Server started on " + socket.getLocalSocketAddress());
+			executor.submit(this);
+		} catch (IOException ioe) {
+
+			throw new ConnectionException(ioe);
+		}
 	}
 
 	@Override
@@ -67,6 +76,7 @@ public class SocketServer implements Callable<Void> {
 		return null;
 	}
 
+	@Override
 	public void stop() throws ConnectionException {
 
 		try {
