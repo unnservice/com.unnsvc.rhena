@@ -39,7 +39,7 @@ public abstract class AbstractSocketServerWorker extends Thread {
 		try {
 			ObjectInputStream ois = new ObjectInputStream(clientConnection.getInputStream());
 
-			while (true) {
+			while (clientConnection.isConnected()) {
 
 				log.info("Processing request");
 				IRequest request = (IRequest) ois.readObject();
