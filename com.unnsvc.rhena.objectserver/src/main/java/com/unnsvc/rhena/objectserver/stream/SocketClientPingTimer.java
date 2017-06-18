@@ -11,13 +11,13 @@ import com.unnsvc.rhena.objectserver.stream.messaging.IResponse;
 import com.unnsvc.rhena.objectserver.stream.messaging.PingRequest;
 import com.unnsvc.rhena.objectserver.stream.messaging.PingResponse;
 
-public abstract class SocketServerControlWorker extends TimerTask {
+public abstract class SocketClientPingTimer extends TimerTask {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ISocketClient client;
 	private Timer timer;
 
-	public SocketServerControlWorker(ISocketClient client) {
+	public SocketClientPingTimer(ISocketClient client) {
 
 		this.client = client;
 		this.timer = new Timer();

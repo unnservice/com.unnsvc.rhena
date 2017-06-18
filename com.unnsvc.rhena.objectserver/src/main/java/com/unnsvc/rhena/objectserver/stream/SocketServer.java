@@ -62,7 +62,7 @@ public class SocketServer implements Callable<Void>, ISocketServer {
 				clientConnection = socket.accept();
 
 				log.info("Accepting connection from " + clientConnection);
-				executor.submit(new SocketServerApplicationWorker(clientConnection, protocolFactory));
+				executor.submit(new SocketServerWorker(clientConnection, protocolFactory));
 			} catch (SocketException se) {
 				// this will be something thrown in accept()
 

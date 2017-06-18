@@ -36,7 +36,7 @@ public class SocketClient implements ISocketClient {
 			controlSocket = new Socket();
 			controlSocket.setSoTimeout(500);
 			controlSocket.connect(endpoint);
-			SocketServerControlWorker pingerThread = new SocketServerControlWorker(this) {
+			SocketClientPingTimer pingerThread = new SocketClientPingTimer(this) {
 
 				@Override
 				public void onFailure() {

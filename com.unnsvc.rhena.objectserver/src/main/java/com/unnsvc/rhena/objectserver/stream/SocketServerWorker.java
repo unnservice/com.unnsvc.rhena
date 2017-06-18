@@ -22,11 +22,11 @@ import com.unnsvc.rhena.objectserver.stream.protocol.IObjectProtocolHandlerFacto
  * @author noname
  *
  */
-public class SocketServerApplicationWorker extends AbstractSocketServerWorker {
+public class SocketServerWorker extends AbstractSocketServerWorker {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	public SocketServerApplicationWorker(Socket clientConnection, IObjectProtocolHandlerFactory protocolFactory) {
+	public SocketServerWorker(Socket clientConnection, IObjectProtocolHandlerFactory protocolFactory) {
 
 		super(clientConnection, protocolFactory);
 	}
