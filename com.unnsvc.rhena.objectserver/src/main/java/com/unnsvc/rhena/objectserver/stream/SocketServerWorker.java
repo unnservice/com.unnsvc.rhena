@@ -6,6 +6,7 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.unnsvc.rhena.objectserver.stream.messaging.ControlRequest;
 import com.unnsvc.rhena.objectserver.stream.messaging.ExceptionResponse;
 import com.unnsvc.rhena.objectserver.stream.messaging.IRequest;
 import com.unnsvc.rhena.objectserver.stream.messaging.IResponse;
@@ -35,9 +36,9 @@ public class SocketServerWorker extends AbstractSocketServerWorker {
 	protected void onRequest(IRequest request) throws ConnectionException {
 
 		try {
-			if (request instanceof PingRequest) {
+			if (request instanceof ControlRequest) {
 
-				sendReply(new PingResponse());
+				onControlRequest((ControlRequest) request);
 			} else {
 
 				IObjectProtocolHandler objectProtocolHandler = getProtocolFactory().newObjectProtocolHandler();
@@ -52,6 +53,17 @@ public class SocketServerWorker extends AbstractSocketServerWorker {
 
 			log.info("Writing exception reply");
 			sendReply(new ExceptionResponse(ex));
+		}
+	}
+
+	protected void onControlRequest(ControlRequest request) throws ConnectionException {
+
+		if (request instanceof PingRequest) {
+			sendReply(new PingResponse());
+		} else {
+
+			// unknown request
+			throw new ConnectionException("Unknown request type: " + request.getClass());
 		}
 	}
 }

@@ -43,6 +43,7 @@ public class SocketServer extends Thread implements ISocketServer {
 			socket = new ServerSocket();
 			socket.bind(endpoint);
 			log.info("Server started on " + socket.getLocalSocketAddress());
+			setName("SocketServer Thread");
 			start();
 		} catch (IOException ioe) {
 
