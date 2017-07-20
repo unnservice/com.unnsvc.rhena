@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.objectserver.ng.client;
+package com.unnsvc.rhena.objectserver.client;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -10,9 +10,9 @@ import java.net.SocketAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.objectserver.ng.ObjectServerException;
-import com.unnsvc.rhena.objectserver.ng.messages.PingRequest;
-import com.unnsvc.rhena.objectserver.ng.messages.Response;
+import com.unnsvc.rhena.objectserver.ObjectServerException;
+import com.unnsvc.rhena.objectserver.messages.PingRequest;
+import com.unnsvc.rhena.objectserver.messages.Response;
 
 public class ObjectClient implements IObjectClient {
 

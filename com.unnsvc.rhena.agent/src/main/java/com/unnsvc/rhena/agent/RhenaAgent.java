@@ -8,14 +8,14 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IRhenaAgent;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.objectserver.old.IObjectServer;
-import com.unnsvc.rhena.objectserver.old.ObjectServerException;
-import com.unnsvc.rhena.objectserver.old.server.ObjectServer;
+import com.unnsvc.rhena.objectserver.IObjectServer;
+import com.unnsvc.rhena.objectserver.ObjectServer;
+import com.unnsvc.rhena.objectserver.ObjectServerException;
 
 public class RhenaAgent implements IRhenaAgent {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-	private IObjectServer<RhenaAgentAcceptor> objectServer;
+	private IObjectServer objectServer;
 
 	public RhenaAgent(SocketAddress agentAddress) throws RhenaException {
 

@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.objectserver.ng.messages;
+package com.unnsvc.rhena.objectserver.messages;
 
 import java.io.Serializable;
 

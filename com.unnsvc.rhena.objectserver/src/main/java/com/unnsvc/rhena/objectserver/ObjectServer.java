@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.objectserver.ng;
+package com.unnsvc.rhena.objectserver;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -14,11 +14,11 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.objectserver.ng.handler.IProtocolHandler;
-import com.unnsvc.rhena.objectserver.ng.handler.IProtocolHandlerFactory;
-import com.unnsvc.rhena.objectserver.ng.messages.ExceptionResponse;
-import com.unnsvc.rhena.objectserver.ng.messages.Request;
-import com.unnsvc.rhena.objectserver.ng.messages.Response;
+import com.unnsvc.rhena.objectserver.handler.IProtocolHandler;
+import com.unnsvc.rhena.objectserver.handler.IProtocolHandlerFactory;
+import com.unnsvc.rhena.objectserver.messages.ExceptionResponse;
+import com.unnsvc.rhena.objectserver.messages.Request;
+import com.unnsvc.rhena.objectserver.messages.Response;
 
 public class ObjectServer implements IObjectServer {
 

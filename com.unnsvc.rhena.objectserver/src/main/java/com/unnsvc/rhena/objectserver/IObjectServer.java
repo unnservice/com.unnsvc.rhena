@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.objectserver.ng;
+package com.unnsvc.rhena.objectserver;
 
 import java.net.SocketAddress;
 

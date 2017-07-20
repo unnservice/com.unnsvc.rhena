@@ -1,10 +1,10 @@
 
-package com.unnsvc.rhena.objectserver.ng.handler;
+package com.unnsvc.rhena.objectserver.handler;
 
-import com.unnsvc.rhena.objectserver.ng.messages.PingRequest;
-import com.unnsvc.rhena.objectserver.ng.messages.PingResponse;
-import com.unnsvc.rhena.objectserver.ng.messages.Request;
-import com.unnsvc.rhena.objectserver.ng.messages.Response;
+import com.unnsvc.rhena.objectserver.messages.PingRequest;
+import com.unnsvc.rhena.objectserver.messages.PingResponse;
+import com.unnsvc.rhena.objectserver.messages.Request;
+import com.unnsvc.rhena.objectserver.messages.Response;
 
 public class ProtocolHandler implements IProtocolHandler {
 

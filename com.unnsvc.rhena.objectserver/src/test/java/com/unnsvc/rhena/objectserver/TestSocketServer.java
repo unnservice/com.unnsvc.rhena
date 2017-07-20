@@ -14,15 +14,15 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unnsvc.rhena.objectserver.ng.IObjectServer;
-import com.unnsvc.rhena.objectserver.ng.ObjectServer;
-import com.unnsvc.rhena.objectserver.ng.ObjectServerException;
-import com.unnsvc.rhena.objectserver.ng.client.ObjectClient;
-import com.unnsvc.rhena.objectserver.ng.handler.IProtocolHandlerFactory;
-import com.unnsvc.rhena.objectserver.ng.handler.ProtocolHandlerFactory;
-import com.unnsvc.rhena.objectserver.ng.messages.PingRequest;
-import com.unnsvc.rhena.objectserver.ng.messages.PingResponse;
-import com.unnsvc.rhena.objectserver.ng.messages.Response;
+import com.unnsvc.rhena.objectserver.IObjectServer;
+import com.unnsvc.rhena.objectserver.ObjectServer;
+import com.unnsvc.rhena.objectserver.ObjectServerException;
+import com.unnsvc.rhena.objectserver.client.ObjectClient;
+import com.unnsvc.rhena.objectserver.handler.IProtocolHandlerFactory;
+import com.unnsvc.rhena.objectserver.handler.ProtocolHandlerFactory;
+import com.unnsvc.rhena.objectserver.messages.PingRequest;
+import com.unnsvc.rhena.objectserver.messages.PingResponse;
+import com.unnsvc.rhena.objectserver.messages.Response;
 
 public class TestSocketServer {
 

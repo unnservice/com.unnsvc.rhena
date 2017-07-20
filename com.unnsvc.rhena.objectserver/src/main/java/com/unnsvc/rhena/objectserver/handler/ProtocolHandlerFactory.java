@@ -1,5 +1,5 @@
 
-package com.unnsvc.rhena.objectserver.ng.handler;
+package com.unnsvc.rhena.objectserver.handler;
 
 public class ProtocolHandlerFactory implements IProtocolHandlerFactory {
 
