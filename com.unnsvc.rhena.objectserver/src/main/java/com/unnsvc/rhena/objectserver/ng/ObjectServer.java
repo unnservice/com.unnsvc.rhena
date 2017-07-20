@@ -74,6 +74,9 @@ public class ObjectServer implements IObjectServer {
 				Socket client = server.accept();
 				log.debug("Accepted connection");
 
+				/**
+				 * Submit for execution
+				 */
 				executor.execute(new Runnable() {
 
 					public void run() {
@@ -83,7 +86,7 @@ public class ObjectServer implements IObjectServer {
 							handleRequest(client);
 						} catch (Exception ex) {
 
-							throw new RuntimeException(ex);
+							log.error(ex.getMessage(), ex);
 						}
 					}
 				});
