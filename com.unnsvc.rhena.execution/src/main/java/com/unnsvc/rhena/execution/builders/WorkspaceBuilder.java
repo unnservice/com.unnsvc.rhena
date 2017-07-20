@@ -56,17 +56,17 @@ public class WorkspaceBuilder extends AbstractBuilder {
 		debugBuilderRun(module, context, entryPoint);
 
 		IAgentConfiguration agentConfig = context.getConfig().getAgentConfiguration();
-		try (IRhenaAgentClient client = context.getFactories().getAgentClientFactory().newClient(agentConfig.getAgentAddress(), agentConfig.getAgentTimeout())) {
+		IRhenaAgentClient client = context.getFactories().getAgentClientFactory().newClient(agentConfig.getAgentAddress());
 
-			DependencyCollector collector = new DependencyCollector(context, entryPoint);
-			IDependencies dependencies = collector.toDependencyChain();
+		DependencyCollector collector = new DependencyCollector(context, entryPoint);
+		IDependencies dependencies = collector.toDependencyChain();
 
-			ILifecycleInstance lifecycle = instantiateLifecycle(module.getLifecycleConfiguration());
+		ILifecycleInstance lifecycle = instantiateLifecycle(module.getLifecycleConfiguration());
 
-			ExecutionRequest request = new ExecutionRequest(entryPoint, module, lifecycle, dependencies);
-			IExecutionResult result = client.executeRequest(request);
-			return result;
-		}
+		ExecutionRequest request = new ExecutionRequest(entryPoint, module, lifecycle, dependencies);
+		IExecutionResult result = (IExecutionResult) client.submitRequest(request);
+
+		return result;
 	}
 
 	private ILifecycleInstance instantiateLifecycle(ILifecycleSpec lifecycle) throws RhenaException {
@@ -96,13 +96,14 @@ public class WorkspaceBuilder extends AbstractBuilder {
 			GeneratorProcessorInstance generator = new GeneratorProcessorInstance(generatorDepchain, lifecycle.getGeneratorReference().getClazz());
 
 			List<ICommandInstance> commands = new ArrayList<ICommandInstance>();
-			
-//			for (ICommandSpec cmdref : lifecycle.getCommandReferences()) {
-//
-//				IDependencies commandDepchain = createDepchain(cmdref);
-//				CommandProcessorInstance command = new CommandProcessorInstance(commandDepchain, cmdref.getClazz());
-//				commands.add(command);
-//			}
+
+			// for (ICommandSpec cmdref : lifecycle.getCommandReferences()) {
+			//
+			// IDependencies commandDepchain = createDepchain(cmdref);
+			// CommandProcessorInstance command = new
+			// CommandProcessorInstance(commandDepchain, cmdref.getClazz());
+			// commands.add(command);
+			// }
 
 			/**
 			 * Lifecycle instance

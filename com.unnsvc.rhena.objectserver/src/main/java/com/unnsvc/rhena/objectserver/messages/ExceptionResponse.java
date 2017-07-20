@@ -10,4 +10,9 @@ public class ExceptionResponse implements IResponse {
 
 		this.throwable = throwable;
 	}
+
+	public Throwable getThrowable() {
+
+		return throwable;
+	}
 }

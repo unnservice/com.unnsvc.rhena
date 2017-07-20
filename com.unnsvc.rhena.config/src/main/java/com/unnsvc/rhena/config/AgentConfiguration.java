@@ -9,12 +9,10 @@ public class AgentConfiguration implements IAgentConfiguration {
 
 	private int threads;
 	private SocketAddress agentAddress;
-	private int agentTimeout;
 
 	public AgentConfiguration() {
 
 		this.threads = Runtime.getRuntime().availableProcessors();
-		this.agentTimeout = 1000;
 	}
 
 	@Override
@@ -39,17 +37,5 @@ public class AgentConfiguration implements IAgentConfiguration {
 	public int getThreads() {
 
 		return threads;
-	}
-
-	@Override
-	public int getAgentTimeout() {
-
-		return agentTimeout;
-	}
-
-	@Override
-	public void setAgentTimeout(int agentTimeout) {
-
-		this.agentTimeout = agentTimeout;
 	}
 }

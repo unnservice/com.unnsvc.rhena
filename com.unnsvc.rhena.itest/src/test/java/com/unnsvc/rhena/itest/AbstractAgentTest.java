@@ -1,6 +1,7 @@
 
 package com.unnsvc.rhena.itest;
 
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
 import org.junit.After;
@@ -15,7 +16,6 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.repository.IRhenaResolver;
 import com.unnsvc.rhena.config.AbstractRhenaConfiguredTest;
 import com.unnsvc.rhena.core.RhenaFactories;
-import com.unnsvc.rhena.objectserver.old.ObjectServerHelper;
 import com.unnsvc.rhena.repository.RhenaResolver;
 
 public abstract class AbstractAgentTest extends AbstractRhenaConfiguredTest {
@@ -28,7 +28,7 @@ public abstract class AbstractAgentTest extends AbstractRhenaConfiguredTest {
 	public void before() throws RhenaException {
 
 		try {
-			SocketAddress agentAddress = ObjectServerHelper.availableAddress();
+			SocketAddress agentAddress = new InetSocketAddress("localhost", 6666);
 
 			config = createMockConfig();
 			config.getAgentConfiguration().setAgentAddress(agentAddress);
@@ -59,8 +59,7 @@ public abstract class AbstractAgentTest extends AbstractRhenaConfiguredTest {
 
 		return context;
 	}
-	
-	
+
 	public IRhenaConfiguration getConfig() {
 
 		return config;

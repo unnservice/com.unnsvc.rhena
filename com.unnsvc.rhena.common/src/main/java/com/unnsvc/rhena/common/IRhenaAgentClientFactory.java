@@ -7,6 +7,6 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 
 public interface IRhenaAgentClientFactory {
 
-	public IRhenaAgentClient newClient(SocketAddress address, int timeout) throws RhenaException;
+	public IRhenaAgentClient newClient(SocketAddress endpoint) throws RhenaException;
 
 }
