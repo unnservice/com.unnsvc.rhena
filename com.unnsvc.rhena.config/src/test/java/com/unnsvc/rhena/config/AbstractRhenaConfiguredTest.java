@@ -21,7 +21,6 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.repository.IRepositoryDefinition;
 import com.unnsvc.rhena.common.repository.IRepositoryFactory;
 import com.unnsvc.rhena.common.repository.IRhenaResolver;
-import com.unnsvc.rhena.objectserver.old.ObjectServerHelper;
 
 public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 
@@ -40,7 +39,7 @@ public abstract class AbstractRhenaConfiguredTest extends AbstractRhenaTest {
 			 * specified otherwise
 			 */
 			config.getAgentConfiguration().setThreads(1);
-			config.getAgentConfiguration().setAgentAddress(ObjectServerHelper.availableAddress());
+			// config.getAgentConfiguration().setAgentAddress(ObjectServerHelper.availableAddress());
 
 			return config;
 		} catch (Exception ex) {

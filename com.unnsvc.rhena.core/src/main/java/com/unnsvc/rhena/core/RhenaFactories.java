@@ -1,7 +1,7 @@
 
 package com.unnsvc.rhena.core;
 
-import com.unnsvc.rhena.agent.RhenaAgentClientFactory;
+import com.unnsvc.rhena.agent.server.RhenaAgentClientFactory;
 import com.unnsvc.rhena.common.IRhenaAgentClientFactory;
 import com.unnsvc.rhena.common.IRhenaFactories;
 import com.unnsvc.rhena.common.execution.IBuilderFactory;

@@ -17,8 +17,8 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.objectserver.handler.IProtocolHandler;
 import com.unnsvc.rhena.objectserver.handler.IProtocolHandlerFactory;
 import com.unnsvc.rhena.objectserver.messages.ExceptionResponse;
-import com.unnsvc.rhena.objectserver.messages.Request;
-import com.unnsvc.rhena.objectserver.messages.Response;
+import com.unnsvc.rhena.objectserver.messages.IRequest;
+import com.unnsvc.rhena.objectserver.messages.IResponse;
 
 public class ObjectServer implements IObjectServer {
 
@@ -109,13 +109,13 @@ public class ObjectServer implements IObjectServer {
 			Object requestObject = ois.readObject();
 			log.debug("Read request: " + requestObject.getClass().getName());
 
-			if (!(requestObject instanceof Request)) {
+			if (!(requestObject instanceof IRequest)) {
 				throw new ObjectServerException("Request object not instance of Request: " + requestObject.getClass().getName());
 			}
 
 			IProtocolHandler handler = handlerFactory.newProtocolHandler();
 			try {
-				Response response = handler.handleRequest((Request) requestObject);
+				IResponse response = handler.handleRequest((IRequest) requestObject);
 				log.debug("Handled request in protocol handler: " + handler.getClass().getName());
 
 				try (ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream())) {

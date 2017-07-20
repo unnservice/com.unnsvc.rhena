@@ -2,11 +2,11 @@
 package com.unnsvc.rhena.objectserver.handler;
 
 import com.unnsvc.rhena.objectserver.ObjectServerException;
-import com.unnsvc.rhena.objectserver.messages.Request;
-import com.unnsvc.rhena.objectserver.messages.Response;
+import com.unnsvc.rhena.objectserver.messages.IRequest;
+import com.unnsvc.rhena.objectserver.messages.IResponse;
 
 public interface IProtocolHandler {
 
-	public Response handleRequest(Request request) throws ObjectServerException;
+	public IResponse handleRequest(IRequest request) throws ObjectServerException;
 
 }

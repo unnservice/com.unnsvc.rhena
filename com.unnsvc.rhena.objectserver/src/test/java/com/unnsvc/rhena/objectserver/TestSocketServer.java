@@ -22,7 +22,7 @@ import com.unnsvc.rhena.objectserver.handler.IProtocolHandlerFactory;
 import com.unnsvc.rhena.objectserver.handler.ProtocolHandlerFactory;
 import com.unnsvc.rhena.objectserver.messages.PingRequest;
 import com.unnsvc.rhena.objectserver.messages.PingResponse;
-import com.unnsvc.rhena.objectserver.messages.Response;
+import com.unnsvc.rhena.objectserver.messages.IResponse;
 
 public class TestSocketServer {
 
@@ -51,7 +51,7 @@ public class TestSocketServer {
 		ObjectClient client = new ObjectClient(address);
 
 		PingRequest request = new PingRequest();
-		Response response = client.submitRequest(request);
+		IResponse response = client.submitRequest(request);
 		Assert.assertTrue(response instanceof PingResponse);
 		Assert.assertEquals(request.getId(), ((PingResponse) response).getId());
 	}
@@ -73,7 +73,7 @@ public class TestSocketServer {
 					try {
 
 						PingRequest request = new PingRequest();
-						Response response = client.submitRequest(request);
+						IResponse response = client.submitRequest(request);
 						Assert.assertTrue(response instanceof PingResponse);
 						Assert.assertEquals(request.getId(), ((PingResponse) response).getId());
 						log.debug("Processed " + curr + "/" + NR);

@@ -1,77 +1,45 @@
 
 package com.unnsvc.rhena.agent;
 
-import java.io.Serializable;
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import com.unnsvc.rhena.common.IRhenaAgent;
 import com.unnsvc.rhena.common.IRhenaAgentClient;
-import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.IExecutionRequest;
-import com.unnsvc.rhena.common.execution.IExecutionResult;
-import com.unnsvc.rhena.common.lifecycle.ILifecycleInstance;
-import com.unnsvc.rhena.common.model.IEntryPoint;
-import com.unnsvc.rhena.common.model.IRhenaModule;
-import com.unnsvc.rhena.common.traversal.IDependencies;
-import com.unnsvc.rhena.objectserver.old.ObjectServerException;
-import com.unnsvc.rhena.objectserver.old.ObjectServerHelper;
+import com.unnsvc.rhena.objectserver.messages.IResponse;
+import com.unnsvc.rhena.objectserver.messages.PingRequest;
+import com.unnsvc.rhena.objectserver.messages.PingResponse;
 
-public class TestRhenaAgent implements Serializable {
+public class TestRhenaAgent {
 
-	private static final long serialVersionUID = 1L;
-	private SocketAddress address;
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private IRhenaAgent agentServer;
+	private IRhenaAgentClient agentClient;
 
 	@Before
-	public void before() throws ObjectServerException, RhenaException, InterruptedException {
+	public void before() throws Exception {
 
-		address = ObjectServerHelper.availableAddress();
-		RhenaAgent agent = new RhenaAgent(address);
-		agent.startAgent();
+		SocketAddress endpoint = new InetSocketAddress("localhost", 6666);
+
+		agentServer = new RhenaAgentServer(endpoint);
+		agentServer.startAgent();
+		agentClient = new RhenaAgentClient(endpoint);
+	}
+
+	@After
+	public void after() throws Exception {
+
+		agentServer.close();
 	}
 
 	@Test
-	public void testAgent() throws Exception {
+	public void testServerProtocol() throws Exception {
 
-		RhenaAgentClientFactory fact = new RhenaAgentClientFactory();
-		log.debug("Address " + address);
-		try (IRhenaAgentClient client = fact.newClient(address, 1000)) {
-
-			IExecutionResult result = (IExecutionResult) client.executeRequest(new IExecutionRequest() {
-
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IEntryPoint getEntryPoint() {
-
-					throw new UnsupportedOperationException("Not implemented");
-				}
-
-				@Override
-				public IRhenaModule getModule() {
-
-					throw new UnsupportedOperationException("Not implemented");
-				}
-
-				@Override
-				public ILifecycleInstance getLifecycle() {
-
-					throw new UnsupportedOperationException("Not implemented");
-				}
-
-				@Override
-				public IDependencies getDependencies() {
-
-					throw new UnsupportedOperationException("Not implemented");
-				}
-
-			});
-			Assert.assertTrue(result instanceof IExecutionResult);
-		}
+		IResponse response = agentClient.submitRequest(new PingRequest());
+		Assert.assertTrue(response instanceof PingResponse);
 	}
 }

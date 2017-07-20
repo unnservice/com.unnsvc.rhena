@@ -1,7 +1,7 @@
 
 package com.unnsvc.rhena.objectserver.messages;
 
-public class PingResponse implements Response {
+public class PingResponse implements IResponse {
 
 	private static final long serialVersionUID = 1L;
 	private int id;

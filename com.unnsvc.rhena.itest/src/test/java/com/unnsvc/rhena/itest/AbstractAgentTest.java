@@ -6,7 +6,7 @@ import java.net.SocketAddress;
 import org.junit.After;
 import org.junit.Before;
 
-import com.unnsvc.rhena.agent.RhenaAgent;
+import com.unnsvc.rhena.agent.RhenaAgentServer;
 import com.unnsvc.rhena.common.IRhenaAgent;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.IRhenaFactories;
@@ -42,7 +42,7 @@ public abstract class AbstractAgentTest extends AbstractRhenaConfiguredTest {
 			 * Agent test requires a running agent, so we set up the agent
 			 * before the test and tear it down afterward
 			 */
-			agent = new RhenaAgent(config.getAgentConfiguration().getAgentAddress());
+			agent = new RhenaAgentServer(config.getAgentConfiguration().getAgentAddress());
 			agent.startAgent();
 		} catch (Exception ex) {
 			throw new RhenaException(ex);

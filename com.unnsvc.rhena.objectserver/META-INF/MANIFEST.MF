@@ -7,6 +7,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: com.unnsvc.rhena.objectserver,
  com.unnsvc.rhena.objectserver.client,
+ com.unnsvc.rhena.objectserver.handler,
+ com.unnsvc.rhena.objectserver.messages,
  com.unnsvc.rhena.objectserver.old,
  com.unnsvc.rhena.objectserver.old.client,
  com.unnsvc.rhena.objectserver.old.server

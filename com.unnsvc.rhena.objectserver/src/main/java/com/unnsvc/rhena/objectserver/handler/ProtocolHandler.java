@@ -3,8 +3,8 @@ package com.unnsvc.rhena.objectserver.handler;
 
 import com.unnsvc.rhena.objectserver.messages.PingRequest;
 import com.unnsvc.rhena.objectserver.messages.PingResponse;
-import com.unnsvc.rhena.objectserver.messages.Request;
-import com.unnsvc.rhena.objectserver.messages.Response;
+import com.unnsvc.rhena.objectserver.messages.IRequest;
+import com.unnsvc.rhena.objectserver.messages.IResponse;
 
 public class ProtocolHandler implements IProtocolHandler {
 
@@ -13,7 +13,7 @@ public class ProtocolHandler implements IProtocolHandler {
 	}
 
 	@Override
-	public Response handleRequest(Request request) {
+	public IResponse handleRequest(IRequest request) {
 
 		if (request instanceof PingRequest) {
 

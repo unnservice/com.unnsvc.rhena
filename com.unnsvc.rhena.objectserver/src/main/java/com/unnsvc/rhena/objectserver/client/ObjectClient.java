@@ -11,8 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.objectserver.ObjectServerException;
-import com.unnsvc.rhena.objectserver.messages.PingRequest;
-import com.unnsvc.rhena.objectserver.messages.Response;
+import com.unnsvc.rhena.objectserver.messages.IRequest;
+import com.unnsvc.rhena.objectserver.messages.IResponse;
 
 public class ObjectClient implements IObjectClient {
 
@@ -24,7 +24,8 @@ public class ObjectClient implements IObjectClient {
 		this.address = address;
 	}
 
-	public Response submitRequest(PingRequest request) throws ObjectServerException {
+	@Override
+	public IResponse submitRequest(IRequest request) throws ObjectServerException {
 
 		try (Socket socket = new Socket()) {
 			socket.setSoTimeout(1000);
@@ -38,7 +39,7 @@ public class ObjectClient implements IObjectClient {
 		}
 	}
 
-	private Response submitRequest(Socket socket, PingRequest request) throws IOException, ClassNotFoundException {
+	private IResponse submitRequest(Socket socket, IRequest request) throws IOException, ClassNotFoundException {
 
 		try (ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream())) {
 
@@ -48,7 +49,7 @@ public class ObjectClient implements IObjectClient {
 			try (ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
 
 				Object responseObject = ois.readObject();
-				Response response = (Response) responseObject;
+				IResponse response = (IResponse) responseObject;
 				log.debug("Received response: " + response.getClass().getName());
 				return response;
 			}
