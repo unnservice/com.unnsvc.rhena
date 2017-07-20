@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -34,11 +35,13 @@ public class ObjectServer implements IObjectServer {
 		this.executor = Executors.newCachedThreadPool();
 	}
 
+	@Override
 	public void startServer(SocketAddress address) throws ObjectServerException {
 
 		try {
 			server = new ServerSocket();
-			server.setSoTimeout(1000);
+			// server.accept() throws timeout exception if this is set
+			// server.setSoTimeout(1000);
 			server.bind(address);
 			log.debug("Server bound to: " + address);
 
@@ -65,24 +68,34 @@ public class ObjectServer implements IObjectServer {
 
 	private void startServerLoop(ServerSocket server) throws IOException {
 
-		while (server.isBound()) {
+		while (!server.isClosed()) {
 
-			Socket client = server.accept();
-			log.debug("Accepted connection");
+			try {
+				Socket client = server.accept();
+				log.debug("Accepted connection");
 
-			executor.execute(new Runnable() {
+				executor.execute(new Runnable() {
 
-				public void run() {
+					public void run() {
 
-					try {
+						try {
 
-						handleRequest(client);
-					} catch (Exception ex) {
+							handleRequest(client);
+						} catch (Exception ex) {
 
-						throw new RuntimeException(ex);
+							throw new RuntimeException(ex);
+						}
 					}
+				});
+			} catch (SocketException se) {
+
+				// If socket is closed, SocketException is most likely thrown
+				// from server.accept() which was in blocking state
+				if (!server.isClosed()) {
+
+					throw se;
 				}
-			});
+			}
 		}
 	}
 
@@ -119,6 +132,19 @@ public class ObjectServer implements IObjectServer {
 					throw new ObjectServerException(throwable);
 				}
 			}
+		}
+	}
+
+	@Override
+	public void stopServer() throws ObjectServerException {
+
+		try {
+
+			log.debug("stopServer()");
+			server.close();
+		} catch (IOException e) {
+
+			throw new ObjectServerException(e);
 		}
 	}
 }
