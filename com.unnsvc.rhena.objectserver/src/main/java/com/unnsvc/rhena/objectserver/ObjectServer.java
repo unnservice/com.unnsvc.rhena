@@ -20,14 +20,14 @@ import com.unnsvc.rhena.objectserver.messages.ExceptionResponse;
 import com.unnsvc.rhena.objectserver.messages.IRequest;
 import com.unnsvc.rhena.objectserver.messages.IResponse;
 
-public class ObjectServer implements IObjectServer {
+public class ObjectServer<REQUEST extends IRequest, RESPONSE extends IResponse> implements IObjectServer {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ServerSocket server;
-	private IProtocolHandlerFactory handlerFactory;
+	private IProtocolHandlerFactory<REQUEST, RESPONSE> handlerFactory;
 	private ExecutorService executor;
 
-	public ObjectServer(IProtocolHandlerFactory handlerFactory) {
+	public ObjectServer(IProtocolHandlerFactory<REQUEST, RESPONSE> handlerFactory) {
 
 		this.handlerFactory = handlerFactory;
 		// Might want to have a look at this to not spawn an endless number of
@@ -108,14 +108,13 @@ public class ObjectServer implements IObjectServer {
 
 			Object requestObject = ois.readObject();
 			log.debug("Read request: " + requestObject.getClass().getName());
-
-			if (!(requestObject instanceof IRequest)) {
-				throw new ObjectServerException("Request object not instance of Request: " + requestObject.getClass().getName());
-			}
-
-			IProtocolHandler handler = handlerFactory.newProtocolHandler();
+			
+			IProtocolHandler<REQUEST, RESPONSE> handler = handlerFactory.newProtocolHandler();
+			
 			try {
-				IResponse response = handler.handleRequest((IRequest) requestObject);
+				
+				@SuppressWarnings("unchecked")
+				RESPONSE response = handler.handleRequest((REQUEST) requestObject);
 				log.debug("Handled request in protocol handler: " + handler.getClass().getName());
 
 				try (ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream())) {

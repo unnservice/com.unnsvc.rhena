@@ -4,20 +4,20 @@ package com.unnsvc.rhena.common.traversal;
 import java.util.Iterator;
 import java.util.List;
 
-import com.unnsvc.rhena.common.execution.IExecutionResult;
+import com.unnsvc.rhena.common.execution.IExecutionResponse;
 
 public class Dependencies implements IDependencies {
 
 	private static final long serialVersionUID = 1L;
-	private List<IExecutionResult> dependencyList;
+	private List<IExecutionResponse> dependencyList;
 
-	public Dependencies(List<IExecutionResult> dependencyList) {
+	public Dependencies(List<IExecutionResponse> dependencyList) {
 
 		this.dependencyList = dependencyList;
 	}
 
 	@Override
-	public Iterator<IExecutionResult> iterator() {
+	public Iterator<IExecutionResponse> iterator() {
 
 		return dependencyList.iterator();
 	}
@@ -33,7 +33,7 @@ public class Dependencies implements IDependencies {
 	}
 
 	@Override
-	public List<IExecutionResult> getDependencyList() {
+	public List<IExecutionResponse> getDependencyList() {
 
 		return dependencyList;
 	}

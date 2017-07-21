@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.IRhenaBuilder;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.IExecutionResult;
+import com.unnsvc.rhena.common.execution.IExecutionResponse;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.traversal.DependencyCollector;
@@ -23,7 +23,7 @@ public abstract class AbstractBuilder implements IRhenaBuilder {
 		if (log.isDebugEnabled()) {
 
 			DependencyCollector collector = new DependencyCollector(context, entryPoint);
-			for (IExecutionResult dep : collector.toDependencyChain()) {
+			for (IExecutionResponse dep : collector.toDependencyChain()) {
 				log.debug("\tdependency: " + dep.getEntryPoint().getTarget() + ":" + dep.getEntryPoint().getExecutionType().toString().toLowerCase());
 			}
 		}

@@ -5,8 +5,8 @@ import com.unnsvc.rhena.objectserver.ObjectServerException;
 import com.unnsvc.rhena.objectserver.messages.IRequest;
 import com.unnsvc.rhena.objectserver.messages.IResponse;
 
-public interface IProtocolHandler {
+public interface IProtocolHandler<REQUEST extends IRequest, RESPONSE extends IResponse> {
 
-	public IResponse handleRequest(IRequest request) throws ObjectServerException;
+	public RESPONSE handleRequest(REQUEST request) throws ObjectServerException;
 
 }

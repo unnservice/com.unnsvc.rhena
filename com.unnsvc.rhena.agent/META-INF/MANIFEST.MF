@@ -6,6 +6,7 @@ Bundle-Vendor: UNNSVC
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: com.unnsvc.rhena.agent,
+ com.unnsvc.rhena.agent.protocol,
  com.unnsvc.rhena.agent.server
 Require-Bundle: org.slf4j.api,
  com.unnsvc.rhena.common,

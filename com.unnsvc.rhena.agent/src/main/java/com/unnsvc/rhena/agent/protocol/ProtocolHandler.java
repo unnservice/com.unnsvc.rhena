@@ -1,17 +1,16 @@
 
 package com.unnsvc.rhena.agent.protocol;
 
+import com.unnsvc.rhena.common.execution.IExecutionRequest;
+import com.unnsvc.rhena.common.execution.IExecutionResponse;
 import com.unnsvc.rhena.objectserver.ObjectServerException;
 import com.unnsvc.rhena.objectserver.handler.IProtocolHandler;
-import com.unnsvc.rhena.objectserver.messages.IRequest;
-import com.unnsvc.rhena.objectserver.messages.IResponse;
 
-public class ProtocolHandler implements IProtocolHandler {
+public class ProtocolHandler implements IProtocolHandler<IExecutionRequest, IExecutionResponse> {
 
 	@Override
-	public IResponse handleRequest(IRequest request) throws ObjectServerException {
+	public IExecutionResponse handleRequest(IExecutionRequest request) throws ObjectServerException {
 
 		throw new UnsupportedOperationException("Not implemented");
 	}
-
 }

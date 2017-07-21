@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.artifact.IArtifact;
-import com.unnsvc.rhena.common.execution.IExecutionResult;
+import com.unnsvc.rhena.common.execution.IExecutionResponse;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 
@@ -33,14 +33,14 @@ public class RemoteBuilder extends AbstractBuilder {
 	}
 
 	@Override
-	public IExecutionResult call() throws Exception {
+	public IExecutionResponse call() throws Exception {
 
 		debugBuilderRun(module, context, entryPoint);
 
 		return new Result(entryPoint, module);
 	}
 
-	private static class Result implements IExecutionResult {
+	private static class Result implements IExecutionResponse {
 
 		private static final long serialVersionUID = 1L;
 		private IEntryPoint entryPoint;

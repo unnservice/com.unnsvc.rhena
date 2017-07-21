@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.IRhenaBuilder;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.IExecutionResult;
+import com.unnsvc.rhena.common.execution.IExecutionResponse;
 import com.unnsvc.rhena.common.execution.IModuleExecutor;
 import com.unnsvc.rhena.common.execution.IModuleExecutorCallback;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
@@ -42,7 +42,7 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 		this.moduleExecutor.addCallback(new IModuleExecutorCallback() {
 
 			@Override
-			public void onExecuted(IExecutionResult executionResult) {
+			public void onExecuted(IExecutionResponse executionResult) {
 
 				IEntryPoint entryPoint = executionResult.getEntryPoint();
 
@@ -191,7 +191,7 @@ public class CascadingModelBuilder extends AbstractCachingResolver {
 
 	}
 
-	public IExecutionResult executeModel(EExecutionType type, ModuleIdentifier identifier) throws RhenaException {
+	public IExecutionResponse executeModel(EExecutionType type, ModuleIdentifier identifier) throws RhenaException {
 
 		IEntryPoint entryPoint = new EntryPoint(type, identifier);
 

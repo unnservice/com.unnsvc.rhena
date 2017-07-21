@@ -5,7 +5,7 @@ import java.util.Set;
 
 import com.unnsvc.rhena.common.exceptions.NotFoundException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.IExecutionResult;
+import com.unnsvc.rhena.common.execution.IExecutionResponse;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
@@ -16,9 +16,9 @@ public interface IRhenaCache {
 
 	public void cacheModule(IRhenaModule module) throws RhenaException;
 
-	public void cacheExecution(IEntryPoint entryPoint, IExecutionResult result);
+	public void cacheExecution(IEntryPoint entryPoint, IExecutionResponse result);
 
-	public IExecutionResult getCachedExecution(IEntryPoint entryPoint) throws NotFoundException;
+	public IExecutionResponse getCachedExecution(IEntryPoint entryPoint) throws NotFoundException;
 
 	public Set<IEntryPoint> getEntryPoints();
 

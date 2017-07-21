@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.unnsvc.rhena.common.IRhenaEngine;
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
-import com.unnsvc.rhena.common.execution.IExecutionResult;
+import com.unnsvc.rhena.common.execution.IExecutionResponse;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.EExecutionType;
 import com.unnsvc.rhena.common.model.IRhenaModule;
@@ -31,9 +31,9 @@ public class TestRhenaSelfBuild extends AbstractIntegrationTest {
 		IRhenaEngine engine = new RhenaEngine(getConfig());
 
 		IRhenaModule module = engine.resolveModule(identifier);
-		IExecutionResult result = engine.resolveExecution(EExecutionType.ITEST, module);
+		IExecutionResponse result = engine.resolveExecution(EExecutionType.ITEST, module);
 		Assert.assertNotNull(result);
-		Assert.assertTrue(result instanceof IExecutionResult);
+		Assert.assertTrue(result instanceof IExecutionResponse);
 	}
 	
 	@Override

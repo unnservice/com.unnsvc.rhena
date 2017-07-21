@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.IExecutionResult;
+import com.unnsvc.rhena.common.execution.IExecutionResponse;
 import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
@@ -20,13 +20,13 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 public class DependencyCollector extends AbstractCachingResolver {
 
 	// private IEntryPoint caller;
-	private List<IExecutionResult> dependencyList;
+	private List<IExecutionResponse> dependencyList;
 
 	public DependencyCollector(IRhenaContext context, IEntryPoint entryPoint) throws RhenaException {
 
 		super(context);
 
-		this.dependencyList = new ArrayList<IExecutionResult>();
+		this.dependencyList = new ArrayList<IExecutionResponse>();
 		// this.caller = entryPoint;
 		visitTree(entryPoint, ESelectionType.SCOPE);
 	}
@@ -36,11 +36,11 @@ public class DependencyCollector extends AbstractCachingResolver {
 
 		if (source != null) {
 
-			IExecutionResult result = getContext().getCache().getCachedExecution(outgoing);
+			IExecutionResponse result = getContext().getCache().getCachedExecution(outgoing);
 			
-			for(Iterator<IExecutionResult> iter = dependencyList.iterator(); iter.hasNext();) {
+			for(Iterator<IExecutionResponse> iter = dependencyList.iterator(); iter.hasNext();) {
 				
-				IExecutionResult next = iter.next();
+				IExecutionResponse next = iter.next();
 				if(next.getEntryPoint().equals(outgoing)) {
 					iter.remove();
 				}

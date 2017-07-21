@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.unnsvc.rhena.common.IRhenaBuilder;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.IExecutionResult;
+import com.unnsvc.rhena.common.execution.IExecutionResponse;
 import com.unnsvc.rhena.common.execution.IModuleExecutor;
 import com.unnsvc.rhena.common.execution.IModuleExecutorCallback;
 
@@ -41,8 +41,8 @@ public class ModuleExecutor extends ThreadPoolExecutor implements IModuleExecuto
 		if (runnable instanceof Future<?>) {
 
 			try {
-				Future<IExecutionResult> future = (Future<IExecutionResult>) runnable;
-				IExecutionResult result = future.get();
+				Future<IExecutionResponse> future = (Future<IExecutionResponse>) runnable;
+				IExecutionResponse result = future.get();
 				callbacks.forEach(callback -> callback.onExecuted(result));
 			} catch (Throwable e) {
 

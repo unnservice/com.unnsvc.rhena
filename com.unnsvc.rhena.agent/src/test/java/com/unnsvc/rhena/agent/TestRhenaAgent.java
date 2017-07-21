@@ -9,16 +9,17 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.unnsvc.rhena.common.IRhenaAgent;
+import com.unnsvc.rhena.agent.messages.PingRequest;
+import com.unnsvc.rhena.agent.messages.PingResponse;
 import com.unnsvc.rhena.common.IRhenaAgentClient;
-import com.unnsvc.rhena.objectserver.messages.IResponse;
-import com.unnsvc.rhena.objectserver.messages.PingRequest;
-import com.unnsvc.rhena.objectserver.messages.PingResponse;
+import com.unnsvc.rhena.common.IRhenaAgentServer;
+import com.unnsvc.rhena.common.execution.IExecutionRequest;
+import com.unnsvc.rhena.common.execution.IExecutionResponse;
 
 public class TestRhenaAgent {
 
-	private IRhenaAgent agentServer;
-	private IRhenaAgentClient agentClient;
+	private IRhenaAgentServer agentServer;
+	private IRhenaAgentClient<IExecutionRequest, IExecutionResponse> agentClient;
 
 	@Before
 	public void before() throws Exception {
@@ -26,7 +27,7 @@ public class TestRhenaAgent {
 		SocketAddress endpoint = new InetSocketAddress("localhost", 6666);
 
 		agentServer = new RhenaAgentServer(endpoint);
-		agentServer.startAgent();
+		agentServer.startServer();
 		agentClient = new RhenaAgentClient(endpoint);
 	}
 
@@ -39,7 +40,7 @@ public class TestRhenaAgent {
 	@Test
 	public void testServerProtocol() throws Exception {
 
-		IResponse response = agentClient.submitRequest(new PingRequest());
+		IExecutionResponse response = agentClient.submitRequest(new PingRequest());
 		Assert.assertTrue(response instanceof PingResponse);
 	}
 }

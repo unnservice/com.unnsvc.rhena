@@ -12,7 +12,7 @@ import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.config.IAgentConfiguration;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.IExecutionResult;
+import com.unnsvc.rhena.common.execution.IExecutionResponse;
 import com.unnsvc.rhena.common.lifecycle.ICommandInstance;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleInstance;
 import com.unnsvc.rhena.common.lifecycle.IProcessorInstance;
@@ -51,7 +51,7 @@ public class WorkspaceBuilder extends AbstractBuilder {
 	}
 
 	@Override
-	public IExecutionResult call() throws Exception {
+	public IExecutionResponse call() throws Exception {
 
 		debugBuilderRun(module, context, entryPoint);
 
@@ -64,7 +64,7 @@ public class WorkspaceBuilder extends AbstractBuilder {
 		ILifecycleInstance lifecycle = instantiateLifecycle(module.getLifecycleConfiguration());
 
 		ExecutionRequest request = new ExecutionRequest(entryPoint, module, lifecycle, dependencies);
-		IExecutionResult result = (IExecutionResult) client.submitRequest(request);
+		IExecutionResponse result = (IExecutionResponse) client.submitRequest(request);
 
 		return result;
 	}

@@ -8,7 +8,7 @@ import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.objectserver.messages.IResponse;
 
-public interface IExecutionResult extends IResponse {
+public interface IExecutionResponse extends IResponse {
 
 	public IEntryPoint getEntryPoint();
 

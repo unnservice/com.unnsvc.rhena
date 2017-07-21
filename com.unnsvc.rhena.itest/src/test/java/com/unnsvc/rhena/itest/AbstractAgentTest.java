@@ -8,7 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 
 import com.unnsvc.rhena.agent.RhenaAgentServer;
-import com.unnsvc.rhena.common.IRhenaAgent;
+import com.unnsvc.rhena.common.IRhenaAgentServer;
 import com.unnsvc.rhena.common.IRhenaContext;
 import com.unnsvc.rhena.common.IRhenaFactories;
 import com.unnsvc.rhena.common.config.IRhenaConfiguration;
@@ -22,7 +22,7 @@ public abstract class AbstractAgentTest extends AbstractRhenaConfiguredTest {
 
 	private IRhenaConfiguration config;
 	private IRhenaContext context;
-	private IRhenaAgent agent;
+	private IRhenaAgentServer agent;
 
 	@Before
 	public void before() throws RhenaException {
@@ -43,7 +43,7 @@ public abstract class AbstractAgentTest extends AbstractRhenaConfiguredTest {
 			 * before the test and tear it down afterward
 			 */
 			agent = new RhenaAgentServer(config.getAgentConfiguration().getAgentAddress());
-			agent.startAgent();
+			agent.startServer();
 		} catch (Exception ex) {
 			throw new RhenaException(ex);
 		}

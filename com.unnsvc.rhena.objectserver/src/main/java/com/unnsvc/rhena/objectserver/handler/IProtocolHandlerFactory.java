@@ -1,8 +1,11 @@
 
 package com.unnsvc.rhena.objectserver.handler;
 
-public interface IProtocolHandlerFactory {
+import com.unnsvc.rhena.objectserver.messages.IRequest;
+import com.unnsvc.rhena.objectserver.messages.IResponse;
 
-	public IProtocolHandler newProtocolHandler();
+public interface IProtocolHandlerFactory<REQUEST extends IRequest, RESPONSE extends IResponse> {
+
+	public IProtocolHandler<REQUEST, RESPONSE> newProtocolHandler();
 
 }

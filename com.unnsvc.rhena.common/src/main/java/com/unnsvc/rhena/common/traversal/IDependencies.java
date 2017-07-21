@@ -4,9 +4,9 @@ package com.unnsvc.rhena.common.traversal;
 import java.io.Serializable;
 import java.util.List;
 
-import com.unnsvc.rhena.common.execution.IExecutionResult;
+import com.unnsvc.rhena.common.execution.IExecutionResponse;
 
-public interface IDependencies extends Serializable, Iterable<IExecutionResult> {
+public interface IDependencies extends Serializable, Iterable<IExecutionResponse> {
 
 	/**
 	 * Merge other into this
@@ -15,6 +15,6 @@ public interface IDependencies extends Serializable, Iterable<IExecutionResult> 
 	 */
 	public void merge(IDependencies dependencies);
 
-	public List<IExecutionResult> getDependencyList();
+	public List<IExecutionResponse> getDependencyList();
 
 }

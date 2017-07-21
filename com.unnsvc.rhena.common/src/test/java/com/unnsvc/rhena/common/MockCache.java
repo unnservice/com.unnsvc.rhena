@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.unnsvc.rhena.common.execution.IExecutionResult;
+import com.unnsvc.rhena.common.execution.IExecutionResponse;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
@@ -14,13 +14,13 @@ import com.unnsvc.rhena.common.model.IRhenaModule;
 public class MockCache implements IRhenaCache {
 
 	private Map<ModuleIdentifier, IRhenaModule> modules;
-	private Map<IEntryPoint, IExecutionResult> results;
+	private Map<IEntryPoint, IExecutionResponse> results;
 	private Set<IEntryPoint> entryPoints;
 
 	public MockCache() {
 
 		this.modules = new HashMap<ModuleIdentifier, IRhenaModule>();
-		this.results = new HashMap<IEntryPoint, IExecutionResult>();
+		this.results = new HashMap<IEntryPoint, IExecutionResponse>();
 		this.entryPoints = new HashSet<IEntryPoint>();
 	}
 
@@ -37,13 +37,13 @@ public class MockCache implements IRhenaCache {
 	}
 
 	@Override
-	public void cacheExecution(IEntryPoint entryPoint, IExecutionResult result) {
+	public void cacheExecution(IEntryPoint entryPoint, IExecutionResponse result) {
 
 		results.put(entryPoint, result);
 	}
 
 	@Override
-	public IExecutionResult getCachedExecution(IEntryPoint entryPoint) {
+	public IExecutionResponse getCachedExecution(IEntryPoint entryPoint) {
 
 		return results.get(entryPoint);
 	}

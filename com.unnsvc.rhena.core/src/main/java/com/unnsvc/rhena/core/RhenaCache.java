@@ -9,7 +9,7 @@ import java.util.Set;
 import com.unnsvc.rhena.common.IRhenaCache;
 import com.unnsvc.rhena.common.exceptions.NotFoundException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.IExecutionResult;
+import com.unnsvc.rhena.common.execution.IExecutionResponse;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.IRhenaModule;
@@ -23,13 +23,13 @@ public class RhenaCache implements IRhenaCache {
 
 	private Map<ModuleIdentifier, IRhenaModule> cachedModules;
 	private Set<IEntryPoint> entryPoints;
-	private Map<IEntryPoint, IExecutionResult> cachedExecutions;
+	private Map<IEntryPoint, IExecutionResponse> cachedExecutions;
 
 	public RhenaCache() {
 
 		this.cachedModules = new HashMap<ModuleIdentifier, IRhenaModule>();
 		this.entryPoints = new HashSet<IEntryPoint>();
-		this.cachedExecutions = new HashMap<IEntryPoint, IExecutionResult>();
+		this.cachedExecutions = new HashMap<IEntryPoint, IExecutionResponse>();
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class RhenaCache implements IRhenaCache {
 	}
 
 	@Override
-	public IExecutionResult getCachedExecution(IEntryPoint entryPoint) throws NotFoundException {
+	public IExecutionResponse getCachedExecution(IEntryPoint entryPoint) throws NotFoundException {
 
 		for (IEntryPoint existing : cachedExecutions.keySet()) {
 
@@ -72,7 +72,7 @@ public class RhenaCache implements IRhenaCache {
 	}
 
 	@Override
-	public void cacheExecution(IEntryPoint entryPoint, IExecutionResult result) {
+	public void cacheExecution(IEntryPoint entryPoint, IExecutionResponse result) {
 
 		this.cachedExecutions.put(entryPoint, result);
 	}
