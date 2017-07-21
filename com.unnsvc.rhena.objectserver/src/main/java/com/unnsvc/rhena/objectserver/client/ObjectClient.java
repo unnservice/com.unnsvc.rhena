@@ -39,7 +39,6 @@ public class ObjectClient implements IObjectClient {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private IResponse submitRequest(Socket socket, IRequest request) throws IOException, ClassNotFoundException {
 
 		try (ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream())) {
