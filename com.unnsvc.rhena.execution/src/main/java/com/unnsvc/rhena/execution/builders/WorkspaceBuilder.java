@@ -17,7 +17,7 @@ import com.unnsvc.rhena.common.lifecycle.ICommandInstance;
 import com.unnsvc.rhena.common.lifecycle.ILifecycleInstance;
 import com.unnsvc.rhena.common.lifecycle.IProcessorInstance;
 import com.unnsvc.rhena.common.model.IEntryPoint;
-import com.unnsvc.rhena.common.model.ILifecycleSpec;
+import com.unnsvc.rhena.common.model.ILifecycleSpecification;
 import com.unnsvc.rhena.common.model.IProcessorSpec;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
@@ -61,15 +61,16 @@ public class WorkspaceBuilder extends AbstractBuilder {
 		DependencyCollector collector = new DependencyCollector(context, entryPoint);
 		IDependencies dependencies = collector.toDependencyChain();
 
-		ILifecycleInstance lifecycle = instantiateLifecycle(module.getLifecycleConfiguration());
+		ILifecycleInstance lifecycle = instantiateLifecycle(module.getLifecycleSpecification());
 
 		ExecutionRequest request = new ExecutionRequest(entryPoint, module, lifecycle, dependencies);
+		log.debug(request.toString());
 		IExecutionResponse result = (IExecutionResponse) client.submitRequest(request);
 
 		return result;
 	}
 
-	private ILifecycleInstance instantiateLifecycle(ILifecycleSpec lifecycle) throws RhenaException {
+	private ILifecycleInstance instantiateLifecycle(ILifecycleSpecification lifecycle) throws RhenaException {
 
 		log.trace("Lifecycle is: " + lifecycle);
 

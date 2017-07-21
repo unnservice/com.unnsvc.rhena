@@ -9,7 +9,7 @@ import java.util.Map;
 
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.EModuleType;
-import com.unnsvc.rhena.common.model.ILifecycleSpec;
+import com.unnsvc.rhena.common.model.ILifecycleSpecification;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
 import com.unnsvc.rhena.common.repository.RepositoryIdentifier;
@@ -22,10 +22,10 @@ public class RhenaModule implements IRhenaModule {
 	private boolean framework;
 	private RepositoryIdentifier repositoryIdentifier;
 	private IRhenaEdge parent;
-	private ILifecycleSpec lifecycleConfiguration;
+	private ILifecycleSpecification lifecycleSpecification;
 	private List<IRhenaEdge> dependencies;
 	private Map<String, String> properties;
-	private List<ILifecycleSpec> declaredConfigurations;
+	private List<ILifecycleSpecification> declaredLifecycleSpecifications;
 
 	public RhenaModule(ModuleIdentifier identifier, RepositoryIdentifier repositoryIdentifier) {
 
@@ -34,7 +34,7 @@ public class RhenaModule implements IRhenaModule {
 		this.repositoryIdentifier = repositoryIdentifier;
 		this.dependencies = new ArrayList<IRhenaEdge>();
 		this.properties = new HashMap<String, String>();
-		this.declaredConfigurations = new ArrayList<ILifecycleSpec>();
+		this.declaredLifecycleSpecifications = new ArrayList<ILifecycleSpecification>();
 		this.moduleType = EModuleType.REMOTE;
 	}
 
@@ -75,15 +75,15 @@ public class RhenaModule implements IRhenaModule {
 	}
 
 	@Override
-	public void setLifecycleConfiguration(ILifecycleSpec lifecycleConfiguration) {
+	public void setLifecycleSpecification(ILifecycleSpecification lifecycleConfiguration) {
 
-		this.lifecycleConfiguration = lifecycleConfiguration;
+		this.lifecycleSpecification = lifecycleConfiguration;
 	}
 
 	@Override
-	public ILifecycleSpec getLifecycleConfiguration() {
+	public ILifecycleSpecification getLifecycleSpecification() {
 
-		return lifecycleConfiguration;
+		return lifecycleSpecification;
 	}
 
 	@Override
@@ -135,15 +135,15 @@ public class RhenaModule implements IRhenaModule {
 	}
 
 	@Override
-	public void addDeclaredConfiguration(ILifecycleSpec declaredConfiguration) {
+	public void addDeclaredLifecycleSpecification(ILifecycleSpecification lifecycleSpecification) {
 
-		this.declaredConfigurations.add(declaredConfiguration);
+		this.declaredLifecycleSpecifications.add(lifecycleSpecification);
 	}
 
 	@Override
-	public List<ILifecycleSpec> getDeclaredConfigurations() {
+	public List<ILifecycleSpecification> getDeclaredLifecycleSpecifications() {
 
-		return declaredConfigurations;
+		return declaredLifecycleSpecifications;
 	}
 
 	@Override

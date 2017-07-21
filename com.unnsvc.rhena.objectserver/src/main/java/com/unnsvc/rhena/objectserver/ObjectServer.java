@@ -127,8 +127,8 @@ public class ObjectServer implements IObjectServer {
 				if (!client.isClosed()) {
 					try (ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream())) {
 
+						log.error("Submitting exception reply to client: " + throwable.getClass().getName() + ": " + throwable.getMessage());
 						oos.writeObject(new ExceptionResponse(throwable));
-						log.debug("Submitted exception reply to client");
 					}
 				} else {
 					throw new ObjectServerException(throwable);

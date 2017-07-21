@@ -47,4 +47,10 @@ public class ExecutionRequest implements IExecutionRequest {
 
 		return dependencies;
 	}
+
+	@Override
+	public String toString() {
+
+		return "ExecutionRequest [entryPoint=" + entryPoint + ", module=" + module + ", lifecycle=" + lifecycle + ", dependencies=" + dependencies + "]";
+	}
 }

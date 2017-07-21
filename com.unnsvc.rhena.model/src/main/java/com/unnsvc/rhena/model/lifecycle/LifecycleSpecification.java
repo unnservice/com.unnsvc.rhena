@@ -7,11 +7,11 @@ import java.util.List;
 
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.model.ICommandSpec;
-import com.unnsvc.rhena.common.model.ILifecycleSpec;
+import com.unnsvc.rhena.common.model.ILifecycleSpecification;
 import com.unnsvc.rhena.common.model.IProcessorSpec;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 
-public class LifecycleSpec implements ILifecycleSpec {
+public class LifecycleSpecification implements ILifecycleSpecification {
 
 	private static final long serialVersionUID = 1L;
 	private String name;
@@ -22,7 +22,7 @@ public class LifecycleSpec implements ILifecycleSpec {
 	private List<ICommandSpec> commandReferences;
 	private boolean resolved;
 
-	public LifecycleSpec(String name) {
+	public LifecycleSpecification(String name) {
 
 		this.name = name;
 		this.lifecycleDependencies = new ArrayList<IRhenaEdge>();
@@ -34,10 +34,11 @@ public class LifecycleSpec implements ILifecycleSpec {
 	/**
 	 * Default lifecycle configuration instance
 	 */
-	public LifecycleSpec() {
+	public LifecycleSpecification() {
 
 		this.name = RhenaConstants.DEFAULT_LIFECYCLE_NAME;
 		this.resolved = true;
+		this.lifecycleDependencies = new ArrayList<IRhenaEdge>();
 		this.processorReferences = new ArrayList<IProcessorSpec>();
 		this.commandReferences = new ArrayList<ICommandSpec>();
 	}

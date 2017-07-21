@@ -23,7 +23,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.EExecutionType;
 import com.unnsvc.rhena.common.model.ESelectionType;
-import com.unnsvc.rhena.common.model.ILifecycleSpec;
+import com.unnsvc.rhena.common.model.ILifecycleSpecification;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.repository.RepositoryIdentifier;
 import com.unnsvc.rhena.common.utils.MiscUtils;
@@ -33,7 +33,7 @@ import com.unnsvc.rhena.model.RhenaModule;
 import com.unnsvc.rhena.model.lifecycle.CommandSpec;
 import com.unnsvc.rhena.model.lifecycle.ContextSpec;
 import com.unnsvc.rhena.model.lifecycle.GeneratorSpec;
-import com.unnsvc.rhena.model.lifecycle.LifecycleSpec;
+import com.unnsvc.rhena.model.lifecycle.LifecycleSpecification;
 import com.unnsvc.rhena.model.lifecycle.ProcessorSpec;
 
 /**
@@ -129,11 +129,12 @@ public class RhenaModuleParser {
 		Node lifecycleAttrNode = moduleChild.getAttributes().getNamedItem("lifecycle");
 		if (lifecycleAttrNode == null || lifecycleAttrNode.getNodeValue().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
 
-			ILifecycleSpec defaultConfig = new LifecycleSpec();
-			module.setLifecycleConfiguration(defaultConfig);
+			ILifecycleSpecification defaultConfig = new LifecycleSpecification();
+			module.setLifecycleSpecification(defaultConfig);
 		} else {
-			ILifecycleSpec lifecycleConfiguration = new LifecycleSpec(lifecycleAttrNode.getNodeValue());
-			module.setLifecycleConfiguration(lifecycleConfiguration);
+			
+			ILifecycleSpecification lifecycleConfiguration = new LifecycleSpecification(lifecycleAttrNode.getNodeValue());
+			module.setLifecycleSpecification(lifecycleConfiguration);
 		}
 
 		if (!module.getIdentifier().getComponentName().toString().equals(componentNameStr)) {
@@ -150,18 +151,18 @@ public class RhenaModuleParser {
 					processPropertyNode(metaChild);
 				} else if (metaChild.getNamespaceURI().equals(RhenaConstants.NS_RHENA_MODULE)) {
 					if (metaChild.getLocalName().equals("lifecycle")) {
-						ILifecycleSpec declaredConfiguration = processLifecycleNode(metaChild);
-						module.addDeclaredConfiguration(declaredConfiguration);
+						ILifecycleSpecification declaredConfiguration = processLifecycleNode(metaChild);
+						module.addDeclaredLifecycleSpecification(declaredConfiguration);
 					}
 				}
 			}
 		}
 	}
 
-	private ILifecycleSpec processLifecycleNode(Node lifecycleNode) throws RhenaException {
+	private ILifecycleSpecification processLifecycleNode(Node lifecycleNode) throws RhenaException {
 
 		String lifecycleName = lifecycleNode.getAttributes().getNamedItem("name").getNodeValue();
-		LifecycleSpec lifecycleConfiguration = new LifecycleSpec(lifecycleName);
+		LifecycleSpecification lifecycleSpecification = new LifecycleSpecification(lifecycleName);
 
 		NodeList children = lifecycleNode.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
@@ -175,7 +176,7 @@ public class RhenaModuleParser {
 				if (child.getNamespaceURI().equals(RhenaConstants.NS_RHENA_DEPENDENCY)) {
 
 					IRhenaEdge edge = processDepenencyNode(child);
-					lifecycleConfiguration.addLifecycleDependency(edge);
+					lifecycleSpecification.addLifecycleDependency(edge);
 
 				} else {
 
@@ -238,26 +239,26 @@ public class RhenaModuleParser {
 					if (child.getLocalName().equals("context")) {
 
 						ContextSpec configurator = new ContextSpec(schemaAttrStr, clazzAttrStr, processorConfig, processorDeps);
-						lifecycleConfiguration.setContext(configurator);
+						lifecycleSpecification.setContext(configurator);
 					} else if (child.getLocalName().equals("processor")) {
 
 						ProcessorSpec processor = new ProcessorSpec(schemaAttrStr, clazzAttrStr, processorConfig, processorDeps);
-						lifecycleConfiguration.addProcessor(processor);
+						lifecycleSpecification.addProcessor(processor);
 					} else if (child.getLocalName().equals("generator")) {
 
 						GeneratorSpec generator = new GeneratorSpec(schemaAttrStr, clazzAttrStr, processorConfig, processorDeps);
-						lifecycleConfiguration.setGenerator(generator);
+						lifecycleSpecification.setGenerator(generator);
 					} else if (child.getLocalName().equals("command")) {
 
 						String commandName = child.getAttributes().getNamedItem("name").getNodeValue();
 						CommandSpec command = new CommandSpec(schemaAttrStr, clazzAttrStr, processorConfig, commandName, processorDeps);
-						lifecycleConfiguration.addCommand(command);
+						lifecycleSpecification.addCommand(command);
 					}
 				}
 			}
 		}
 
-		return lifecycleConfiguration;
+		return lifecycleSpecification;
 	}
 
 	private IRhenaEdge newEdge(ModuleIdentifier source, EExecutionType type, ModuleIdentifier target, ESelectionType selection) {

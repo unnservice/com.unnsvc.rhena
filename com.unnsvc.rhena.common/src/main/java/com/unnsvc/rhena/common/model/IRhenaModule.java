@@ -14,9 +14,9 @@ public interface IRhenaModule extends Iterable<IRhenaEdge>, Serializable {
 
 	public void setParent(IRhenaEdge parent);
 
-	public void setLifecycleConfiguration(ILifecycleSpec lifecycleConfiguration);
+	public void setLifecycleSpecification(ILifecycleSpecification lifecycleConfiguration);
 
-	public ILifecycleSpec getLifecycleConfiguration();
+	public ILifecycleSpecification getLifecycleSpecification();
 
 	public ModuleIdentifier getIdentifier();
 
@@ -40,9 +40,9 @@ public interface IRhenaModule extends Iterable<IRhenaEdge>, Serializable {
 
 	public void setProperties(Map<String, String> properties);
 
-	public void addDeclaredConfiguration(ILifecycleSpec declaredConfiguration);
+	public void addDeclaredLifecycleSpecification(ILifecycleSpecification declaredConfiguration);
 
-	public List<ILifecycleSpec> getDeclaredConfigurations();
+	public List<ILifecycleSpecification> getDeclaredLifecycleSpecifications();
 
 	public EModuleType getModuleType();
 

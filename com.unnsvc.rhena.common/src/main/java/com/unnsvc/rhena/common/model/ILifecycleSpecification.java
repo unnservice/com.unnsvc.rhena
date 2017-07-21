@@ -4,7 +4,7 @@ package com.unnsvc.rhena.common.model;
 import java.io.Serializable;
 import java.util.List;
 
-public interface ILifecycleSpec extends Iterable<IRhenaEdge>, Serializable {
+public interface ILifecycleSpecification extends Iterable<IRhenaEdge>, Serializable {
 
 	public boolean isResolved();
 

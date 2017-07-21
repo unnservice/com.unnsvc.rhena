@@ -14,7 +14,7 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
 import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IEntryPoint;
-import com.unnsvc.rhena.common.model.ILifecycleSpec;
+import com.unnsvc.rhena.common.model.ILifecycleSpecification;
 import com.unnsvc.rhena.common.model.IProcessorSpec;
 import com.unnsvc.rhena.common.model.IRhenaEdge;
 import com.unnsvc.rhena.common.model.IRhenaModule;
@@ -89,9 +89,9 @@ public abstract class AbstractFlatTreeWalker {
 				/**
 				 * Check lifecycle relationships
 				 */
-				if (!currentModule.getLifecycleConfiguration().getName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
+				if (!currentModule.getLifecycleSpecification().getName().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
 
-					for (IRhenaEdge lifecycleEdge : currentModule.getLifecycleConfiguration()) {
+					for (IRhenaEdge lifecycleEdge : currentModule.getLifecycleSpecification()) {
 
 						if (!processed.contains(lifecycleEdge.getEntryPoint())) {
 							tracker.pushUnique(new FlatTreeFrame(lifecycleEdge.getEntryPoint(), lifecycleEdge.getTraverseType()));
@@ -105,7 +105,7 @@ public abstract class AbstractFlatTreeWalker {
 						}
 					}
 
-					for (IProcessorSpec processorRef : currentModule.getLifecycleConfiguration().processorIterator()) {
+					for (IProcessorSpec processorRef : currentModule.getLifecycleSpecification().processorIterator()) {
 
 						for (IRhenaEdge processorRefDep : processorRef) {
 
@@ -272,9 +272,9 @@ public abstract class AbstractFlatTreeWalker {
 		 * Resolve its lifecycle
 		 * 
 		 */
-		if (!currentModule.getLifecycleConfiguration().isResolved()) {
+		if (!currentModule.getLifecycleSpecification().isResolved()) {
 
-			ILifecycleSpec config = null;
+			ILifecycleSpecification config = null;
 			IRhenaModule cursorModule = currentModule;
 			while (config == null && cursorModule != null) {
 
@@ -282,9 +282,9 @@ public abstract class AbstractFlatTreeWalker {
 				 * It's a custom lifecycle so we want to search for its
 				 * declaration in the hierarchy
 				 */
-				for (ILifecycleSpec declaredConfig : currentModule.getDeclaredConfigurations()) {
+				for (ILifecycleSpecification declaredConfig : currentModule.getDeclaredLifecycleSpecifications()) {
 
-					if (declaredConfig.getName().equals(currentModule.getLifecycleConfiguration().getName())) {
+					if (declaredConfig.getName().equals(currentModule.getLifecycleSpecification().getName())) {
 						config = declaredConfig;
 						break;
 					}
@@ -295,10 +295,10 @@ public abstract class AbstractFlatTreeWalker {
 
 			if (config == null) {
 				throw new RhenaException(
-						"Lifecycle " + currentModule.getLifecycleConfiguration().getName() + " not found for " + currentModule.getIdentifier());
+						"Lifecycle " + currentModule.getLifecycleSpecification().getName() + " not found for " + currentModule.getIdentifier());
 			}
 
-			currentModule.setLifecycleConfiguration(config);
+			currentModule.setLifecycleSpecification(config);
 		}
 	}
 

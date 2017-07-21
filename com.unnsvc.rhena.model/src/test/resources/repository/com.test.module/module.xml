@@ -9,6 +9,7 @@
 		<prop:thirdprop>thirdvalue</prop:thirdprop>
 
 		<lifecycle name="library">
+			<dependency:main module="junit:junit:4.12" />
 			<!-- @TODO properties in lifecycle to override from heirarchy -->
 
 			<context module="com.unnsvc.rhena:lifecycle:1.0.0" class="com.unnsvc.rhena.lifecycle.DefaultContext">

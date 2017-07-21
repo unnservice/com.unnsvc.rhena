@@ -25,7 +25,7 @@ public class RhenaMergedModule extends RhenaModule {
 
 		super(clone.getIdentifier(), clone.getRepositoryIdentifier());
 		setParent(clone.getParent());
-		setLifecycleConfiguration(clone.getLifecycleConfiguration());
+		setLifecycleSpecification(clone.getLifecycleSpecification());
 		setDependencies(clone.getDependencies());
 		setProperties(clone.getProperties());
 	}
@@ -35,7 +35,7 @@ public class RhenaMergedModule extends RhenaModule {
 		setIdentifier(from.getIdentifier());
 		setRepositoryIdentifier(from.getRepositoryIdentifier());
 		setParent(from.getParent());
-		setLifecycleConfiguration(from.getLifecycleConfiguration());
+		setLifecycleSpecification(from.getLifecycleSpecification());
 		getDependencies().addAll(from.getDependencies());
 		getProperties().putAll(from.getProperties());
 	}
