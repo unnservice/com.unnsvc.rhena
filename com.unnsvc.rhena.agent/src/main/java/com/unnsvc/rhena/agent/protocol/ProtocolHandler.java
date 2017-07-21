@@ -13,6 +13,7 @@ import com.unnsvc.rhena.agent.messages.ExecutionResponse;
 import com.unnsvc.rhena.common.IRhenaAgentServer;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
+import com.unnsvc.rhena.common.execution.IExecutionRequest;
 import com.unnsvc.rhena.common.execution.IExecutionResponse;
 import com.unnsvc.rhena.common.lifecycle.IContext;
 import com.unnsvc.rhena.common.lifecycle.IGenerator;
@@ -21,8 +22,8 @@ import com.unnsvc.rhena.common.lifecycle.IProcessor;
 import com.unnsvc.rhena.common.lifecycle.IProcessorInstance;
 import com.unnsvc.rhena.common.model.EExecutionType;
 import com.unnsvc.rhena.common.traversal.IDependencies;
-import com.unnsvc.rhena.objectserver.ObjectServerException;
 import com.unnsvc.rhena.objectserver.handler.IProtocolHandler;
+import com.unnsvc.rhena.objectserver.messages.ExceptionResponse;
 import com.unnsvc.rhena.objectserver.messages.IRequest;
 import com.unnsvc.rhena.objectserver.messages.IResponse;
 
@@ -37,38 +38,54 @@ public class ProtocolHandler implements IProtocolHandler {
 	}
 
 	@Override
-	public IResponse handleRequest(IRequest request) throws ObjectServerException {
+	public IResponse handleRequest(IRequest request) {
 
+		/**
+		 * Determine request type
+		 */
 		try {
-			ClassLoader parentClassLoader = Thread.currentThread().getContextClassLoader();
 
-			ILifecycleInstance lifecycle = request.getLifecycle();
-			URLClassLoader lifecycleClassLoader = createClassLoader(lifecycle.getDependencies(), parentClassLoader);
+			if (request instanceof IExecutionRequest) {
 
-			IContext context = instantiate(lifecycleClassLoader, lifecycle.getContext(), IContext.class);
+				return handleRequest((IExecutionRequest) request);
+			} else {
 
-			for (IProcessorInstance processorInst : lifecycle.getProcessors()) {
-				IProcessor processor = instantiate(lifecycleClassLoader, processorInst, IProcessor.class);
-				// ...
+				throw new RhenaException("Unknown request type: " + request.getClass().getName());
 			}
-
-			IGenerator generator = instantiate(lifecycleClassLoader, lifecycle.getGenerator(), IGenerator.class);
-
-			/**
-			 * @TODO command
-			 */
-			// if(lifecycle.getCommands() != null) {
-			//
-			// ICommand command = instantiate(lifecycleClassLoader,
-			// lifecycle.getCommands(), ICommand.class);
-			//
-			// }
-
-			return new ExecutionResponse(request.getEntryPoint(), request.getModule());
 		} catch (RhenaException ose) {
 
-			throw new ObjectServerException(ose);
+			return new ExceptionResponse(ose);
 		}
+	}
+
+	public IResponse handleRequest(IExecutionRequest request) throws RhenaException {
+
+		ClassLoader parentClassLoader = Thread.currentThread().getContextClassLoader();
+
+		ILifecycleInstance lifecycle = request.getLifecycle();
+		URLClassLoader lifecycleClassLoader = createClassLoader(lifecycle.getDependencies(), parentClassLoader);
+
+		IContext context = instantiate(lifecycleClassLoader, lifecycle.getContext(), IContext.class);
+
+		for (IProcessorInstance processorInst : lifecycle.getProcessors()) {
+			IProcessor processor = instantiate(lifecycleClassLoader, processorInst, IProcessor.class);
+			// ...
+		}
+
+		IGenerator generator = instantiate(lifecycleClassLoader, lifecycle.getGenerator(), IGenerator.class);
+
+		/**
+		 * @TODO command
+		 */
+		// if(lifecycle.getCommands() != null) {
+		//
+		// ICommand command = instantiate(lifecycleClassLoader,
+		// lifecycle.getCommands(), ICommand.class);
+		//
+		// }
+
+		return new ExecutionResponse(request.getEntryPoint(), request.getModule());
+
 	}
 
 	@SuppressWarnings("unchecked")
