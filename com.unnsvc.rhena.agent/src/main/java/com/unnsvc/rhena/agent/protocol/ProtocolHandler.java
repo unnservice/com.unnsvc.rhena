@@ -26,6 +26,8 @@ import com.unnsvc.rhena.objectserver.handler.IProtocolHandler;
 import com.unnsvc.rhena.objectserver.messages.ExceptionResponse;
 import com.unnsvc.rhena.objectserver.messages.IRequest;
 import com.unnsvc.rhena.objectserver.messages.IResponse;
+import com.unnsvc.rhena.objectserver.messages.PingRequest;
+import com.unnsvc.rhena.objectserver.messages.PingResponse;
 
 public class ProtocolHandler implements IProtocolHandler {
 
@@ -47,7 +49,10 @@ public class ProtocolHandler implements IProtocolHandler {
 
 			if (request instanceof IExecutionRequest) {
 
-				return handleRequest((IExecutionRequest) request);
+				return handleExecutionRequest((IExecutionRequest) request);
+			} else if (request instanceof PingRequest) {
+
+				return new PingResponse(((PingRequest) request).getId());
 			} else {
 
 				throw new RhenaException("Unknown request type: " + request.getClass().getName());
@@ -58,7 +63,7 @@ public class ProtocolHandler implements IProtocolHandler {
 		}
 	}
 
-	public IResponse handleRequest(IExecutionRequest request) throws RhenaException {
+	public IExecutionResponse handleExecutionRequest(IExecutionRequest request) throws RhenaException {
 
 		ClassLoader parentClassLoader = Thread.currentThread().getContextClassLoader();
 
@@ -85,7 +90,6 @@ public class ProtocolHandler implements IProtocolHandler {
 		// }
 
 		return new ExecutionResponse(request.getEntryPoint(), request.getModule());
-
 	}
 
 	@SuppressWarnings("unchecked")

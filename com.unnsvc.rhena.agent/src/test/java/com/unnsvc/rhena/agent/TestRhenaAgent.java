@@ -9,11 +9,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.unnsvc.rhena.agent.messages.PingRequest;
-import com.unnsvc.rhena.agent.messages.PingResponse;
 import com.unnsvc.rhena.common.IRhenaAgentClient;
 import com.unnsvc.rhena.common.IRhenaAgentServer;
 import com.unnsvc.rhena.objectserver.messages.IResponse;
+import com.unnsvc.rhena.objectserver.messages.PingRequest;
+import com.unnsvc.rhena.objectserver.messages.PingResponse;
 
 public class TestRhenaAgent {
 
