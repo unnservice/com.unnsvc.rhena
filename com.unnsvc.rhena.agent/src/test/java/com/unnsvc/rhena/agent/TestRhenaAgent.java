@@ -13,13 +13,12 @@ import com.unnsvc.rhena.agent.messages.PingRequest;
 import com.unnsvc.rhena.agent.messages.PingResponse;
 import com.unnsvc.rhena.common.IRhenaAgentClient;
 import com.unnsvc.rhena.common.IRhenaAgentServer;
-import com.unnsvc.rhena.common.execution.IExecutionRequest;
-import com.unnsvc.rhena.common.execution.IExecutionResponse;
+import com.unnsvc.rhena.objectserver.messages.IResponse;
 
 public class TestRhenaAgent {
 
 	private IRhenaAgentServer agentServer;
-	private IRhenaAgentClient<IExecutionRequest, IExecutionResponse> agentClient;
+	private IRhenaAgentClient agentClient;
 
 	@Before
 	public void before() throws Exception {
@@ -38,9 +37,9 @@ public class TestRhenaAgent {
 	}
 
 	@Test
-	public void testServerProtocol() throws Exception {
+	public void testServerPing() throws Exception {
 
-		IExecutionResponse response = agentClient.submitRequest(new PingRequest());
+		IResponse response = agentClient.submitRequest(new PingRequest());
 		Assert.assertTrue(response instanceof PingResponse);
 	}
 }

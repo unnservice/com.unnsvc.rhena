@@ -20,14 +20,14 @@ import com.unnsvc.rhena.objectserver.messages.ExceptionResponse;
 import com.unnsvc.rhena.objectserver.messages.IRequest;
 import com.unnsvc.rhena.objectserver.messages.IResponse;
 
-public class ObjectServer<REQUEST extends IRequest, RESPONSE extends IResponse> implements IObjectServer {
+public class ObjectServer implements IObjectServer {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ServerSocket server;
-	private IProtocolHandlerFactory<REQUEST, RESPONSE> handlerFactory;
+	private IProtocolHandlerFactory handlerFactory;
 	private ExecutorService executor;
 
-	public ObjectServer(IProtocolHandlerFactory<REQUEST, RESPONSE> handlerFactory) {
+	public ObjectServer(IProtocolHandlerFactory handlerFactory) {
 
 		this.handlerFactory = handlerFactory;
 		// Might want to have a look at this to not spawn an endless number of
@@ -108,13 +108,13 @@ public class ObjectServer<REQUEST extends IRequest, RESPONSE extends IResponse> 
 
 			Object requestObject = ois.readObject();
 			log.debug("Read request: " + requestObject.getClass().getName());
-			
-			IProtocolHandler<REQUEST, RESPONSE> handler = handlerFactory.newProtocolHandler();
-			
+
+			IProtocolHandler handler = handlerFactory.newProtocolHandler();
+
 			try {
-				
+
 				@SuppressWarnings("unchecked")
-				RESPONSE response = handler.handleRequest((REQUEST) requestObject);
+				IResponse response = handler.handleRequest((IRequest) requestObject);
 				log.debug("Handled request in protocol handler: " + handler.getClass().getName());
 
 				try (ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream())) {

@@ -6,8 +6,6 @@ import java.net.SocketAddress;
 import com.unnsvc.rhena.agent.protocol.ProtocolHandlerFactory;
 import com.unnsvc.rhena.common.IRhenaAgentServer;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
-import com.unnsvc.rhena.common.execution.IExecutionRequest;
-import com.unnsvc.rhena.common.execution.IExecutionResponse;
 import com.unnsvc.rhena.objectserver.IObjectServer;
 import com.unnsvc.rhena.objectserver.ObjectServer;
 import com.unnsvc.rhena.objectserver.ObjectServerException;
@@ -26,8 +24,8 @@ public class RhenaAgentServer implements IRhenaAgentServer {
 	@Override
 	public void startServer() throws RhenaException {
 
-		IProtocolHandlerFactory<IExecutionRequest, IExecutionResponse> handlerFactory = new ProtocolHandlerFactory(this);
-		objectServer = new ObjectServer<IExecutionRequest, IExecutionResponse>(handlerFactory);
+		IProtocolHandlerFactory handlerFactory = new ProtocolHandlerFactory(this);
+		objectServer = new ObjectServer(handlerFactory);
 
 		try {
 

@@ -14,7 +14,7 @@ import com.unnsvc.rhena.objectserver.ObjectServerException;
 import com.unnsvc.rhena.objectserver.messages.IRequest;
 import com.unnsvc.rhena.objectserver.messages.IResponse;
 
-public class ObjectClient<REQUEST extends IRequest, RESPONSE extends IResponse> implements IObjectClient<REQUEST, RESPONSE> {
+public class ObjectClient implements IObjectClient {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private SocketAddress address;
@@ -25,7 +25,7 @@ public class ObjectClient<REQUEST extends IRequest, RESPONSE extends IResponse> 
 	}
 
 	@Override
-	public RESPONSE submitRequest(REQUEST request) throws ObjectServerException {
+	public IResponse submitRequest(IRequest request) throws ObjectServerException {
 
 		try (Socket socket = new Socket()) {
 			socket.setSoTimeout(1000);
@@ -40,7 +40,7 @@ public class ObjectClient<REQUEST extends IRequest, RESPONSE extends IResponse> 
 	}
 
 	@SuppressWarnings("unchecked")
-	private RESPONSE submitRequest(Socket socket, REQUEST request) throws IOException, ClassNotFoundException {
+	private IResponse submitRequest(Socket socket, IRequest request) throws IOException, ClassNotFoundException {
 
 		try (ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream())) {
 
@@ -51,7 +51,7 @@ public class ObjectClient<REQUEST extends IRequest, RESPONSE extends IResponse> 
 
 				Object responseObject = ois.readObject();
 				log.debug("Received response: " + responseObject.getClass().getName());
-				return (RESPONSE) responseObject;
+				return (IResponse) responseObject;
 			}
 		}
 	}
