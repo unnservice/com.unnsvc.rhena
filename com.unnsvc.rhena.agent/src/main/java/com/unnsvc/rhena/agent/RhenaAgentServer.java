@@ -26,7 +26,7 @@ public class RhenaAgentServer implements IRhenaAgentServer {
 	@Override
 	public void startServer() throws RhenaException {
 
-		IProtocolHandlerFactory<IExecutionRequest, IExecutionResponse> handlerFactory = new ProtocolHandlerFactory();
+		IProtocolHandlerFactory<IExecutionRequest, IExecutionResponse> handlerFactory = new ProtocolHandlerFactory(this);
 		objectServer = new ObjectServer<IExecutionRequest, IExecutionResponse>(handlerFactory);
 
 		try {
