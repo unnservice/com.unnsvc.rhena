@@ -5,8 +5,8 @@ import com.unnsvc.rhena.common.exceptions.RhenaException;
 
 public interface IRhenaAgentServer {
 
-	public void startServer() throws RhenaException;
+	public void startupAgent() throws RhenaException;
 
-	public void close() throws RhenaException;
+	public void shutdownAgent() throws RhenaException;
 
 }

@@ -43,7 +43,7 @@ public abstract class AbstractAgentTest extends AbstractRhenaConfiguredTest {
 			 * before the test and tear it down afterward
 			 */
 			agent = new RhenaAgentServer(config.getAgentConfiguration().getAgentAddress());
-			agent.startServer();
+			agent.startupAgent();
 		} catch (Exception ex) {
 			throw new RhenaException(ex);
 		}
@@ -52,7 +52,7 @@ public abstract class AbstractAgentTest extends AbstractRhenaConfiguredTest {
 	@After
 	public void after() throws RhenaException {
 
-		agent.close();
+		agent.shutdownAgent();
 	}
 
 	public IRhenaContext getContext() {

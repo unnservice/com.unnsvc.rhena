@@ -26,14 +26,14 @@ public class TestRhenaAgent {
 		SocketAddress endpoint = new InetSocketAddress("localhost", 6666);
 
 		agentServer = new RhenaAgentServer(endpoint);
-		agentServer.startServer();
+		agentServer.startupAgent();
 		agentClient = new RhenaAgentClient(endpoint);
 	}
 
 	@After
 	public void after() throws Exception {
 
-		agentServer.close();
+		agentServer.shutdownAgent();
 	}
 
 	@Test

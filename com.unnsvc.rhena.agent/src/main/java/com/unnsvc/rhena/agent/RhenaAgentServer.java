@@ -22,7 +22,7 @@ public class RhenaAgentServer implements IRhenaAgentServer {
 	}
 
 	@Override
-	public void startServer() throws RhenaException {
+	public void startupAgent() throws RhenaException {
 
 		IProtocolHandlerFactory handlerFactory = new ProtocolHandlerFactory(this);
 		objectServer = new ObjectServer(handlerFactory);
@@ -37,7 +37,7 @@ public class RhenaAgentServer implements IRhenaAgentServer {
 	}
 
 	@Override
-	public void close() throws RhenaException {
+	public void shutdownAgent() throws RhenaException {
 
 		try {
 
