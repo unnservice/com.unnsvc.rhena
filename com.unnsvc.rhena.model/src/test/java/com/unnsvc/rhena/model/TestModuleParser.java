@@ -36,6 +36,7 @@ public class TestModuleParser extends AbstractRhenaTest {
 		
 		List<IRhenaEdge> lifecycleDeps = lifecycleSpec.getLifecycleDependencies();
 		Assert.assertNotNull(lifecycleDeps);
+		Assert.assertNotEquals(RhenaConstants.DEFAULT_LIFECYCLE_NAME, lifecycleSpec.getName());
 		Assert.assertEquals(1, lifecycleDeps.size());
 	}
 }

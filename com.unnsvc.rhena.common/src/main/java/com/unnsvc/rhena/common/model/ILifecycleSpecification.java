@@ -6,8 +6,6 @@ import java.util.List;
 
 public interface ILifecycleSpecification extends Iterable<IRhenaEdge>, Serializable {
 
-	public boolean isResolved();
-
 	public void setName(String name);
 
 	public String getName();

@@ -21,6 +21,7 @@ import org.w3c.dom.NodeList;
 import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.lifecycle.UnresolvedLifecycleSpecification;
 import com.unnsvc.rhena.common.model.EExecutionType;
 import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.ILifecycleSpecification;
@@ -129,11 +130,11 @@ public class RhenaModuleParser {
 		Node lifecycleAttrNode = moduleChild.getAttributes().getNamedItem("lifecycle");
 		if (lifecycleAttrNode == null || lifecycleAttrNode.getNodeValue().equals(RhenaConstants.DEFAULT_LIFECYCLE_NAME)) {
 
-			ILifecycleSpecification defaultConfig = new LifecycleSpecification();
+			ILifecycleSpecification defaultConfig = new UnresolvedLifecycleSpecification(RhenaConstants.DEFAULT_LIFECYCLE_NAME);
 			module.setLifecycleSpecification(defaultConfig);
 		} else {
-			
-			ILifecycleSpecification lifecycleConfiguration = new LifecycleSpecification(lifecycleAttrNode.getNodeValue());
+
+			ILifecycleSpecification lifecycleConfiguration = new UnresolvedLifecycleSpecification(lifecycleAttrNode.getNodeValue());
 			module.setLifecycleSpecification(lifecycleConfiguration);
 		}
 
@@ -194,7 +195,7 @@ public class RhenaModuleParser {
 					// }
 
 					EExecutionType et = EExecutionType.MAIN;
-					
+
 					// these are not added anymore to processor constructor
 					ESelectionType tt = ESelectionType.SCOPE;
 					ModuleIdentifier source = module.getIdentifier();

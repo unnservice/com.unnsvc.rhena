@@ -12,6 +12,7 @@ import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.exceptions.NotUniqueException;
 import com.unnsvc.rhena.common.exceptions.RhenaException;
 import com.unnsvc.rhena.common.identity.ModuleIdentifier;
+import com.unnsvc.rhena.common.lifecycle.UnresolvedLifecycleSpecification;
 import com.unnsvc.rhena.common.model.ESelectionType;
 import com.unnsvc.rhena.common.model.IEntryPoint;
 import com.unnsvc.rhena.common.model.ILifecycleSpecification;
@@ -272,11 +273,11 @@ public abstract class AbstractFlatTreeWalker {
 		 * Resolve its lifecycle
 		 * 
 		 */
-		if (!currentModule.getLifecycleSpecification().isResolved()) {
+		if (currentModule.getLifecycleSpecification() instanceof UnresolvedLifecycleSpecification) {
 
-			ILifecycleSpecification config = null;
+			ILifecycleSpecification lifecycleSpecification = null;
 			IRhenaModule cursorModule = currentModule;
-			while (config == null && cursorModule != null) {
+			while (lifecycleSpecification == null && cursorModule != null) {
 
 				/**
 				 * It's a custom lifecycle so we want to search for its
@@ -285,7 +286,7 @@ public abstract class AbstractFlatTreeWalker {
 				for (ILifecycleSpecification declaredConfig : currentModule.getDeclaredLifecycleSpecifications()) {
 
 					if (declaredConfig.getName().equals(currentModule.getLifecycleSpecification().getName())) {
-						config = declaredConfig;
+						lifecycleSpecification = declaredConfig;
 						break;
 					}
 				}
@@ -293,12 +294,11 @@ public abstract class AbstractFlatTreeWalker {
 				cursorModule = onResolveModule(cursorModule.getParent().getEntryPoint().getTarget());
 			}
 
-			if (config == null) {
-				throw new RhenaException(
-						"Lifecycle " + currentModule.getLifecycleSpecification().getName() + " not found for " + currentModule.getIdentifier());
+			if (lifecycleSpecification == null) {
+				throw new RhenaException("Lifecycle " + currentModule.getLifecycleSpecification().getName() + " not found for " + currentModule.getIdentifier());
 			}
 
-			currentModule.setLifecycleSpecification(config);
+			currentModule.setLifecycleSpecification(lifecycleSpecification);
 		}
 	}
 

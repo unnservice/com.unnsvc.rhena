@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.unnsvc.rhena.common.RhenaConstants;
 import com.unnsvc.rhena.common.model.ICommandSpec;
 import com.unnsvc.rhena.common.model.ILifecycleSpecification;
 import com.unnsvc.rhena.common.model.IProcessorSpec;
@@ -20,33 +19,13 @@ public class LifecycleSpecification implements ILifecycleSpecification {
 	private List<IProcessorSpec> processorReferences;
 	private GeneratorSpec generatorReference;
 	private List<ICommandSpec> commandReferences;
-	private boolean resolved;
 
 	public LifecycleSpecification(String name) {
 
 		this.name = name;
 		this.lifecycleDependencies = new ArrayList<IRhenaEdge>();
-		this.resolved = false;
 		this.processorReferences = new ArrayList<IProcessorSpec>();
 		this.commandReferences = new ArrayList<ICommandSpec>();
-	}
-
-	/**
-	 * Default lifecycle configuration instance
-	 */
-	public LifecycleSpecification() {
-
-		this.name = RhenaConstants.DEFAULT_LIFECYCLE_NAME;
-		this.resolved = true;
-		this.lifecycleDependencies = new ArrayList<IRhenaEdge>();
-		this.processorReferences = new ArrayList<IProcessorSpec>();
-		this.commandReferences = new ArrayList<ICommandSpec>();
-	}
-
-	@Override
-	public boolean isResolved() {
-
-		return resolved;
 	}
 
 	@Override
